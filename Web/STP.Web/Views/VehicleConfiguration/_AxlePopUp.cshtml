@@ -1,0 +1,34 @@
+﻿
+<div class="modal fade" id="axleDetails" tabindex="-1" role="dialog"  aria-hidden="false">
+    <div class="modal-dialog  modal-xl modal-dialog-centered" role="document">
+        <div class="modal-content" style="width: 100% !important;" >
+            <div class="modal-header">
+                <button type="button" class="btn-close view-axle-modal-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div style=" padding-left: 1rem;">
+                <div id="axlePage" class="popUpAxleDetails" style="height: auto; padding:1rem;">
+                    @{
+                        Html.RenderAction("AxleComponent", "VehicleConfig", new { axleCount = ViewBag.axleCount, componentId = ViewBag.componentId, compIds=ViewBag.compIds, vehicleSubTypeId = ViewBag.vehicleSubTypeId, vehicleTypeId = ViewBag.vehicleTypeId, movementId = ViewBag.movementId, IsEdit = true, isApplication = false, appRevID = 0, vehConfigID = 0, isVR1 = false, isFromConfig = 1, movement = (bool)ViewBag.movement, isCandidate = (bool)ViewBag.isCandidate, isEditMovement = ViewBag.isEditMovement, isFromPopUp = ViewBag.isFromPopUp, axles = ViewBag.axles });
+                    }
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-primary SOAButtonHelper ml2 mb-2 btn-border-remove btn_AddAxleDetails" style="background-color: white; width: 175px;" id="btn_AddAxleDetails" componentId="@ViewBag.componentId">ADD</button>
+                <button class="btn btn-outline-primary SOAButtonHelper ml2 mb-2 btn-border-remove btn_ClearAxleDetails" style="background-color: white; width: 175px;" id="btn_ClearAxleDetails" componentId="@ViewBag.componentId">CANCEL</button>
+            </div>
+            @*<div id="divmodalclose" class="modal-header pt-2 view-axle-modal-close" style="justify-content: end; cursor: pointer;">
+            <span aria-hidden="true" class="close" data-dismiss="modal"
+                  aria-label="Close">&times;</span>
+        </div>*@
+
+
+            @*<div class="row">
+                <div class="mt-5 pl-0 ml-0" style="text-align: center;">
+                    <button class="btn btn-outline-primary SOAButtonHelper ml2 mb-2 btn-border-remove btn_AddAxleDetails" style="background-color: white;" id="btn_AddAxleDetails" componentId="@ViewBag.componentId">ADD</button>
+                    <button class="btn btn-outline-primary SOAButtonHelper ml2 mb-2 btn-border-remove btn_ClearAxleDetails" style="background-color: white;" id="btn_ClearAxleDetails" componentId="@ViewBag.componentId">CANCEL</button>
+
+                </div>
+            </div>*@
+        </div>
+    </div>
+</div>

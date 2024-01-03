@@ -1,0 +1,2947 @@
+
+@{
+    Layout = null;
+}
+
+@model STP.Domain.DocumentsAndContents.SortAgreeRevisedParams.AgreedRoute
+
+@{
+    int UnitType = 0;
+}
+
+@{
+    string ESDALReferenceString = string.Empty;
+    System.Globalization.TextInfo textInfo = new System.Globalization.CultureInfo("en-US", false).TextInfo;
+}
+
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,
+				initial-scale=1" />
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <!-- Bootstrap CSS -->
+    @*<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous" />*@
+    @*<link rel="preconnect" href="https://fonts.gstatic.com" />*@
+    @*<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed&display=swap" rel="stylesheet" />*@
+    <link href="~/Content/fonts.css" rel="stylesheet" />
+    <style>
+
+        .container-fluid {
+            padding-right: 15px;
+            padding-left: 15px;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        .row {
+            margin-right: -15px;
+            margin-left: -15px;
+        }
+
+        .row-no-gutters {
+            margin-right: 0;
+            margin-left: 0;
+        }
+
+            .row-no-gutters [class*="col-"] {
+                padding-right: 0;
+                padding-left: 0;
+            }
+
+        body {
+            /*width: 230mm;*/
+            width: 100%;
+            height: 100%;
+            margin: 0 auto;
+            padding: 0;
+            font-size: 12pt;
+            /*background: rgb(204, 204, 204);*/
+        }
+
+        * {
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+        }
+
+
+        @@font-face {
+            font-family: 'Lato-Light';
+            src: url('../../Content/assets/Lato-Light.ttf') format('truetype');
+        }
+
+        @@font-face {
+            font-family: 'Lato-Medium';
+            src: url('../../Content/assets/Lato-Medium.ttf') format('truetype');
+        }
+
+        @@font-face {
+            font-family: 'Lato-Regular';
+            src: url('../../Content/assets/Lato-Regular.ttf') format('truetype');
+        }
+
+        @@font-face {
+            font-family: 'Lato-Bold';
+            src: url('../../Content/assets/Lato-Bold.ttf') format('truetype');
+        }
+
+        @@font-face {
+            font-family: 'Lato-Semibold';
+            src: url('../../Content/assets/Lato-Semibold.ttf') format('truetype');
+        }
+
+
+        .main-page {
+            /*width: 220mm;*/
+            /* min-height: 297mm;*/
+            /*margin: 10mm auto;*/
+            background: white;
+            /*box-shadow: 0 0 0.5cm rgba(0, 0, 0, 0.5);*/
+            /*padding: 0cm 1cm 1cm 1cm;*/
+        }
+
+        .sub-page {
+            padding: 1cm;
+            height: 35mm;
+        }
+
+        .page-margin {
+            padding: 1cm 1cm 0cm 1cm;
+        }
+
+        .text-head {
+            color: black;
+            font-size: 35px;
+            font-family: lato_medium, Arial;
+            font-style: normal;
+            font-weight: 400;
+        }
+
+        .text-highlight {
+            letter-spacing: 0.00px;
+            color: black;
+            font-size: 15.00px;
+            font-weight: 700;
+            font-style: normal;
+            font-family: lato_medium, Arial;
+        }
+
+        .text-normal-hyperlink {
+            line-height: 35.00px;
+            letter-spacing: 0.00px;
+            color: rgba(39, 87, 149, 1);
+            -webkit-text-stroke: unset;
+            font-size: 15.00px;
+            font-weight: 500;
+            font-style: normal;
+            font-family: lato_medium, Arial;
+        }
+
+        .text-normal,
+        p,
+        li {
+            line-height: 22.00px;
+            letter-spacing: 0.00px;
+            color: black;
+            -webkit-text-stroke: unset;
+            font-size: 14.00px;
+            font-weight: 500;
+            font-style: normal;
+            font-family: lato_medium, Arial;
+            text-align: justify;
+        }
+
+        ol {
+            padding-left: 1rem !important;
+        }
+
+        ul {
+            padding-left: 0.5rem !important;
+            list-style-type: "*";
+        }
+
+        p {
+            margin: 0px !important;
+            padding: 0px !important;
+        }
+
+        .text-title {
+            color: black;
+            font-size: 25px;
+            font-family: lato_light, Arial;
+            font-style: normal;
+            font-weight: 100;
+        }
+
+        .text-normal-light {
+            color: black;
+            font-size: 16px;
+            font-family: lato_light, Arial;
+            font-style: normal;
+            font-weight: 300;
+        }
+
+        .pb-3 {
+            padding-bottom: 1rem !important;
+        }
+
+        .text-normal-link {
+            color: rgba(39, 87, 149, 1);
+            font-size: 16px;
+            font-family: lato_medium, Arial;
+            font-style: normal;
+            font-weight: 100;
+        }
+
+        .notes-highlight {
+            background-color: rgba(39, 87, 149, 0.1);
+            padding: 1.5rem 4rem;
+            margin-left: 10.5rem;
+        }
+
+        .notes-highlight1 {
+            background-color: rgba(39, 87, 149, 0.1);
+            padding: 1.5rem 4rem;
+        }
+
+        .wd1 {
+            flex: 0 0 auto;
+            width: 16.6666666667%;
+        }
+
+        .wd1 {
+            flex: 0 0 auto;
+            width: 16.6666666667%;
+        }
+
+        .wd2 {
+            flex: 0 0 auto;
+            width: 50%;
+        }
+
+        .wd3 {
+            flex: 0 0 auto;
+            width: 83.3333333333%;
+        }
+
+        .wd4 {
+            flex: 0 0 auto;
+            width: 41.6666666667%;
+        }
+
+        .wd5 {
+            flex: 0 0 auto;
+            width: 58.3333333333%;
+        }
+
+        .wd6 {
+            flex: 0 0 auto;
+            width: 8.3333333333%;
+        }
+
+        .wd7 {
+            flex: 0 0 auto;
+            width: 33.3333333333%;
+        }
+
+        .wd8 {
+            flex: 0 0 auto;
+            width: 50%;
+        }
+
+        .wd9 {
+            flex: 0 0 auto;
+            width: 50%;
+        }
+
+        hr {
+            margin: 0.2rem 0rem;
+        }
+
+        .pl-3 {
+            padding-left: 1.5rem;
+        }
+
+
+        @@page {
+            size: A4;
+            margin: 0;
+        }
+
+        @@media print {
+
+            html,
+            body {
+                width: 220mm;
+                height: 297mm;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .main-page {
+                margin: 0;
+                border: initial;
+                border-radius: initial;
+                width: initial;
+                min-height: initial;
+                box-shadow: initial;
+                background: initial;
+                page-break-after: always;
+                padding: initial
+            }
+        }
+
+        .contact td {
+            min-width: 150px;
+        }
+
+        .print-table {
+            width: 100%;
+        }
+
+            .print-table td {
+                line-height: 2.5;
+            }
+
+            .print-table th {
+                line-height: 2.5;
+            }
+    </style>
+
+    <title>ESDAL</title>
+</head>
+
+<body style="overflow-y: auto;">
+    <!-- main-content -->
+    <div class="main-page">
+        <div>
+            <div style="text-align: end;padding-top: 1cm;padding-right: 2cm;">
+                <img class="img-fluid" src="http://10.10.1.11:9010/Content/assets/images/logo.png" width="120">
+            </div>
+        </div>
+        <div class="text-normal-light pb-3" style="padding-left: 1cm;">
+            FACSIMILE MESSAGE
+        </div>
+        <div class="notes-highlight1">
+            <span class="text-head">Provisional amendment to agreed route</span><br>
+            <p class="text-normal-light">Classification: <span class="text-normal-link">special order</span></p>
+        </div>
+        <div>
+            <br />
+        </div>
+
+        <div class="row pb-1">
+                <div class="notify">
+                    Items that have been removed are shown with a line through them e.g. <strike>This line has been removed </strike>
+                    Items that have been added are shown in <b>bold</b> and <b>
+                        <u>underlined</u>
+                    </b> e.g. <b>
+                        <u>This line has been added</u>
+                    </b>
+                </div>
+            </div>
+        <div class="page-margin">
+            <div class="textContents">
+                <div class="row">
+                    <div>
+                        <table class="contact">
+
+                            <tr>
+                                <td align="left" valign="top">
+                                    <b>Date sent</b>
+                                </td>
+                                <td align="left" valign="top" style="padding-right:60Px">
+                                    @{
+                                        var SentDateTime = "";
+                                        if (Convert.ToString(Model.SentDateTime).Contains("##**##"))
+                                        {
+                                            SentDateTime = Model.SentDateTime.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                            SentDateTime = Convert.ToString(Convert.ToDateTime(SentDateTime));     /*ToString("dd MMM yyyy HH:mm:ss");*/
+
+                                        }
+                                        else
+                                        {
+                                            SentDateTime = Convert.ToString(Convert.ToDateTime(Model.SentDateTime));
+                                        }
+                                        <span>@SentDateTime</span>
+                                    }
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <br />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="left" valign="top">
+                                    <b>All Contact</b>
+                                </td>
+                                <td align="left" valign="top">
+                                    <div class="wd2">
+                                        <p>
+
+                                            @Model.HAContact.Contact<br />
+                                            @foreach (var item in Model.HAContact.Address.Line)
+                                            {
+                                                if (!string.IsNullOrWhiteSpace(item))
+                                                {
+                                                    @item<br />
+                                                }
+                                            }
+                                            @Model.HAContact.Address.PostCode <br />
+
+                                            @if (!string.IsNullOrWhiteSpace(Model.HAContact.Address.Country))
+                                            {
+                                                var Country = "";
+                                                if (Model.HAContact.Address.Country.Contains("##**##"))
+                                                {
+                                                    Country = Model.HAContact.Address.Country.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                }
+                                                else
+                                                {
+                                                    Country = Model.HAContact.Address.Country;
+                                                }
+                                                <span>@Country.ToUpper()</span><br />
+                                            }
+
+                                            @if (!string.IsNullOrWhiteSpace(Model.HAContact.TelephoneNumber))
+                                            {
+                                            <p>Direct tel @Model.HAContact.TelephoneNumber</p>
+                                        }
+                                            @if (Model.HAContact.FaxNumber != null && Model.HAContact.FaxNumber != "")
+                                            {
+                                                <p>Fax number @Convert.ToString(Model.HAContact.FaxNumber)</p>
+                                            }
+
+                                            @if (!string.IsNullOrWhiteSpace(Model.HAContact.EmailAddress))
+                                            {
+                                                <p> Email address @Model.HAContact.EmailAddress </p>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <br />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td align="left" valign="top">
+                                        <b>To</b>
+                                    </td>
+                                    <td align="left" valign="top">
+                                        <div class="wd2">
+                                            <table>
+                                                @{
+                                                    if (Model.Recipients != null)
+                                                    {
+                                                        foreach (var item in Model.Recipients)
+                                                        {
+                                                            <tr>
+                                                                <td>
+                                                                    @if (item.Reason.Equals("newly affected") || item.Reason.Equals("affected by change of route"))
+                                                                    {
+                                                                        if (item.ContactName.Contains("##**##"))
+                                                                        {
+                                                                            string contactNameBefore = item.ContactName.Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                                            string organisationNameBefore = item.OrganisationName.Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                                            <strike> <span> @contactNameBefore  ,   @organisationNameBefore </span> </strike>
+
+                                                                            string contactNameAfter = item.ContactName.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                                            string organisationNameAfter = string.Empty;
+                                                                            if (item.OrganisationName.Contains("##**##"))
+                                                                            {
+                                                                                organisationNameAfter = item.OrganisationName.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                                            }
+                                                                            <u><b> <span> @contactNameAfter  ,   @organisationNameAfter </span></b> </u>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            if (item.Reason.Equals("newly affected"))
+                                                                            {
+                                                                                <u><b> <span> @item.ContactName  ,   @item.OrganisationName </span></b> </u>
+                                                                            }
+                                                                            else if (@item.Reason.Equals("affected by change of route"))
+                                                                            {
+                                                                                //if(item.ContactId==)
+                                                                                <span> @item.ContactName  ,   @item.OrganisationName </span>
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    else if (item.Reason.Contains("##**##"))
+                                                                    {
+                                                                        string reasonAfter = item.Reason.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                                        if (reasonAfter == "no longer affected")
+                                                                        {
+                                                                            if (item.ContactName.Contains("##**##"))
+                                                                            {
+                                                                                string contactNameBefore = item.ContactName.Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                                                string organisationNameBefore = item.OrganisationName.Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                                                <strike> <span> @contactNameBefore  ,   @organisationNameBefore </span> </strike>
+
+                                                                                string contactNameAfter = item.ContactName.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                                                string organisationNameAfter = string.Empty;
+                                                                                if (item.OrganisationName.Contains("##**##"))
+                                                                                {
+                                                                                    organisationNameAfter = item.OrganisationName.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                                                }
+                                                                                <u><b> <span> @contactNameAfter  ,   @organisationNameAfter </span></b> </u>
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                <strike> @item.ContactName  ,   @item.OrganisationName </strike>
+                                                                            }
+                                                                        }
+                                                                        else if (reasonAfter == "affected by change of route" || reasonAfter == "still affected")
+                                                                        {
+                                                                            if (item.ContactName.Contains("##**##"))
+                                                                            {
+                                                                                string contactNameBefore = item.ContactName.Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                                                string organisationNameBefore = item.OrganisationName.Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                                                <strike> <span> @contactNameBefore  ,   @organisationNameBefore </span> </strike>
+
+                                                                                string contactNameAfter = item.ContactName.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                                                string organisationNameAfter = string.Empty;
+                                                                                if (item.OrganisationName.Contains("##**##"))
+                                                                                {
+                                                                                    organisationNameAfter = item.OrganisationName.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                                                }
+                                                                                <u><b> <span> @contactNameAfter  ,   @organisationNameAfter </span></b> </u>
+                                                                            }
+                                                                            //else - contactid
+                                                                            else
+                                                                            {
+                                                                                <span> @item.ContactName  ,   @item.OrganisationName </span>
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                    else if (item.Reason.Equals("no longer affected"))
+                                                                    {
+                                                                        <strike> @item.ContactName  ,   @item.OrganisationName </strike>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        //test="@ContactId = $Contact_ID"
+                                                                        <span> @item.ContactName  ,   @item.OrganisationName </span>
+                                                                    }
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                }
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                            </table>
+                        </div>
+
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+        <div class="main-page">
+            <div class="sub-page">
+                <div class="row pb-1">
+                    <div class="notes-highlight">
+                        <p class="pb-3">Amendment to agree route Distribution comments.</p>
+                        <p class="pb-3">
+                            @if (Model.DistributionComments != null)
+                            {
+                                @Model.DistributionComments
+                            }
+                        </p>
+                        <p>Thank you</p>
+                    </div>
+                    <div>
+                        <br />
+                    </div>
+                    <div class="text-title">
+                        Route summary for
+                        @{
+
+                            if (!string.IsNullOrEmpty(Model.ESDALReferenceNumber.Mnemonic) && Model.ESDALReferenceNumber.Mnemonic == "SORT"
+                                && Model.ESDALReferenceNumber.MovementProjectNumber != 0 && !string.IsNullOrEmpty(Model.ESDALReferenceNumber.MovementVersion) &&
+                                Model.ESDALReferenceNumber.MovementVersion != "0")
+                            {
+                                ESDALReferenceString = Model.ESDALReferenceNumber.Mnemonic;
+                                ESDALReferenceString += Convert.ToString("/") + Convert.ToString(Model.ESDALReferenceNumber.MovementProjectNumber);
+                                if (Model.ESDALReferenceNumber.MovementVersion.Contains("##**##"))
+                                {
+                                    string MovementVersionAfter = Model.ESDALReferenceNumber.MovementVersion.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                    ESDALReferenceString += Convert.ToString("/S") + MovementVersionAfter;
+                                }
+                                else
+                                {
+                                    ESDALReferenceString += Convert.ToString("/S") + Model.ESDALReferenceNumber.MovementVersion;
+                                }
+                            }
+                            else
+                            {
+                                ESDALReferenceString = Model.ESDALReferenceNumber.Mnemonic;
+                                ESDALReferenceString += Convert.ToString("/S") + Convert.ToString(Model.ESDALReferenceNumber.MovementProjectNumber);
+                                if (Model.ESDALReferenceNumber.MovementVersion.Contains("##**##"))
+                                {
+                                    string MovementVersionAfter = Model.ESDALReferenceNumber.MovementVersion.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                    ESDALReferenceString += Convert.ToString("/S") + MovementVersionAfter;
+                                }
+                                else
+                                {
+                                    ESDALReferenceString += Convert.ToString("/S") + Model.ESDALReferenceNumber.MovementVersion;
+                                }
+                            }
+                            @ESDALReferenceString
+                        }
+                    </div>
+                    <div>
+                        <br />
+                    </div>
+                    <div class="pt-3">
+                        <div class="pt-5">
+                            <div class="row" style="flex-wrap: nowrap; align-items: center; padding-left :10px">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <div style="width: 2rem">
+                                                <img src="../../Content/assets/images/route-start-icon.svg" width="15" alt="vehicle-2">
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div>
+                                                <div style="width: auto" class="pl-0">
+                                                    <p>
+                                                        @{
+                                                            if (Model.JourneyFromToSummary.From != null)
+                                                            {
+                                                                if (!string.IsNullOrEmpty(Model.ESDALReferenceNumber.Mnemonic) && Model.ESDALReferenceNumber.MovementProjectNumber != 0 && !string.IsNullOrEmpty(Model.ESDALReferenceNumber.MovementVersion) &&
+                                                            Model.ESDALReferenceNumber.MovementVersion != "0")
+                                                                {
+                                                                    if (Model.JourneyFromTo.From.Contains("##**##"))
+                                                                    {
+                                                                        string FromBefore = Model.JourneyFromTo.From.Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                                        string FromAfter = Model.JourneyFromTo.From.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                                        <strike> @FromBefore</strike>       <b><u>@FromAfter</u></b>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <span>@Model.JourneyFromTo.From</span>
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    if (Model.JourneyFromTo.From.Contains("##**##"))
+                                                                    {
+                                                                        string FromBefore = Model.JourneyFromTo.From.Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                                        string FromAfter = Model.JourneyFromTo.From.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                                        <strike> @FromBefore</strike>        <b><u>@FromAfter</u></b>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <span>@Model.JourneyFromTo.From</span>
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div>
+                                <div style="width: 2rem;padding-left: 4px; margin-top: -11px;">
+                                    <p style="display: flex;flex-direction: column; padding-top: -4px;">
+                                        <span style="height: 6px;">.</span>
+                                        <span style="height: 6px;">.</span>
+                                        <span style="height: 6px;">.</span>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row mt-2" style="flex-wrap: nowrap;align-items: center; padding-left :10px" ">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <img src="../../Content/assets/images/destination-icon.svg" width="15" alt="vehicle-2">
+                                        </td>
+                                        <td>
+                                            <div style="width: auto" class="pl-0">
+
+                                                @{
+                                                    if (Model.JourneyFromToSummary.To != null)
+                                                    {
+                                                        if (!string.IsNullOrEmpty(Model.ESDALReferenceNumber.Mnemonic) && Model.ESDALReferenceNumber.MovementProjectNumber != 0 && !string.IsNullOrEmpty(Model.ESDALReferenceNumber.MovementVersion) &&
+Model.ESDALReferenceNumber.MovementVersion != "0")
+                                                        {
+                                                            if (Model.JourneyFromToSummary.To.Contains("##**##"))
+                                                            {
+                                                                string ToBefore = Model.JourneyFromToSummary.To.Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                                string ToAfter = Model.JourneyFromToSummary.To.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                                <strike>@ToBefore </strike><b><u> @ToAfter</u></b>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span>@Model.JourneyFromToSummary.To</span>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            if (Model.JourneyFromToSummary.To.Contains("##**##"))
+                                                            {
+                                                                string ToBefore = Model.JourneyFromToSummary.To.Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                                string ToAfter = Model.JourneyFromToSummary.To.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                                <strike> @ToBefore </strike>
+                                                                <b><u> @ToAfter</u></b>
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <span>@Model.JourneyFromToSummary.To</span>
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <br />
+                    </div>
+
+                    <div>
+                        <div>
+                            <div class="text-title pb-2">Provisional route for movement of </div>
+                            <p>@Model.LoadDetails.Description</p>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div>
+                    <br />
+                </div>
+
+                <div class="row pb-1">
+                    <table>
+
+                        <tr>
+                            <td>
+                                <div>
+                                    <div class="text-highlight">
+                                        ESDAL reference
+                                    </div>
+                                </div>
+                            </td>
+                            <td>  <spacer type="horizontal" width="100" height="100">  </spacer> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>
+                                <div>
+                                    <p>@ESDALReferenceString </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <br />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div>
+                                    <div class="text-highlight">
+                                        Haulier reference
+                                    </div>
+                                </div>
+                            </td>
+                            <td>  <spacer type="horizontal" width="100" height="100">  </spacer> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>
+                                <div>
+                                    <p>
+                                        @{
+                                            if (Model.HauliersReference != null)
+                                            {
+                                                if (Model.HauliersReference.Contains("##**##"))
+                                                {
+                                                    string HauliersReference = Model.HauliersReference.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                    <span> @HauliersReference </span>
+                                                }
+                                                else
+                                                {
+                                                    <span>@Model.HauliersReference</span>
+                                                }
+                                            }
+                                        }
+
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <br />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div>
+                                    <div class="text-highlight">
+                                        Approximate date of first movement
+                                    </div>
+                                </div>
+                            </td>
+                            <td>  <spacer type="horizontal" width="100" height="100">  </spacer> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>
+                                <div>
+                                    <p>@Model.JourneyTiming.FirstMoveDate  @Model.JourneyTiming.LastMoveDate </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <br />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div>
+                                    <div class="text-highlight">
+                                        From
+                                    </div>
+                                </div>
+                            </td>
+                            <td>  <spacer type="horizontal" width="100" height="100">  </spacer> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>
+                                <div>
+                                    <p>
+                                        @Model.JourneyFromTo.From
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <br />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div>
+                                    <div class="text-highlight">
+                                        To
+                                    </div>
+                                </div>
+                            </td>
+                            <td>  <spacer type="horizontal" width="100" height="100">  </spacer> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>
+                                <div>
+                                    <p>
+                                        @Model.JourneyFromTo.To
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <br />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div>
+                                    <div class="text-highlight">
+                                        Haulier
+                                    </div>
+                                </div>
+                            </td>
+                            <td>  <spacer type="horizontal" width="100" height="100">  </spacer> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                            <td>
+                                <div>
+                                    <p>
+                                        @Model.HaulierDetails.HaulierName
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <br />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left" valign="top" class="text-highlight">
+
+                                Haulier contact details
+
+                            </td>
+                            <td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+                            <td>
+                                <div>
+                                    <p>
+                                        @Model.HaulierDetails.HaulierContact
+                                    </p>
+                                    <p>
+                                        @if (Model.HaulierDetails.HaulierAddress.Line != null)
+                                        {
+                                            <span>@string.Join(",", Model.HaulierDetails.HaulierAddress.Line)</span>
+                                            <br />
+                                        }
+                                        @if (Model.HaulierDetails.HaulierAddress.PostCode != null)
+                                        {
+                                            <span>@Model.HaulierDetails.HaulierAddress.PostCode</span>
+                                            <br />
+                                        }
+                                        @if (Model.HaulierDetails.HaulierAddress.Country != null)
+                                        {
+                                            <span>@Model.HaulierDetails.HaulierAddress.Country.ToUpper()</span>
+                                        }
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <br />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left" valign="top" class="text-highlight">
+
+                                Telephone number
+
+                            </td>
+                            <td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+                            <td>
+                                <span>
+                                    @if (Model.HaulierDetails.TelephoneNumber != null)
+                                    {
+                                        @Model.HaulierDetails.TelephoneNumber
+                                    }
+
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <br />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left" valign="top" class="text-highlight">
+                                Email address
+                            </td>
+                            <td>  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+                            <td>
+                                <div>
+                                    <p>
+
+                                        @{
+                                            if (Model.HaulierDetails.EmailAddress.Contains("##**##"))
+                                            {
+                                                string EmailBefore = Model.HaulierDetails.EmailAddress.Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                string EmailAfter = Model.HaulierDetails.EmailAddress.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                <strike> @EmailBefore</strike> <b><u>@EmailAfter</u></b>
+                                            }
+                                            else
+                                            {
+                                                <span>@Model.HaulierDetails.EmailAddress</span>
+                                            }
+
+                                        }
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+                <div>
+                    <br />
+                </div>
+
+                <div class="pt-4">
+                    <ol>
+                        <li>
+                            <p>
+                                <u>All highway, bridge and agent authorities should assess the adequacy of the route for the vehicle or the vehicle combination at the scheduled date of movement and confirm their acceptance / rejection via the Esdal on-line collaboration facility or by email.</u>
+
+
+                            </p>
+                        </li>
+                        <li>
+                            <P>
+                                The assessment should take account of the capacity of the bridge structures, the strength of the
+                                carriageway, and headroom and ground clearances. The assessment should also take into account the
+                                possibility of damage to statutory undertakers' apparatus, which may be present under the road surface
+                                with shallow cover..
+                            </P>
+                        </li>
+
+                        <li>
+                            <P>
+                                Would Network Rail also please provide the following information regarding level crossings and overhead wires.
+                            </P>
+                            <ol type="a">
+
+                                <li>
+                                    confirmation of the location of automatic half-barrier crossings indicated on the route and any
+                                    additional locations.
+                                </li>
+                                <li>
+                                    the location of any other type of public or private road level crossings where special safety
+                                    precautions and arrangements would be required.
+                                </li>
+                                <li>
+                                    locations of those level crossings where the track level could affect the road profile.
+                                </li>
+                                <li>
+                                    the safe clearance under any overhead Network Rail electrified wires crossing the route and details
+                                    of any special arrangements that should be made.
+                                </li>
+                                <li>
+                                    where circumstances require, the designation and telephone number of the local Railway Officer
+                                    whom the haulier should contact before the passage of the vehicle over the crossing.
+                                </li>
+                            </ol>
+                        </li>
+                        <li>
+
+                            In those cases where the manoeuvrability is in doubt, arrangements will be made for a joint route survey by the haulier with the authority concerned.
+                        </li>
+                        <li>
+                            Copies of all relevant observations from the authorities consulted for the route (and of any assessments involved) and any other comments you may have should be forwarded without delay.
+                        </li>
+                        <li>
+                            (In cases where the date of movement is well in advance, your early observations are required to enable the manufacturer to know whether or not a route is available before the actual manufacture commences).
+                        </li>
+                    </ol>
+
+
+                </div>
+
+
+                <div>
+                    <br />
+                </div>
+
+
+                <div class="text-title pt-1 pb-3">
+                    Route overview
+                </div>
+                <div>
+                    <p>
+                        Number of movements:
+                        @{
+                            if (Model.LoadDetails.TotalMoves.ToString().Contains("##**##"))
+                            {
+                                string TotalMovesBefore = Model.LoadDetails.TotalMoves.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                string TotalMovesAfter = Model.LoadDetails.TotalMoves.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                <strike> @TotalMovesBefore</strike> <b><u>@TotalMovesAfter</u></b>
+                            }
+                            else
+                            {
+                                <span>@Model.LoadDetails.TotalMoves</span>
+                            }
+
+                        }  <br>
+                        Number of pieces moved at one time:
+                        @{
+                            if (Model.LoadDetails.MaxPiecesPerMove.ToString().Contains("##**##"))
+                            {
+                                string MaxPiecesPerMoveBefore = Model.LoadDetails.MaxPiecesPerMove.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                string MaxPiecesPerMoveAfter = Model.LoadDetails.MaxPiecesPerMove.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                <strike> @MaxPiecesPerMoveBefore</strike> <b><u>@MaxPiecesPerMoveAfter</u></b>
+                            }
+                            else
+                            {
+                                <span>@Model.LoadDetails.MaxPiecesPerMove</span>
+                            }
+
+
+
+                        }
+                    </p>
+                </div>
+                <div>
+                    <br />
+                </div>
+
+                @{
+                    if (Model.RouteParts != null && Model.RouteParts.Any())
+                    {
+                        foreach (var item in Model.RouteParts)
+                        {
+                            var routePart = item.RoutePart;
+                            <div class="text-title pt-4 pb-3">
+                                LEG @routePart.LegNumber
+                            </div>
+                            <div>
+                                <br />
+                            </div>
+                            <div class="">
+                                @{
+                                    #region ----------------------Leg Route Distance
+                                    <div>
+                                        <table cellpadding="10" cellspacing="50" style="width:100%" class="print-table">
+                                            <tr>
+                                                <td>
+                                                    <div class="wd4 text-highlight">
+                                                        Leg
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="wd4 text-highlight">
+                                                        Route
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="wd4 text-highlight">
+                                                        Distance
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            @{
+                                                <tr>
+                                                    @*Model.RouteParts[0].RoutePart is not enumator..so no need loop*@
+                                                    <td class="wd4 text-normal">
+                                                        @routePart.LegNumber
+                                                    </td>
+                                                    <td class="wd4 text-normal">
+                                                        @routePart.Name
+                                                    </td>
+                                                    <td class="wd4 text-normal">
+                                                        @{
+                                                            var DistanceString = string.Empty;
+
+                                                            var ImperialDistance = routePart.RoadPart.Distance.Imperial.Distance;
+                                                            var MetricDistance = routePart.RoadPart.Distance.Metric.Distance;
+                                                            if (ImperialDistance.ToString() != "" && MetricDistance.ToString() != "")
+                                                            {
+                                                                if (ImperialDistance.ToString().Contains("##**##"))
+                                                                {
+                                                                    if (UnitType == 0 || UnitType == 692001)
+                                                                    {
+                                                                        var var12 = MetricDistance.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                                        var var13 = Convert.ToDecimal(var12) / 1000;
+                                                                        <strike> <span>@Convert.ToString(var13) km</span></strike>
+                                                                    }
+                                                                    else if (UnitType == 692002)
+                                                                    {
+                                                                        var var12 = ImperialDistance.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                                        var var13 = Math.Round(Convert.ToDecimal(var12) / 1760);
+                                                                        <strike> <span>@Convert.ToString(var13) miles</span></strike>
+                                                                    }
+
+                                                                    <!--After-->
+                                                                    if (UnitType == 0 || UnitType == 692001)
+                                                                    {
+                                                                        var var11 = MetricDistance.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                                        var var12 = var11.ToString().Split(new string[] { "OR" }, StringSplitOptions.None)[1];
+                                                                        var var13 = Convert.ToDecimal(var12) / 1000;
+                                                                        <b><u>@Convert.ToString(var13) km</u></b>
+                                                                    }
+                                                                    else if (UnitType == 692002)
+                                                                    {
+                                                                        var var12 = ImperialDistance.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                                        var var13 = Math.Round(Convert.ToDecimal(var12) / 1760);
+                                                                        <b><u>@Convert.ToString(var13) miles</u></b>
+                                                                    }
+                                                                }
+                                                            }
+                                                            <!--Not contains-->
+
+                                                            if (UnitType == 0 || UnitType == 692001)
+                                                            {
+                                                                if (!MetricDistance.ToString().Contains("##**##"))
+                                                                {
+                                                                    var var12 = MetricDistance;
+                                                                    var var13 = Math.Round(Convert.ToDecimal(var12) / 1000);
+                                                                    <span>@Convert.ToString(var13) km</span>
+                                                                }
+                                                            }
+                                                            else if (UnitType == 692002)
+                                                            {
+                                                                if (!ImperialDistance.ToString().Contains("##**##"))
+                                                                {
+                                                                    var var12 = ImperialDistance;
+                                                                    var var13 = Math.Round(Convert.ToDecimal(var12) / 1760);
+                                                                    <span>@Convert.ToString(var13) miles</span>
+                                                                }
+                                                            }
+                                                        }
+
+                                                    </td>
+                                                    <td>
+                                                    </td>
+                                                </tr>
+                                            }
+
+                                        </table>
+                                    </div>
+                                    <div>
+                                        <br />
+                                    </div>
+                                    #endregion ----------------------Leg Route Distance
+                                }
+                            </div>
+
+                            <div class="pt-3">
+                                <div class="pt-5">
+                                    <div class="row" style="flex-wrap: nowrap; align-items: center; padding-left :10px">
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    <div style="width: 2rem">
+                                                        <img src="../../Content/assets/images/route-start-icon.svg" width="15" alt="vehicle-2">
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <div style="width: auto" class="pl-0">
+                                                            <p>
+                                                                @if (routePart.RoadPart.StartPointListPosition.StartPoint.Description.Contains("##**##"))
+                                                                {
+                                                                    string StartPointBefore = routePart.RoadPart.StartPointListPosition.StartPoint.Description.Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                                    string StartPointAfter = routePart.RoadPart.StartPointListPosition.StartPoint.Description.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                                    <strike> @StartPointBefore</strike> <b><u>@StartPointAfter</u></b>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <span>@routePart.RoadPart.StartPointListPosition.StartPoint.Description</span>
+                                                                }
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div>
+                                        <div style="width: 2rem;padding-left: 4px; margin-top: -11px;">
+                                            <p style="display: flex;flex-direction: column; padding-top: -4px;">
+                                                <span style="height: 6px;">.</span>
+                                                <span style="height: 6px;">.</span>
+                                                <span style="height: 6px;">.</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2" style="flex-wrap: nowrap;align-items: center; padding-left :10px">
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    <img src="../../Content/assets/images/destination-icon.svg" width="15" alt="vehicle-2">
+                                                </td>
+                                                <td>
+                                                    <div style="width: auto" class="pl-0">
+                                                        @if (routePart.RoadPart.EndPointListPosition.EndPoint.Description.Contains("##**##"))
+                                                        {
+                                                            string EndPointBefore = routePart.RoadPart.EndPointListPosition.EndPoint.Description.Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                            string EndPointAfter = routePart.RoadPart.EndPointListPosition.EndPoint.Description.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                            <strike> @EndPointBefore</strike> <b><u>@EndPointAfter</u></b>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>@routePart.RoadPart.EndPointListPosition.EndPoint.Description</span>
+                                                        }
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                                                            #region ----------------------Road Distance
+                            <div>
+                                <br />
+                            </div>
+
+                            <table border="0" cellspacing="5" cellpadding="5" width="100%" class="print-table">
+                                <tr>
+                                    <th>
+                                        <b class="wd4 pl-3 text-highlight">Road</b>
+                                    </th>
+                                    <th>
+                                        <b class="wd4 pl-3 text-highlight">
+                                            Distance
+                                        </b>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" style="border-top: 1px solid #d7d7d7">
+                                    </td>
+                                </tr>
+                                <!--AlternativeListPosition is pending-->
+                                @foreach (var itemRoad in routePart.RoadPart.Roads)
+                                {
+                                    foreach (var itemPath in itemRoad.RouteSubPart.PathListPosition.Path)
+                                    {
+                                       
+                                        // Alternative number is  not impelmented.
+
+                                        var TravelDistancekey = "";
+                                        decimal TravleDistanceValue = 0;
+                                        if (UnitType == 0 || UnitType == 692001)
+                                        {
+                                            <tr>
+                                                @*OldRoadTraversal/ns2:RoadTraversal/ns2:RoadIdentity scenories is not in xml*@
+                                                <td class="wd4 pl-3 text-normal">
+                                                    @if (itemPath.RoadTraversal.RoadIdentity.Name.Contains("##**##"))
+                                                    {
+                                                        string RoadIdentityBefore = itemPath.RoadTraversal.RoadIdentity.Name.Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                        string RoadIdentityAfter = itemPath.RoadTraversal.RoadIdentity.Name.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                        <strike> @RoadIdentityBefore</strike> <b><u>@RoadIdentityAfter</u></b>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>@itemPath.RoadTraversal.RoadIdentity.Name</span>
+                                                    }
+                                                </td>
+                                                <td class="wd4 pl-3 text-normal">
+                                                    @{
+                                                        if (UnitType == 0 || UnitType == 692001)
+                                                        {
+                                                            if (Convert.ToString(itemPath.RoadTraversal.Distance.Metric).Contains("##**##"))
+                                                            {
+                                                                if (Convert.ToString(itemPath.RoadTraversal.Distance.Metric).Contains("##**##"))
+                                                                {
+                                                                    var metricBefore = Convert.ToString(itemPath.RoadTraversal.Distance.Metric).ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                                    var metricAfter = Convert.ToString(itemPath.RoadTraversal.Distance.Metric).ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                                    <strike>  @metricBefore m  </strike>
+                                                                    <b><u>@metricAfter m</u></b>
+                                                                }
+
+
+                                                            } // reviewed by siva ..To do chnag elike in reproposed by rahim
+                                                            else if (Convert.ToInt32(itemPath.RoadTraversal.Distance.Metric) != 0 && Convert.ToInt32(itemPath.RoadTraversal.Distance.Metric) < 1000)
+                                                            {
+                                                                TravleDistanceValue = Math.Round(Convert.ToDecimal(itemPath.RoadTraversal.Distance.Metric));
+                                                                TravelDistancekey = " m";
+                                                                @TravleDistanceValue @TravelDistancekey
+                                                            }
+                                                            else
+                                                            {
+                                                                TravleDistanceValue = Convert.ToDecimal(Convert.ToDecimal(itemPath.RoadTraversal.Distance.Metric) / 1000);
+                                                                TravelDistancekey = " km";
+                                                            }
+
+                                                            <!--TODO : OldRoadTraversal <1000   ns2:OldRoadTraversal/ns2:RoadTraversal/ns2:Distance/ns2:Metric &lt; 1000-->
+                                                            <!--TODO : ns2:OldRoadTraversal/ns2:RoadTraversal/ns2:Distance/ns2:Metric != ''-->
+                                                            <!--TODO : test="ns2:OldRoadTraversal"-->
+                                                        }
+                                                    }
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                                </td>
+                                            </tr>
+                                                        }
+                                                        else
+                                                        {
+                                            <tr>
+                                                <td class="wd4 pl-3 text-normal">
+                                                    @if (itemPath.RoadTraversal.RoadIdentity.Name.Contains("##**##"))
+                                                    {
+                                                        string RoadIdentityBefore = itemPath.RoadTraversal.RoadIdentity.Name.Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                        string RoadIdentityAfter = itemPath.RoadTraversal.RoadIdentity.Name.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                        <strike> @RoadIdentityBefore</strike> <b><u>@RoadIdentityAfter</u></b>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>@itemPath.RoadTraversal.RoadIdentity.Name</span>
+                                                    }
+                                                </td>
+                                                <td class="wd4 pl-3 text-normal">
+
+
+                                                    @if (Convert.ToString(itemPath.RoadTraversal.Distance.Imperial).Contains("##**##")) 
+                                                    {
+                                                        if (Convert.ToString(itemPath.RoadTraversal.Distance.Imperial).Contains("##**##"))
+                                                        {
+                                                            var ImperialBefore = Convert.ToString(itemPath.RoadTraversal.Distance.Imperial).ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                            var ImperialAfter = Convert.ToString(itemPath.RoadTraversal.Distance.Imperial).ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                            <strike>  @ImperialBefore yards  </strike>
+                                                            <b><u>@ImperialAfter yards</u></b>
+                                                        }
+                                                        else if ((Convert.ToInt32(itemPath.RoadTraversal.Distance.Metric) != 0 && Convert.ToInt32(itemPath.RoadTraversal.Distance.Imperial) < 700))
+                                                        {
+                                                            TravleDistanceValue = Math.Round(Convert.ToDecimal(itemPath.RoadTraversal.Distance.Imperial));
+                                                            TravelDistancekey = " yards";
+                                                            @TravleDistanceValue @TravelDistancekey
+                                                        }
+                                                        <!--TODO : test="ns2:OldRoadTraversal/ns2:RoadTraversal/ns2:Distance/ns2:Imperial &lt; 700"-->
+                                                        <!--TODO : test="ns2:OldRoadTraversal/ns2:RoadTraversal/ns2:Distance/ns2:Imperial != ''"-->
+
+                                                    }
+                                                    else
+                                                    {
+
+
+                                                        //otherwise
+                                                        if (Convert.ToString(itemPath.RoadTraversal.Distance.Imperial).Contains("##**##"))
+                                                        {
+                                                            var ImperialBefore = Convert.ToString(itemPath.RoadTraversal.Distance.Imperial).ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                            var ImperialAfter = Convert.ToString(itemPath.RoadTraversal.Distance.Imperial).ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+
+                                                            TravleDistanceValue = Math.Round(Convert.ToDecimal(ImperialBefore) / 1760);
+
+                                                            <strike>  @TravleDistanceValue miles  </strike>
+
+                                                            TravleDistanceValue = Math.Round(Convert.ToDecimal(ImperialAfter) / 1760);
+                                                            <b><u>@TravleDistanceValue miles</u></b>
+                                                        }
+                                                        else
+                                                        {
+                                                            TravleDistanceValue = Math.Round(Convert.ToDecimal(itemPath.RoadTraversal.Distance.Imperial) / 1760);
+                                                            TravelDistancekey = " miles";
+                                                            @TravleDistanceValue @TravelDistancekey
+                                                        }
+                                                    }
+                                                </td>
+
+                                            </tr>
+
+                                            <tr>
+
+                                                <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                                </td>
+
+                                            </tr>
+                                                            }
+                                                        }
+                                        }
+                                </table>
+                            #endregion ----------------------Road Distance
+
+                            var firstVehicle = routePart.RoadPart.Vehicles.ConfigurationSummaryListPosition.ConfigurationSummary;
+                            if (firstVehicle.Contains("##**##"))
+                            {
+                                firstVehicle = firstVehicle.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                            }
+
+                            <!--TODO : <xsl:variable name="StatusVehicle">-->
+                            var StatusVehicle = false;
+
+                            var CountVehicles = 0;
+
+                            #region ----------------------Vehicle Details
+                            <div>
+                                <br />
+                            </div>
+
+                            <div class="text-title">
+                                Vehicle Details
+                            </div>
+                            <div>
+                                <br />
+                            </div>
+                            <div>
+                                <table border="0" cellspacing="5" cellpadding="5" class="print-table">
+                                    <tr>
+                                        <th>
+                                            <b class="wd4 pl-3 text-highlight"> Summary:</b>
+                                        </th>
+                                        <th>
+                                            <b class="wd4 pl-3 text-highlight">
+                                                @routePart.RoadPart.Vehicles.ConfigurationSummaryListPosition.ConfigurationSummary.ToString()
+
+                                            </b>
+                                        </th>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="3" style="border-top: 1px solid #d7d7d7">
+                                        </td>
+                                    </tr>
+                                    @{
+                                        string LengthType = string.Empty;
+
+                                        var OverallLengthListPosition = routePart.RoadPart.Vehicles.OverallLengthListPosition;
+                                        var Vehicles = routePart.RoadPart.Vehicles;
+                                        decimal RigidLengthListPositionString = Vehicles.RigidLengthListPosition.RigidLength;
+                                        decimal OverallWidthListPositionString = Vehicles.OverallWidthListPosition.OverallWidth;
+                                        decimal OverallHeightListPositionString = Vehicles.OverallHeightListPosition.OverallHeight.MaxHeight;
+
+                                        decimal GrossWeightListPositionString = Vehicles.GrossWeightListPosition.GrossWeight.Weight;
+                                        decimal MaxAxleWeightString = Vehicles.MaxAxleWeightListPosition.MaxAxleWeight.Weight;
+                                        decimal FrontOverhangListPositionstring = Convert.ToDecimal(Vehicles.FrontOverhangListPosition.FrontOverhang);
+                                    }
+                                    <!--TODO: Alternative vehicle:-->
+                                    <tr>
+                                        <td class="wd4 pl-3 text-normal">
+                                            Overall length:
+                                        </td>
+                                        <td class="wd4 pl-3 text-normal">
+                                            @{
+                                                var OverallLengthIncludingProjections = OverallLengthListPosition.OverallLength.IncludingProjections;
+                                                if (UnitType == 0 || UnitType == 692001)
+                                                {
+                                                    LengthType = " m(including projections),";
+                                                }
+                                                else if (UnitType == 692002)
+                                                {
+                                                    LengthType = " ft(including projections),";
+                                                }
+                                                if (OverallLengthIncludingProjections.ToString().Contains("##**##"))
+                                                {
+                                                    string OverallLengthIncludingProjectionsBefore = OverallLengthIncludingProjections.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                    string OverallLengthIncludingProjectionsAfter = OverallLengthIncludingProjections.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+
+                                                    <strike> @OverallLengthIncludingProjectionsBefore @LengthType</strike>
+                                                    <b><u>@OverallLengthIncludingProjectionsAfter @LengthType</u></b>
+                                                }
+                                                else
+                                                {
+                                                    <span>@OverallLengthIncludingProjections @LengthType</span>
+                                                }
+                                                <!--Excluding-->
+                                                var OverallLengthExcludingProjections = OverallLengthListPosition.OverallLength.ExcludingProjections;
+                                                if (UnitType == 0 || UnitType == 692001)
+                                                {
+                                                    LengthType = " m(excluding projections),";
+                                                }
+                                                else if (UnitType == 692002)
+                                                {
+                                                    LengthType = " ft(excluding projections),";
+                                                }
+                                                if (OverallLengthExcludingProjections.ToString().Contains("##**##"))
+                                                {
+                                                    string OverallLengthExcludingProjectionsBefore = OverallLengthExcludingProjections.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                    string OverallLengthExcludingProjectionsAfter = OverallLengthExcludingProjections.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+
+                                                    <strike> @OverallLengthExcludingProjectionsBefore @LengthType</strike>
+                                                    <b><u>@OverallLengthExcludingProjectionsAfter @LengthType</u></b>
+                                                }
+                                                else
+                                                {
+                                                    <span>@OverallLengthExcludingProjections @LengthType</span>
+                                                }
+                                            }
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+
+
+                                        <td class="wd4 pl-3 text-normal">
+                                            Rigid length:
+                                        </td>
+                                        <td class="wd4 pl-3 text-normal">
+                                            @{
+                                                LengthType = string.Empty;
+                                                if (UnitType == 0 || UnitType == 692001)
+                                                {
+
+                                                    LengthType = " m";
+
+                                                }
+                                                else if (UnitType == 692002)
+                                                {
+                                                    LengthType = " ft";
+                                                }
+                                                if (RigidLengthListPositionString != 0)
+                                                {
+
+                                                    @RigidLengthListPositionString @LengthType
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                        </td>
+                                    </tr>
+                                    <tr>
+
+
+                                        <td class="wd4 pl-3 text-normal">
+                                            Front overhang:
+                                        </td>
+                                        <td class="wd4 pl-3 text-normal">
+                                            @{
+                                                LengthType = string.Empty;
+                                                if (UnitType == 0 || UnitType == 692001)
+                                                {
+                                                    LengthType = " m";
+                                                }
+                                                else if (UnitType == 692002)
+                                                {
+                                                    LengthType = " ft";
+                                                }
+                                                if (FrontOverhangListPositionstring.ToString().Contains("##**##"))
+                                                {
+                                                    string FrontOverhangListPositionstringBefore = FrontOverhangListPositionstring.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                    string FrontOverhangListPositionstringAfter = FrontOverhangListPositionstring.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+
+                                                    <strike> @FrontOverhangListPositionstringBefore @LengthType</strike>
+                                                    <b><u>@FrontOverhangListPositionstringAfter @LengthType</u></b>
+                                                }
+                                                else
+                                                {
+                                                    <span>@FrontOverhangListPositionstring @LengthType</span>
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+
+                                    <tr>
+                                        <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                        </td>
+                                    </tr>
+                                    <tr>
+
+
+                                        <td class="wd4 pl-3 text-normal">
+                                            Overall width:
+                                        </td>
+                                        <td class="wd4 pl-3 text-normal">
+                                            @{
+                                                LengthType = string.Empty;
+                                                if (UnitType == 0 || UnitType == 692001)
+                                                {
+
+                                                    LengthType = " m";
+
+                                                }
+                                                else if (UnitType == 692002)
+                                                {
+                                                    LengthType = " ft";
+                                                }
+                                                if (OverallWidthListPositionString != 0)
+                                                {
+
+                                                    @OverallWidthListPositionString @LengthType
+                                                }
+                                                else
+                                                {
+                                                    @Convert.ToString("0") @LengthType
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                        </td>
+                                    </tr>
+                                    <tr>
+
+
+                                        <td class="wd4 pl-3 text-normal">
+                                            Overall height:
+                                        </td>
+                                        <td class="wd4 pl-3 text-normal">
+                                            @{
+                                                LengthType = string.Empty;
+                                                if (UnitType == 0 || UnitType == 692001)
+                                                {
+
+                                                    LengthType = " m";
+
+                                                }
+                                                else if (UnitType == 692002)
+                                                {
+                                                    LengthType = " ft";
+                                                }
+                                                if (OverallHeightListPositionString != 0)
+                                                {
+
+                                                    @OverallHeightListPositionString @LengthType
+                                                }
+                                                else
+                                                {
+                                                    @Convert.ToString("0") @LengthType
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="wd4 pl-3 text-normal">
+                                            Gross weight:
+                                        </td>
+                                        <td class="wd4 pl-3 text-normal">
+                                            @{
+                                                <!--TODO : Old GrossWeight-->
+                                                LengthType = " kg";
+                                                if (GrossWeightListPositionString != 0)
+                                                {
+                                                    @GrossWeightListPositionString @LengthType
+                                                }
+                                                else
+                                                {
+                                                    @Convert.ToString("0") @LengthType
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="wd4 pl-3 text-normal">
+                                            Max axle weight:
+                                        </td>
+                                        <td class="wd4 pl-3 text-normal">
+                                            @{
+                                                <!--TODO : OldMaxAxleWeight-->
+                                                LengthType = " kg";
+                                                if (MaxAxleWeightString != 0)
+                                                {
+                                                    @MaxAxleWeightString @LengthType
+                                                }
+                                                else
+                                                {
+                                                    @Convert.ToString("0") @LengthType
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+
+
+                                </table>
+                            </div>
+
+                            <div>
+                                <br />
+                            </div>
+                            <div>
+                                <br />
+                            </div>
+                            #endregion ----------------------Vehicle Details
+
+                            // TODO : Semi vehicle
+
+                            // Non Semi Vehicle Start
+                            <!--Non Semi trailer-->
+                            <div>
+                                @{
+                                    string ComponentType = "Tractor";
+
+                                    var StringLoadBearing = routePart.RoadPart.Vehicles.VehicleSummaryListPosition.VehicleSummary.Configuration.SemiVehicle;
+                                }
+                                @if (StringLoadBearing != null)
+                                {
+                                    <table border="0" cellspacing="5" cellpadding="5" class="print-table">
+                                        <tr>
+                                            <th>
+                                                <b class="wd4 pl-3 text-highlight"> @ComponentType.ToUpper() :</b>
+                                            </th>
+                                            <th>
+                                                <b class="wd4 pl-3 text-highlight">
+                                                    @if (StringLoadBearing.Summary.Contains("##**##"))
+                                                    {
+                                                        string SummaryAfter = StringLoadBearing.Summary.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                        <span>@SummaryAfter</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>@StringLoadBearing.Summary</span>
+                                                    }
+                                                </b>
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" style="border-top: 1px solid #d7d7d7">
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td class="wd4 pl-3 text-normal">
+                                                Gross weight:
+                                            </td>
+                                            <td class="wd4 pl-3 text-normal">
+                                                @{
+                                                    LengthType = " kg";
+                                                    if (StringLoadBearing.GrossWeight.Weight != 0)
+                                                    {
+
+                                                        <span> @StringLoadBearing.GrossWeight.Weight @LengthType</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span> @Convert.ToString("0") @LengthType</span>
+                                                    }
+
+                                                }
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" style="border-top: 1px solid #d7d7d7">
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+
+
+                                            <td class="wd4 pl-3 text-normal">
+                                                Axle weight:
+                                            </td>
+                                            <td class="wd4 pl-3 text-normal">
+                                                @{
+                                                    LengthType = string.Empty;
+                                                    if (UnitType == 0 || UnitType == 692001)
+                                                    {
+                                                        LengthType = " kg";
+                                                    }
+                                                    else if (UnitType == 692002)
+                                                    {
+                                                        LengthType = " miles";
+                                                    }
+
+                                                    var AxleWeightListPositions = StringLoadBearing.AxleConfiguration.AxleWeightListPosition;
+
+                                                    foreach (var itemAxle in AxleWeightListPositions)
+                                                    {
+                                                        if (itemAxle.AxleWeight.AxleCount != 0)
+                                                        {
+                                                            <span> @itemAxle.AxleWeight.Value @LengthType @Convert.ToString(" x ") @itemAxle.AxleWeight.AxleCount ,</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>              @Convert.ToString("0") @LengthType ,</span>
+                                                        }
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3" style="border-top: 1px solid #d7d7d7">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="wd4 pl-3 text-normal">
+                                                Wheel per axle:
+                                            </td>
+                                            <td class="wd4 pl-3 text-normal">
+                                                @{
+                                       
+                                                    var WheelsPerAxleListPosition = StringLoadBearing.AxleConfiguration.WheelsPerAxleListPosition;
+
+                                                    foreach (var itemAxle in WheelsPerAxleListPosition)
+                                                    {
+                                                        if (itemAxle.WheelsPerAxle.AxleCount != 0)
+                                                        {
+                                                            <span> @itemAxle.WheelsPerAxle.Value @LengthType @Convert.ToString(" x ") @itemAxle.WheelsPerAxle.AxleCount ,</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>              @Convert.ToString("0") @LengthType ,</span>
+                                                        }
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="wd4 pl-3 text-normal">
+                                                Axle spacing:
+                                            </td>
+                                            <td class="wd4 pl-3 text-normal">
+                                                @{
+                                                    LengthType = string.Empty;
+                                                    if (UnitType == 0 || UnitType == 692001)
+                                                    {
+                                                        LengthType = " m";
+                                                    }
+                                                    else
+                                                    {
+                                                        LengthType = " ft";
+                                                    }
+
+                                                    var AxleSpacingListPosition = StringLoadBearing.AxleConfiguration.AxleSpacingListPosition;
+                                                    foreach (var itemAxle in AxleSpacingListPosition)
+                                                    {
+                                                        if (itemAxle.AxleSpacing.AxleCount != 0)
+                                                        {
+                                                            <span> @itemAxle.AxleSpacing.Value @LengthType @Convert.ToString(" x ") @itemAxle.AxleSpacing.AxleCount ,</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>                  @Convert.ToString("0") @LengthType ,</span>
+                                                        }
+                                                    }
+                                                }
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                            </td>
+                                        </tr>
+                                        <tr>
+
+
+                                            <td class="wd4 pl-3 text-normal">
+                                                Tyre size:
+                                            </td>
+                                            <td class="wd4 pl-3 text-normal">
+                                                @{
+                                                    LengthType = string.Empty;
+                                                    if (UnitType == 0 || UnitType == 692001)
+                                                    {
+
+                                                        LengthType = " m";
+
+                                                    }
+                                                    else
+                                                    {
+                                                        LengthType = " ft";
+                                                    }
+
+                                                    
+                                                    var TyreSizeListPosition = StringLoadBearing.AxleConfiguration.TyreSizeListPosition;
+
+                                                    foreach (var itemAxle in TyreSizeListPosition)
+                                                    {
+                                                        if (itemAxle.TyreSize.AxleCount != 0)
+                                                        {
+                                                            <span> @itemAxle.TyreSize.Value @LengthType @Convert.ToString(" x ") @itemAxle.TyreSize.AxleCount ,</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>              @Convert.ToString("0") @LengthType ,</span>
+                                                        }
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                            </td>
+                                        </tr>
+                                        <tr>
+
+
+                                            <td class="wd4 pl-3 text-normal">
+                                                Tyre centres:
+                                            </td>
+                                            <td class="wd4 pl-3 text-normal">
+                                                @{
+
+                                                    LengthType = string.Empty;
+                                                    var WheelSpacingListPosition = StringLoadBearing.AxleConfiguration.WheelSpacingListPosition;
+
+                                                    foreach (var itemAxle in WheelSpacingListPosition)
+                                                    {
+                                                        if (itemAxle.WheelSpacing.AxleCount != 0)
+                                                        {
+                                                            <span> @itemAxle.WheelSpacing.Value @LengthType @Convert.ToString(" x ") @itemAxle.WheelSpacing.AxleCount ,</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span>              @Convert.ToString("0") @LengthType ,</span>
+                                                        }
+                                                    }
+
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                            </td>
+                                        </tr>
+                                        <tr>
+
+
+                                            <td class="wd4 pl-3 text-normal">
+                                                Length:
+                                            </td>
+                                            <td class="wd4 pl-3 text-normal">
+                                                @{
+                                                    LengthType = string.Empty;
+                                                    if (UnitType == 0 || UnitType == 692001)
+                                                    {
+
+                                                        LengthType = " m";
+
+                                                    }
+                                                    else if (UnitType == 692002)
+                                                    {
+                                                        LengthType = " ft";
+                                                    }
+                                                    if (StringLoadBearing.RigidLength != 0)
+                                                    {
+
+                                                        <span> @StringLoadBearing.RigidLength @LengthType</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span> @Convert.ToString("0") @LengthType</span>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                            </td>
+                                        </tr>
+                                        <tr>
+
+
+                                            <td class="wd4 pl-3 text-normal">
+                                                Width:
+                                            </td>
+                                            <td class="wd4 pl-3 text-normal">
+                                                @{
+                                                    LengthType = string.Empty;
+                                                    if (UnitType == 0 || UnitType == 692001)
+                                                    {
+
+                                                        LengthType = " m";
+
+                                                    }
+                                                    else if (UnitType == 692002)
+                                                    {
+                                                        LengthType = " ft";
+                                                    }
+                                                    if (StringLoadBearing.Width != 0)
+                                                    {
+
+                                                        <span>@StringLoadBearing.Width @LengthType</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span> @Convert.ToString("0") @LengthType</span>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                            </td>
+                                        </tr>
+                                        <tr>
+
+
+                                            <td class="wd4 pl-3 text-normal">
+                                                Max. height:
+                                            </td>
+                                            <td class="wd4 pl-3 text-normal">
+                                                @{
+                                                    LengthType = string.Empty;
+                                                    if (UnitType == 0 || UnitType == 692001)
+                                                    {
+
+                                                        LengthType = " m";
+
+                                                    }
+                                                    else if (UnitType == 692002)
+                                                    {
+                                                        LengthType = " ft";
+                                                    }
+                                                    if (StringLoadBearing.Height.MaxHeight != 0)
+                                                    {
+
+                                                        <span> @StringLoadBearing.Height.MaxHeight @LengthType</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>@Convert.ToString("0") @LengthType</span>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                            </td>
+                                        </tr>
+                                        <tr>
+
+
+                                            <td class="wd4 pl-3 text-normal">
+                                                Reducible height:
+                                            </td>
+                                            <td class="wd4 pl-3 text-normal">
+                                                @{
+                                                    LengthType = string.Empty;
+                                                    if (UnitType == 0 || UnitType == 692001)
+                                                    {
+
+                                                        LengthType = " m";
+
+                                                    }
+                                                    else if (UnitType == 692002)
+                                                    {
+                                                        LengthType = " ft";
+                                                    }
+                                                    if (StringLoadBearing.Height.ReducibleHeight != 0)
+                                                    {
+
+                                                        <span>@StringLoadBearing.Height.ReducibleHeight @LengthType</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span> @Convert.ToString("0") @LengthType</span>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="wd4 pl-3 text-normal">
+                                                Wheelbase:
+                                            </td>
+                                            <td class="wd4 pl-3 text-normal">
+                                                @{
+                                                    LengthType = string.Empty;
+                                                    if (UnitType == 0 || UnitType == 692001)
+                                                    {
+
+                                                        LengthType = " m";
+
+                                                    }
+                                                    else if (UnitType == 692002)
+                                                    {
+                                                        LengthType = " ft";
+                                                    }
+                                                    if (StringLoadBearing.Wheelbase != 0)
+                                                    {
+
+                                                        <span>@StringLoadBearing.Wheelbase @LengthType</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span> @Convert.ToString("0") @LengthType</span>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="wd4 pl-3 text-normal">
+                                                Left overhang:
+                                            </td>
+                                            <td class="wd4 pl-3 text-normal">
+                                                @{
+                                                    LengthType = string.Empty;
+                                                    if (UnitType == 0 || UnitType == 692001)
+                                                    {
+                                                        LengthType = " m";
+                                                    }
+                                                    else if (UnitType == 692002)
+                                                    {
+                                                        LengthType = " ft";
+                                                    }
+                                                    if (StringLoadBearing.LeftOverhang != 0)
+                                                    {
+                                                        <span>@StringLoadBearing.LeftOverhang @LengthType</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span> @Convert.ToString("0") @LengthType</span>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="wd4 pl-3 text-normal">
+                                                Right overhang:
+                                            </td>
+                                            <td class="wd4 pl-3 text-normal">
+                                                @{
+                                                    LengthType = string.Empty;
+                                                    if (UnitType == 0 || UnitType == 692001)
+                                                    {
+                                                        LengthType = " m";
+                                                    }
+                                                    else
+                                                    {
+                                                        LengthType = " ft";
+                                                    }
+                                                    if (StringLoadBearing.RightOverhang != 0)
+                                                    {
+                                                        <span> @StringLoadBearing.RightOverhang @LengthType</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span> @Convert.ToString("0") @LengthType</span>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="wd4 pl-3 text-normal">
+                                                Front overhang:
+                                            </td>
+                                            <td class="wd4 pl-3 text-normal">
+                                                @{
+                                                    LengthType = string.Empty;
+                                                    if (UnitType == 0 || UnitType == 692001)
+                                                    {
+
+                                                        LengthType = " m";
+
+                                                    }
+                                                    else
+                                                    {
+                                                        LengthType = " ft";
+                                                    }
+                                                    if (StringLoadBearing.FrontOverhang != 0)
+                                                    {
+
+                                                        <span>@StringLoadBearing.FrontOverhang @LengthType</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>@Convert.ToString("0") @LengthType</span>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="wd4 pl-3 text-normal">
+                                                Rear overhang:
+                                            </td>
+                                            <td class="wd4 pl-3 text-normal">
+                                                @{
+                                                    LengthType = string.Empty;
+                                                    if (UnitType == 0 || UnitType == 692001)
+                                                    {
+                                                        LengthType = " m";
+                                                    }
+                                                    else
+                                                    {
+                                                        LengthType = " ft";
+                                                    }
+                                                    if (StringLoadBearing.RearOverhang != 0)
+                                                    {
+                                                        <span>@StringLoadBearing.RearOverhang @LengthType</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>@Convert.ToString("0") @LengthType</span>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="wd4 pl-3 text-normal">
+                                                Ground clearance:
+                                            </td>
+                                            <td class="wd4 pl-3 text-normal">
+                                                @{
+                                                    LengthType = string.Empty;
+                                                    if (UnitType == 0 || UnitType == 692001)
+                                                    {
+
+                                                        LengthType = " m";
+
+                                                    }
+                                                    else if (UnitType == 692002)
+                                                    {
+                                                        LengthType = " ft";
+                                                    }
+                                                    if (StringLoadBearing.GroundClearance != 0)
+                                                    {
+
+                                                        <span>@StringLoadBearing.GroundClearance @LengthType</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>@Convert.ToString("0") @LengthType</span>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="wd4 pl-3 text-normal">
+                                                Reduced ground clearance:
+                                            </td>
+                                            <td class="wd4 pl-3 text-normal">
+                                                @{
+                                                    LengthType = string.Empty;
+                                                    if (UnitType == 0 || UnitType == 692001)
+                                                    {
+                                                        LengthType = " m";
+                                                    }
+                                                    else if (UnitType == 692002)
+                                                    {
+                                                        LengthType = " ft";
+                                                    }
+                                                    if (StringLoadBearing.ReducedGroundClearance != 0)
+                                                    {
+                                                        <span>@StringLoadBearing.ReducedGroundClearance @LengthType</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span> @Convert.ToString("0") @LengthType</span>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="wd4 pl-3 text-normal">
+                                                Outside track:
+                                            </td>
+                                            <td class="wd4 pl-3 text-normal">
+                                                @{
+                                                    LengthType = string.Empty;
+                                                    if (UnitType == 0 || UnitType == 692001)
+                                                    {
+                                                        LengthType = " m";
+                                                    }
+                                                    else if (UnitType == 692002)
+                                                    {
+                                                        LengthType = " ft";
+                                                    }
+                                                    if (StringLoadBearing.OutsideTrack != 0)
+                                                    {
+                                                        <span>@StringLoadBearing.OutsideTrack @LengthType</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span> @Convert.ToString("0") @LengthType</span>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>
+
+                                        <tr>
+                                            <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                            </td>
+                                        </tr>
+                                        @*<tr>
+                                            <td class="wd4 pl-3 text-normal">
+                                                Axle spacing to following:
+                                            </td>
+                                            <td class="wd4 pl-3 text-normal">
+                                                @{
+                                                    LengthType = string.Empty;
+                                                    if (UnitType == 0 || UnitType == 692001)
+                                                    {
+
+                                                        LengthType = " m";
+
+                                                    }
+                                                    else if (UnitType == 692002)
+                                                    {
+                                                        LengthType = " ft";
+                                                    }
+                                                    if (StringLoadBearing.AxleSpacingToFollowing != 0)
+                                                    {
+
+                                                        <span> @StringLoadBearing.ReducedGroundClearance @LengthType</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>@Convert.ToString("0") @LengthType</span>
+                                                    }
+                                                }
+                                            </td>
+                                        </tr>*@
+                                        <tr>
+                                            <td colspan="2" style="border-top: 1px solid #d7d7d7">
+                                            </td>
+                                        </tr>
+                                    </table>
+                                }
+                            </div>
+                            <!--Semi trailer -->
+                            // Non Semi Vehicle End
+
+                            <div>
+                                <br />
+                            </div>
+                            <div class="text-title pt-4 pb-3" style="padding-right:400px">
+                                LEG @routePart.LegNumber
+                            </div>
+
+                            <div>
+                                <br />
+                            </div>
+                            <div class="">
+                                <div class="row" style="flex-wrap: nowrap;align-items: center">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <div style="width: 2rem">
+                                                    <img src="../../Content/assets/images/route-start-icon.svg" width="15" alt="vehicle-2">
+
+                                                </div>
+
+                                            </td>
+                                            <td>
+                                                <div>
+                                                    <div style="width: auto" class="pl-0">
+                                                        <p>
+                                                            @if (routePart.RoadPart.StartPointListPosition.StartPoint.Description.Contains("##**##"))
+                                                            {
+                                                                string StartPointAfter = routePart.RoadPart.StartPointListPosition.StartPoint.Description.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                                @StartPointAfter
+                                                            }
+                                                            else
+                                                            {
+                                                                <span>@routePart.RoadPart.StartPointListPosition.StartPoint.Description</span>
+                                                            }
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+
+                                </div>
+                                <div>
+                                    <div style="width: 2rem;padding-left: 4px; margin-top: -11px;">
+                                        <p style="display: flex;flex-direction: column; padding-top: -4px;">
+                                            <span style="height: 6px;">.</span>
+                                            <span style="height: 6px;">.</span>
+                                            <span style="height: 6px;">.</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="row mt-2" style="flex-wrap: none;align-items: center;">
+                                    <table>
+                                        <tr>
+                                            <td>
+                                                <img src="../../Content/assets/images/destination-icon.svg" width="15" alt="vehicle-2">
+                                            </td>
+                                            <td>
+                                                <div style="width: auto" class="pl-0">
+                                                    @if (routePart.RoadPart.EndPointListPosition.EndPoint.Description.Contains("##**##"))
+                                                    {
+                                                        string EndPointAfter = routePart.RoadPart.EndPointListPosition.EndPoint.Description.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                        @EndPointAfter
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>@routePart.RoadPart.EndPointListPosition.EndPoint.Description</span>
+                                                    }
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                            <div>
+                                <br />
+                            </div>
+
+
+                            <!--Route directions---START-->
+            <table border="0" cellspacing="15" cellpadding="15" class="print-table">
+                <tr>
+                    <th>
+                        <div class="wd8 pl-3 text-highlight">
+                            Route directions
+                        </div>
+                    </th>
+                    <th>
+                        <div class="wd8 pl-3 text-highlight">
+                            Cautions
+                        </div>
+                    </th>
+                </tr>
+                @foreach (var itemMainAlternative in routePart.RoadPart.DrivingInstructions.SubPartListPosition)
+                {
+                    foreach (var itemsubAlternative in itemMainAlternative.SubPart)
+                    {
+                        foreach (var itemAlternative in itemsubAlternative.Alternative.InstructionListPosition)
+                        {
+                        <tr>
+                            <td colspan="3" style="border-top: 1px solid #d7d7d7">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="wd4 pl-3 text-normal">
+                                <!--TODO : OldInstruction-->
+                                @{
+                                    var Instruction = itemAlternative.Instruction.Navigation.Instruction;
+                                    if (Instruction.Contains("##**##"))
+                                    {
+                                        string InstructionBefore = Instruction.Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                        string InstructionAfter = Instruction.Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+
+                                        <strike> @InstructionBefore </strike>
+                                        <b><u>@InstructionAfter </u></b>
+                                    }
+                                    else
+                                    {
+                                        <span>@Instruction</span>
+                                    }
+
+                                    LengthType = string.Empty;
+
+                                    if (itemAlternative.Instruction.Navigation.Distance != null)
+                                    {
+                                        var DisplayImperial = itemAlternative.Instruction.Navigation.Distance.DisplayImperial;
+                                        var DisplayMetric = itemAlternative.Instruction.Navigation.Distance.DisplayMetric;
+
+                                        if (UnitType == 0 || UnitType == 692001)
+                                        {
+                                            if (DisplayMetric.ToString().Contains("##**##"))
+                                            {
+                                                <!--Before-->
+                                                var var1 = DisplayMetric.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                <!--After-->
+                                                var var12 = DisplayMetric.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+
+                                                if (Convert.ToInt32(var12) > 1000)
+                                                {
+                                                    var var2 = Math.Round(Convert.ToDecimal(var1) / 1000);
+                                                    <strike> <span>@Convert.ToString(var2) km</span></strike>
+
+
+                                                    var var13 = Math.Round(Convert.ToDecimal(var12) / 1000);
+                                                    <b><u>@Convert.ToString(var13) km</u></b>
+
+
+                                                }
+                                                else
+                                                {
+                                                    <strike> <span>@Convert.ToString(var1) m</span></strike>
+                                                    <b><u>@Convert.ToString(var12) m</u></b>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (Convert.ToInt32(DisplayMetric) > 1000)
+                                                {
+
+
+                                                    var var13 = Math.Round(Convert.ToDecimal(DisplayMetric) / 1000);
+                                                    <b><u>@Convert.ToString(var13) km</u></b>
+
+
+                                                }
+                                                else
+                                                {
+                                                    var var13 = Math.Round(Convert.ToDecimal(DisplayMetric) );
+                                                    <span>@Convert.ToString(var13) m</span>
+                                                }
+                                                
+                                            }
+                                        }
+                                        else if (UnitType == 692002)
+                                        {
+                                            if (DisplayImperial.ToString().Contains("##**##"))
+                                            {
+                                                <!--Before-->
+                                                var var1 = DisplayImperial.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                var var2 = Math.Round(Convert.ToDecimal(var1) / 1760);
+                                                <strike> <span>@Convert.ToString(var2) miles</span></strike>
+
+                                                <!--After-->
+                                                var var12 = DisplayImperial.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+                                                var var13 = Math.Round(Convert.ToDecimal(var12) / 1760);
+                                                <b><u>@Convert.ToString(var13) miles</u></b>
+                                            }
+                                            else
+                                            {
+                                                var var13 = Math.Round(Convert.ToDecimal(DisplayImperial) / 1760);
+                                                <span>@Convert.ToString(var13) miles</span>
+                                            }
+                                        }
+                                    }
+                                }
+                            </td>
+                            <td class="wd4 pl-3 text-normal">
+                                @{
+                                    <!--TODO : Note is not a list, need to change it to list-->
+                                    if (itemAlternative.Instruction.NoteListPosition != null)
+                                    {
+                                        if (itemAlternative.Instruction.NoteListPosition.Note.Content.RoutePoint != null && itemAlternative.Instruction.NoteListPosition.Note.Content.RoutePoint.PointType == "start")
+                                        {
+                                            <b>Start point further details:</b>
+                                        }
+                                        else if (itemAlternative.Instruction.NoteListPosition.Note.Content.RoutePoint != null && itemAlternative.Instruction.NoteListPosition.Note.Content.RoutePoint.PointType == "end")
+
+                                        {
+                                            <b> End point further details</b>
+                                        }
+
+                                        //IF =========================================
+                                        //TODO : Content/ns6:Caution/ns10:Action/ns10:Standard
+                                        //TODO : Content/ns6:Caution/ns10:Action/ns10:SpecificAction
+                                        //if(itemAlternative.Instruction.NoteListPosition.Note.Content.)
+                                        //TODO : Content/ns6:Caution/ns10:CautionedEntity/ns10:Constraint/ns10:ECRN
+                                        //TODO : Content/ns6:Caution/ns10:CautionedEntity/ns10:Structure/ns10:ESRN
+                                        //TODO : CAUTION: After
+                                        //         EncounteredAt/ns6:DisplayMetric
+                                        //         EncounteredAt/ns6:DisplayImperial
+                                        //TODO :  GridRef
+
+                                        //if ((!string.IsNullOrWhiteSpace(itemAlternative.Instruction.NoteListPosition.Note.Content.Annotation.Text) &&
+                                        //   Convert.ToString(itemAlternative.Instruction.NoteListPosition.Note.Content.Annotation.Text) != null &&
+                                        //  Convert.ToString(itemAlternative.Instruction.NoteListPosition.Note.Content.Annotation.Text) != string.Empty))
+                                        //{
+                                        //  <b>Apply motorway caution</b>
+                                        // @itemAlternative.Instruction.NoteListPosition.Note.Content.Annotation.Text
+                                        //}*@
+
+                                        //TODO : Content/ns6:Annotation/ns9:Text
+
+                                        //TODO : Content/ns6:Annotation
+
+                                        //TODO : Content/ns6:Caution/ns10:CautionedEntity
+
+                                        //ELSE=========================================
+
+                                        if (itemAlternative.Instruction.NoteListPosition.Note.GridReference != null)
+                                        {
+                                            <b>
+                                                <br />
+                                                GridRef:
+                                            </b>
+                                            var xVal = itemAlternative.Instruction.NoteListPosition.Note.GridReference.X;
+                                            if (xVal.ToString().Contains("##**##"))
+                                            {
+                                                string xValBefore = xVal.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                string xValAfter = xVal.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+
+                                                <strike> @xValBefore </strike>
+                                                <b><u>@xValAfter </u></b>
+                                            }
+                                            else
+                                            {
+                                                <span>@xVal</span>
+                                            }
+
+                                            var yVal = itemAlternative.Instruction.NoteListPosition.Note.GridReference.Y;
+                                            if (yVal.ToString().Contains("##**##"))
+                                            {
+                                                string yValBefore = yVal.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                string yValAfter = yVal.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+
+                                                <strike> @yValBefore </strike>
+                                                <b><u>@yValAfter </u></b>
+                                            }
+                                            else
+                                            {
+                                                <span>@yVal</span>
+                                            }
+                                        }
+                                        <span>CAUTION: After:</span>
+
+                                        var notesubitem = itemAlternative.Instruction.NoteListPosition;
+
+                                        LengthType = string.Empty;
+                                        if( (notesubitem.Note.EncounteredAt !=null) && (!string.IsNullOrWhiteSpace(notesubitem.Note.EncounteredAt.DisplayMetric) ) && notesubitem.Note.EncounteredAt.DisplayMetric !=string.Empty )
+                                        {
+
+
+                                            if (UnitType == 0 || UnitType == 692001)
+                                            {
+                                                if(notesubitem.Note.EncounteredAt.DisplayMetric.ToString().Contains("##**##") )
+                                                {
+
+
+                                                    string xValBefore = notesubitem.Note.EncounteredAt.DisplayMetric.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[0];
+                                                    string xValAfter = notesubitem.Note.EncounteredAt.DisplayMetric.ToString().Split(new string[] { "##**##" }, StringSplitOptions.None)[1];
+
+                                                    if (Convert.ToInt32(xValBefore) < 1000)
+                                                    {
+                                                        LengthType = xValBefore + " m";
+                                                    }
+                                                    else if (Convert.ToInt32(xValBefore) != 0)
+                                                    {
+                                                        LengthType = Convert.ToInt32(xValBefore) / 1000 + " km";
+                                                    }
+                                                    else if (Convert.ToInt32(notesubitem.Note.EncounteredAt.DisplayImperial) < 1760)
+                                                    {
+                                                        LengthType = xValBefore + " yards";
+                                                    }
+                                                    else
+                                                    {
+                                                        LengthType = Convert.ToInt32(xValBefore) / 1760 + " miles";
+                                                    }
+
+                                                }
+                                            }
+
+
+
+                                            @LengthType
+
+                                        }
+                                        <br />
+
+                                        if (notesubitem.Note.Content.Annotation != null)
+                                        {
+                                           
+                                          <span> @notesubitem.Note.Content.Annotation.AnnotationType</span>
+                                            
+                                           <span> @notesubitem.Note.Content.Annotation.Text </span>
+                                            
+                                        }
+
+                                    
+                                    if (itemAlternative.Instruction.NoteListPosition != null && itemAlternative.Instruction.NoteListPosition.Note != null &&
+                                        itemAlternative.Instruction.NoteListPosition.Note.Content != null && itemAlternative.Instruction.NoteListPosition.Note.Content.RoutePoint != null)
+                                    {
+                                        <span>@itemAlternative.Instruction.NoteListPosition.Note.Content.RoutePoint.Description</span><br />
+                                    }
+                                    //TODO : Contact/ns12:FullName
+                                    //TODO : Contact/ns12:OrganisationName
+                                    //TODO : Contact/ns12:Address
+                                    //TODO : Contact/ns12:TelephoneNumber
+                                    //TODO : Contact/ns12:FaxNumber
+                                    //TODO : Contact/ns12:EmailAddress
+                                }
+                                }
+                            </td>
+                        </tr>
+                                            }
+                                        }
+                                    }
+                    <tr>
+                        <td colspan="3" style="border-top: 1px solid #d7d7d7">
+                        </td>
+                    </tr>
+                </table>
+
+                            <div>
+                                <br />
+                            </div>
+                            <!--Route direction --END-->
+
+
+
+
+                        }<!--End for each-->
+                    }
+                }
+
+                <!--NOTES FOR HAULIER STARTS-->
+                <div>
+                    <table>
+                        <tr>
+                            <td>
+                                <br />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-title">
+                                NOTES FOR HAULIER
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="wd4 pl-3 text-normal">
+
+                                @if (Convert.ToString(Model.NotesForHaulier).Length > 0)
+                                {
+
+                                    for (int i = 0; i < Model.NotesForHaulier.Items.Length; i++)
+                                    {
+                                        var objectstr = Model.NotesForHaulier.Items[i];
+                                        dynamic dyn = (dynamic)objectstr;
+                                        if (dyn != null)
+                                        {
+                                            try
+                                            {
+                                
+                                        if (dyn is STP.Domain.DocumentsAndContents.SortAgreeRevisedParams.Para)
+                                        {
+                                        var obj = (STP.Domain.DocumentsAndContents.SortAgreeRevisedParams.Para)dyn;
+                                        if (obj != null)
+                                        {
+                                        if (obj.Items != null)
+                                        {
+                                        if (obj.Items[0] is STP.Domain.DocumentsAndContents.SortAgreeRevisedParams.ParaBold)
+                                        {
+                                        var objBold = (STP.Domain.DocumentsAndContents.SortAgreeRevisedParams.ParaBold)dyn;
+                                        @Convert.ToString(objBold.Text)
+                                        @Convert.ToString(objBold.Underscore)
+                                        <br />
+                                        }
+
+                                        }
+                                        else if (obj.Text != null)
+                                        {
+                                        string[] descp = obj.Text;
+                                        for (int ii = 0; ii < descp.Length; ii++)
+                                        {
+                                        string res = descp[ii];
+                                        @Convert.ToString(res)
+                                        <br />
+                                        }
+                                        }
+
+                                        }
+                                        }
+
+
+
+
+
+                                        }
+                                        catch (Exception e)
+                                        {
+                                        try
+                                        {
+                                        if (dyn.Text != null)
+                                        {
+
+                                        string[] descp = dyn.Text;
+                                        for (int ii = 0; ii < descp.Length; ii++)
+                                        {
+                                        string res = descp[ii];
+                                        @Convert.ToString(res)
+                                        <br />
+                                        }
+
+
+
+                                        }
+                                        continue;
+                                        }
+                                        catch (Exception ecc)
+                                        {
+                                        if (dyn.Text != null)
+                                        {
+                                        string[] descp = dyn.Text;
+                                        for (int ii = 0; ii < descp.Length; ii++)
+                                        {
+                                        string res = descp[ii];
+                                        @Convert.ToString(res)
+                                        <br />
+                                        }
+                                        }
+                                        continue;
+                                        }
+
+                                        }
+                                   
+                                                    }
+
+
+
+                                                    }
+
+                                                    }
+                                                    else
+                                                    {
+                                                    <p>There are no notes.</p>
+                                                    }
+
+                                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!--NOTES FOR HAULIER ENDS-->
+
+
+                <div>
+                    @{
+                        <div class="wd3 pb-3">
+                            @if (Model.PredefinedCautions.DockCautionDescription == '1')
+                            {
+                                <p style="padding-top:6px;">
+                                    <b>
+                                        <u>
+                                            DOCK CAUTION
+                                        </u>
+                                    </b>
+                                    <br />
+                                    The manufacturer and/or hauliers are reminded that it is their responsibility to negotiate with the appropriate dock
+                                    manager for the movements within the dock area.
+                                </p>
+                            }
+
+                        </div>
+                    }
+                </div>
+                <div>
+                    <br />
+                </div>
+                @{
+                    var MotorwayCautionDescription = Model.PredefinedCautions.MotorwayCautionDescription;
+                    if (Model.PredefinedCautions != null && Model.PredefinedCautions.MotorwayCautionDescription != null)
+                    {
+                        <div class="wd3 pb-2">
+                            <div class="text-title">MOTORWAY CAUTIONS</div>
+                            <ol type="a">
+                                <li>
+                                    When travelling on the motorway, vehicles must not travel on the hard shoulder or in the right hand lane
+                                </li>
+                                <li>When crossing motorway bridges, vehicles must travel in the left hand lane, unless otherwise stated in specific route cautions</li>
+                                <li>
+                                    If over 4.877 m in height, height of load must be reduced to a minimum when travelling under motorway bridges
+                                </li>
+                                <li>
+                                    If under but near 4.877 m in height, extreme caution must be exercised when travelling under motorway bridges.
+                                </li>
+                            </ol>
+                        </div>
+                    }
+                }
+
+            </div>
+        </div>
+        <!-- end of main-content -->
+        <!-- bootstrap css for vertical menu -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"></script>
+
+        <!-- google map -->
+        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+
+        <!-- google map -->
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+        <!-- google-map-api -->
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3&amp;sensor=false"></script>
+        <!-- google-map-api -->
+
+    </body>
+
+</html>
+<script src="~/Scripts/Document/SortAgreeRevised.js?V@(Session["ProjectVersion"])"></script>

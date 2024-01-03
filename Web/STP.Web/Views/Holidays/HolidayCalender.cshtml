@@ -1,0 +1,493 @@
+﻿@using System.Web.Optimization
+@using STP.Domain
+@using PagedList.Mvc
+@using System.Web.Mvc
+@using STP.Web.Custom.Views
+@model  PagedList.IPagedList<STP.Domain.HelpdeskTools.HolidaysDomain>
+@{
+    int listCount = 0;
+    listCount = (int)Session["PageSize"];
+    int pageSize= 10;
+    if (ViewBag.pageSize != null)
+    {
+        pageSize = ViewBag.pageSize;
+    }
+    int pageNumber = 1;
+    if (ViewBag.page != null)
+    {
+        pageNumber = ViewBag.page;
+    }
+    int portalType = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        portalType = sessionValues.UserTypeId;
+    }
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.HOLIDAY;
+}
+
+@Html.Hidden("pageSizeVal", pageSize)
+@Html.Hidden("IsEdit")
+@Html.Hidden("PageNum", pageNumber)
+@Html.Hidden("holidayId")
+@Html.Hidden("listCount", listCount)
+
+@{
+    ViewBag.Title = "HolidayCalender";
+    var i = 0;
+    string holidayDateString = ViewBag.holidaydatestring;
+    string CountryId = ViewBag.searchType;//= "FirstTime";
+    string MonthYear = ViewBag.MonthYear;
+    string HolidayDateArray = ViewBag.HolidayDateArray;
+
+}
+@Html.Hidden("MonthYear", MonthYear)
+@Html.Hidden("SearchString", CountryId)
+@Html.Hidden("holidaystring", holidayDateString)
+@Html.Hidden("HolidayDateArray", HolidayDateArray)
+
+
+
+@{
+    var SearchListInfo = new List<STP.Domain.HelpdeskTools.HolidaysDomain>
+{
+                        new STP.Domain.HelpdeskTools.HolidaysDomain{SearchType="4",CountryName="Select"},
+                        new STP.Domain.HelpdeskTools.HolidaysDomain{SearchType="0",CountryName="All"},
+                        new STP.Domain.HelpdeskTools.HolidaysDomain{SearchType="223001",CountryName="England"},
+                        new STP.Domain.HelpdeskTools.HolidaysDomain{SearchType="223002",CountryName="Wales"},
+                        new STP.Domain.HelpdeskTools.HolidaysDomain{SearchType="223003",CountryName="Scotland"},
+                    };
+
+    ViewBag.SearchInfo = new SelectList(SearchListInfo, "COUNTRY_ID", "CountryName");
+}
+@{
+    var sortOrder = ViewBag.SortOrder != null ? (int)ViewBag.SortOrder : 2;//HolidayDate
+    var sortType = ViewBag.SortType != null ? (int)ViewBag.SortType : 0;//asc
+    var isCountryFilterEnabled = !string.IsNullOrEmpty(ViewBag.searchType) && ViewBag.searchType != "0";
+    var isAllFilterEnabled = isCountryFilterEnabled;
+}
+<style>
+    .error {
+        color: red;
+        display: none;
+    }
+
+    .close1 {
+        float: right;
+        display: inline-block;
+        padding: 2px 5px;
+        background: #ffffff;
+        color: dodgerblue;
+    }
+    
+
+    input.hasDatepicker {
+        display: inline-block;
+        vertical-align: middle;
+        width: 90%;
+    }
+
+    .hint span {
+        float: left;
+        width: auto;
+        margin: 10px 0px;
+    }
+
+    .redcube {
+        background: #20b775;
+        width: 15px !important;
+        height: 15px;
+        margin: 13px !important;
+        border-radius: 50%;
+    }
+
+    #btn_createholiday .outline-btn-primary {
+        padding: 0px !important;
+    }
+
+    #btn_createholiday.outline-btn-primary {
+        padding: 4px !important;
+    }
+    .absolute {
+        position: absolute;
+        right: 150px;
+        width: 157px;
+        height: 120px;
+        margin-top:-22px;
+        white-space: nowrap;
+           
+    }
+    .HolidayCard {
+        margin-top: 2px !important;
+        margin: 0rem !important;
+    }
+
+    #ui-id-1 {
+        width: 25% !important;
+        top: 24% !important;
+        left: 74% !important;
+        position: fixed !important;
+    }
+
+    .filtered-icon {
+        background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 90% #2b5795;
+        background-size: 1rem;
+    }
+
+    .esdal-filter-icon {
+        background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 0 #2b5795;
+        background-size: 1rem;
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        position: absolute;
+        margin-left: 3px;
+    }
+    .holiday-calender-header:hover {
+        background-color: white;
+        color: rgba(39, 87, 149, 1);
+    }
+
+</style>
+<!-- main content -->
+@*<link href="~/Content/Calender/css/calender.css" rel="stylesheet" />*@
+
+<body style="overflow-y: auto;" id="main-vehicle-list-filter">
+    <section id="banner">
+        <div class="container-fluid holidayContainer" id="banner-container">
+
+            <div id="banner-scetion-2">
+                <div class="col-lg-12 col-md-12 col-sm-12 header flexer">
+                    <button class="btn outline-btn-primary col-3" id="holidayBtn">
+                        NEW
+                        HOLIDAY
+                    </button>
+                    <div class="title col-9 tHelper" style="text-align: center; font-size: 35px;">
+                        HOLIDAY CALENDAR
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-3 colHelper">
+
+                        <section id="calenderId" class="ftco-section">
+                            <div class="container1-tiru">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="calendar-section">
+                                            <div class="row no-gutters connectCals">
+                                                <div class="cal col-md-12">
+                                                    <div id="toaddCalendarPartialView"></div>
+
+
+                                                </div>
+                                            </div> <!-- End Row -->
+                                            <div class="hint">
+                                                <span style="color:black;font-size:13px">Holidays</span>
+                                                <span class="redcube"></span>
+                                            </div>
+                                        </div> <!-- End Calendar -->
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section id="holidayCardId" class="mt-4">
+
+                            <div class="card HolidayCard mt-0 p-4">
+
+                                <div style="color: darkgray; font-size: 24px; font-family: 'lato_light' ">
+                                    New Holiday
+                                </div>
+                                <div style="margin-top: -37px;">
+                                    <span id="spalertclose" class="text-normal pr-1" style="color:rgba(39, 87, 149, 1);font-size: 44px;float:right;margin-top: -14px;font-family: lato_light;cursor:pointer;margin-right: -13px;">
+                                        ×
+                                    </span>
+                                </div>
+
+                                <span class="error invalid-feedback" style="display:none" id="errorCreate">*Enter vaild holiday date and description.</span>
+
+                                <div class="flexer py-3">
+                                    <label for="SelectDateId" class="label1 lbHelper1">Select date</label>
+                                    <input type="text" class="text-normal lbInputs" placeholder="Select date"
+                                           id="SelectDateId">
+                                </div>
+
+                                <div class="flexer py-3">
+                                    <label for="DescriptionId" class="label1 lbHelper1">Description</label>
+                                    <input type="text" class="text-normal lbInputs ml-2" placeholder="Holiday name"
+                                           id="DescriptionId">
+
+                                </div>
+
+                                <div class="flexer mt-3 mb-3" style="white-space: nowrap;">
+                                    <label for="CountrySelectId" class="label1 lbHelper1">Country Name</label>
+                                    @Html.DropDownList("searchType", new SelectList(@SearchListInfo, "searchType", "CountryName"), new { style = "margin-left: 7px;", @id = "CountrySelectId", @class = "form-select text-normal lbInputs" })
+
+                                </div>
+
+                                <div class="flexer justify-content-center">
+                                    <button id="btn_createholiday" class="btn btn-normal outline-btn-primary btnHolidayCardHelper"
+                                            style="font-size: 16px; width: 204px; height: 41px; ">
+                                        CREATE
+                                        HOLIDAY
+                                    </button>
+                                </div>
+                            </div>
+                        </section>
+                        <section id="editholiday">
+
+                            <div id="editdiv" class="card HolidayCard">
+                                <div style="margin-top: -37px;">
+                                    <span id="btnalertclose" class="text-normal pr-1" style="color: rgba(39, 87, 149, 1); font-size: 44px; float: right; margin-top: -48px; font-family: lato_light; cursor: pointer; margin-right: -13px;">
+                                        ×
+                                    </span>
+
+                                    <div class="flexer lbHelper" style="margin-left: -25px;margin-right: 3px;white-space: nowrap;padding-left: 5px;padding-right: 0px;">
+                                        <label for="SelectDateIdEdit" class="label1 lbHelper1">Select date</label>
+                                        <input style="margin-left: 21px;" type="text" class="text-normal lbInputs" placeholder="Select date"
+                                               id="SelectDateIdEdit">
+                                    </div>
+                                    <div class="flexer lbHelper" style="margin-left: -12px;">
+                                        <label for="DescriptionIdEdit" class="label1 lbHelper1">Description</label>
+                                        <input style="margin-left: 25px;" type="text" class="text-normal lbInputs" placeholder="Holiday name"
+                                               id="DescriptionIdEdit">
+
+                                    </div>
+
+                                    <span class="error invalid-feedback" style="display:none" id="errorEdit">*Description is not valid...</span>
+
+
+                                    <div class="flexer lbHelper mt-4" style="white-space: nowrap; margin-left:-11px">
+                                        <label for="CountrySelectIdEdit" class="label1 lbHelper1">Country Name</label>
+                                        @Html.DropDownList("searchType", new SelectList(@SearchListInfo, "searchType", "CountryName"), new { style = "margin-left: 7px;", @id = "CountrySelectIdEdit", @class = "form-select text-normal lbInputs" })
+
+                                    </div>
+
+                                    <div class="flexer justify-content-center">
+                                        <button id="btn_createholiday" class="btn outline-btn-primary btnHolidayCardHelper">
+                                            UPDATE
+                                            HOLIDAY
+                                        </button>
+                                    </div>
+                                </div>
+                        </section>
+                    </div>
+
+                    <div class="col-9 pr-4 colHelper">
+                        <div class="main-table overflow-hidden" id="holiday-calendar">
+                            <input type="hidden" name="hfFilterFlag" id="hfFilterFlag" value="@ViewBag.FilterFlag" />
+                            <div class="table-responsive">
+                                <table class="esdal-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="holidayTableHeader holiday-calender-header">
+                                                <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,1)" data-action="CalendarSort" data-sortval="1">Holiday Description </span>
+                                            </th>
+                                            <th class="holiday-calender-header">
+                                                <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,2)" data-action="CalendarSort" data-sortval="2">Holiday Date </span>
+                                            </th>
+                                            <th>
+                                                Country Name
+                                                <span class="filter-table-icons"><img id="fltrImgCountryName" style="display:@(isCountryFilterEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                            </th>
+                                            <th></th>
+                                            
+                                            <th colspan="2" width="3%">
+                                                <img id="openFilters" src="~/Content/assets/images/filter-icon.svg" class="open-filter-icon-common" data-width="350" title="Open filter" width="38">
+                                                <span class="filtered-icon-table "><img id="filterimage" style="display:@(isAllFilterEnabled?"block":"none")" src="~/Content/assets/images/filtered-icon.svg" title="Clear filter"></span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            i++;
+                                        <tr colspan="9">
+                                            <td class="text-color1 first-column-padding">@item.Descripton</td>
+                                            <td class="text-color1 holidaydate">@item.HolidayDate</td>
+                                            @*<td class="text-color1">@item.CountryName</td>*@
+                                            @if (item.CountryName == "")
+                                            {
+                                                <td class="text-color1">All</td>
+                                            }
+                                            else
+                                            {
+                                                <td class="text-color1">@item.CountryName</td>
+                                            }
+                                            <td>
+                                            <td>
+                                                <a href="#" id="holidayedit" data-holidayid="@item.HolidayId" data-holidaydate="@item.HolidayDate" data-countryid="@item.CountryId" data-description="@HttpUtility.JavaScriptStringEncode(item.Descripton)" name="@item.HolidayDate">
+
+                                                    <img src="~/Content/assets/images/edit-icon.svg" width="22" title="Edit">
+                                                </a>
+                                            </td>
+
+
+                                            <td>
+                                                <a href="#" id="holidayDelete" data-HolidayId="@item.HolidayId" data-holidaydate="@item.HolidayDate" id="@item.HolidayId" name="@item.HolidayDate">
+                                                    <img src="~/Content/assets/images/delete-icon.svg" width="18" title="Delete">
+                                                </a>
+                                            </td>
+
+                                        </tr>
+                                        }
+
+                                        @if (i == 0)
+                                        {
+                                            <tr>
+                                                <td colspan="9" style="text-align: center"><span style="color: red">@Resources.Resource.NoResultFound</span></td>
+                                            </tr>
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div id="datepicker1"></div>
+                            @if (Model.Count > 0)
+                            {
+                                //if (listCount < Model.TotalItemCount)
+                                //{
+
+                        <div class="row pt-3" style="margin-top:30px;">
+                            <div class="col-lg-4 col-md-4 ">
+                                @if (Model.TotalItemCount > 0)
+                                {
+                                    <div class="text-color2 total-records-number">
+                                        Total number of records : @Model.TotalItemCount
+                                    </div>
+                                }
+                            </div>
+                            @if (listCount < Model.TotalItemCount)
+                            {
+                                <div class="col-lg-5  col-md-4  text-center">
+                                    <div class="col-lg-5 col-md-4  table-pagination">
+                                        @Html.PagedListPager(Model, page => Url.Action("HolidayCalender",
+                                        new
+                                        {
+                                            B7vy6imTleYsMr6Nlv7VQ =
+                                                                         STP.Web.Helpers.EncryptionUtility.Encrypt(
+                                                                         "sortOrder=" + sortOrder +
+                                                                         "&sortType=" + sortType),
+                                            page
+                                        }),
+                                        new PagedListRenderOptions
+                                        {
+                                            DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                                            DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                                            LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                                            LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                                            DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                                            DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                                            MaximumPageNumbersToDisplay = 3,
+                                            DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                                            EllipsesFormat = "...",
+                                            LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+                                            LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+                                        });
+
+                                    </div>
+
+                                </div>
+                            }
+                            @if (Model.TotalItemCount > 10)
+                            {
+                                <div class="col-lg-3 col-md-3 col-sm-12 text-normal pr-0 absolute PageSize-HolidayCalender">
+                                    Number of items to display per page
+                                    <select class="form-select mb-3" style="width:100px;" aria-label=".form-select-lg example" id="pageSizeSelect">
+                                        <option val="10" @(pageSize == 10 ? "selected" : "")>10</option>
+                                        <option val="20" @(pageSize == 20 ? "selected" : "")>20</option>
+                                        <option val="50" @(pageSize == 50 ? "selected" : "")>50</option>
+                                        <option val="100" @(pageSize == 100 ? "selected" : "")>100</option>
+                                    </select>
+                                </div>
+                            }
+                        </div>
+                                //}
+   }
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+       
+    </section>
+    <!-- filter settings -->
+    <div id="filters" class="sidenav filter-sidenav">
+        <div class="row sidenav-header">
+            <div class="col-10 text-center">
+                <div class="text-normal-hyperlink mt-3" style="font-size: x-large;">
+                    FILTER
+                </div>
+            </div>
+            <div class="col-1">
+                <a href="#" id="closefilter" class="btn-close-filter  close-filter-icon-common">×</a>
+            </div>
+        </div>
+
+
+
+        @*<span><a href="#" class="closebtn closeFilters close-filter-icon-common">&times;</a></span>
+        <div class="filter-header pt-3" style="margin-top:0px;">
+            <span class="pl-5">FILTER</span>
+        </div>*@
+        <hr style="margin-top: 0;">
+        <div class="filter-entry">
+            <div class="row mb-4 pl-5 pr-6">
+                <div class="col-lg-12 col-mb-12 col-sm-12">
+                </div>
+            </div>
+        </div>
+        @using (Html.BeginForm("HolidayCalender", "Holidays", new { flag = 2 }))
+        {
+    <div class="filter-list">
+
+        <div class="row mb-4">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                @Html.DropDownList("searchType", new SelectList(@SearchListInfo, "searchType", "CountryName"), new { @id = "DDDsearchHoliday", @class = "form-select mb-3 w-100" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6 col-md-6">
+                <input type="hidden" name="sortOrder" id="SortOrderValue" value="@sortOrder" />
+                <input type="hidden" name="sortType" id="SortTypeValue" value="@sortType" />
+                <button class="btn outline-btn-primary SOAButtonHelper mr-2" id="btnSearch" type="submit" role="button" aria-pressed="true" style="height: 41px !important; width: 160px !important; padding: 9px 12px !important;">
+                    SEARCH
+                </button>
+            </div>
+
+            <div class="col-lg-6 col-md-6">
+                <button class="btn outline-btn-primary SOAButtonHelper" id="Cancel" style="height: 41px !important; width: 149px !important; padding: 9px 12px !important; " role="button" aria-pressed="true">
+                    CLEAR
+                </button>
+            </div>
+        </div>
+
+
+    </div>
+        }
+    </div>
+    <!-- end of filter settings -->
+    <!-- end of main content -->
+</body>
+@{ string GetSortDefaultClass(int sortTypeVal, int sortOrderVal, int valToCheck)
+    {
+        var sortClass = ""; //0-asc, 1-desc ,
+        if (sortOrderVal == valToCheck)
+        {
+            sortClass = sortTypeVal == 1 ? "sorting_desc" : "sorting_asc";
+        }
+        return sortClass;
+    } }
+
+@Scripts.Render("~/bundles/Util")
+<script nonce="@STP.Web.Helpers.NonceHelper.ScriptNonce()"></script>
+@*var antiForgeryToken = '@Html.AntiForgeryToken()';*@
+@*//var antiForgeryToken = $('#AntiForgeryToken').val();
+    //AntiForgeryTokenInclusionRequest(antiForgeryToken);*@
+
+<script src="~/Scripts/Holidays/HolidayCalender.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Holidays/showCalendar.js?V@(Session["ProjectVersion"])"></script>

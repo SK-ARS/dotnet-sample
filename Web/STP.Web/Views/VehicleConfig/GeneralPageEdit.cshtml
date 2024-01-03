@@ -1,0 +1,44 @@
+@{
+    int? vchlId = ViewBag.VehicleId;
+    int VehicleTypeConfig = (int)ViewBag.VehicleTypeConfig;
+    int MovementClassConfig = (int)ViewBag.MovementClassConfig;
+    
+}
+<section id="banner" class="vehicle-setting">
+    <div class="container-fluid" id="banner-container">
+        <div id="vehicles" class="new-vehicle">
+            <div class="row">
+                <div class="col-lg-9 col-md-9 col-sm-9 pt-5 title pr-0" style="font-family: lato_bold;">
+                    EDIT CONFIGURATION DETAILS
+                    @Html.Hidden("vehicleId", vchlId)
+                    @Html.Hidden("MovementClassConfig", MovementClassConfig)
+                    @Html.Hidden("VehicleTypeConfig", VehicleTypeConfig)
+                    <input type="hidden" value="@ViewBag.PlanMovement" id="PlanMovement" name="PlanMovement" />
+                    <input type="hidden" value="@ViewBag.grossWeight" id="ComponentTotalWeight" name="ComponentTotalWeight" />
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-2 pt-5">
+                    <div class="button main-button mr-0">
+                        <button id="btn_back_config_edit" class="btn_back_config_edit btn btn-outline-primary ml2" aria-hidden="true" data-icon="&#xe119;" type="button" >Back</button>
+
+                    </div>
+                </div>
+            </div>
+                <div class="row mt-4">
+                    @{
+                        Html.RenderAction("GetGeneralPageEdit", new { vehicleId = ViewBag.VehicleId, planMovement = (bool)ViewBag.PlanMovement, isEditVehicleInSoProcessing= ViewBag.isCandidate });
+                    }
+                </div>
+                <div class="row mt-4" id="regDetails">
+                    @{
+                        Html.RenderAction("RegistrationConfiguration", new { vehicleId = ViewBag.VehicleId, RegBtn = true, isVR1 = false, planMovement = (bool)ViewBag.PlanMovement, isEditVehicleInSoProcessing = ViewBag.isCandidate });
+                    }
+                </div>
+                <div class="col-lg-8 col-md-12 col-sm-12 flexer justify-content-center mt-5">
+                    <button type="button" id="btn_saveConfig" class="btn outline-btn-primary SOAButtonHelper ml2" >SAVE</button>
+                </div>
+            </div>
+        </div>
+</section>
+<script src="~/Scripts/Vehicle/vehicleConfig.Create.js?V6.@DateTime.Now.Ticks"></script>
+<script src="~/Scripts/Vehicle/VehicleConfig.Registration.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/CspJs/VehicleConfig/GeneralPageEdit.js?V@(Session["ProjectVersion"])"></script>

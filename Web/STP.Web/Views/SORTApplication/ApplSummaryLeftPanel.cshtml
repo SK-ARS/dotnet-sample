@@ -1,0 +1,53 @@
+@{
+    ViewBag.Title = "ApplSummaryLeftPanel";
+
+    bool Show = false;
+    if (ViewBag.Show != null)
+    {
+        Show = ViewBag.Show;
+    }
+
+    int isAdmin = 0;
+    int userTypeID = 0;
+    long UserId = 0;
+
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        userTypeID = sessionValues.UserTypeId;
+        if (sessionValues.IsAdmin == 1)
+        {
+            isAdmin = 1;
+        }
+        UserId = sessionValues.SortUserId;
+    }
+
+    int plannerId= ViewBag.PlannerId;
+    int iEnteredbySort = ViewBag.EnterdbySort;
+}
+<div class="flexer justify-content-center pt-4" id="menu-buttons">
+    @{
+        if (ViewBag.EnterdbySort == 1)
+        {
+            if (Show == true && UserId == ViewBag.PlannerId)
+            {
+                <button class="btn outline-btn-primary SOAButtonHelper" id="CreateNewRev">
+                    <span class="pr-3">
+                        <img src="~/Content/assets/images/Group 1067.svg" width="21" class="init_img">
+                        <img src="~/Content/assets/images/Group 1067.svg" width="21" class="hover_img notify">
+                    </span>REVISE
+                </button>
+
+            }
+        }
+    }
+
+
+
+
+</div>
+
+@{
+<input type="hidden" value="@ViewBag.EnterdbySort" id="hf_EnterdbySort" name="hf_EnterdbySort" />
+}
+@*<script src="~/Scripts/SORTApplication/ApplSummaryLeftPanel.js?V@(Session["ProjectVersion"])"></script>*@

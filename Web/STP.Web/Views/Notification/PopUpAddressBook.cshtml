@@ -1,0 +1,163 @@
+@using System.Text;
+@model STP.Domain.SecurityAndUsers.ContactSearchModel
+@{ 
+    bool IsSortSideCall = false;
+    if (ViewBag.IsSortSideCall != null)
+    {
+        IsSortSideCall = ViewBag.IsSortSideCall;
+    }
+}
+
+@{
+
+    var SearchListInfo = new List<STP.Domain.SecurityAndUsers.ContactSearchModel>
+{
+                        new STP.Domain.SecurityAndUsers.ContactSearchModel {SearchColumn = "1", SearchValue = "Contact name"},
+                        new STP.Domain.SecurityAndUsers.ContactSearchModel {SearchColumn = "2", SearchValue = "Organisation"},
+                        //new STP.Domain.Contact.ContactModel {searchType = "3", searchName = "Role" },
+                        new STP.Domain.SecurityAndUsers.ContactSearchModel {SearchColumn = "4", SearchValue= "Phone" },
+                        new STP.Domain.SecurityAndUsers.ContactSearchModel {SearchColumn = "5", SearchValue = "E-mail" },
+                    };
+
+    ViewBag.SearchInfo = new SelectList(SearchListInfo, "searchType", "searchName");
+}
+@{
+    bool isAdmin = false;
+    int portalType = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var user = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        portalType = user.UserTypeId;
+        if (portalType == 696006 || user.IsAdmin == 1)
+        {
+            isAdmin = true;
+        }
+    }
+
+    bool TocreateesdalSORTCon = false;
+
+    if (ViewBag.FlagToCreateNonEsdalSORTCon != null)
+    {
+        TocreateesdalSORTCon = ViewBag.FlagToCreateNonEsdalSORTCon;
+    }
+    bool FromAnnotation = ViewBag.FromAnnotation;
+}
+@Html.Hidden("SORTEsdalConFlag", TocreateesdalSORTCon)
+@Html.Hidden("pagePopupNo", 1)
+@Html.Hidden("pagePopupSize", 10)
+@Html.Hidden("FromAnnotation", FromAnnotation)
+@{
+    Layout = null;
+}
+<style>
+    #exampleModalCenter3 .sidenav {
+        top: 0rem !important;
+        position: absolute;
+        height: 100% !important;
+        right: 0rem !important;
+    }
+
+    html {
+        height: 100%;
+        overflow: auto;
+    }
+
+    body {
+        height: 100%;
+    }
+</style>
+<section id="ContactListBanner">
+    <span class="text-normal" style="font-size:19px;">Contact directory</span>
+
+    <div id="mid_row">
+        <span id="mid_row_data pl-0" style="padding-bottom: 1rem; padding-top: 1rem;">
+            <button class="btn btn-outline-primary btn-normal" id="CreateNonEsdalContact">
+                CREATE NON ESDAL CONTACT
+            </button>
+        </span>
+    </div>
+    <div class="main-table" id="notif_contact_list">
+
+    </div>
+</section>
+@using (Html.BeginForm("ContactList", "Contact", FormMethod.Post, new { id = "SearchPanelForm" }))
+{
+    <div id="filterDivAddressBook">
+        <div id="filters" class="sidenav filter-sidenav">
+            <div class="filter-header" style="margin-top:3rem;">
+                FILTER
+                <a href="javascript:void(0)" class="closebtn" id="closeFiltersAddressBook" style="margin-top:83px;">&times;</a>
+            </div>
+            <hr style="margin-top: 0;">
+            <div class="filter-list">
+                <div class="filter-entry">
+                    <div class="pr-0 pl-0 mr-0 ml-0 mt-4 mb-0">
+                        <div class="row mt-4">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="text-normal">
+                                    Select criteria type
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="pt-3">
+                                        <div class="col-sm-12 col-md-12 col-lg-12 pr-0 pl-3">
+                                            @Html.DropDownListFor(model => model.SearchColumn, new SelectList(@SearchListInfo, "SearchColumn", "SearchValue"), new { @id = "DDsearchCriteria", @class = "form-select mb-3 nav-link dropdown-toggle mr-3 mb-0 pt-3 pb-3", @style = "padding-top:4px; -webkit-padding-bottom:2px !important;width:100% !important;" })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="pt-2">
+                                        <div class="input-field pr-3">
+                                            <input class="text-decorate" id="SearchValue" name="SearchValue" type="text" value="">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pt-6" id="org_filter_btn">
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <!-- <div class="header mt-4"> -->
+                            <div class="button mr-0 mb-2">
+                                <button class="btn btn-outline-primary btn-normal" type="button" aria-pressed="true" id="clearAddressBookFilter" style="width: 100% !important">
+                                    CLEAR
+                                </button>
+                            </div>
+                            <!-- </div> -->
+                        </div>
+                        <div class="col-lg-8 col-md-8 col-sm-12">
+                            <!-- <div class="header mt-4"> -->
+                            <div class="button mr-0 mb-2">
+                                <button class="btn btn-outline-primary btn-normal" type="button" aria-pressed="true" id="searchNotifContact" style="width: 100% !important">
+                                    SEARCH
+                                </button>
+                            </div>
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="hidden_and" value="@ViewBag.analysisId" />
+        </div>
+
+    </div>
+    <div id="ScrollDownDiv">
+
+    </div>
+}
+@Html.Hidden("hf_IsSortSideCall", IsSortSideCall)
+@{
+    <input type="hidden" value="@ViewBag.FromAnnotation" id="hf_FromAnnotation" name="hf_FromAnnotation" />
+    <input type="hidden" value="@ViewBag.pageSize" id="hf_pageSize" name="hf_pageSize" />
+    <input type="hidden" value="@ViewBag.originImp" id="hf_originImp2" name="hf_originImp2" />
+    <input type="hidden" value="@ViewBag.originImp" id="hf_originImp" name="hf_originImp" />
+
+}
+<input type="hidden" value="@ViewBag.pageNum" id="hf_pageNum" name="hf_pageNum" />
+<input type="hidden" value="@ViewBag.NotifID" id="hf_notificationid" name="hf_notificationid" />
+<input type="hidden" value="@ViewBag.analysisId" id="hf_analysisId" name="hf_analysisId" />
+@*<input type="hidden" value=@IsSortSideCall id="hf_IsSortSideCall" name="hf_IsSortSideCall" />*@
+
+<input type="hidden" value="@ViewBag.originImp" id="hf_originImp" name="hf_originImp" />
+<input type="hidden" value="@ViewBag.count" id="hf_count" name="hf_count" />
+
+

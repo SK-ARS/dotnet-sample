@@ -1,0 +1,75 @@
+@{
+    bool isAdmin = false;
+    int portalType = 0;
+
+
+    if (Session["UserInfo"] != null)
+    {
+        var user = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        portalType = user.UserTypeId;
+        if (portalType == 696006 || user.IsAdmin == 1)
+        {
+            isAdmin = true;
+        }
+
+    }
+    int componentId = ViewBag.ComponentId;
+
+    int? vehicleSubTypeId = ViewBag.VehicleSubTypeId;
+    int? vehicleTypeId = ViewBag.VehicleTypeId;
+    int? movementId = ViewBag.MovementId;
+}
+<section id="banner" class="vehicle-setting">
+    <div class="container-fluid" id="banner-container">
+        <div id="vehicles" class="new-vehicle">
+            <div class="row pb-4">
+                <div class="col-lg-3 col-md-2 col-sm-4 col-xs-12  pt-5 title pr-0" style="font-family: lato_bold;">
+                    EDIT COMPONENT
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12" style="text-align: right">
+                    <label class="text-normal">* indicates mandatory fields</label>
+                </div>
+            </div>
+           
+            <div id='@componentId' class="comp">
+                <div class="row">
+                    @{
+                        Html.RenderAction("ComponentGeneralPage", new { vehicleSubTypeId = 0, vehicleTypeId = 0, movementId = 0, componentId = componentId, isComponent = true });
+                    }
+                </div>
+                <div class="row">
+                    @{
+                        Html.RenderAction("RegistrationComponent", new { compId = componentId, isTractor = true, isApplication = false, isVR1 = false });
+                    }
+                </div>
+                <div id="axlePage" class="row">
+                    @{
+                        Html.RenderAction("AxleComponent", new { axleCount = 0, componentId = componentId, vehicleSubTypeId = vehicleSubTypeId, vehicleTypeId = vehicleTypeId, movementId = movementId, IsEdit = true, isApplication = false, appRevID = 0, vehConfigID = 0, isVR1 = false });
+                    }
+                </div>
+
+            </div>
+            <div class="flexer justify-content-center mt-4">
+                <div class="row" id="btnPage">
+                    <button type="button" id="btn_comp_edit" class="btn_comp_edit btn outline-btn-primary SOAButtonHelper ml2" aria-hidden="true">SAVE COMPONENT</button>
+
+                </div>
+                <div class="ml-4">
+                    <button type="button" id="btn_Comp_Update_back" class="btn_Comp_Update_back btn outline-btn-primary SOAButtonHelper ml2" aria-hidden="true" style="">BACK</button>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="~/Scripts/Vehicle/unitConversion.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/UpdateComponent.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/VehicleComponent/jQuery.Comp.Register.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/VehicleComponent/jQuesry.Comp.General.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/VehicleComponent/jQuery.Comp.Axle.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/VehicleComponent/jQuery.Comp.Create.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/RegistrationComponent.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/VehicleComponent/jQuery.Comp.Create.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/ComponentGeneralPage.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/AxleComponent.js?V@(Session["ProjectVersion"])"></script>

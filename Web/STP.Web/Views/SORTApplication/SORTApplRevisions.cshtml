@@ -1,0 +1,131 @@
+@using System.Web.Optimization
+@using STP.Domain
+@using System.Globalization
+@model List<STP.Domain.MovementsAndNotifications.Movements.SORTMovementList>
+
+@{
+    ViewBag.Title = "SORTApplRevisions";
+    if (ViewBag.hauliermnemonic != "" && ViewBag.esdalref != 0)
+    {
+        ViewBag.Concate = ViewBag.hauliermnemonic + '/' + ViewBag.esdalref + '-';
+    }
+    else
+    {
+        ViewBag.Concate = "Application version- ";
+    }
+    long ProjectID = 0;
+    if (ViewBag.ProjectID != 0)
+    {
+        ProjectID = ViewBag.ProjectID;
+    }
+    @Html.Hidden("ProjectID", ProjectID)
+<input type="hidden" value="@ViewBag.LatRev" id="hf_latrev" name="hf_latrev" />
+    bool RevisedApplicationVersion = false;
+    if (ViewBag.RevisedAppVersion != null)
+    {
+        RevisedApplicationVersion = true;
+    }
+    int LastRevisionNo = 0;
+    if (ViewBag.LatRev != null)
+    {
+        LastRevisionNo = ViewBag.LatRev;
+    }
+}
+
+@{
+    if (Model.Count != 0)
+    {
+        <div id="haulier_app_rev">
+            <div class="main-table1" id="tableSOA">
+                <table class="mt-5 table-white-bg">
+                    <thead class="table-soa">
+                        <tr>
+                            <th class="table-soa text-normal m-0">
+                                Haulier application <br>
+                                versions
+                            </th>
+                            <th class="table-soa text-normal m-0">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            if (item.RevisionNo == LastRevisionNo && RevisedApplicationVersion == true)
+                            {
+                                <tr>
+                                    <td class="table-soa text-color2">
+                                        <a class="text-decoration-link mouseCursor fw-bold" id="ahrefShowRevisions"
+                                           data-RevisionNo="@item.RevisionNo"
+                                           data-RevisionID="@item.RevisionID"
+                                           data-VersionNo="@item.VersionNo"
+                                           data-AppStatus="@item.AppStatus">@ViewBag.Concate@item.RevisionNo</a>
+                                    </td>
+                                    <td class="table-soa text-color3"style="color:black">@item.ApplicationDate</td>
+                                </tr>
+
+                            }
+                            else
+                            {
+                                <tr>
+                                    @if (ViewBag.IsChooseCurrMovmOption == true)
+                                    {
+
+                                        <td class="table-soa text-color2">
+                                            <a class="text-decoration-link"
+                                               id="ahrefCurrentMovementList1"
+                                               data-RevisionID="@item.RevisionID">@ViewBag.Concate@item.RevisionNo</a>
+                                        </td>
+                                    }
+                                    else if (ViewBag.IsVehicleCurrentMovenet == true)
+                                    {
+                                        <td class="table-soa text-color2">
+                                            <a class="text-decoration-link mouseCursor"
+                                               id="ahrefCurrentMovementList2"
+                                               data-RevisionID="@item.RevisionID">@ViewBag.Concate@item.RevisionNo</a>
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td class="table-soa text-color2 mouseCursor">
+                                            <a class="text-decoration-link"
+                                               id="ahrefShowRevisions1"
+                                               data-RevisionNo="@item.RevisionNo"
+                                               data-RevisionID="@item.RevisionID"
+                                               data-VersionNo="@item.VersionNo"
+                                               data-AppStatus="@item.AppStatus">@ViewBag.Concate@item.RevisionNo</a>
+                                        </td>
+                                    }
+                                    <td class="table-soa text-color3"style="color:black">@item.ApplicationDate</td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+    else
+    {
+        <table class="mt-5 table-white-bg">
+            <thead class="table-soa">
+                <tr>
+                    <th class="table-soa text-normal m-0">
+                        Haulier application <br>
+                        versions
+                    </th>
+                    <th class="table-soa text-normal m-0">Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td colspan="2" style="text-align: center; padding-left: 0px !important;"><span style="color: red">No haulier application versions for this application.</span></td>
+                </tr>
+            </tbody>
+        </table>
+    }
+}
+@{
+    <input type="hidden" value="@ViewBag.OwnerName" id="hf_OwnerName" name="hf_OwnerName" />
+    <input type="hidden" value="@ViewBag.Checker" id="hf_Checker" name="hf_Checker" />
+}
+@*<script src="~/Scripts/SORTApplication/SORTApplRevisions.js?V@(Session["ProjectVersion"])"></script>*@

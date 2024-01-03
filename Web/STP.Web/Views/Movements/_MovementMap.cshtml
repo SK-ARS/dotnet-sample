@@ -1,0 +1,217 @@
+@model IEnumerable<STP.Domain.Routes.AppRouteList>
+@{
+    bool isMoveVersion = false;
+    long hfRouteIdMap = 0;
+    if (ViewBag.IsMoveVersion != null)
+    {
+        isMoveVersion = ViewBag.IsMoveVersion;
+    }
+    if (ViewBag.HfRouteIdMap != null && ViewBag.HfRouteIdMap > 0)
+    {
+        hfRouteIdMap = (long)ViewBag.HfRouteIdMap;
+    }
+}
+@Html.Hidden("HfRouteIdMap", hfRouteIdMap)
+<style>
+    .bannercfulls {
+        padding-bottom: 0px !important;
+        margin-top: 0px;
+    }
+
+    .containerfulls {
+        background-color: white;
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+    }
+
+    .helpdeskfulls {
+        padding-left: -26px;
+        margin-right: -10px;
+        padding-left: -21px;
+        margin-top: -40px !important;
+    }
+
+    .movementfulls {
+        margin-left: -8px !important;
+    }
+
+    .mapfulls {
+        /*height: 661px !important;
+        width: 1374px !important;*/
+        width: -webkit-fill-available !important;
+        height: 99vh !important;
+        position: absolute;
+        padding-right: 0px !important;
+        padding-left: -33px !important;
+        z-index: 0;
+        /* left: -27px !important;*/
+    }
+
+    .maponload {
+        height: 350px;
+        left: 0px;
+        width: 100%;
+    }
+
+    .routeEditBack {
+        margin-top: -2%;
+        float: right;
+    }
+
+    .routeEditHeading {
+        margin-left: 1%;
+        margin-top: 1%;
+    }
+
+    .iconfulls {
+        margin: 189px !important;
+        padding: -6px;
+        top: -183px !important;
+        right: -180px !important;
+    }
+
+    .horizontalMapRoad {
+        margin-top: 22px !important;
+        margin-left: 470px !important;
+    }
+
+    .banner-align {
+        min-height: auto !important;
+    }
+
+    #banner-container {
+        padding-bottom: 0px !important;
+    }
+
+    .table > :not(:first-child) {
+        border-top: none !important;
+    }
+
+    label.form-check-label {
+        display: inline !important;
+    }
+
+    .map-enlargeBtn {
+        background: none rgb(255, 255, 255);
+        border: 0px;
+        margin: 10px;
+        padding: 0px;
+        text-transform: none;
+        appearance: none;
+        position: absolute;
+        cursor: pointer;
+        user-select: none;
+        border-radius: 2px;
+        height: 39px;
+        width: 41px;
+        box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px;
+        overflow: hidden;
+        right: 15px;
+        top: 15px;
+        z-index: 1006;
+    }
+
+        .map-enlargeBtn.expand {
+            right: 22px;
+            top: 5px;
+        }
+</style>
+<div id="generalmap">
+    <div class="row">
+        <div id="tblroutelist">
+            <table style="width: 100%;" class="GridTable tblheaderfix">
+                <div class="cardSOA1 mt-0" style="margin: 0rem 0rem 1rem 0rem;">
+                    <h6 class="text-color3 stHeading1 m-0">Select route part</h6>
+                </div>
+                <tbody id="sortable-route" style="width: 100%;">
+                    @{
+                        if (Model != null)
+                        {
+                            foreach (var item in Model)
+                            {
+                                <div>
+                                    <input class="form-check-input move-map-@item.RouteID" type="radio" name="flexRadioDefault"
+                                           id="flexRadioDefault11" data-RouteId="@item.RouteID" data-RouteType="@item.RouteType" data-VIsSortPortal=@isMoveVersion>
+
+                                    <label class="form-check-label">
+                                        <span class="text-highlight">Route part  - </span>
+                                        <span class="details1 pl-0 map-name-@item.RouteID" style="padding-left:0%!important" ;>
+                                            @item.RouteName
+
+                                        </span>
+                                    </label>
+                                    <button id="editnenroute-@item.RouteID" class="btn btn-primary btn-normal editroutebtncls" 
+                                            data-routeid="@item.RouteID" data-routetype="@item.RouteType" 
+                                            data-routename="@item.RouteName" data-isreturnroute="@item.IsReturnRoute" 
+                                            data-routedesc="@item.RouteDescription" data-fromaddress="@item.FromAddress" data-toaddress="@item.ToAddress"
+                                            style="float:right;display:none">EDIT ROUTE</button>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="4"><span style="color: red">Result not found.</span></td>
+                            </tr>
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div id="trRoutePart" style="display:none" class="details1">Route Part Name</div>
+        <div class="details">
+            <div id="RouteName" class="pl-2"></div>
+        </div>
+        <div id="trHeaderDescription" style="display:none">
+            <div class="details1">Route Description</div>
+        </div>
+        <div id="trdesc" class="details" style="display:none">
+            <div id="RouteDesc"></div>
+        </div>
+    </div>
+    <div class="row pt-3" id="ShowDetail" style="display:none">
+        <div id="trStarting" class="details1 wd100">
+            <div>Starting </div>
+            <div id="Starting" class="details"></div>
+        </div>
+        <div class="row pt-2 via-point-container" style="display:none">
+            <div id="trVia" class="details1 wd100">
+                <div class="align-items-center toggle-collabsible-panel" style="width: 142px; cursor: pointer;" data-target="divViaPoint">
+                    <span class="text-normal-hyperlink">via / Waypoint</span>
+                    <img id="down-chevlon" src="/Content/assets/images/down-chevlon-filter.svg" class="cursor-pointer" style="float: right; display: block; margin-top: 5px;" width="15">
+                    <img id="up-chevlon" src="/Content/assets/images/up-chevlon-filter.svg" class="cursor-pointer" style="float: right; display: none; margin-top: 9px;" width="15">
+                </div>
+                @*<div>via / Waypoint </div>*@
+                <div class="details" id="divViaPoint" style="display:none">
+                    <div id="Tabvia" class="table">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row pt-2">
+            <div id="trEnding" class="details1 wd100">
+                <div>Ending </div>
+                <div class="details" id="Ending"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="form-check" id="showGPXRoute" style="display:none">
+    <input type="checkbox" id="gpxRoute" value="false" name="gpxRoute">
+    <label class="form-check-label label1 text-color3" for="GPXRoute">View Original Non ESDAL Route</label>
+</div>
+<div id="enlargeButton" class="position-relative">
+    <button draggable="false" id="btnenlarge" aria-label="Toggle fullscreen view" type="button" class="map-enlargeBtn">
+        <img id="Minimzeicon" src="~/Content/assets/Icons/maximize-map.svg" alt="" style="height: 123px; width: 152px; margin-top: -42px; margin-left: -56px; margin-right: -19px; margin-bottom: -6px;" title="Toggle full screen view">
+        <img id="MaxmizeIocn" src="~/Content/assets/Icons/minimise-map.svg" alt="" style="height: 123px; width: 152px; margin-top: -42px; margin-left: -56px; margin-right: -4px; margin-bottom: -4px;" title="Toggle normal screen view">
+    </button>
+</div>
+<div class="p-3" id="map-load-container">
+    <div id="map" class="google-map maponload">
+    </div>
+</div>
+
+<div id="movementMapFilterIcon" class="filter-icon-mov" style="display: none; right: 0 !important; position: absolute; margin-top: 74px; width: 41px !important; text-align: center; box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px; ">
+    <img src="/Content/assets/images/filter-icon2.svg" title="Open filter" width="30" style="color: black; cursor: pointer;">
+</div>

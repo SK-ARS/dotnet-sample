@@ -1,0 +1,63 @@
+@using STP.Domain.VehiclesAndFleets;
+@{
+    var componentTypeList = (List<STP.Domain.VehiclesAndFleets.Configuration.VehicleConfigList>)ViewBag.ComponentTypeList;
+    var Flag = ViewBag.Flag;
+    int compCount = componentTypeList.Count;
+    long compType1 = 0;
+    long compType2 = 0;
+    var count = 0;
+    if (compCount == 2)
+    {
+        compType1 = componentTypeList[0].ComponentTypeId;
+        compType2 = componentTypeList[1].ComponentTypeId;
+    }
+    var IsRecoveryVehicle = ViewBag.IsRecoveryVehicle != null ? ViewBag.IsRecoveryVehicle : false;
+    int TotalComponentCount = ViewBag.ComponentCount != null ? (int)ViewBag.ComponentCount : 0;//This will be used only during add third/3+ component. other cases it will be zero
+    int previousComponentTypeId = ViewBag.PreviousComponentTypeId != null ? (int)ViewBag.PreviousComponentTypeId : 0;//This will be used only during add third/3+ component. other cases it will be zero
+    int previousComponentSubTypeId = ViewBag.PreviousComponentSubTypeId != null ? (int)ViewBag.PreviousComponentSubTypeId : 0;//This will be used only during add third/3+ component. other cases it will be zero
+    var IsFirstRecoveryVehicle = componentTypeList != null ? componentTypeList.FirstOrDefault(x => x.ComponentTypeId == (int)VehicleEnums.ComponentType.RecoveryVehicle) != null : false;
+    bool isRigidVehicle = false;
+    if (TotalComponentCount >= 2 && componentTypeList.Count > 0 && componentTypeList.Any())
+    {
+        var lastComType = componentTypeList[componentTypeList.Count - 2];
+        if (lastComType != null && lastComType.ComponentTypeId == (int)VehicleEnums.ComponentType.RigidVehicle)
+        {
+            isRigidVehicle = true;
+        }
+    }
+}
+@if (componentTypeList.Count > 0 && Flag != 0)
+{
+    if (Flag == 2)
+    {
+        foreach (var component in componentTypeList)
+        {
+            TempData["compCount"] = count++;
+            Html.RenderAction("GetComponent", new { componentId = component.ComponentId, componentTypeId = component.ComponentTypeId, componentSubTypeId = component.ComponentSubTypeId, TotalComponentCount = TotalComponentCount, CurrentCount = count,  isImportComponent = ViewBag.isImportComponent, isRecoveryVehicle = IsFirstRecoveryVehicle, isRigidVehicle = isRigidVehicle });
+
+        }
+    }
+    else if (Flag == 1)
+    {
+        TempData["compCount"] = compCount - 1;
+        Html.RenderAction("GetComponent", new { componentId = componentTypeList[compCount - 1].ComponentId, componentTypeId = componentTypeList[compCount - 1].ComponentTypeId, componentSubTypeId = componentTypeList[compCount - 1].ComponentSubTypeId, TotalComponentCount = TotalComponentCount, CurrentCount = compCount,  isImportComponent = ViewBag.isImportComponent, isRecoveryVehicle = IsFirstRecoveryVehicle, isRigidVehicle = isRigidVehicle });
+    }
+}
+
+@if (Flag == 0)
+{
+    Html.RenderAction("GetComponent", new { TotalComponentCount = TotalComponentCount, componentTypeId = previousComponentTypeId, componentSubTypeId = previousComponentSubTypeId,  isRecoveryVehicle = IsFirstRecoveryVehicle, isRigidVehicle = isRigidVehicle });
+}
+
+
+<style>
+    .vehicle-setting .card {
+        width: 16rem !important;
+    }
+</style>
+@{
+    @Html.Hidden("hf_compCount", compCount)
+    @Html.Hidden("hf_compType1", compType1)
+    @Html.Hidden("hf_compType2", compType2)
+}
+@*<script src="~/Scripts/VehicleConfiguration/CreateComponent.js?V@(Session["ProjectVersion"])"></script>*@

@@ -1,0 +1,145 @@
+@{
+    ViewBag.Title = "SORTLeftPanel";
+    int rev_id = 0;
+    long proj_id = 0;
+    int Lat_Rev_No = 0;
+    bool View_VR1 = false;
+    var isVr1App = false;
+    if (ViewBag.Project_id != null)
+    {
+        proj_id = ViewBag.Project_id;
+    }
+    if (ViewBag.RevisionId != null)
+    {
+        rev_id = ViewBag.RevisionId;
+    }
+    bool Vr1Approve = false;
+    if (ViewBag.VR1Approve != null)
+    {
+        Vr1Approve = ViewBag.VR1Approve;
+    }
+    bool Vr1Number = false;
+    if (ViewBag.VR1Number != null)
+    {
+        Vr1Number = true;
+    }
+    bool Vr1Document = false;
+    if (ViewBag.VRDocument != null)
+    {
+        Vr1Document = ViewBag.VRDocument;
+    }
+    if (ViewBag.Latest_Rev_No != null && ViewBag.Latest_Rev_No != 0)
+    {
+        Lat_Rev_No = ViewBag.Latest_Rev_No;
+        View_VR1 = true;
+    }
+    int Enter_BY_SORT = 0;
+    if (ViewBag.Enter_BY_SORT != null)
+    {
+        Enter_BY_SORT = ViewBag.Enter_BY_SORT;
+    }
+    if (ViewBag.VR1APP != null)
+    {
+        isVr1App = ViewBag.VR1APP;
+    }
+}
+
+@{
+    int isAdmin = 0;
+    int userTypeID = 0;
+    string SORTAllocateJob = null;
+    string SORTCanAgreeAllSO = null;
+    string SORTCanAgreeUpto150 = null;
+    string SORTCANApproveSignVR1 = null;
+    string SORTCreateJob = null;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        userTypeID = sessionValues.UserTypeId;
+        SORTCANApproveSignVR1 = sessionValues.SORTCanApproveSignVR1;
+        if (sessionValues.IsAdmin == 1)
+        {
+            isAdmin = 1;
+        }
+    }
+
+}
+
+@Html.Hidden("proj_id", proj_id)
+@Html.Hidden("rev_id", rev_id)
+
+<div id="leftpanel_div">
+    @{
+        string display = ViewBag.Display;
+        switch (display)
+        {
+            case "ProjOverview":
+                Html.RenderAction("ProjectOverviewLeftPanel", "SORTApplication", new { OwnerName = ViewBag.OwnerName, PlannerId = ViewBag.PlannerId, CheckingStatus = ViewBag.CheckingStatus, AppStatus = ViewBag.AppStatus, Checkerid = ViewBag.CheckerId, CandidateId = ViewBag.CandidateId, MovVersionNo = ViewBag.MoveVersioNo, VR1Number = ViewBag.SortVR1Number, MovDistbuted = ViewBag.MovIsDisbted, SONumber = ViewBag.SONumber, EnterdbySort = Enter_BY_SORT, Projectid = proj_id, Revision_ID = rev_id });
+                break;
+            case "ApplSumm":
+                Html.RenderAction("ApplSummaryLeftPanel", "SORTApplication", new { Project_ID = proj_id, Revision_ID = rev_id, EnterdbySort = Enter_BY_SORT, IsVr1App = isVr1App });
+                break;
+            case "MoveSumm":
+                Html.RenderAction("MoveSummaryLeftPanel", "SORTApplication", new { Mov_btn_show = ViewBag.Mov_btn_show, ProjctStatus = ViewBag.PrjStatus, CheckingStatus = ViewBag.CheckingStatus, PlannerId = ViewBag.PlannerId, VR1APP = ViewBag.VR1APP, Enter_BY_SORT = Enter_BY_SORT });
+                break;
+            case "CollabStatus":
+                <div class="flexer justify-content-center pt-4" id="menu-buttons">
+                    <button class="btn outline-btn-primary SOAButtonHelper">
+                        <span class="pr-3">
+                            <img src="~/Content/assets/images/withdrawn.svg" width="15">
+                        </span>View history
+                    </button>
+                    <button class="btn outline-btn-primary SOAButtonHelper">
+                        <span class="pr-3">
+                            <img src="~/Content/assets/images/withdrawn.svg" width="15">
+                        </span>Set collaboration
+                    </button>
+                </div>
+                break;
+            case "SO":
+                Html.RenderPartial("SOLeftPanel");
+                break;
+            case "VR1Approval":
+                if (ViewBag.Enter_BY_SORT != 0)
+                {
+                    Html.RenderAction("ApplSummaryLeftPanel", "SORTApplication", new { Project_ID = proj_id, Revision_ID = rev_id, EnterdbySort = Enter_BY_SORT, IsVr1App = isVr1App });
+                }
+                <div class="flexer justify-content-center pt-4" id="menu-buttons">
+                    @if (Vr1Approve == true)
+                    {
+                        if (View_VR1 == true)
+                        {
+                            <button id="btn_vr1approve" class="btn-approve-vr1 btn outline-btn-primary SOAButtonHelper">
+                                <span class="pr-3">
+                                    <img src="~/Content/assets/images/approve-VR1.svg" width="17">
+                                </span>Approve VR1
+                            </button>
+                        }
+                    }
+                    @if (Vr1Number == true)
+                    {
+                        <button id="btn_vr1approve" class="btn-generate-vr1-number btn outline-btn-primary SOAButtonHelper">
+                            <span class="pr-3">
+                                <img src="~/Content/assets/images/generate-VR1.svg" width="15">
+                            </span>Generate VR1
+                        </button>
+                    }
+                    @if (Vr1Document == true)
+                    {
+                        <button id="btn_vr1approve" class="btn-generate-vr1-document btn outline-btn-primary SOAButtonHelper">
+                            <span class="pr-3">
+                                <img src="~/Content/assets/images/generate-VR1.svg" width="15">
+                            </span>Generate VR1 Document
+                        </button>
+                    }
+                </div>
+                break;
+        }
+    }
+</div>
+
+@*<script src="~/Scripts/Common/MasterPage/jquery.uiControls.js?V@(Session["ProjectVersion"])"></script>*@
+@*@System.Web.Optimization.Scripts.Render("~/bundles/jqueryuiControls")*@
+@Html.Hidden("hf_PageFlag", Session["pageflag"])
+
+@*<script src="~/Scripts/SORTApplication/SORTLeftPanel.js?V@(Session["ProjectVersion"])"></script>*@

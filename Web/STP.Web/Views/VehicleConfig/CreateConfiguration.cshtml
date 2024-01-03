@@ -1,0 +1,115 @@
+@model List<STP.Domain.VehiclesAndFleets.Configuration.VehicleConfigList>
+@{
+    var compIds = (List<long>)Session["ComponentId"];
+
+    var guid = ViewBag.Guid;
+    if (ViewBag.IsEdit == 1 || ViewBag.IsMovement == true)
+    {
+        Layout = null;
+    }
+    var IsEdit = ViewBag.IsEdit;
+    int ComponentCount = Model.Count();
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.VEHICLES;
+}
+@Html.Hidden("hf_isedit", IsEdit)
+<section id="banner" class="vehicle-setting">
+    <div class="container-fluid" id="banner-container">
+        <div id="vehicles" class="createConfig">
+            <input type="hidden" value="@ViewBag.Guid" id="GUID" name="GUID" />
+            <input type="hidden" value="@ViewBag.vehicleConfigId" id="vehicleConfigId" name="vehicleConfigId" />
+            @Html.Hidden("ComponentCount", ComponentCount)
+            <input type="hidden" value="@ViewBag.IsMovement" id="IsMovement" name="IsMovement" />
+            @if (ViewBag.IsEdit == 1)
+            {
+                <div class="col-lg-3 col-md-2 col-sm-4 col-xs-12  pt-5 title pr-0" style="font-family: lato_bold;">
+                    EDIT CONFIGURATION
+                </div>
+            }
+            <div class="row new-vehicle" id="selectComponent">
+
+            </div>
+
+            <div class="row mt-4 mr-2 main-entry configComponent" id="divAllComponent">
+                @if (Model.Count() > 0)
+                {
+                    foreach (var compId in Model.OrderBy(s => s.LatPosn).ThenBy(s => s.LongPosn))
+                    {
+                        <div>
+                            @{
+                                Html.RenderAction("GetVehicleComponentImage", "Vehicle", new { vehicleSubTypeId = 0, vehicleTypeId = 0, movementId = 0, componentId = compId.ComponentId, GUID = guid, isComponent = false, isFromConfig = 1, vehicleConfigId = ViewBag.vehicleConfigId, movement = (bool)ViewBag.IsMovement, isCandidate = (bool)ViewBag.isCandidate });
+                            }
+                        </div>
+
+                        <form action="@Url.Action("CreateComponent", "Vehicle", new
+                                                     {
+                                                         B7vy6imTleYsMr6Nlv7VQ =
+                                                            STP.Web.Helpers.EncryptionUtility.Encrypt("vehicleConfigId=" + ViewBag.vehicleConfigId)
+                                                     })">
+
+                            @Html.Hidden("Component_Id", compId.ComponentId);
+                            <div id="@compId.ComponentId" class="comp" style="display:none;">
+                                <div class="row divComponentData" id="divComponentData-@compId.ComponentId">
+                                    <div class="row">
+                                        <div class="col-lg-5 col-sm-12 col-md-5">
+                                            <div id="componentConfig">
+                                                @{
+                                                    Html.RenderAction("ComponentGeneralPage", "Vehicle", new { vehicleSubTypeId = 0, vehicleTypeId = 0, movementId = 0, componentId = compId.ComponentId, GUID = guid, isComponent = false, isFromConfig = 1, vehicleConfigId = ViewBag.vehicleConfigId, movement = (bool)ViewBag.IsMovement, isCandidate = (bool)ViewBag.isCandidate });
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-7 col-sm-12 col-md-7">
+                                            <div id="axlePage">
+                                                @{
+                                                    Html.RenderAction("AxleComponent", "Vehicle", new { axleCount = 0, componentId = compId.ComponentId, vehicleSubTypeId = TempData["VehicleSubTypeId"], vehicleTypeId = TempData["vehicleTypeId"], movementId = TempData["movementId"], IsEdit = true, isApplication = false, appRevID = 0, vehConfigID = 0, isVR1 = false, isFromConfig = 1, vehicleConfigId = ViewBag.vehicleConfigId, movement = (bool)ViewBag.IsMovement, isCandidate = (bool)ViewBag.isCandidate });
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-5 col-sm-12 col-md-5">
+                                        <div id="regDetailsConfig">
+                                            @{
+                                                Html.RenderAction("RegistrationComponent", "Vehicle", new { compId = compId.ComponentId, isTractor = true, isApplication = false, isVR1 = false, isFromConfig = 1, vehicleConfigId = ViewBag.vehicleConfigId, movement = (bool)ViewBag.IsMovement, isCandidate = (bool)ViewBag.isCandidate });
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flexer justify-content-center mt-5">
+                                    <button type="button" id="btn_ComponentEdit-@compId.ComponentId" ComponentId="@compId.ComponentId" class="btn_ComponentEdit btn outline-btn-primary SOAButtonHelper mr-2 mb-2" aria-hidden="true">EDIT</button>
+                                    <button type="button" id="btn_comp_save" component="@compId.ComponentId" class="btn_comp_save btn_comp_finish-@compId.ComponentId btn outline-btn-primary SOAButtonHelper mr-2 mb-2" aria-hidden="true" style="display:none;">SAVE</button>
+                                    <button type="button" id="btn_ComponentDelete-@compId.ComponentId" ComponentId="@compId.ComponentId" class="btn outline-btn-primary SOAButtonHelper mr-2 mb-2 btn_deleteComponent" aria-hidden="true">DELETE</button>
+                                    <button type="button" id="btn_ComponentAddToFleet-@compId.ComponentId" ComponentId="@compId.ComponentId" class="btn_ComponentAddToFleet btn outline-btn-primary SOAButtonHelper mr-2 mb-2" aria-hidden="true">Save tO Fleet</button>
+                                    <button type="button" id="btn_comp_cancel-@compId.ComponentId" component="@compId.ComponentId" class="btn_comp_cancel btn outline-btn-primary SOAButtonHelper mr-2 mb-2" aria-hidden="true" style="display:none;">CANCEL</button>
+                                </div>
+                            </div>
+                        </form>
+                    }
+                }
+            </div>
+
+        </div>
+
+        <div class="flexer justify-content-center configComponent mt-5">
+            @*<button class="btn outline-btn-primary SOAButtonHelper">BACK</button>*@
+            <button type="button" id="btn_Next" class="btn outline-btn-primary SOAButtonHelper ml2" style="display:none;">NEXT</button>
+        </div>
+
+    </div>
+</section>
+
+<style>
+    .divComponentData {
+        pointer-events: none;
+        opacity: 0.7;
+    }
+
+    .btn.btn-outline-primary:hover {
+        color: white !important;
+    }
+</style>
+<script src="~/Scripts/Vehicle/vehicleConfig.Summarise.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/vehicleConfig.Create.js?V5.@DateTime.Now.Ticks"></script>
+<script src="~/Scripts/VehicleComponent/jQuery.Comp.Create.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/VehicleComponent/jQuery.Comp.Axle.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/VehicleConfig.Registration.js?V@(Session["ProjectVersion"])"></script>
+
+<script src="~/Scripts/VehicleConfig/CreateConfiguration.js?V@(Session["ProjectVersion"])"></script>

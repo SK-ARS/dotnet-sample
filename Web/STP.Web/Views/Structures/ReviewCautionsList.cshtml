@@ -1,0 +1,146 @@
+@{
+    Layout = null;
+}
+@using System.Web.Optimization
+@using STP.Domain
+@using PagedList.Mvc
+@model PagedList.IPagedList<STP.Domain.Structures.StructureModel>
+
+
+@{
+    int userTypeID = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        userTypeID = sessionValues.UserTypeId;
+    }
+
+    int pageSize = ViewBag.pageSize;
+    int? pageNum = ViewBag.page;
+    int StructureID = Convert.ToInt32(ViewBag.StructureID);
+    //string ConstraintCode = Convert.ToString(ViewBag.ConstraintCode);
+
+    @Html.Hidden("pageSizeVal", pageSize)
+    @Html.Hidden("pageNum", pageNum)
+    @Html.Hidden("hdnstructureId", StructureID)
+}
+@{
+    bool isAdmin = false;
+    int portalType = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var user = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        portalType = user.UserTypeId;
+        if (portalType == 696006 || user.IsAdmin == 1)
+        {
+            isAdmin = true;
+        }
+    }
+}
+@Html.Hidden("TotalPages", Model.PageCount)
+<style>
+    .clickable {
+        cursor: pointer;
+    }
+
+    .btn-layout1 {
+        width: 14rem !important;
+        padding: 0.675rem 0.75rem !important;
+    }
+
+    .outline-btn-primary:hover, .btn-outline-primary:hover {
+        background-color: #275795 !important;
+        color: white !important;
+    }
+
+    .outline-btn-primary:hover {
+        color: rgba(39, 87, 149, 1);
+    }
+</style>
+<div id="manageCautionId" class="review-caution-list" style="display: none;">
+    <div class="flexer justify-content-start mt-5 widthP40">
+        <button class="btn outline-btn-primary btn-layout1 SOAButtonHelper fAdd addcausion" arg1="newCaution">
+            NEW CAUTION
+        </button>
+        <button class="btn outline-btn-primary btn-layout1 SOAButtonHelper fAdd ml2 openhistory" arg1="history-soa">HISTORY</button>
+    </div>
+    <div class="main-table mt-5" id="caution-soa">
+        <table>
+            <thead>
+                <tr>
+                    <th>Owner</th>
+                    <th>Name</th>
+                    <th>Action</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody class="tbColor">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-color1 tbColor align-value-top pl-5">
+                            @item.OrganizationName
+                            @Html.Hidden("OrganisationName", item.OrganizationName)
+                        </td>
+                        <td class="text-color2 tbColor align-value-top pl-5 ">
+                            <a href="#" class="viewcaution" arg1="@item.CautionId" return false;" style="text-decoration:none;">@item.CautionName</a>
+                        </td>
+                        <td class="text-color1 tbColor align-value-top pl-5">
+                            @Html.Raw(item.SpecificAction)
+                        </td>
+                        <td class="tbColor align-value-top">
+                            @if (ViewBag.Helpdest_redirect != "true")
+                            {
+                                <span class="iconPack flexer justify-content-around w-75 ">
+                                    <i arg1="@item.CautionId" class="fa fa-address-book-o mCtrl clickable viewstructurecaution" title="Contacts"></i>
+                                    <img src="~/Content/assets/images/edit-icon.svg" class="mCtrl clickable editcaution " arg1="@item.CautionId" width="22" title="Edit">
+                                    <img arg1="@item.CautionId" id="@item.CautionId" name="@item.CautionName" src="~/Content/assets/images/delete-icon.svg" class="mCtrl clickable deletecaution" width="18" title="Delete">
+                                </span>
+                            }
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+        <div class="bottom-pagination">
+            @if (@ViewBag.TotalCount > 0)
+            {
+                <div class="pagination" id="reviewCausionPaginator">
+                    @Html.PagedListPager(Model, page => Url.Action("ReviewCautionsList",
+                             new
+                             {
+                                 page = page,
+                                 pageSize = pageSize,
+                                 structureId = ViewBag.StructureID,
+                                 StructureCode = ViewBag.StructureCode,
+                                 sectionId=ViewBag.SectionID
+                             }), new PagedListRenderOptions
+                             {
+                                 DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                                 DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                                 LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                                 LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                                 DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                                 DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                                 MaximumPageNumbersToDisplay = 3,
+                                 DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                                 EllipsesFormat = "...",
+                                 LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+                                 LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+                             });
+                </div>
+            }
+            else
+            {
+                <div class="error invalid-feedback" style="display: block !important; text-align: center;">No record found</div>
+            }
+        </div>
+    </div>
+
+    <input type="hidden" value="@ViewBag.StructureID" id="hf_structureid" name="hf_structureid" />
+    <input type="hidden" value="@ViewBag.SectionID" id="hf_sectionid" name="hf_sectionid" />
+    <input type="hidden" value="@ViewBag.sectionId" id="hf_sectionids" name="hf_sectionids" />
+</div>
+
+@*<script src="~/Scripts/Structures/ReviewCautionsList.js?V@(Session["ProjectVersion"])"></script>*@

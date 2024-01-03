@@ -1,0 +1,230 @@
+@model List<STP.Domain.RoadNetwork.RoadOwnership.RoadContactModal>
+
+@{
+    Layout = null;
+}
+
+<link href="~/Content/Style/Common/alertbox.css" rel="stylesheet" />
+<link href="~/Content/Style/Common/style.css" rel="stylesheet" />
+<link href="~/Content/Style/Common/grid_css.css" rel="stylesheet" />
+<link href="~/Content/PagedList.css" rel="stylesheet" />
+<style>
+
+    .Width50 {
+        width: 50%;
+    }
+
+    .Width19Per {
+        width: 9% !important;
+    }
+
+    .Width11Per {
+        width: 11% !important;
+    }
+
+    .Width100 {
+        width: 100px !important;
+    }
+
+    .totalCount {
+        float: left;
+        width: 100%;
+        display: none;
+    }
+
+    .redcolor {
+        color: red;
+    }
+
+    .noborder {
+        border-bottom: none !important;
+    }
+
+    .aligncenter {
+        text-align: center;
+    }
+
+    .Bold {
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    .scroll {
+        overflow-y: auto;
+    }
+    .MdWdth {
+        vertical-align: middle;
+        height: auto;
+        width: -webkit-fill-available;
+        width: -moz-available;
+        border-radius: 5px;
+        overflow-x: hidden;
+    }
+    .Headcls {
+        font-family: lato_light;
+    }
+</style>
+
+<div class="form form_component road-owner-contact" id="form_component" ;>
+    <div class="head headgrad head_component" style="display:none">
+        <div class="dyntitle">Contact details</div>
+        <span aria-hidden="true" data-icon="&#xe0f3;" id="span-close"></span>
+
+    </div>
+    <div class="body" id="div_list" style="display:none">
+        @if (Model != null && Model.Count != 0)
+        {
+
+            foreach (var item in Model)
+            {
+                <table class="GridTable tblheaderfix" style="width:600px;margin-left:15px;">
+                    <tr class="noborder"><td class="Width50">Organisation name&nbsp(Organisation type) </td><td class="Width50">@(item.OrganisationName + Html.Raw("    ") + "(" + item.OrganisationType + ")")  </td></tr>
+
+                    <tr class="noborder"><td class="Width50">Contact name</td> <td class="Width50">@item.ContactName</td></tr>
+
+                    <tr class="noborder"><td class="Width50">Address </td><td class="Width50">@item.AddressLine1  <br> @item.AddressLine2 <br> @item.AddressLine3 <br> @item.AddressLine4</td></tr>
+
+                    <tr class="noborder"><td class="Width50">Postcode</td><td class="Width50">   @item.PostCode  </td></tr>
+
+                    <tr class="noborder"><td class="Width50">Telephone </td><td class="Width50">@item.Telephone </td></tr>
+
+                    <tr class="noborder"><td class="Width50">Fax  </td><td class="Width50"> @item.Fax</td></tr>
+
+                    <tr> <td class="Width50">Email </td><td class="Width50"> @item.EMail </td></tr>
+
+                </table>
+
+            }
+
+
+
+        }
+        else
+        {
+            <div>@Resources.Resource.NoRecordFound</div>
+        }
+
+
+
+    </div>
+    <div class="modal scroll" tabindex="-1" role="dialog" id="exampleModalCenter22" style="display: block;">
+        <div class="modal-dialog modal-dialog-centered" max-width: 548px !important; role="document">
+            <div class="modal-content MdWdth" width: 550px !important; id="ViewRoadContacts">
+                <div class="modal-header pt-4">
+                    <span class="details pl-3" style="font-size:25px;font-family: lato_light;">Contact details</span>
+                    <span aria-hidden="true" id="IDclose" class="close" data-dismiss="modal" aria-label="Close"
+                           style="padding-left:0">&times;</span>
+                </div>
+                <div class="modal-body pt-4 pl-3" style="text-align: left;margin-bottom: 16px;">
+                    @if (Model != null && Model.Count != 0)
+                    {
+                        var i = 0;
+                        foreach (var item in Model)
+                        {
+                            <div class="row ml-0">
+                                <div class="col-lg-4 col-md-4 col-sm-4 pl-3 text-normal">
+                                    Organisation name
+                                </div>
+                                <div class="col-lg-8 col-md-4 col-sm-4 details1">
+                                    @(item.OrganisationName)
+                                </div>
+                            </div>
+                            <div class="row ml-0">
+                                <div class="col-lg-4 col-md-4 col-sm-4 pl-3 text-normal">
+                                    Organisation type
+                                </div>
+                                <div class="col-lg-8 col-md-4 col-sm-4 details1">
+                                    @item.OrganisationType
+                                </div>
+                            </div>
+                            <div class="row ml-0">
+                                <div class="col-lg-4 col-md-4 col-sm-4 pl-3 text-normal">
+                                    Contact name
+                                </div>
+                                <div class="col-lg-8 col-md-4 col-sm-4 details1">
+                                    @item.ContactName
+                                </div>
+                            </div>
+                            <div class="row ml-0" style="margin: 28px -10px;">
+                                <div class="col-lg-4 col-md-4 col-sm-4 pl-3 text-normal">
+                                    Address
+                                </div>
+                                <div class="col-lg-8 col-md-4 col-sm-4 details1">
+                                    @item.AddressLine1 <br>
+                                    @if (@item.AddressLine2 != "")
+                                    {
+                                        @item.AddressLine2 <br>
+                                    }
+                                    @if (@item.AddressLine3 != "")
+                                    {
+                                        @item.AddressLine3 <br>
+                                    }
+                                    @if (@item.AddressLine4 != "")
+                                    {
+                                        @item.AddressLine4 <br>
+                                    }
+                                    @if (@item.AddressLine2 != "")
+                                    {
+                                        @item.AddressLine2 <br>
+                                    }
+                                </div>
+                            </div>
+                            <div class="row ml-0">
+                                <div class="col-lg-4 col-md-4 col-sm-4 pl-3 text-normal">
+                                    Postcode
+                                </div>
+                                <div class="col-lg-8 col-md-4 col-sm-4 details1">
+                                    @item.PostCode
+                                </div>
+                            </div>
+                            <div class="row ml-0">
+                                <div class="col-lg-4 col-md-4 col-sm-4 pl-3 text-normal">
+                                    Telephone
+                                </div>
+                                <div class="col-lg-8 col-md-4 col-sm-4 details1">
+                                    @item.Telephone
+                                </div>
+                            </div>
+                            <div class="row ml-0">
+                                <div class="col-lg-4 col-md-4 col-sm-4 pl-3 text-normal">
+                                    Fax
+                                </div>
+                                <div class="col-lg-8 col-md-4 col-sm-4 details1">
+                                    @item.Fax
+                                </div>
+                            </div>
+                            <div class="row ml-0">
+                                <div class="col-lg-4 col-md-4 col-sm-4 pl-3 text-normal">
+                                    Email
+                                </div>
+                                <div class="col-lg-8 col-md-4 col-sm-4 details1">
+                                    @item.EMail
+                                </div>
+                            </div>
+                            i = i + 1;
+                            if (Model.Count != i)
+                            {
+                                <hr>
+                            }
+
+                        }
+                    }
+                    else
+                    {
+                        <div>@Resources.Resource.NoRecordFound</div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+@*<script src="~/Scripts/RoadOwnership/RoadOwnersContact.js?V@(Session["ProjectVersion"])"></script>*@

@@ -1,0 +1,48 @@
+@{
+    Layout = null;
+    string pageUrl = string.Empty;
+    string userName = string.Empty;
+    if (ViewBag.PageUrl != null)
+    {
+        pageUrl = ViewBag.PageUrl;
+    }
+    if (ViewBag.Username != null)
+    {
+        userName = ViewBag.Username;
+    }
+    int? flag = ViewBag.flag;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Help</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+    <link href="~/Content/style.css?V@(Session["ProjectVersion"])" rel="stylesheet" />
+    <link href="~/Content/Site.css?V@(Session["ProjectVersion"])" rel="stylesheet" />
+    <script src="~/Scripts/Web/jquery-3.6.2.min.js?V@(Session["ProjectVersion"])"></script>
+    @Scripts.Render("~/bundles/Util")
+    <style type="text/css">
+        #banner-container {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div>
+
+        @Html.Hidden("url", pageUrl, new { id = "page_url" })
+        @Html.Hidden("username", userName, new { id = "page_username" })
+        @Html.Hidden("flag",flag, new { id = "flag" })
+        @{Html.RenderPartial("Index");}
+    </div>
+    <script nonce="@STP.Web.Helpers.NonceHelper.ScriptNonce()">
+       AntiForgeryTokenInclusionRequest('@Html.AntiForgeryToken()');
+    </script>
+</body>
+</html>
+<script src="~/Scripts/Common/bootstrap-5.1.3.bundle.min.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Generic/HelpBuilder.js?V@(Session["ProjectVersion"])"></script>

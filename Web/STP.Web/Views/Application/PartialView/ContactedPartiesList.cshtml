@@ -1,0 +1,127 @@
+@using PagedList.Mvc
+@model PagedList.IPagedList<STP.Domain.MovementsAndNotifications.Movements.MovementContactModel>
+
+@{
+    int pageNum = 10;
+    int listCount = 0;
+    listCount = (int)ViewBag.pageSize;
+    if (ViewBag.pageSize != null)
+    {
+        pageNum = ViewBag.pageSize;
+    }
+
+    int? pageNumber = ViewBag.page;
+    int totalPageCount = Model.PageCount;
+    int totalItemCount = Model.TotalItemCount;
+
+    ViewBag.Title = "Contacted Parties List";
+
+    if (!Request["lang"].IsEmpty())
+    {
+        Culture = UICulture = Request["lang"];
+    }
+
+    int analysisId = (int)ViewBag.analysisID;
+    @Html.Hidden("anId", analysisId)
+}
+
+<div class="pb-4">
+    @Html.Hidden("pageSizeVal", pageNum)
+    <div>
+        <table>
+            <tr>
+                <th>Contact</th>
+                <th>Contact Type</th>
+                <th>Email</th>
+                <th>On behalf of</th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td class="text-color2">
+                        @if (item.ContactId > 0)
+                        {
+                            <a href="#" arg1="@item.ContactId" class="text-decoration-link viewcontactparties">@item.FirstName</a>
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => item.FirstName)
+                        }
+                    </td>
+                    <td class="text-color1">
+                        @Html.DisplayFor(modelItem => item.Organisation)
+                    </td>
+
+                    <td class="text-color2">
+                        <a href="mailto:@item.Email" class="text-decoration-link">
+                            @Html.DisplayFor(modelItem => item.Email)
+                        </a>
+                    </td>
+
+                    <td class="text-color1">
+                        @if (item.OnBehalfOfId > 0)
+                        {
+                            <a href="#" arg1="@item.OnBehalfOfId" class="text-decoration-link contactonbehalfofid">@item.OnBehalfOf</a>
+                        }
+                        else
+                        {
+                            @Html.DisplayFor(modelItem => item.OnBehalfOf)
+                        }
+                    </td>
+                </tr>
+            }
+
+        </table>
+
+        @if (listCount < totalItemCount)
+        {
+            if (Model.Count > 0)
+            {
+                <div class="row pagination-container-new" id="comp-pagination">
+                    <div class="col-lg-3"></div>
+                    <div class="col-lg-6 text-center">
+                        <div class="table-pagination">
+                            @Html.PagedListPager(Model, page => Url.Action("ContactedPartiesList",
+                              new
+                              {
+                                  B7vy6imTleYsMr6Nlv7VQ =
+                                                            STP.Web.Helpers.EncryptionUtility.Encrypt(
+                                                            "page=" + page +
+                                                            "&isFromConfig=" + ViewBag.isFromConfig)
+                              }), new PagedListRenderOptions
+                              {
+                                  DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                                  DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                                  LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                                  LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                                  DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                                  DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                                  MaximumPageNumbersToDisplay = 3,
+                                  DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                                  EllipsesFormat = "...",
+                                  LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+                                  LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+                              });
+                        </div>
+                        @Html.Hidden("TotalPages", totalPageCount)
+                        @Html.Hidden("pageSizeVal", pageNum)
+                        @Html.Hidden("pageNum", pageNumber)
+                    </div>
+                    <div class="col-lg-3"></div>
+                </div>
+            }
+        }
+    </div>
+</div>
+<style>
+    .pagination {
+        color: rgba(92, 92, 92, 1);
+    }
+</style>
+@{
+<input type="hidden" value="@ViewBag.pageSize" id="hf_pageSize" name="hf_pageSize" />
+<input type="hidden" value="@ViewBag.analysisID" id="hf_analysisID" name="hf_analysisID" />
+    @Html.Hidden("hf_pageNum", pageNum)
+}
+@*<script src="~/Scripts/Application/ContactedPartiesList.js?V@(Session["ProjectVersion"])"></script>*@

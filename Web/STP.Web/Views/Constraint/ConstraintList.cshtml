@@ -1,0 +1,355 @@
+﻿@using PagedList.Mvc
+@using STP.Common.EncryptDecrypt
+@model PagedList.IPagedList<STP.Domain.RoadNetwork.Constraint.ConstraintModel>
+
+@{
+    int listCount = 0;
+    if (Session["PageSize"] != null)
+    {
+        listCount = (int)Session["PageSize"];
+    }
+    int pageSize = 10; int? pageNum = ViewBag.page;
+    if (ViewBag.pageSize != null)
+    {
+        pageSize = ViewBag.pageSize;
+    }
+    string Mode = "";
+
+    if (Request["Mode"] != null)
+    {
+        Mode = Request["Mode"].ToString();
+    }
+    else if (!string.IsNullOrEmpty(Convert.ToString(TempData["Mode"])))
+    {
+        Mode = Convert.ToString(TempData["Mode"]);
+    }
+
+    string arrId = "", EditOrgId = "", orgId = "";
+    arrId = Convert.ToString(TempData["arrId"]);
+    EditOrgId = Convert.ToString(TempData["EditOrgId"]);
+    orgId = Convert.ToString(TempData["orgid"]);
+    int EditFlag = 0;
+
+
+
+    if (ViewBag.Mode == null)
+    {
+        Mode = "";
+        TempData["Mode"] = null;
+    }
+    if (!string.IsNullOrEmpty(Convert.ToString(TempData["Mode"])))
+    {
+        Session["Page"] = 1;
+        Session["g_StructSearch"] = null;
+        Session["PageNumber"] = 1;
+    }
+
+}
+@{
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.CONSTRAINTS;
+}
+@if (TempData["EditFlag"] != null)
+{
+    EditFlag = 1;
+
+}
+else
+{
+    EditFlag = 0;
+
+}
+
+
+@Html.Hidden("arrId", arrId)
+@Html.Hidden("EditOrgId", EditOrgId)
+@Html.Hidden("orgId", orgId)
+
+@Html.Hidden("pageSizeVal", pageSize)
+@Html.Hidden("pageNum", pageNum)
+@{
+    var sortOrder = ViewBag.SortOrder != null ? (int)ViewBag.SortOrder : 2;//1-type
+    var sortType = ViewBag.SortType != null ? (int)ViewBag.SortType : 0;//0-asc
+    var iscodeEnabled = !string.IsNullOrEmpty(ViewBag.code);
+    var isConstraintnameEnabled = !string.IsNullOrEmpty(ViewBag.name);
+    bool isownercontactenabled = ViewBag.ownercontact != null ? (bool)ViewBag.ownercontact : false;
+    bool isvalidenabled = ViewBag.isvalid != null ? (bool)ViewBag.isvalid : false;
+    var constrainttypeenabled = !string.IsNullOrEmpty(ViewBag.type);
+
+    var isAllFilterEnabled = iscodeEnabled || isConstraintnameEnabled || isownercontactenabled || isvalidenabled || constrainttypeenabled;
+
+}
+
+
+
+<body style="overflow-y: auto;" id="soa-structure-list" class="constraint-list">
+    <style>
+
+        .filtered-icon {
+            background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 90% #2b5795;
+            background-size: 1rem;
+        }
+        .absolute {
+            position: absolute;
+            right: 150px;
+            width: 157px;
+            height: 120px;
+            padding-right: 0%;
+            white-space: nowrap;
+        }
+        .esdal-filter-icon {
+            background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 0 #2b5795;
+            background-size: 1rem;
+            width: 20px;
+            height: 20px;
+            display: inline-block;
+            position: absolute;
+            margin-left: 3px;
+        }
+
+        .movements td:nth-child(1) {
+            text-align: left;
+        }
+
+        .filter-table-icon {
+            position: absolute;
+            bottom: -13px;
+            -webkit-transform: translateX(-50%) translateY(-50%);
+            -moz-transform: translateX(-50%) translateY(-50%);
+            transform: translateX(-50%) translateY(-50%);
+            left: 53px;
+        }
+
+        .filter-table-icons {
+            position: absolute;
+            bottom: -13px;
+            -webkit-transform: translateX(-50%) translateY(-50%);
+            -moz-transform: translateX(-50%) translateY(-50%);
+            transform: translateX(-50%) translateY(-50%);
+            left: 21px;
+        }
+    </style>
+    <section id="banner">
+        <div class="container-fluid" id="banner-container">
+
+            <div>
+                <!-- table -->
+                <div class="main-table movements" id="portal-table">
+                    <table class="esdal-table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,1)" data-action="ConstraintSort" data-sortval="1"> Code </span>
+                                    <span class="filter-table-icon"><img id="filterimagecode" style="display:@(iscodeEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                </th>
+                                <th>
+                                    <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,2)" data-action="ConstraintSort" data-sortval="2">Constraint Name </span>
+                                    <span class="filter-table-icons"><img id="filterimageconstraint" style="display:@(isConstraintnameEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                </th>
+                                <th style="width:15%;">Constraint Category</th>
+                                <th style="width:15%;">
+                                    Constraint Type
+                                    <span class="filter-table-icons"><img id="filterimageconstraint" style="display:@(constrainttypeenabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                </th>
+                                <th style="width:10%;">
+                                    Owner is Contact
+                                    <span class="filter-table-icons"><img id="filterimageconstraint" style="display:@(isownercontactenabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                </th>
+                                <th style="width:5%">
+                                    Active
+                                    <span class="filter-table-icons"><img id="filterimageconstraint" style="display:@(isvalidenabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                </th>
+
+                                @if (Mode == "Edit" || EditFlag == 1)
+                                {
+                                    <th>
+
+                                        <input id="checkall" type="checkbox" class="checkbox mr-2 chk-cl-check-all" />
+                                        <span class="text-normal" style="vertical-align: super;color:white">Select all structures in this page</span>
+                                    </th>
+                                }
+                                else
+                                {
+                                    <th style="width:20%;"></th>
+                                }
+                                <th class="table-filter" style="width:5%;">
+                                    <img class="btn-cl-open-filters open-filter-icon-common" src="~/Content/assets/images/filter-icon.svg" title="Open filter" width="38">
+                                    <span class="filtered-icon-table "><img id="filterimage" style="display:@(isAllFilterEnabled?"block":"none")" src="~/Content/assets/images/filtered-icon.svg" title="Clear filter"></span>
+                                </th>
+                            </tr>
+                        </thead>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-color2">
+                                    <a href="#"
+                                       class="btn-cl-show-map-constraints"
+                                       data-constraintid="@item.ConstraintId"
+                                       data-feasting="@item.FEasting"
+                                       data-fnorthing="@item.FNorthing"
+                                       style="text-decoration: none; color: rgba(39, 87, 149, 1)">@item.ConstraintCode</a>
+                                </td>
+                                <td class="text-color1">@item.ConstraintName</td>
+                                <td class="text-color1">@item.DirectionName</td>
+                                <td class="text-color1">@item.ConstraintTypeName</td>
+                                @if (item.OwnerIsContact == 1)
+                                {
+                                    <td class="text-color1">Yes</td>
+                                }
+                                else
+                                {
+                                    <td class="text-color1">No</td>
+                                }
+                                @if (item.vaildconst == 1) //IsValid
+                                {
+                                    <td><img src="~/Content/assets/images/yes-icon.svg" width="20" title="Valid"> </td>
+                                }
+                                else
+                                {
+                                    <td><img src="~/Content/assets/images/no-icon.svg" width="20" title="InValid"> </td>
+                                }
+
+
+                                @if (Mode == "Edit" || EditFlag == 1)
+                                {
+                                    <td>
+                                        <input id="Checkbox" type="checkbox" class="childcheckbox" value="@item.ConstraintCode" checked="@item.OwnerIsContact" />
+                                        @*<div style="visibility:hidden">*@
+                                        <input id="PreviousValOfStructCode" type="checkbox" class="childcheckboxHide" value="@item.ConstraintCode" checked="@item.OwnerIsContact" style="visibility:hidden" />
+                                        @*</div>*@
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                                <td colspan="2"></td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+                <!-- end of table -->
+                <div  class="ConstraintListPagination">
+                    @if (@ViewBag.TotalCount > 0)
+                    {
+                        //if (listCount < @ViewBag.TotalCount)
+                        //{
+                    <div class="row pt-3">
+                        <div class="col-lg-4 col-md-4">
+                            @if (Model.TotalItemCount > 0)
+                            {
+                                <div class="text-color2 total-records-number">
+                                    Total number of records : @Model.TotalItemCount
+                                </div>
+                            }
+                        </div>
+                        @if (listCount < Model.TotalItemCount)
+                        {
+                            <div class="col-lg-5 pagination">
+                                @Html.PagedListPager(Model, page => Url.Action("GetConstraintList",
+                                           new
+                                           {
+                                               B7vy6imTleYsMr6Nlv7VQ =
+                                                         STP.Web.Helpers.EncryptionUtility.Encrypt("page=" + page +
+                                                         "&Mode=" + Mode +
+                                                         "&sortOrder=" + ViewBag.SortOrder +
+                                                         "&sortType=" + ViewBag.SortType)
+                                           }),
+                                           new PagedListRenderOptions
+                                           {
+                                               DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                                               DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                                               LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                                               LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                                               DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                                               DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                                               MaximumPageNumbersToDisplay = 3,
+                                               DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                                               EllipsesFormat = "...",
+                                               LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+                                               LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+                                           });
+                            </div>
+                        }
+                            @if (Model.TotalItemCount > 10)
+                            {
+                                <div class="col-lg-3 col-md-3 col-sm-12 text-normal pr-0 absolute">
+                                    Number of items to display per page
+                                    <select class="form-select mb-3" style="width:100px;" aria-label=".form-select-lg example" id="pageSizeSelect">
+                                        <option val="10" @(pageSize == 10 ? "selected" : "")>10</option>
+                                        <option val="20" @(pageSize == 20 ? "selected" : "")>20</option>
+                                        <option val="50" @(pageSize == 50 ? "selected" : "")>50</option>
+                                        <option val="100" @(pageSize == 100 ? "selected" : "")>100</option>
+                                    </select>
+                                </div>
+                            }
+                        </div>
+                        //}
+                    }
+                    else
+                    {
+                        <div class="error invalid-feedback" style="display: block !important; text-align: center;">@Resources.Resource.NoRecordFound</div>
+                    }
+                </div>
+
+                @if (Mode == "Edit" || EditFlag == 1)
+                {
+                    <label class="text-normal" style="font:bold">
+                        Note: Click on "Save" button to save changes and select next set of structure(s) by navigating to another pages.
+                    </label>
+                    <div class="text-normal">
+                        @Resources.Resource.TotPageCount : @ViewBag.TotalCount
+                    </div>
+                    <br />
+                    <div>
+                        <table class="tdstyle">
+                            <tr class="tdstyle">
+                                <td class="tdstyle" style="text-align:center">
+
+                                    <button type="submit" data-struct-type="saveandcontinue" id="btn_saveandcontinue" class="btn outline-btn-primary SOAButtonHelper ml2 btn-cl-save" aria-hidden="true">SAVE</button>
+                                    @if (arrId != "0" && arrId != "")
+                                    {
+                                        <button class="btn outline-btn-primary SOAButtonHelper ml2 btn-cl-undelegated-structures">STRUCTURE NOT DELEGATED</button>
+                                    }
+
+                                    <button type="submit" data-struct-type="save" id="btn_save" class="btn outline-btn-primary SOAButtonHelper ml2 btn-cl-save" aria-hidden="true">SAVE AND RETURN</button>
+                                    <button id="btn_cancel" type="button" class="btn outline-btn-primary SOAButtonHelper">BACK</button>
+
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+
+                }
+
+                <div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <div id="filterSection">
+        @{Html.RenderAction("ConstraintSummaryFilter", "Constraint", new { page = pageNum, sortOrder = sortOrder, sortType = sortType });}
+    </div>
+
+</body>
+
+@{
+    string GetSortDefaultClass(int sortTypeVal, int sortOrderVal, int valToCheck)
+    {
+        var sortClass = ""; //0-asc, 1-desc ,
+        if (sortOrderVal == valToCheck)
+        {
+            sortClass = sortTypeVal == 1 ? "sorting_desc" : "sorting_asc";
+        }
+        return sortClass;
+    }
+}
+@Html.Hidden("Mode", Mode)
+@Html.Hidden("EditOrgId", EditOrgId)
+@Html.Hidden("orgId", orgId)
+@Html.Hidden("arrId", arrId)
+@Html.Hidden("structureInDelegList", Session["structureInDelegList"] != null ? Session["structureInDelegList"].ToString() : "")
+<script src="~/Scripts/Constraint/ConstraintList.js?V@(Session["ProjectVersion"])"></script>

@@ -1,0 +1,271 @@
+<link href="~/Content/Style/Common/style_htmlbuilder.css" rel="stylesheet" />
+<link href="~/Content/Style/Common/redactor.css" rel="stylesheet" />
+@using System.Web.Optimization
+@using STP.Domain
+@model STP.Domain.SecurityAndUsers.UserPreferences
+
+
+@{
+    var checkHaulierNote = true;
+    if (ViewBag.NotesforHaulier == "")
+    {
+        checkHaulierNote = false;
+    }
+    string NotesforHaulier = ViewBag.NotesforHaulier;
+
+}
+
+@{
+    int userTypeID1 = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        userTypeID1 = sessionValues.UserTypeId;
+    }
+
+}
+@{
+    string ReplyMailPathStr = "";
+    int ReplyMailPath = 1;
+    if (ViewBag.ReplyMailPath == "" || ViewBag.ReplyMailPath == null)
+    {
+        ReplyMailPath = 0;
+    }
+    else
+    {
+        ReplyMailPathStr = ViewBag.ReplyMailPath;
+
+    }
+    int organisationId = ViewBag.organisationId;
+    int UserId = ViewBag.UserId;
+
+}
+@{
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.AUTO_RESPONSE;
+}
+
+@{
+    ViewBag.Title = "enterRouteDetail";
+    bool isAdmin = false;
+    int portalType = 0;
+    int Is_Admin = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var user = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        portalType = user.UserTypeId;
+        Is_Admin = user.IsAdmin;
+        if (portalType == 696006 || user.IsAdmin == 1)
+        {
+            isAdmin = true;
+        }
+    }
+}
+@Html.Hidden("UserType", userTypeID1)
+@Html.Hidden("ReplyMailPath", ReplyMailPath)
+@Html.Hidden("ReplyMailPathStr", ReplyMailPathStr)
+@Html.Hidden("organisationId", organisationId)
+@Html.Hidden("UserId", UserId)
+@Html.Hidden("checkHaulierNoteMsg", checkHaulierNote)
+@Html.Hidden("textValue", 0)
+@Html.Hidden("NotesforHaulier", NotesforHaulier)
+<input type="hidden" value="@ViewBag.ResponseStatus" id="ResponseStatus" name="ResponseStatus" />
+<input type="hidden" value="@ViewBag.UserId" id="UserId" name="UserId" />
+<input type="hidden" value="@ViewBag.Email" id="Email" name="Email" />
+<input type="hidden" value="@ViewBag.Fax" id="Fax" name="Fax" />
+@*@Html.Hidden("ViewBag.NotesforHaulier")*@
+
+<style>
+    .cancelorg {
+        height: 7px;
+        width: 7px;
+        float: left;
+        margin-right: 10px;
+        background: url("../../Content/assets/images/closebtn.png") no-repeat;
+        background-position: 0px 0px;
+        margin-top: 12px;
+        margin-left: -40px;
+        cursor: pointer;
+        display: none;
+    }
+
+        .cancelorg:hover {
+            background-position: -8px 0px;
+        }
+
+    .redactor_toolbar {
+        background: linear-gradient( 0deg, #e3e7ec, #f4f6fa) !important;
+        height: 45px !important;
+    }
+
+    .disabledbutton {
+        pointer-events: none;
+        opacity: 0.4;
+    }
+
+    .contentWidth {
+        height: 180px;
+    }
+
+    #banner-row h3, p {
+        text-align: left !important;
+        padding-left: 0% !important;
+    }
+</style>
+
+<!-- main content-->
+@if (userTypeID1 == 696007 || userTypeID1 == 696002)
+{
+    <section id="banner">
+        <div class="container-fluid" id="banner-container">
+            <div id="vehicles" class="pt-6">
+                <div class="row pb-8">
+                    <div class="col-lg-5 col-sm-12 col-md-6">
+                        <div class="row align-items-center pb-6">
+
+                            @*Set auto response message label*@
+
+                            <div class="col-sm-12 col-md-6 col-lg-5 pr-3">
+                                <label class="text-normal">Set auto response message</label>
+                            </div>
+                            @*Enable disable button*@
+
+                            <div class="col-sm-12 col-md-4 col-lg-7 input-field">
+                                <div class="flexer structureRadioHelper mt-0">
+
+                                    @*Enable button*@
+                                    <div class="form-check ml-2">
+                                        @if (ViewBag.ResponseStatus == 1)
+                                        {
+                                            <input class="form-check-input" id="EnblAutoRes" type="radio" name="IN_TYPE" value="1" checked>
+                                            <label class="form-check-label label1 text-color3" for="flexRadioDefault1">
+                                                Enabled
+                                            </label>
+                                        }
+                                        else
+                                        {
+                                            <input class="form-check-input" id="EnblAutoRes" type="radio" name="IN_TYPE" value="1">
+                                            <label class="form-check-label label1 text-color3" for="flexRadioDefault1">
+                                                Enabled
+
+                                            </label>
+
+                                        }
+                                    </div>
+                                    <div style="position:relative; left:10px;" class="form-check ml-2">
+
+                                        @if (ViewBag.ResponseStatus == 1)
+                                        {
+
+                                            <input class="form-check-input" id="DisblAutoRes" type="radio" name="IN_TYPE" value="0"> @Html.ValidationMessageFor(m => m.VehicleUnits)
+                                            <label class="form-check-label label1 text-color3" for="flexRadioDefault1">
+                                                Disabled
+                                            </label>
+                                        }
+                                        else
+                                        {
+
+                                            <input class="form-check-input" id="DisblAutoRes" type="radio" name="IN_TYPE" value="0" checked> @Html.ValidationMessageFor(m => m.VehicleUnits)
+                                            <label class="form-check-label label1 text-color3" for="flexRadioDefault1">
+                                                Disabled
+                                            </label>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="page2" style="display: block; background-color: white; color: black;">
+
+                            <textarea name="FileContent" id="redactor_content" cols="30" rows="10" class="w-100"></textarea>
+                            @*<div id="savedhn"></div>*@
+                        </div>
+                        <input type="hidden" value="@ViewBag.NotesforHaulier" id="txthauliernotes" />
+                    </div>
+
+                    @*Upload PDF File*@
+
+                    <div class="col-lg-7 col-sm-12 col-md-6">
+                        <div class="row align-items-center">
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <div class="pr-0 pl-0 mr-0 ml-0 mb-0 input-field">
+                                    <input id="structureData" class="text-decorate" type="text" name="search"
+                                           placeholder="Upload PDF file" readonly="readonly">
+                                </div>
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-sm-12">
+                                <div class="row pl-3 pr-2" id="org_filter_btn">
+                                    <div class="col-lg-4 col-md-4 col-sm-12 filter-entry pr-0 pl-0">
+                                        <!-- <div class="header mt-4"> -->
+                                        <div class="button mr-0 mb-2">
+                                            <div id="clearstruct" class="cancelorg" style="display: block; position: relative;" data-structuredata="structureData" data-structurefile="structurefile"></div>
+
+                                            <input type="file" id="structurefile" accept=".pdf" name="files[]" data-structuredata="structureData" style="display: none;" />
+
+                                            <button id="btnBrowse" data-structurefile="structurefile" class="btn btn-outline-primary btn-normal " role="button"
+                                                    aria-pressed="true" style="width:88%;justify-content:center;padding-left:3rem!important;">
+                                                BROWSE
+                                            </button>
+                                        </div>
+
+
+                                        <!-- </div> -->
+                                    </div>
+
+                                    @*View Auto response PDF Button*@
+
+                                    <div class="col-lg-8 col-md-8 col-sm-12 filter-entry pl-0">
+                                        <!-- <div class="header mt-4"> -->
+                                        <div class="button mr-0 mb-2">
+                                            <button id="ViewRes" class="btn btn-outline-primary btn-normal " role="button"
+                                                    aria-pressed="true" style="white-space:nowrap;width:100%;justify-content:center">
+                                                VIEW AUTO RESPONSE PDF
+                                            </button>
+                                        </div>
+                                        <!-- </div> -->
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="flexer justify-content-center pt-8">
+                    <button id="btn_setpr" style="padding-left: 83px;padding-right: 87px;" class="btn outline-btn-primary SOAButtonHelper ml2">SAVE</button>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="cautionPopup" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header pt-2">
+                        @*<span aria-hidden="true" class="close" data-dismiss="modal"
+                            aria-label="Close">&times;</span>*@
+                    </div>
+                    <div class="modal-body">
+                        <img src="/content/assets/images/warning-icon2.svg" width="30">
+                        <div class="edit-normal"> Please Provide Response Message</div>
+                    </div>
+                    <div class="modal-footer pt-4">
+                        <button type="button" class="btn btn-secondary close-popup" data-dismiss="modal">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+}
+else
+{
+
+}
+<!-- end of main content-->
+@*@Html.Hidden("SetPreferenceMessage", setpreference)*@
+<!--end of main-content -->
+@*<script src="~/Scripts/JQuery/V103/jquery-1.9.1.min.js?V@(Session["ProjectVersion"])"></script>*@
+<script src="~/Scripts/Common/MasterPage/jquery.uiControls.js?V@(Session["ProjectVersion"])"></script>
+@*<script src="~/Scripts/Web/redactor.min.js?V@(Session["ProjectVersion"])"></script>*@
+<script src="~/Scripts/Web/redactor.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.min.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Account/AutoResponse.js?V@(Session["ProjectVersion"])"></script>

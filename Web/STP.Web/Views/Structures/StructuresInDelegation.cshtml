@@ -1,0 +1,135 @@
+@using PagedList.Mvc
+@model PagedList.IPagedList<STP.Domain.Structures.StructureInDelegationList>
+
+@{
+
+    long arrId = Convert.ToInt64(ViewBag.arrangId);
+    int pageNum = 10;
+    if (ViewBag.pageSize != null)
+    {
+        pageNum = ViewBag.pageSize;
+    }
+
+    int orgfromid = Convert.ToInt32(ViewBag.OrgId);
+    int listCount = 0;
+    listCount = (int)Session["PageSize"];
+}
+@Html.Hidden("pageSizeVal", pageNum)
+@Html.Hidden("arrangId", arrId)
+@Html.Hidden("OrgFromId", orgfromid)
+
+<body style="overflow-y: auto;" id="soa-structure-delgation">
+    <!-- main-content -->
+    <section id="banner">
+        <div class="container-fluid" id="banner-container">
+            <div style="background-color: white;padding-left: 4%; padding-right: 1%;">
+                <div class="row" id="helpdeskDelegation">
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 pt-8" id="review_deleg">
+
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12" id="movement-map">
+                        <div style="padding-right: 5%;">
+                            <div>
+                                <div class="main-table" id="portal-table">
+                                    <table>
+                                        <tr>
+                                            <th>
+                                                Structure Name
+                                                @*<span><img src="assets/images/down-chevlon.svg" width="15"
+                                                    height="6"></span>*@
+
+                                            </th>
+                                            <th>Structure Reference</th>
+                                            <th>Owned By</th>
+                                        </tr>
+
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr>
+
+                                                <td class="text-color2" style="width: 45%;">
+                                                    <a href="#" class="StructureCodeClick" StructureId="@item.StructureId" style="text-decoration: none; color: rgba(39, 87, 149, 1)">@item.StructureName</a>
+                                                </td>
+                                                <td class="text-color2" style="width: 30%;">
+                                                    <a href="#" class="StructureCodeClick" StructureId="@item.StructureId" style="text-decoration: none; color: rgba(39, 87, 149, 1)">@item.StructureReference</a>
+                                                </td>
+                                                @*<td class="text-color2"><a href="@Url.Action("ReviewSummary", "Structures", new { structureId = item.StructureId })">@item.StructureReference</a></td>*@
+                                                <td class="text-color1" style="width: 25%;">@item.StructureOwnedBy</td>
+                                            </tr>
+
+                                        }
+                                        @if (@ViewBag.TotalCount <= 0)
+                                        {
+                                            <tr>
+                                                <td colspan="3" class="text-color1" style="color: red; text-align: center;">
+                                                    No
+                                                    structures are added to delegation arrangement
+                                                </td>
+                                            </tr>
+                                        }
+
+                                    </table>
+
+                                </div>
+
+                                <div class="d-flex justify-content-center pt-3">
+                                    @if (@ViewBag.TotalCount > 0)
+                                    {
+                                        if (listCount < Model.TotalItemCount)
+                                        {
+                                            <div class="pagination">
+                                                @Html.PagedListPager(Model, page => Url.Action("StructuresInDelegation",
+                                                         new
+                                                         {
+                                                             B7vy6imTleYsMr6Nlv7VQ =
+                                                                STP.Web.Helpers.EncryptionUtility.Encrypt("page=" + page +
+                                                                "&sortOrder=" + ViewBag.CurrentSort +
+                                                                "&currentFilter=" + ViewBag.CurrentFilter +
+                                                                "&arrangId=" + ViewBag.arrangId +
+                                                                "&organisationId=" + ViewBag.OrganisationId +
+                                                                "&OrgFromId=" + ViewBag.OrgId)
+                                                         }),
+                                                         new PagedListRenderOptions
+                                                         {
+                                                             DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                                                             DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                                                             LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                                                             LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                                                             DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                                                             DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                                                             MaximumPageNumbersToDisplay = 3,
+                                                             DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                                                             EllipsesFormat = "...",
+                                                             LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+                                                             LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+                                                         });
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="pagination"></div>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <div class="error invalid-feedback" style="display: block !important; text-align: center;">@Resources.Resource.NoRecordFound</div>
+                                    }
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="flexer justify-content-center mt8">
+                    <button id="BackDeleg" class="btn outline-btn-primary SOAButtonHelper">BACK</button>
+                </div>
+            </div>
+    </section>
+    <!-- end of main-content -->
+    <!-- bootstrap css for vertical menu -->
+
+
+</body>
+
+<script src="~/Scripts/Structures/StructuresInDelegation.js?V@(Session["ProjectVersion"])"></script>

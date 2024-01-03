@@ -1,0 +1,23 @@
+﻿@using System.Web.Mvc.Html
+@using System.Web.Mvc;
+@{
+    string filepath = ViewBag.Source;
+    string mimetype = ViewBag.Mimetype;
+    string filename = ViewBag.Filename;
+}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>ShowVideo</title>
+</head>
+<body>
+    <div>
+        <video width="400" height="300" preload="auto" controls="controls">
+            <source src="@ViewBag.Source" type="@ViewBag.Mimetype">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+</body>
+</html>

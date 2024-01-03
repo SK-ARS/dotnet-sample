@@ -1,0 +1,20 @@
+<div id="divViewComponent">
+    <section id="banner" class="vehicle-setting">
+        <div class="container-fluid" id="banner-container">
+            <div id="vehicles" class="new-vehicle divcomponentView">
+                <div class="button d-flex pt-4 pr-3 pb-2 justify-content-end">
+                    <button id="btn_back_to_fleet" class="btn_back_to_fleet btn btn-outline-primary back-btn-outline" aria-hidden="true" type="button">BACK</button>
+                </div>
+                <div class="row">
+                    @{
+                        Html.RenderAction("GeneralVehicleComponent", "Vehicle", new { vehicleSubTypeId = 0, vehicleTypeId = 0, movementId = 0, componentId = ViewBag.componentId, mode = ViewBag.mode, isLastComponent=true });
+                    }
+                </div>
+            </div>
+
+        </div>
+    </section>
+</div>
+@*<script src="~/Scripts/Vehicle/GeneralComponent.js?V@(Session["ProjectVersion"])"></script>*@
+<script src="~/Scripts/Vehicle/GeneralVehicleComponent.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/GeneralComponent.js?V@(Session["ProjectVersion"])"></script>

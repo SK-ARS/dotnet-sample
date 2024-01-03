@@ -1,0 +1,82 @@
+<!-- main content -->
+<section id="banner" class="vehicle-setting">
+    <div class="container-fluid" id="banner-container">
+        <div id="vehicles" class="new-vehicle">
+            <div class="row pb-8">
+                <div class="col-lg-3 col-md-2 col-sm-4 col-xs-12  pt-5 title pr-0" style="font-family: lato_bold;">
+                    NEW COMPONENT
+                </div>
+                <div class="col-lg-12 col-md-12 col-sm-12" style="text-align: right">
+                    <label class="text-normal">* indicates mandatory fields   </label>
+                </div>
+            </div>
+          
+            <div class="row" id="divCreateComponent">
+                @Html.Hidden("prevMovementId", Session["movementClassificationId"])
+                <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12 card-image">
+                    <div class="card" id="componentImage" style="display:none;">
+                        <img src="" alt="vehicle-1" style="mix-blend-mode: darken;">
+                    </div>
+                    <div class="row pb-3 pt-3">
+                        <div class="col-12 col-md-12 col-sm-12 pr-0">
+
+                            @Html.DropDownList("ComponentType", null, "Select Component Type", new { @class = "form-select" })
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 col-md-12 col-sm-12 pr-0">
+                            <select id="VehicleSubType" disabled="disabled" class="form-select" aria-label=".form-select-lg example">
+                                <option selected>Vehicle sub-type</option>
+                            </select>
+                        </div>
+                    </div>
+                    @*<div class="row pb-3 pt-3">
+                    <div class="col-12 col-md-12 col-sm-12 pr-0">
+                        <select id="movementTypeId" disabled="disabled" class="form-select" aria-label=".form-select-lg example">
+                            <option selected>Movement classification</option>
+                        </select>
+                    </div>
+                </div>*@
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-12">
+                    <form action="@Url.Action("CreateComponent", "Vehicle")">
+                        <div class="row" id="componentDetails">
+
+                        </div>
+                        <div id="vehicle-table">
+                            <div class="" id="regDetails" style="display:none;">
+                                @{
+                                    Html.RenderAction("RegistrationComponent", new { compId = 0, isTractor = true, isApplication = false, isVR1 = false });
+
+
+                                }
+                            </div>
+                        </div>
+                        <div class="row" id="axlePage">
+
+                        </div>
+                        <div class="row" id="btnPage">
+                            @{
+                                Html.RenderAction("ComponentButton", new { IsFromConfig = ViewBag.isFromConfig });
+                            }
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="~/Scripts/VehicleComponent/jQuery.Comp.Create.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/vehicleConfig.FleetGrid.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/vehicleConfig.Summarise.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/vehicleConfig.Create.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/VehicleComponent/jQuery.Comp.Axle.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/CreateComponent.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/unitConversion.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/VehicleComponent/jQuesry.Comp.General.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/ComponentGeneralPage.js?V@(Session["ProjectVersion"])"></script>
+
+<script src="~/Scripts/VehicleComponent/jQuery.Comp.Register.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/RegistrationComponent.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/AxleComponent.js?V@(Session["ProjectVersion"])"></script>

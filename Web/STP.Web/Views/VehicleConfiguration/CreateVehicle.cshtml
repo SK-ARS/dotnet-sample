@@ -1,0 +1,195 @@
+@model List<STP.Domain.VehiclesAndFleets.Configuration.VehicleConfigList>
+@{
+    ViewBag.Title = "CreateVehicle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    var compIds = Session["ComponentId"];
+
+    var guid = ViewBag.Guid;
+    if (ViewBag.IsEdit == 1 || ViewBag.IsMovement == true)
+    {
+        Layout = null;
+    }
+    var IsEdit = ViewBag.IsEdit;
+    int ComponentCount = 0;
+
+    if (IsEdit == 1)
+    {
+        ComponentCount = Model.Count();
+        //var componentId = Model.OrderBy(s => s.LatPosn).ThenBy(s => s.LongPosn);
+    }
+
+
+}
+<style>
+    .pagination {
+        color: rgba(92, 92, 92, 1)
+    }
+
+    a:not([href]):not([class]) {
+        color: rgba(92, 92, 92, 1);
+    }
+
+        a:not([href]):not([class]):hover {
+            color: rgba(92, 92, 92, 1);
+        }
+
+    .pagination .active a {
+        color: white !important;
+    }
+
+    .vehicle, .movements {
+        margin-left: 0%;
+        padding-left: 0%;
+    }
+
+    .vehicle-setting th:nth-child(1) {
+        padding-left: 20px;
+    }
+
+    #vehicle-components-list td:nth-child(1) {
+        padding-left: 20px !important;
+    }
+
+    .vehicle-setting td {
+        text-align: left;
+        padding: 20px 5px 5px 20px;
+    }
+
+    #filters .filter-list input::placeholder {
+        font-style: italic;
+        font-family: lato_light;
+        padding-bottom: 0.5rem;
+    }
+
+    .head .dropdown-item {
+        color: black;
+        font-family: lato_bold;
+        font-size: 12px;
+    }
+
+    .head .dropdown-menu {
+        width: 15rem;
+    }
+
+    #vehicle-components-list th:last-child {
+        background-color: white;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    #vehicle-components-list th:nth-child(9) {
+        width: 0%;
+    }
+    .dropdown-item:hover {
+        color: inherit !important;
+    }
+    #vehicle-components-list {
+        border-radius: 25px 0px 0px 0px !important;
+    }
+    .invalid-feedback{
+        white-space:pre-line;
+    }
+</style>
+
+<section id="banner" class="vehicle-setting">
+    <div class="container-fluid" id="banner-container">
+        <div id="vehicles" class="new-vehicle" style="padding-left: 0% !important; padding-right: 0% !important;">
+            <div class="pb-5 pt-5 vehicle-setting createVehicleDiv" style="padding-right: 5%; padding-left: 5%; margin-left: 1% !important; margin-right: 1% !important; background-color: white;">
+
+                @Html.Hidden("GUID")
+                @Html.Hidden("ComponentCount", @ComponentCount)
+                @Html.Hidden("ConfigTypeId")
+                @Html.Hidden("vehicleId")
+                @Html.Hidden("MovementTypeId")
+                @Html.Hidden("PreviousMovementTypeId")
+                @Html.Hidden("IsMovement", (bool)ViewBag.IsMovement)
+                @Html.Hidden("MaxTractorCount", 0)
+                @Html.Hidden("MaxTrailerCount", 0)
+                <div id="component_selection_section"></div>
+                <div id="component_create_section"></div>
+                <div id="component_list_section"></div>
+                <div id="component_view_section"></div>
+                <div id="config_assessment_section"></div>
+                <div id="config_create_section"></div>
+                @*<div id="config_registration_section"></div>*@
+                <div id="component_detail_section"></div>
+                <div id="config_review_section"></div>
+                <div id="movement_assessment_section"></div>
+                <div id="component_edit_section" style="display:none;">
+
+                    @if (ViewBag.IsEdit == 1)
+                    {
+                        <input type="hidden" value="@ViewBag.Guid" id="GUID" name="GUID" />
+                        <input type="hidden" value="@ViewBag.vehicleConfigId" id="vehicleConfigId" name="vehicleConfigId" />
+                        @Html.Hidden("ComponentCount", ComponentCount)
+                        @*<input type="hidden" value="@ViewBag.IsMovement" id="IsMovement" name="IsMovement" />*@
+                        @Html.Hidden("IsVehicleConfigEdit", 1)
+                        <div class="col-lg-3 col-md-2 col-sm-4 col-xs-12  pt-5 title pr-0" style="font-family: lato_bold;">
+                            EDIT CONFIGURATION
+                        </div>
+                    }
+
+                </div>
+                <div class="row mt-4" id="vehicle_button" style="float: right;">
+                    <div class="mt-5 pl-0 ml-0">
+                        <button class="btn btn-outline-primary SOAButtonHelper ml2 mb-2 btn-border-remove" style="display: none; background-color: white" id="vehicle_back_btn">BACK</button>
+                        <button class="btn btn-outline-primary SOAButtonHelper ml2 mb-2 btn-border-remove" style="display: none; background-color: white" id="vehicle_save_btn">SAVE VEHICLE</button>
+
+
+                        <button class="btn btn-outline-primary SOAButtonHelper ml2 mb-2 btn-border-remove" style="display: none; background-color: white" id="vehicle_movement_confirm_btn">CONFIRM AND CONTINUE</button>
+                        <button class="btn btn-outline-primary SOAButtonHelper ml2 mb-2 btn-border-remove" id="back_btn_inVehiclePage" style="background-color: white; display:none;">BACK</button>
+
+                        <button class="btn btn-outline-primary SOAButtonHelper ml2 mb-2 btn-border-remove" id="btnbacktochoose" style="background:white;display:none" role="button" aria-pressed="true">
+                            BACK
+                        </button>
+                        <button class="btn btn-outline-primary SOAButtonHelper ml2 mb-2 btn-border-remove" style="display: none; background-color: white" id="vehicle_config_assessment_btn">CONFIRM AND CONTINUE</button>
+
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="scroll-btns" style="display:none;background-color: white;">
+            <div id="table-head" style="width:100%;">
+                <span id="">
+                    <img src="~/Content/assets/images/Group 1589.svg" id="scoll-left-btn" width="30"
+                         style="margin-top:-39rem;margin-left:1rem;">
+                </span>
+                <span id="">
+                    <img src="~/Content/assets/images/Group 1590.svg" id="scoll-right-btn" width="30"
+                         style="margin-top: -39rem; margin-right: 1rem;">
+                </span>
+            </div>
+        </div>
+    </div>
+</section>
+@if (IsEdit == 1)
+{
+    var ComponentIds = Model.OrderBy(s => s.LatPosn).ThenBy(s => s.LongPosn).Select(x => x.ComponentId).ToList();
+    <input type="hidden" value="@Html.Raw(Json.Encode(ComponentIds))" id="hf_ComponentIds" name="hf_ComponentIds" />
+}
+else
+{
+    <script src="~/Scripts/CreateVehicle/createVehicle.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/CreateVehicle/VehicleAutoFill.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/VehicleConfiguration/CreateVehicle.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/VehicleConfiguration/_ComponentSelection.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/VehicleConfiguration/_Assessment.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/VehicleConfiguration/CreateComponent.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/CreateVehicle/VehicleConfiguration.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/VehicleConfiguration/_VehicleConfiguration.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/Vehicle/unitConversion.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/VehicleComponent/jQuesry.Comp.General.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/VehicleConfig/VehicleComponentEdit.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/VehicleComponent/jQuery.Comp.Axle.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/Vehicle/AxleComponent.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/VehicleComponent/jQuery.Comp.Register.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/VehicleComponent/jQuery.Comp.Create.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/Vehicle/RegistrationComponent.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/VehicleConfiguration/_ConfigRegistration.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/VehicleComponent/jQuery.Comp.FleetComponentList.js"></script>
+}

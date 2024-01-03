@@ -1,0 +1,70 @@
+@using System.Web.Optimization
+@using STP.Domain
+@model STP.Domain.Routes.RouteModel.RoutePartDetails
+
+
+@{
+    ViewBag.Title = "Update Candidate Route Name";
+    bool isAdmin = false;
+    long CnRouteID = ViewBag.CnRouteID;
+    string CnRouteNM = ViewBag.CnRouteNM;
+    int portalType = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var user = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        portalType = user.UserTypeId;
+        if (portalType == 696006 || user.IsAdmin == 1)
+        {
+            isAdmin = true;
+        }
+    }
+}
+
+<div class="modal-header pt-3 pb-3 pr-3 pl-3 pb-3s" style="display: contents;">
+    <div class="row  " style="margin-top: -1rem; padding: 0.5rem;">
+        <div class="col-lg-11 pl-4 pt-8">
+            <span class="text-normal pr-2 dyntitleConfig edit-normal"id="edithead"
+                style="font-family: lato_light;font-size:25px;margin-top: -2rem;float: left;margin-left: 1rem;">
+               
+            </span>
+        </div>
+        <div class="col-lg-1 pr-4">
+            <div style="justify-content: end;" id="table-head">
+                <span aria-hidden="true" class="close pl-0 pt-1" id="spanCloseGeneralPopup"
+                      data-dismiss="modal" aria-label="Close"  style="cursor:pointer;">&times;</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<span class="PopupHelpName" id="CreateCandidateRoute"></span>
+<div class="row pl-4 pr-4">
+    <div class="row pb-4">
+        <div class="col-lg-6 col-md-6 col-sm-6 text-normal">
+            Candidate route name
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-6">
+            <input type="text" id="txtRoutename" class="edit-normal" value="@ViewBag.CnRouteNM" maxlength="100"/>
+            <span id="trvalidcandname" class="error invalid-feedback" style="display:none">Candidate route name is required</span>
+        </div>
+    </div>   
+    <div class="row pb-2">
+        <div class="flexer pt-2 pb-4 pl-4 pr-4" style="margin-left: auto;margin-right: auto;">
+            <div class="button main-button mr-2 col-md-6">
+                <button class="btn btn-outline-primary btn-normal pl-8 pr-8" role="button" id="btnUpdateName"
+                        data-CnRouteID="@ViewBag.CnRouteID"
+                        aria-pressed="true">
+                    SAVE
+                </button>
+            </div>
+            <div class="button main-button mr-2 col-md-6">
+                <button class="btn btn-outline-primary btn-normal pl-7 pr-7" role="button" id="btnCloseGeneralPopup" aria-pressed="true">
+                    CANCEL
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@*<script src="~/Scripts/SORTApplication/SORTAppEditCandiRouteName.js?V@(Session["ProjectVersion"])"></script>*@

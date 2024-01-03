@@ -1,0 +1,601 @@
+
+@using System.Web.Optimization
+@using STP.Domain
+@using System.Globalization
+@using STP.Domain.Applications
+@model STP.Domain.Applications.ApplyForVR1
+
+@{
+    long ApplrevisionId = 0;
+    long Project_ID = 0;
+    int IsHistory = ViewBag.IsHistory;
+    if (ViewBag.ProjectID != 0)
+    {
+        Project_ID = ViewBag.ProjectID;
+    }
+    if (ViewBag.revisionId != 0)
+    {
+        ApplrevisionId = ViewBag.revisionId;
+    }
+    if (Model == null)
+    {
+    }
+    else
+    {
+        ViewBag.Title = "VR1GeneralDetails";
+
+        var SubCatList = new List<VR1SubMovementClass>{
+                         new VR1SubMovementClass {SubMovementClass = "0" ,Name = "--Please select--"},
+                         new VR1SubMovementClass {SubMovementClass = "241003", Name = "STGO AIL Cat-1 or C&U"},
+                         new VR1SubMovementClass {SubMovementClass = "241004", Name = "STGO AIL Cat-2"},
+                         new VR1SubMovementClass {SubMovementClass = "241005", Name = "STGO AIL Cat-3"},
+                     };
+
+        ViewBag.SubCat = new SelectList(SubCatList, "SubMovementClass", "Name");
+        @Html.HiddenFor(m => m.ApplicationRevisionId)
+        @Html.Hidden("AnalysisID", TempData["analysisID"])
+        @Html.Hidden("proID", TempData["proID"])
+        @Html.Hidden("Project_ID", Project_ID)
+        @Html.Hidden("hdfNotesWithAppl", Model.ApplicationNotes)
+        @Html.Hidden("Historical", IsHistory)
+
+        <div id="HaulierReq">
+            @Html.HiddenFor(m => m.ApplicationRevisionId)
+            @Html.HiddenFor(m => m.ESDALReference, new { @id = "EsdalNo" })
+            <div>
+                <div class="cardSOA1 mt-0 ml-1 mb-4">
+                    <h6 class="text-color3 stHeading1 m-0">Movement Summary</h6>
+                </div>
+            </div>
+            <div class="pl-6 pr-3" id="general-content">
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        ESDAL Reference
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.ESDALReference
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        My Reference
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.MyReference
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        Classification
+                    </div>
+                    @{
+                        if (Model.SubMovementClass == 241003)
+                        {
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                STGO Cat 1-VR1
+                            </div>
+                        }
+                        else if (Model.SubMovementClass == 241004)
+                        {
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                STGO Cat 2-VR1
+                            </div>
+                        }
+                        else if (Model.SubMovementClass == 241005)
+                        {
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                STGO CAT 3-VR1
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+
+                            </div>
+                        }
+                    }
+                </div>
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        From Summary
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.FromSummary
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        To Summary
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.ToSummary
+                    </div>
+                </div>
+                @{
+                    if (ViewBag.hideflag != true)
+                    {
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                Client Name
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.ClientName
+                            </div>
+                        </div>
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                Description
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.DescriptionWithApplication
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                Applicant Contact Details
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+
+                            </div>
+                        </div>
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                Haulier Contact Name
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.HaulierContactName
+                            </div>
+                        </div>
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                Applicant Organisation Name
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.HaulierApplicantName
+                            </div>
+                        </div>
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                Applicant Address
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.HaulierApplicantAddress1
+                            </div>
+                        </div>
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.HaulierApplicantAddress2
+                            </div>
+                        </div>
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.HaulierApplicantAddress3
+                            </div>
+                        </div>
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.HaulierApplicantAddress4
+                            </div>
+                        </div>
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.HaulierApplicantAddress5
+                            </div>
+                        </div>
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                Postcode
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.HaulierPostCode
+                            </div>
+                        </div>
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                Operator Licence
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.HaulierOperatorLicence
+                            </div>
+                        </div>
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                Country
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.HaulierCountry
+                            </div>
+                        </div>
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                Telephone
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.HaulierTelephone
+                            </div>
+                        </div>
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                Fax Number
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.HaulierFaxNumber
+                            </div>
+                        </div>
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                Email Address
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.HaulierEmailId
+                            </div>
+                        </div>
+                    }
+                }
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        Load
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.LoadDescription
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        Application Date
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.ApplicationDate
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        Movement Date From
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @{CultureInfo ukCulture = new CultureInfo("en-GB");}
+                        @Convert.ToDateTime(Model.MovementDateFrom).ToString("dd/MM/yyyy", ukCulture.DateTimeFormat)
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        Movement Date To
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @{CultureInfo ukCulture1 = new CultureInfo("en-GB");}
+                        @Convert.ToDateTime(Model.MovementDateTo).ToString("dd/MM/yyyy", ukCulture1.DateTimeFormat)
+                    </div>
+                </div>
+                @{
+                    if (ViewBag.hideflag != true)
+                    {
+                        if (ViewBag.Vr1ApplStatus != 308002)
+                        {
+                            if (Model.VR1Number != "0")
+                            {
+                                <div class="row pb-3">
+                                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                        VR-1 Number
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                        NH: @Model.VR1Number
+                                    </div>
+                                </div>
+                            }
+                            if (Model.VApprDate != "0")
+                            {
+                                <div class="row pb-3">
+                                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                        VR-1 Approval Date
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                        @Model.VApprDate
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                }
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        Number of Movements
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.NoOfMovements
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        Maximum Pieces per Load
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.MaxPiecesPerLoad
+                    </div>
+                </div>
+
+                @{ if (ViewBag.reduceddetailed == true || Model.ReducedDetails == 1)
+                    {
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                Overall Width
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.OverallWidth m
+                            </div>
+                        </div>
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                Overall Height
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.OverallHeight m
+                            </div>
+                        </div>
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                Overall Length
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.OverallLength m
+                            </div>
+                        </div>
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                Gross Weight
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.GrossWeight kg
+                            </div>
+                        </div>
+
+
+                        if (Model.ReducedDetails == 1)
+                        {
+                            <div class="row pb-3">
+                                <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                    Vehicle Description
+                                </div>
+                                <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                    @Model.VehicleDescription
+                                </div>
+                            </div>
+
+                        }
+                    }
+                }
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        Notes to be included with the Application
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @MvcHtmlString.Create(Html.Encode(Model.ApplicationNotes).Replace(Environment.NewLine, "<br />"))
+
+                    </div>
+                </div>
+
+                @{
+                    if (@Model.ContactName != null && @Model.ContactName != "")
+                    {
+                        if (ViewBag.hideflag != true)
+                        {
+                            <div class="row pb-3">
+                                <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                                    <b>Applying on Behalf of</b>
+                                </div>
+
+                            </div>
+                            if (!string.IsNullOrEmpty(Model.ContactName))
+                            {
+                                <div class="row pb-3">
+                                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                        Contact name
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                        @Model.ContactName
+                                    </div>
+                                </div>
+                            }
+                            if (!string.IsNullOrEmpty(Model.HaulierOrgName))
+                            {
+                                <div class="row pb-3">
+                                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                        Organisation name
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                        @Model.HaulierOrgName
+                                    </div>
+                                </div>
+                            }
+                            if (!string.IsNullOrEmpty(Model.HaulierAddress1) || !string.IsNullOrEmpty(Model.HaulierAddress2) || !string.IsNullOrEmpty(Model.HaulierAddress3)
+                                || !string.IsNullOrEmpty(Model.HaulierAddress4) || !string.IsNullOrEmpty(Model.HaulierAddress5))
+                            {
+                                <div class="row pb-3">
+                                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                        Address
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                        @{
+                                            if (!string.IsNullOrEmpty(Model.HaulierAddress1))
+                                            {
+                                                @Model.HaulierAddress1 <br />
+                                            }
+                                            if (!string.IsNullOrEmpty(Model.HaulierAddress2))
+                                            {
+                                                @Model.HaulierAddress2 <br />
+                                            }
+                                            if (!string.IsNullOrEmpty(Model.HaulierAddress3))
+                                            {
+                                                @Model.HaulierAddress3 <br />
+                                            }
+                                            if (!string.IsNullOrEmpty(Model.HaulierAddress4))
+                                            {
+                                                @Model.HaulierAddress4 <br />
+                                            }
+                                            if (!string.IsNullOrEmpty(Model.HaulierAddress5))
+                                            {
+                                                @Model.HaulierAddress5 <br />
+                                            }
+                                        }
+                                    </div>
+                                </div>
+                            }
+
+                            if (!string.IsNullOrEmpty(Model.Country))
+                            {
+                                <div class="row pb-3">
+                                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                        Country
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                        @Model.Country
+                                    </div>
+                                </div>
+                            }
+                            if (!string.IsNullOrEmpty(Model.OnBehalfOfPostCode))
+                            {
+                                <div class="row pb-3">
+                                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                        Postcode
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                        @Model.OnBehalfOfPostCode
+                                    </div>
+                                </div>
+                            }
+                            else if (!string.IsNullOrEmpty(Model.HaulierPostCode))
+                            {
+                                <div class="row pb-3">
+                                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                        Postcode
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                        @Model.HaulierPostCode
+                                    </div>
+                                </div>
+                            }
+                            if (!string.IsNullOrEmpty(Model.HaulierOperatorLicence))
+                            {
+                                <div class="row pb-3">
+                                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                        Operator Licence
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                        @Model.HaulierOperatorLicence
+                                    </div>
+                                </div>
+                            }
+                            if (!string.IsNullOrEmpty(Model.HaulierTelephoneNo))
+                            {
+                                <div class="row pb-3">
+                                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                        Telephone
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                        @Model.HaulierTelephoneNo
+                                    </div>
+                                </div>
+                            }
+                            if (!string.IsNullOrEmpty(Model.HaulierFaxNo))
+                            {
+                                <div class="row pb-3">
+                                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                        Fax
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                        @Model.HaulierFaxNo
+                                    </div>
+                                </div>
+                            }
+                            if (!string.IsNullOrEmpty(Model.OnBehalfOfEmailId))
+                            {
+                                <div class="row pb-3">
+                                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                        Email
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                        @Model.OnBehalfOfEmailId
+                                    </div>
+                                </div>
+                            }
+                            else if (!string.IsNullOrEmpty(Model.HaulierEmailId))
+                            {
+                                <div class="row pb-3">
+                                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                                        Email
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                        @Model.HaulierEmailId
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                }
+
+                <div class="flexer justify-content-left pt-4 pb-3" id="menu-buttons">
+                    @{
+                        if ((ViewBag.Vr1ApplStatus == 308002 || ViewBag.Vr1ApplStatus == 308007 || ViewBag.Vr1ApplStatus == 308003) && ViewBag.Vr1ApplStatus != 308005 && IsHistory == 0)// && Vr1Appl status checked for #7855
+                        {
+
+                            <button class="btn outline-btn-primary SOAButtonHelper norifyvr1">
+                                <span class="pr-3">
+                                    <img src="~/Content/assets/images/Group 133.svg" width="15" class="init_img">
+                                    <img src="~/Content/assets/images/Group 133.svg" width="15" class="hover_img notify">
+                                </span>NOTIFY
+                            </button>
+                        }
+                        if (Model.LatestVersion == 1 && (Model.VR1ProjectStatus != 307008 && Model.VR1ProjectStatus != 307009) && IsHistory == 0)
+                        {
+                            <button class="btn outline-btn-primary SOAButtonHelper vr1reviseclone" data-clone="0" style="width: auto;">
+                                <span class="pr-3">
+                                    <img src="/Content/assets/images/Group 1360-new.svg" width="15" class="init_img">
+                                    <img src="/Content/assets/images/Group 1360-new.svg" width="15" class="hover_img notify">
+                                </span>REVISE
+                            </button>
+                        }
+                    }
+
+                    <button class="btn outline-btn-primary SOAButtonHelper vr1reviseclone" data-clone="1" style="width: auto;">
+                        <span class="pr-3">
+                            <img src="/Content/assets/images/Group 1360-new.svg" width="15" class="init_img">
+                            <img src="/Content/assets/images/Group 1360-new.svg" width="15" class="hover_img notify">
+                        </span>CLONE
+                    </button>
+                    @if (Model.VR1ProjectStatus != 307008 && IsHistory == 0)
+                    {
+                        if (ViewBag.hideflag != true)
+                        {
+                            <button id="WithdrawSOApp" class="btn outline-btn-primary SOAButtonHelper VR1GeneralDetails" style="width: auto;">
+                                <span class="pr-3">
+                                    <img src="/Content/assets/images/withdrawn.svg" width="15" class="init_img">
+                                    <img src="/Content/assets/images/withdrawn.svg" width="15" class="hover_img notify">
+                                </span>WITHDRAW
+                            </button>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    }
+}
+@{
+    <input type="hidden" value="@ViewBag.Helpdest_redirect" id="hf_Helpdest_redirect" name="hf_Helpdest_redirect" />
+    <input type="hidden" value="@ViewBag.versionid" id="hf_versionid" name="hf_versionid" />
+    <input type="hidden" value="@ViewBag.revisionId" id="hf_revisionId" name="hf_revisionId" />
+    @Html.Hidden("hf_ReducedDetails", @Model.ReducedDetails)
+    @Html.Hidden("hf_ESDALReference", @Model.ESDALReference)
+    @Html.Hidden("hf_MaxPiecesPerLoad", @Model.MaxPiecesPerLoad)
+    @Html.Hidden("hf_MovementDateFrom", @Model.MovementDateFrom)
+    @Html.Hidden("hf_MovementDateTo", @Model.MovementDateTo)
+}

@@ -1,0 +1,313 @@
+@using System.Web.Optimization
+@using STP.Domain.SecurityAndUsers
+@model STP.Domain.MovementsAndNotifications.Notification.Notification
+@using STP.Web.General
+@using STP.Web.Custom.Views
+@using STP.Common.EncryptDecrypt
+
+@{
+    ViewBag.Title = "NE_Notification";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int userTypeId = 0;
+    UserInfo currentSessionInfo = null;
+    if (Session["UserInfo"] != null)
+    {
+        currentSessionInfo = (UserInfo)Session["UserInfo"];
+
+        userTypeId = currentSessionInfo.UserTypeId;
+    }
+
+    long contactId = 0;
+    long organisationId = 0;
+    int IsMostRec = 0;
+
+    if (ViewBag.ContactId != null && ViewBag.ContactId > 0)
+    {
+        contactId = ViewBag.ContactId;
+    }
+    if (ViewBag.IS_MOST_RECENT != null)
+    {
+        IsMostRec = ViewBag.IS_MOST_RECENT;
+    }
+
+    if (currentSessionInfo != null && currentSessionInfo.organisationId > 0)
+    {
+        organisationId = currentSessionInfo.organisationId;
+    }
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.ADMIN;
+
+}
+<style>
+    .dyntitleConfig {
+        float: left;
+        height: auto;
+        width: auto;
+    }
+
+    .alignCentreClass {
+        margin-left: 235px !important;
+    }
+</style>
+
+<style>
+    #divContainer, #divResize {
+        border: dashed 1px #CCC;
+        width: 120px;
+        height: 120px;
+        padding: 5px;
+        margin: 5px;
+        font: 13px Arial;
+        cursor: move;
+        float: left
+    }
+
+    .wind {
+        width: 429px;
+        height: 120px;
+        padding: 5px;
+        margin: 5px;
+        font: 13px Arial;
+        cursor: move;
+        float: left;
+        left: -10px;
+        top: -590px;
+        border-top-left-radius: 12px;
+        border-top-right-radius: 12px;
+        font-family: 'Helvetica', Arial, sans-serif;
+        z-index: 100 !important;
+    }
+
+    .warningmsg {
+        color: red;
+        font-weight: normal;
+    }
+
+    .modal-content {
+        height: auto;
+        width: auto;
+    }
+
+    #IdOk {
+        color: #275795;
+        border: 1px solid #275795;
+        background-color: transparent;
+        padding: 0.3rem;
+        width: 45%;
+        font-family: lato_medium;
+    }
+
+    .main-sort-content #vehicle-table {
+        margin-top: 0 !important;
+        margin-bottom: 0 !important;
+    }
+
+    .btn-RouteBackClass {
+        margin-top: 2rem;
+    }
+</style>
+
+@{
+    string routeName = ViewBag.routeType.Replace(" ", "");
+    long documentId = ViewBag.DOCUMENT_ID;
+    long LNENRute_ID = ViewBag.NENRute_ID;
+    int INEN_Id = ViewBag.NEN_ID, INEN_RouteStatus = ViewBag.NEN_RouteStatus;
+    string IinboxId = ViewBag.inboxId, IUserId = ViewBag.UserId;
+    string NENroute = MD5EncryptDecrypt.EncryptDetails(ViewBag.routeType);
+    string NENInboxID = MD5EncryptDecrypt.EncryptDetails(ViewBag.inboxId);
+    string VMainRouteDesc = ViewBag.MainRouteDesc, VReturnRouteDesc = ViewBag.ReturnRouteDesc;
+    long VreturnLeg_routeID = ViewBag.returnLeg_routeID;
+    bool VIsreturnLeg = ViewBag.IsreturnLeg;
+    string HaulierEmail = ViewBag.NENEmail;
+
+    string NENEsdal_ref = MD5EncryptDecrypt.EncryptDetails(ViewBag.EsdalRefNum);
+    string esdalRef = ViewBag.EsdalRefNum.Replace("#", "~");
+    string NENNotifID = MD5EncryptDecrypt.EncryptDetails(Convert.ToString(ViewBag.NotificationID));
+    long notifId = ViewBag.NotificationID;
+    long NENVehicleID = 0;
+    if (ViewBag.VehicleID != null)
+    {
+        NENVehicleID = ViewBag.VehicleID;
+    }
+    int routeCount = ViewBag.routeCount;
+    string contentRefNo = ViewBag.ContentRefNo;
+}
+@Html.Hidden("hNENRoute_Id", LNENRute_ID)
+@Html.Hidden("hNEN_Id", INEN_Id)
+@Html.Hidden("hIs_NEN", "true")
+@Html.Hidden("errData", "")
+@Html.Hidden("IsAddress", "true")
+@Html.Hidden("err_list", null)
+@Html.Hidden("hMainRouteDesc", VMainRouteDesc)
+@Html.Hidden("hReturnRouteDesc", VReturnRouteDesc)
+@Html.Hidden("hIsReturnLeg", VIsreturnLeg)
+@Html.Hidden("hreturnLeg_routeID", VreturnLeg_routeID)
+
+@Html.Hidden("hNEN_RouteStatus", INEN_RouteStatus)
+@Html.Hidden("HdnInboxID", IinboxId)
+@Html.Hidden("hUserId", IUserId)
+@Html.Hidden("hdnContactId", contactId)
+@Html.Hidden("hdnOrgId", organisationId)
+@Html.Hidden("hdnNENroute", NENroute)
+@Html.Hidden("hdnNENInboxID", NENInboxID)
+@Html.Hidden("hdnNENEsdal_ref", NENEsdal_ref)
+@Html.Hidden("NOTIFICATION_ID", notifId)
+@Html.Hidden("hdnNENVehicleID", NENVehicleID)
+@Html.Hidden("hdnScrutinyUser", null)
+@Html.Hidden("hdnIsMostRecent", IsMostRec)
+@Html.Hidden("HaulierEmailAddress", HaulierEmail)
+@Html.Hidden("EMail", HaulierEmail)
+@Html.Hidden("ESDAL_Reference", esdalRef)
+@Html.Hidden("DOCUMENT_ID", documentId)
+@Html.Hidden("NotescontactId", contactId)
+@Html.Hidden("IS_MOST_RECENT", IsMostRec)
+@Html.Hidden("NextNoLongerAffected", false)
+@Html.Hidden("RouteName", routeName)
+@Html.Hidden("StructAnalysisID", 0)
+@Html.Hidden("HFNEN_ID", 0)
+@Html.Hidden("hinboxId", IinboxId)
+@Html.Hidden("hdnNENNotifID", NENNotifID)
+@Html.Hidden("totalRouteCount", routeCount)
+@Html.Hidden("nenContentRefNo", contentRefNo)
+
+
+<!--main-content -->
+<section id="banner1">
+    <div class="container-fluid" id="banner-container">
+        <div>
+            <div id="sort-menu-list">
+                <div>
+                    <div class="tab-row">
+                        @Html.NEN_NotificationTabs(1, false)
+                    </div>
+                </div>
+            </div>
+            <div id="main-sort-content" class="main-sort-content" style="background-color: white;">
+                <div id="table-head" class="mb-4 tableHead">
+                    <div class="main-title ">
+                        <span id="NEHeading" class="edit-normal"> NE - Notification</span>
+                        <div>
+                            <h4 class="warningmsg">
+                                @if (ViewBag.IS_MOST_RECENT != null && ViewBag.IS_MOST_RECENT == 0)
+                                {<span>Warning(s): This is not the latest version of the movement.</span>}
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center generalOptions">
+                        <div class="edit-normal text-justify" style="width: 40% !important; font-weight:600;white-space:nowrap;">Assign notification to another user</div>
+                        <div class="" style="width: 10rem !important; margin-right: 3.5rem;">
+                            @Html.DropDownList("OrganisationUserId", ViewBag.OrgUserDropDown as SelectList, "Select user", new { @id = "OrganisationUserId", @class = "form-select select2 text-normal-hyperlink", @style = "height:2.5rem !important;color: rgba(39, 87, 149, 1) !important;" })
+                        </div>
+                        <button class="btn outline-btn-primary SOAButtonHelper pt-1 pb-1" data-toggle="modal"
+                                data-target="#exampleModalCenter2"
+                                style="width: auto;padding-top: 0.5rem !important;padding-bottom: 0.5rem !important;" id="btn_NE_AssignUser">
+                            <span>ASSIGN </span>
+                        </button>
+                        @*<button class='btn outline-btn-primary SOAButtonHelper pt-1 pb-1'
+                                    style='width: auto; padding-top: 0.5rem!important; padding-bottom: 0.5rem!important;'>
+                                HAULIER ROUTE DESCRIPTION
+                            </button>*@
+                    </div>
+                </div>
+                <div class="tab_content1" id="tab_1">
+                    <div class="cardSOA1 mt-0 ml-1 mb-4">
+                        <h6 class="text-color3 stHeading1 m-0">Movement Summary</h6>
+                    </div>
+                    <div id="div_general" class="pl-6 pr-3">
+                    </div>
+                    <div id="div_vehicle" style="margin-top:3% !important">
+                    </div>
+
+                </div>
+                <div class="tab_content1" id="tab_3" style="display:none;">
+                    @*<div class="main-title ">
+                            <span class="edit-normal"> NE - Notification</span>
+                        </div>*@
+                    <div id="mapTitle"></div>
+                    <div id="route">
+                        <div id="RoutePart"></div>
+                    </div>
+                    <div id="RouteDetails">
+                    </div>
+                </div>
+                <div class="flexer justify-content-center pt-8 generalOptions" style="position: relative;">
+                    <div class="button main-button mr-2">
+                        <button class="btn btn-outline-primary btn-normal pl-7 pr-7" type="button"
+                                aria-pressed="true" id="btn_NE_AcceptRejectMovement">
+                            ACCEPT/REJECT MOVEMENT
+                        </button>
+                    </div>
+                    <div class="button main-button mr-0">
+                        <button class="btn btn-outline-primary btn-normal pl-6 pr-6" type="button" id="btn_confirmRnV">
+                            CONFIRM ROUTE AND VEHICLE
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @*<div class="modal show" id="exampleModalCenter2" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" style="display: none;" aria-modal="true">
+
+        </div>*@
+    <!--Modal Popup Dialog warning-->
+    <div class="modal fade" id="pop-warning-nen-route" data-bs-backdrop="static" data-bs-keyboard="false" role="dialog" style="cursor: pointer" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" id="WarningContent">
+                <div class="modal-header pt-2">
+                    @*<span aria-hidden="true" class="close" data-dismiss="modal"
+                        aria-label="Close">&times;</span>*@
+                </div>
+                <div>
+                    <div class="modal-body">
+                        <img src="/Content/assets/images/warning-icon2.svg" width="30">
+                        <div class="edit-normal popup-padding pop-message-route-nen" id="div_WarningMessageDialogRoute" style="text-align:justify!important"></div>
+                    </div>
+                    @*<div class="modal-footer pt-4">
+                            <button id="WarningFailureDialog" class="btn btn-primary RD-button SOAButtonHelper ml-2 box_warningBtn1"></button>
+                            <button id="WarningSuccessDialog" class="btn btn-primary RD-button SOAButtonHelper ml-2 box_warningBtn2"></button>
+                        </div>*@
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Modal Popup Dialog end here-->
+</section>
+
+<!--end of main-content -->
+
+@{
+    <input type="hidden" value="@ViewBag.User_id" id="hf_User_id" name="hf_User_id" />
+    <input type="hidden" value="@ViewBag.NextNoLongerAffected" id="hf_NextNoLongerAffected" name="hf_NextNoLongerAffected" />
+    <input type="hidden" value="@ViewBag.NENEmail" id="hf_NENEmail" name="hf_NENEmail" />
+    <input type="hidden" value="@ViewBag.EsdalRefNum" id="hf_EsdalRefNum" name="hf_EsdalRefNum" />
+    <input type="hidden" value="@ViewBag.NotificationID" id="hf_NotificationID" name="hf_NotificationID" />
+    <input type="hidden" value="@ViewBag.DOCUMENT_ID" id="hf_DOCUMENT_ID" name="hf_DOCUMENT_ID" />
+    <input type="hidden" value="@ViewBag.inboxId" id="hf_inboxId" name="hf_inboxId" />
+    <input type="hidden" value="@ViewBag.routeType" id="hf_routeType" name="hf_routeType" />
+    @Html.Hidden("hf_encryptNotifId", TempData["EncryptNotiId"])
+    @Html.Hidden("hf_encryptInBoxId", TempData["InBoxId"])
+    @Html.Hidden("hf_encryptEsdalRef", TempData["EncryptEsdalRef"])
+    @Html.Hidden("hf_sessionRouteFlag", Session["RouteFlag"])
+}
+
+<script src="~/Scripts/Routes/enterRouteDetail.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/NENNotification/NE_Notification.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/NENNotification/Display_NENotification.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/jquery.nen.routePlaning.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/SOApplication/jQuery.SOApplication.js?V@(Session["ProjectVersion"])"></script>
+@*<script src="~/Scripts/IFX_Route/ifx.jquery.contextMenu-1.0.1.js?V@(Session["ProjectVersion"])"></script>*@ 
+<script src="~/Scripts/Application/ListImportedRouteFromLibrary.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Routes/LibraryRoutePartDetails.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Routes/A2BPlanning.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Routes/A2BLeftPanel.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/VehicleConfig/ViewNENConfiguration.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/VehicleConfig/ViewConfiguration.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Annotation/CreateAnnotation.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Contact/ContactList.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Notification/PopUpAddressBookCsp.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Annotation/PartialView/_DisplayAnnotationListPopUp.js"></script>
+<script src="~/Scripts/Movements/ViewCollaborationStatusAndNotes.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Structures/RoadContact.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/RoadOwnership/RoadOwnersContact.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Movements/LibraryNotesList.js?V@(Session["ProjectVersion"])"></script>

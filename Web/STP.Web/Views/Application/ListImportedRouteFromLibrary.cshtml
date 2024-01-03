@@ -1,0 +1,838 @@
+@using System.Web.Optimization
+@using STP.Domain.Applications
+@using STP.Domain
+
+@model List<STP.Domain.Routes.AppRouteList>
+
+@{
+
+    var modelcnt = 0;
+    modelcnt = Model.Count;
+}
+
+<style>
+    #mid_row {
+        justify-content: flex-end;
+    }
+  .DivCSSLisTImported {
+        margin-top: 38.25rem !important;
+        position:relative;
+    }
+</style>
+@Html.Hidden("ModelCnt", modelcnt)
+<div id="ShowList">
+    @{
+        if (Model.Count != 0 || ViewBag.AuthoMov_VersionID != "0" || ViewBag.AuthoMov_CONT_REF != "0")
+        {
+            <div>
+                @if (ViewBag.IsNEN == true)
+                {
+                    <div class="pt-2 pb-3 edit-normal">
+                        Listed below, are the routes you have defined for your notification.
+                    </div>
+                }
+                else
+                {
+                    <div class="pt-2 pb-3 edit-normal">
+                        Listed below, are the routes you have defined for your application.
+                    </div>
+                }
+
+                <div id="tblroutelist" class="pr-3">
+                    <div class="main-table mt-0 pt-0">
+                        <table>
+                            <thead>
+                                @{
+                                    if (ViewBag.IsNEN == true)
+                                    {
+                                        <tr>
+                                            @if (ViewBag.IsNEN_authoMov == true)
+                                            {
+
+                                                <th>Route parts</th>
+                                            }
+                                            else
+                                            {
+                                                <th>Start Address</th>
+                                                <th>End Address</th>
+                                            }
+                                            @if (ViewBag.IsNEN_authoMov == true)
+                                            {
+                                                <th>Route Type</th>
+                                            }
+                                            else
+                                            {
+                                                <th>Route Status</th>
+
+                                            }
+                                            <th>Route Description</th>
+                                            @if (ViewBag.IsNEN_authoMov == false)
+                                            {
+                                                <th></th>
+
+                                                <th></th>
+                                                <th></th>
+                                            }
+                                        </tr>
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <th>Route Parts</th>
+
+                                            <th>Route Type</th>
+
+                                            <th>Route Description</th>
+
+                                            @if (ViewBag.AuthoMov_VersionID == "0" && ViewBag.AuthoMov_CONT_REF == "0")
+                                            {
+                                                <th></th>
+                                            }
+                                        </tr>
+                                    }
+                                }
+                            </thead>
+                            <tbody id="sortable">
+                                @{
+                                    if (ViewBag.AuthoMov_VersionID != "0" || ViewBag.AuthoMov_CONT_REF != "0")
+                                    {
+                                        if (ViewBag.AuthoMov_VersionID != "0")
+                                        {
+                                            for (int j = 0; j < Model.Count; j++)
+                                            {
+                                                <tr class="bgColor3" id='@j' data-id="@Model[j].RouteID" data-type=" @Model[j].RouteType">
+                                                    <td class="text-color1">
+                                                        <span class="green link" id="span1-routeview" data-RouteID="@Model[j].RouteID" data-RouteType="@Model[j].RouteType" data-var1=true>@Model[j].RouteName</span>
+                                                    </td>
+                                                    <td class="text-color1">@Model[j].RouteType</td>
+                                                    <td class="text-color1">@Model[j].RouteDescription</td>
+                                                </tr>
+
+                                            }
+                                        }
+                                        else
+                                        {
+                                            for (int j = 0; j < Model.Count; j++)
+                                            {
+                                                <tr class="bgColor3" id='@j' data-id="@Model[j].RouteID" data-type=" @Model[j].RouteType">
+                                                    <td class="text-color1">
+                                                        <span class="green link" id="span2-routeview" data-RouteID="@Model[j].RouteID" data-RouteType="@Model[j].RouteType" data-var1=false>@Model[j].RouteName</span>
+                                                    </td>
+                                                    <td class="text-color1">@Model[j].RouteType</td>
+                                                    <td class="text-color1">@Model[j].RouteDescription</td>
+
+                                                </tr>
+                                            }
+
+                                        }
+                                        if (Model.Count == 0)
+                                        {
+                                            <tr class="bgColor3">
+                                                <td colspan="4" class="text-color1"><span style="color: red">Result not found.</span></td>
+                                            </tr>
+                                        }
+
+                                    }
+
+                                    if (ViewBag.AuthoMov_VersionID == "0" && ViewBag.AuthoMov_CONT_REF == "0")
+                                    {
+                                        for (int i = 0; i < Model.Count; i++)
+                                        {
+
+                                            if (ViewBag.IsNEN == true)
+                                            {
+                                                <tr class="bgColor3" id='@i' data-id="@Model[i].RouteID" data-type="@Model[i].RouteType">
+                                                    @if (ViewBag.IsNEN_authoMov == true)
+                                                    {
+                                                        <td class="text-color1">
+                                                            <span class="green link" id="span3-routeview" data-RouteID="@Model[i].RouteID" data-RouteType="@Model[i].RouteType" data-var1=true>@Model[i].RouteName</span>
+                                                        </td>
+                                                    }
+                                                    else
+                                                    {
+                                                        if (Model[i].FromAddress.Length > 30)
+                                                        {
+                                                            <td class="text-color1" title="@Model[i].FromAddress" style="width:230px;">@Model[i].FromAddress.Substring(0, 30)...</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td class="text-color1" title="@Model[i].FromAddress" style="width:230px;">@Model[i].FromAddress</td>
+                                                        }
+
+                                                        if (Model[i].ToAddress.Length > 30)
+                                                        {
+                                                            <td class="text-color1" title="@Model[i].ToAddress" style="width:230px;">@Model[i].ToAddress.Substring(0, 30)...</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td class="text-color1" title="@Model[i].ToAddress" style="width:230px;">@Model[i].ToAddress</td>
+                                                        }
+                                                    }
+                                                    @{string rtname = @Model[i].RouteName;
+                                                        string rtname1 = rtname.Replace("'", ""); }
+                                                    @if (ViewBag.IsNEN_authoMov == true)
+                                                    {
+                                                        <td class="text-color1"><span>Planned</span></td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td class="text-color1"><span id="status_@Model[i].RouteID">@Model[i].NENRouteStatus</span></td>
+                                                    }
+                                                    @if (Model[i].RouteDescription.Length > 40)
+                                                    {
+                                                        if (Model[i].RouteDescription.Length > 1010)
+                                                        {
+                                                            <td class="text-color1" title="@Model[i].RouteDescription.Substring(0, 1010)......." style="width:230px;">@Model[i].RouteDescription.Substring(0, 40)...</td>
+                                                        }
+                                                        else
+                                                        {
+                                                            <td class="text-color1" title="@Model[i].RouteDescription" style="width:230px;">@Model[i].RouteDescription.Substring(0, 40)...</td>
+                                                        }
+
+                                                    }
+                                                    else
+                                                    {
+                                                        <td class="text-color1" style="width: 230px;">@Model[i].RouteDescription</td>
+                                                    }
+                                                    @if (ViewBag.IsNEN_authoMov == false)
+                                                    {
+                                                        <td class="text-color1">
+                                                            <span id="mid_row">
+                                                                <button class="btn btn-outline-primary btn-normal" id="btn1-viewroute" data-RouteID="@Model[i].RouteID" data-planned='planned' data-NENRouteStatus="@Model[i].NENRouteStatus">
+                                                                    VIEW ROUTE
+                                                                </button>
+                                                            </span>
+                                                        </td>
+
+                                                        <td class="text-color1">
+                                                            <a class="text-decoration-link" style="cursor:pointer;" id="edit-route1" data-RouteID="@Model[i].RouteID" data-rtname1="@rtname1" data-planned='planned' name="@Model[i].RouteName">
+                                                                <img src="/Content/assets/images/edit-icon.svg" width="20" data-toggle="tooltip" data-placement="right" title="Edit">
+                                                            </a>
+                                                        </td>
+                                                    }
+                                                </tr>
+                                            }
+                                            else
+                                            {
+                                                <tr class="bgColor3" id='@i' data-id="@Model[i].RouteID" data-type="@Model[i].RouteType">
+
+
+                                                    <td class="text-color1">
+                                                        @if (ViewBag.IsCandidateModify == null)
+                                                        {
+
+                                                            <span class="green link" id="displaySoRouteDescMap" data-RouteID="@Model[i].RouteID" data-RouteType="@Model[i].RouteType">@Model[i].RouteName</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="green link" id="displayCandidateRouteDescMap" data-RouteID="@Model[i].RouteID" data-RouteType="@Model[i].RouteType">@Model[i].RouteName</span>
+                                                        }
+                                                    </td>
+                                                    <td class="text-color1">
+                                                        @Model[i].RouteType
+                                                    </td>
+
+
+                                                    <td class="text-color1">
+                                                        @Model[i].RouteDescription
+                                                    </td>
+
+
+                                                    <td class="text-color1">
+                                                        @if (ViewBag.IsCandidateModify == null)
+                                                        {
+                                                            <button style="width:auto;margin-left:8px" id="addtolib" data-RouteID="@Model[i].RouteID" data-namer="@Model[i].RouteName" data-RouteType="@Model[i].RouteType" name="@Model[i].RouteName" class="tdbuttonauto tdright btngrad btnrds btnbdr vehicleactions" aria-hidden="true">Add to route library</button>
+                                                        }
+                                                        @if (ViewBag.IsCandidateModify == null || (ViewBag.IsCandidateModify == true && ViewBag.CheckerStatus != 301003))
+                                                        {
+                                                            if (ViewBag.AgreedSO == 0)
+                                                            {
+                                                                string rtname = @Model[i].RouteName;
+                                                                string rtname1 = rtname.Replace("'", "");
+                                                                <button data-RouteID="@Model[i].RouteID" data-RouteType="@Model[i].RouteType" id="btn_del_route" class="tdbutton tdright btngrad btnrds btnbdr vehicleactions" name="@Model[i].RouteName" aria-hidden="true" data-icon="&#xe0bc;">Delete</button>
+                                                                <button data-RouteID="@Model[i].RouteID" data-rtname1="@rtname1'" data-RouteType="@Model[i].RouteType" name="@Model[i].RouteName" id="btn_edit_route" class="tdbutton tdright btngrad btnrds btnbdr vehicleactions" aria-hidden="true" data-icon="&#xe000;">Edit</button>
+
+                                                            }
+                                                            else if (ViewBag.AgreedSO == 2)
+                                                            {
+                                                                <button data-RouteID=" @Model[i].RouteID" data-RouteType="@Model[i].RouteType" id="btn-DeleteSelectedRoute" class="tdbutton tdright btngrad btnrds btnbdr vehicleactions" name="@Model[i].RouteName" aria-hidden="true" data-icon="&#xe0bc;">Delete</button>
+                                                            }
+                                                        }
+                                                    </td>
+
+                                                </tr>
+
+                                            }
+
+                                        }
+                                    }
+                                }
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                @if ((ViewBag.IsCandidateModify == null || ViewBag.IsCandidateModify == true) && ViewBag.IsNEN == false)
+                {
+                    <div id="reordering">
+                        <button id="sort" class="moveupdownsave btngrad btnrds btnbdr" type="button" aria-hidden="true" class="btnautowidth next btngrad btnrds btnbdr">Reorder route parts</button>
+                        <button id="sort11" class="moveupdownsave btngrad btnrds btnbdr" type="button" aria-hidden="true" class="btnautowidth next btngrad btnrds btnbdr">Finish reordering</button>
+                        <span id="information" style="width: auto; margin-top: 8px;">Click and drag route part to reorder.</span>
+                        <button class="btn_reg_back next btngrad btnrds btnbdr" id="btn_cancel" aria-hidden="true" data-icon="" type="button">Cancel</button>
+                    </div>
+                }
+            </div>
+        }
+        else if (ViewBag.IsNEN == true)
+        {
+
+            <h4 style="display: block;" id="h4_blank_header">Route details not found.</h4>
+            <br />
+        }
+        else
+        {
+
+            <h4 style="display: block;" id="h4_blank_header">Please add one or more route parts to your application by making a selection in the left menu.</h4>
+            <br />
+        }
+    }
+</div>
+
+
+<div id="ShowDetail" style="display: none">
+    <div id="scroll-btns" style="background-color: white;display:none;">
+        <div id="table-head">
+            <span id="">
+
+            </span>
+            <span id="">
+                <div class="warning-left-icon" data-toggle="modal" data-target="#exampleModalCenter2">
+                    <img src="~/Content/assets/images/warning-icon2.svg" id="scoll-right-btn" width="25" />
+                </div>
+            </span>
+        </div>
+    </div>
+    <div class="row">
+        <div class="wd50">
+            <div class="row pl-6 pt-2 pb-3">
+                <div class="col-sm-4 col-md-1 col-lg-4 text-normal">
+                    Route part name
+                </div>
+                <div class="col-sm-4 col-md-5 col-lg-8 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                    <span id="RoutePartName"></span>
+                </div>
+            </div>
+            <div class="row pl-6 pt-3 pb-3">
+                <div class="col-sm-4 col-md-1 col-lg-4 text-normal">
+                    Route description
+                </div>
+                <div class="col-sm-4 col-md-5 col-lg-7 input-field edit-normal text-align-justify pt-0  pb-0 pl-0 pr-0">
+                    <span id="RouteDescr"></span>
+                </div>
+            </div>
+        </div>
+        <div class="wd50">
+            <div class="bgColor3 pl-6 pr-6 pt-2 pb-2">
+                <div class="details2 pb-3">
+                    Route
+                </div>
+                <div class="row pb-4">
+                    <div class="col-lg-3 col-sm-12 col-md-6 text-normal">
+                        Starting
+                    </div>
+                    <div class="col-lg-9 col-sm-12 col-md-6 edit-normal">
+                        <span id="Starting"></span>
+                    </div>
+                </div>
+                <div class="row pb-4">
+                    <div class="col-lg-3 col-sm-12 col-md-6 text-normal">
+                        @{
+                            if (ViewBag.IsNEN == true)
+                            {
+                                <span>Waypoint</span>
+                            }
+                            else
+                            {
+                                <span> via / Waypoint </span>
+                            }
+                        }
+                    </div>
+                    <div class="col-lg-5 col-sm-12 col-md-6 edit-normal">
+                        <table id="Tabvia" class="table">
+                        </table>
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-lg-3 col-sm-12 col-md-6 text-normal">
+                        Ending
+                    </div>
+                    <div class="col-lg-9 col-sm-12 col-md-6 edit-normal">
+                        <span id="Ending"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row pl-3 pr-3 pt-4 pb-3 mb-3">
+        <div id="route">
+            <div id="RouteMap">
+            </div>
+            @*<span id="RouteMap" class="text-normal"></span>*@
+        </div>
+    </div>
+</div>
+
+@{
+    var ValRouteFlag = "2";
+    if (Session["RouteFlag"] != null)
+    {
+        ValRouteFlag = Session["RouteFlag"].ToString();
+    }
+}
+@*View Route section for NEN*@
+@{ if (ViewBag.AuthoMov_VersionID == "0" && ViewBag.AuthoMov_CONT_REF == "0")
+    {
+        if (ViewBag.IsNEN == true)
+        {
+            if (ViewBag.IsNEN_authoMov == false)
+            {
+
+
+                <!-- google-map-setting-start -->
+                <!-- google-map-setting-start -->
+                <div id="appRouteMap" style="" class="google-map map-height"></div>
+
+                <button draggable="false" id="IDEnLargeMapNEN" aria-label="Toggle fullscreen view" type="button"
+                        style="background: none rgb(255, 255, 255); border: 0px; margin: 10px; padding: 0px; text-transform: none; appearance: none; position: absolute; cursor: pointer; user-select: none; border-radius: 2px; height: 39px; width: 41px; box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px; overflow: hidden; right: 2px; display: none;">
+                    <img id="Minimzeicon" src="~/Content/assets/Icons/maximize-map.svg" alt="" style="height: 123px; width: 152px; margin-top: -42px; margin-left: -56px; margin-right: -19px; margin-bottom: -6px;" title="Toggle full screen view">
+                    <img id="MaxmizeIocn" src="~/Content/assets/Icons/minimise-map.svg" alt="" style="height: 123px; width: 152px; margin-top: -43px; margin-left: -56px; margin-right: -4px; margin-bottom: -4px;" title="Toggle normal screen view">
+                </button>
+                <div style="height: 20px;">
+                </div>
+
+
+                <button  class="filter-icon" draggable="false" id="IDopenRouteFiltersNEN" aria-label="Toggle fullscreen view" type="button"
+                        style="background: none rgb(255, 255, 255); border: 0px; margin: 10px; padding: 0px; text-transform: none; appearance: none; position: absolute; cursor: pointer; user-select: none; border-radius: 2px; height: 39px; width: 41px; box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px; overflow: hidden; right: 2px; display: none; margin-top: 61px;">
+                    <img src="~/Content/assets/images/filter-icon2.svg" title="Open filter" width="30" style="color: black; cursor: pointer; margin-right: 3px; ">
+                </button>
+                    @*<div class="filter-icon" id="IDopenRouteFiltersNEN" style="padding-left: 7px; margin-right: -45px;display:none;">
+                        <img src="~/Content/assets/images/filter-icon2.svg" title="Open filter" width="30" style="color: black; cursor: pointer; margin-right: 3px; ">
+                    </div>*@
+                    @*<div class="row pl-3 pr-3 pt-4 pb-3 mb-3">
+
+
+                            <div id="appRouteMap" style="height: 650px; display: none;" class="test">
+
+
+                            </div>
+
+                            <span id="RtStatus" class="text-normal err-msg" style="color:red"></span>
+                        </div>*@
+                    <div id="filters" class="sidenav filter-sidenav planRouteFilter">
+                        <div class="row sidenav-header pl-3 pr-3 mt-3">
+                            <div class="col-10 col-md-10 col-sm-10" style="text-align: center;">
+                                <div class="text-normal-hyperlink mt-3" style="font-size: x-large;">
+                                    SEARCH
+                                </div>
+                            </div>
+                            <div class="col-2 col-md-2 col-sm-2 pl-0">
+                                <a href="#" class=" btn-close-filter" id="closebtn" style="font-size: 45px;">&times;</a>
+                            </div>
+                        </div>
+                        <hr style="margin-top: 0;">
+
+                        <div class="filter-list">
+                            <div class="filters">
+                                <div class="row" id="IDviewStructuresConstraints">
+                                    <div class="col-10 col-md-10 col-sm-10">
+                                        <span>
+                                            Structures and Constraints
+                                        </span>
+                                    </div>
+                                    <div class="col-2 col-md-2 col-sm-2">
+                                        <img id="chevlon-up-icon1" src="~/Content/assets/images/up-chevlon-filter.svg" width="20"
+                                             style="display: none;">
+                                        <img id="chevlon-down-icon1" src="~/Content/assets/images/down-chevlon-filter.svg" width="20"
+                                             style="display: block">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pr-0 pl-0 mr-0 ml-0 mt-4 mb-0 input-field" id="viewStructuresConstraints" style="display: none;">
+                                <div class="row mt-4 align-items-center" style="display:none">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="All" class="checkbox" name="All" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">All</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center" style="display:none">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="Affected" class="checkbox" name="Affected" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span id="AffectedLabel" class="txtStyle">Affected</span>
+                                    </div>
+                                </div>
+                                <label class="switchstructure switch">
+                                    <input type="checkbox" id="toggleAllAffected" name="toggleAllAffected" value="true">
+                                    <div class="slider round">
+                                        <!--ADDED HTML -->
+                                        <span id="All" class="on" style="color:white !important">All</span>
+                                        <span id="Affected" class="off" style="color:white !important">Affected</span>
+                                        <!--END-->
+                                    </div>
+                                </label>
+                                <hr>
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="Structs" class="checkbox" name="Structs" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Structures</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center pl-7">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="Underbridge" class="checkbox" name="Underbridge" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Underbridge</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center pl-7">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="Overbridge" class="checkbox" name="Overbridge" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Overbridge</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center pl-7">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="UnderAndOverbridge" class="checkbox" name="UnderAndOverbridge" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Under and Over bridge</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center pl-7">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="LevelCrossing" class="checkbox" name="LevelCrossing" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Level Crossing</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="Constraints" class="checkbox" name="Constraints" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Constraints</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="my-3 filters">
+                                <div class="row" id="IDviewBoundaries">
+                                    <div class="col-10 col-md-10 col-sm-10">
+                                        <span>
+                                            Boundaries
+                                        </span>
+                                    </div>
+                                    <div class="col-2 col-md-2 col-sm-2">
+                                        <img id="chevlon-up-icon2" src="~/Content/assets/images/up-chevlon-filter.svg" width="20"
+                                             style="display: none;">
+                                        <img id="chevlon-down-icon2" src="~/Content/assets/images/down-chevlon-filter.svg" width="20"
+                                             style="display: block">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pr-0 pl-0 mr-0 ml-0 mt-4 mb-0 input-field" id="viewBoundaries" style="display: none;">
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="PoliceBoundaries" class="checkbox" name="PoliceBoundaries" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Police Authority Boundaries</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="LABoundaries" class="checkbox" name="LABoundaries" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Local Authority Boundaries</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="my-3 filters">
+                                <div class="row" id="IDviewRoads">
+                                    <div class="col-10 col-md-10 col-sm-10">
+                                        <span>
+                                            Search roads
+                                        </span>
+                                    </div>
+
+                                    <div class="col-2 col-md-2 col-sm-2">
+                                        <img id="chevlon-up-icon21" src="~/Content/assets/images/up-chevlon-filter.svg" width="20"
+                                             style="display: none;">
+                                        <img id="chevlon-down-icon21" src="~/Content/assets/images/down-chevlon-filter.svg" width="20"
+                                             style="display: block">
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div id="viewroads" style="display: none;">
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="NHBoundaries" class="checkbox" name="NHBoundaries" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">NH and DBFO Area Boundaries</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="TfLRoads" class="checkbox" name="TfLRoads" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">TfL Roads</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="WelshTrunkRoads" class="checkbox" name="bulldozer" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">
+                                            Welsh Trunk Roads
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="ScottishTrunkRoads" class="checkbox" name="bulldozer" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Scottish Trunk Roads</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="my-3 filters">
+                                <div class="row" id="IDviewMapFeatures">
+                                    <div class="col-10 col-md-10 col-sm-10">
+                                        <span>
+                                            Map Features
+                                        </span>
+                                    </div>
+
+                                    <div class="col-2 col-md-2 col-sm-2">
+                                        <img id="chevlon-up-icon212" src="~/Content/assets/images/up-chevlon-filter.svg" width="20"
+                                             style="display: none;">
+                                        <img id="chevlon-down-icon212" src="~/Content/assets/images/down-chevlon-filter.svg" width="20"
+                                             style="display: block">
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!--Map Extra Features--------------->
+                            <div id="viewmapfeat" style="display: none;">
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="ParkAndRec" class="checkbox" name="ParkAndRec" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Parks and Recreation</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="TravelDest" class="checkbox" name="TravelDest" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Travel Destinations</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="TransHub" class="checkbox" name="TransHub" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">
+                                            Transportation Hubs
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="AutMob" class="checkbox" name="AutMob" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Automobile Maintenance</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="EduIn" class="checkbox" name="EduIn" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Educational Institutions</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="Shopping" class="checkbox" name="Shopping" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Shopping</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="CMSServ" class="checkbox" name="CMSServ" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Community Service Centers</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="BuisFeci" class="checkbox" name="BuisFeci" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Business Facilities</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="Entertainment" class="checkbox" name="Entertainment" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Entertainment</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="FiInst" class="checkbox" name="FiInst" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Financial Institutions</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="Parkbay" class="checkbox" name="Parkbay" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Parking bays</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="Hospital" class="checkbox" name="Hospital" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Hospitals</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="Restaurants" class="checkbox" name="Restaurants" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">Restaurants</span>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!--End Here ------------------------>
+
+                            <div class="pr-0 pl-0 mr-0 ml-0 mt-4 mb-0 input-field" id="viewAllstructures" style="display: none;">
+                                <div class="row mt-4 align-items-center">
+                                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                                        <input type="checkbox" id="AILStructs" class="checkbox" name="bulldozer" value="bulldozer"
+                                               width="25">
+                                    </div>
+                                    <div class="col-lg-10 col-sm-10 col-md-10">
+                                        <span class="txtStyle">
+                                            AIL related Structures whether over under or both,
+                                            public or private
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row pt-6 pl-3 pr-2 pb-6" id="org_filter_btn">
+
+                                <!-- <div class="header mt-4"> -->
+                                <div style="align-content: center; padding-left: 25%;">
+                                    <button class="btn outline-btn-primary btn-normal" role="button" id="IDClearall" aria-pressed="true">
+                                        CLEAR
+                                    </button>
+                                </div>
+                                <!-- </div> -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <style>
+                        div.mapHeight {
+                            height: 650px;
+                        }
+                    
+                    </style>
+                    }
+                    }
+                    }
+
+                    }
+                   
+                    @*<link href="~/Content/Style/Common/map.css" rel="stylesheet" />*@
+                    <link href="~/Content/Style/Common/grid_css.css" rel="stylesheet" />
+
+                    @Html.Hidden("HFRouteFlag", ValRouteFlag)
+                    @Html.Hidden("hf_Count", Model.Count)
+                    @if (Model.Count > 0)
+                    {
+                        @Html.Hidden("hf_NENRouteStatus", Model[0].NENRouteStatus)
+                    }
+                    <input type="hidden" value="@ViewBag.NENrouteStatus" id="hf_NENRouteStatusVB" name="hf_NENRouteStatusVB" />
+                    <input type="hidden" value="@ViewBag.hNENRoute_Id" id="hf_hNENRoute_Id" name="hf_hNENRoute_Id" />
+                    @Html.Hidden("hf_pageflag", Session["pageflag"])
+                    @Html.Hidden("hf_RouteFlag", Session["RouteFlag"])
+
+                    @*<script src="~/Scripts/Application/jQuery.ListImportedRouteFrom.RouteLibrary.js?V@(Session["ProjectVersion"])"></script>*@
+                    @*<script src="~/Scripts/Vehicle/jQuery.vehicleConfig.List.js?V@(Session["ProjectVersion"])"></script>*@
+                    @*<script src="~/Scripts/SOApplication/jQuery.SOApplication.js?V@(Session["ProjectVersion"])"></script>*@
+                    @*<script src="~/Scripts/Vehicle/vehicleConfig.Create.js?V@(Session["ProjectVersion"])"></script>*@
+                    @*<script src="~/Scripts/IFX_Route/ifx.jquery.contextMenu-1.0.1.js?V@(Session["ProjectVersion"])"></script>*@
+                    @*<script src="~/Scripts/Application/ListImportedRouteFromLibrary.js?V@(Session["ProjectVersion"])"></script>*@

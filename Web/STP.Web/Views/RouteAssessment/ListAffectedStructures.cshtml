@@ -1,0 +1,135 @@
+@model STP.Domain.RouteAssessment.XmlAnalysedStructures.AnalysedStructures
+@using STP.Domain.SecurityAndUsers
+
+<div id="div_mylistaffstruct" class="main-title" style="display:none;">
+    <br />
+    <span id="Spn_OrgName" class="text-normal-bold" style="display:none;"></span>
+    <br />
+</div>
+@{
+    int userTypeId = 0;
+    int AccessToALSAT = 0;
+    UserInfo currentSessionInfo = null;
+    if (Session["UserInfo"] != null)
+    {
+        currentSessionInfo = (UserInfo)Session["UserInfo"];
+
+        userTypeId = currentSessionInfo.UserTypeId;
+        AccessToALSAT = currentSessionInfo.AccessToALSAT;
+    }
+}
+@Html.Hidden("UserTypeId", userTypeId)
+<div id="AffectedStructure_xslt">
+    @{
+        <div>
+            <div class="pl-0 main-sort-content" style="padding: 0 0 2% 0 !important;">
+                <div class="main-title">
+                    <span class="text-normal"> Affected Structures</span>
+                    @if (userTypeId == 696007 || userTypeId == 696002)
+                    {
+                        <div style="float:right !important" id="structcheckbox">
+                            <span class="text-normal" style="font-size: 20px !important; color: #275795; vertical-align: sub;">Show All</span>
+                            <input type="checkbox" id="showallstruct" class="checkbox mr-2 ml-2" name="submitted" checked="@ViewBag.IsChecked" value="submitted" width="20">
+                        </div>
+                    }
+                </div>
+            </div>
+            @Html.Partial("Partial/_AffectedStructuresMetric", Model)
+
+            @if (userTypeId == 696007 && AccessToALSAT == 1)
+            {
+                <button type="button" id="PerformAssessment" class="btn btn-primary btn-normal mt-2">Perform Assessment</button>
+            }
+        </div>
+
+        @*<div id="divNoAffected" class="cardSOA1 mt-0 ml-0 mr-0" style="text-align:center;display:none;">
+            <h6 class="text-color3 stHeading1 m-0">No affected structures</h6>
+        </div>*@
+
+    }
+</div>
+
+<div id="filters" class="sidenav filter-sidenav list-aff-str-filter">
+    <div class="row sidenav-header">
+        <div class="col-10 col-md-10 col-sm-10" style="text-align: center;margin-top: 15px;">
+            <span style="font-size: x-large;">
+                FILTER
+            </span>
+        </div>
+        <div class="col-2 col-md-2 col-sm-2 pl-0" style="position: none;">
+            <a href="#" id="IDcloseFilters" style=" font-size: 34px;">&times;</a>
+        </div>
+    </div>
+
+    <hr style="margin-top: 0;">
+    <div class="filter-list">
+        <ul class="pl-3">
+            <li id="table-head">
+                <span class="mt-2">
+                    <input type="checkbox" id="LASStructs" class="checkbox"
+                           name="Structs" value="bulldozer" width="20">
+                </span><span>
+                    <a class="" id="All" href="#">All Structures</a>
+                </span>
+            </li>
+            <ul class="sub-list">
+                <li id="table-head">
+                    <span class="mt-2">
+                        <input type="checkbox" id="LASUnderbridge" class="checkbox"
+                               name="Underbridge" value="bulldozer" width="20">
+                    </span><span>
+                        <a class="" href="#">Underbridge</a>
+                    </span>
+                </li>
+
+                <li id="table-head">
+                    <span class="mt-2">
+                        <input type="checkbox" id="LASOverbridge" class="checkbox"
+                               name="Overbridge" value="bulldozer" width="20">
+                    </span><span>
+                        <a class="" href="#">Overbridge</a>
+                    </span>
+                </li>
+
+                <li id="table-head">
+                    <span class="mt-2">
+                        <input type="checkbox" id="LASLevelCrossing" class="checkbox"
+                               name="LevelCrossing" value="bulldozer" width="20">
+                    </span><span>
+                        <a class="" href="#">
+                            Level crossings
+                        </a>
+                    </span>
+                </li>
+            </ul>
+        </ul>
+    </div>
+    <hr style="margin-top: 0;">
+    @if (ViewBag.StructureId != "")
+    {
+
+        <div class="row mt-4" id="org_filter_btn">
+            <div class="col-lg-8 col-md-8 col-sm-12">
+                <div class="button mr-0 mb-2">
+                    <button class="btn btn-primary btn-normal" role="button" aria-pressed="true" style="width: 100% !important;" id="IddisplayStructure">
+                        SEARCH
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12">
+                <div class="button mr-2 mb-2">
+                    <button class="btn btn-primary btn-normal" role="button" aria-pressed="true" style="width: 100% !important;" id="IDClearAffectedStructure">
+                        CLEAR
+                    </button>
+                </div>
+            </div>
+        </div>
+    }
+
+</div>
+@{
+    <input type="hidden" value="@ViewBag.revisionId" id="hf_revisionId" name="hf_revisionId" />
+    @Html.Hidden("hf_AccessToALSAT", AccessToALSAT)
+    <input type="hidden" value="@Html.Raw(Json.Encode(ViewBag.StructureAssessList).Replace("\"","&quot;"))" id="hf_StructureAssessList" name="hf_StructureAssessList" />
+}
+

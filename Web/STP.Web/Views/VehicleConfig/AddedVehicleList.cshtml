@@ -1,0 +1,177 @@
+
+@{
+    ViewBag.Title = "AddedVehicleList";
+    Layout = null;
+}
+
+<body style="overflow-y: auto;" id="main-vehicle-list-filter">
+
+    <!-- main content-->
+    <section id="banner_list">
+        <div class="container-fluid" id="banner-container">
+            <div class="vehicle" id="vehicle-config-list">
+                <div class="header">
+                    <div class="row">
+                        <div class="col-lg-4">
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="title">
+                                ADDED VEHICLE LIST
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="main-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Type</th>
+                                <th>Configuration Name</th>
+                                <th>Intended Use</th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                @*<th></th>*@
+                                <th></th>
+                            </tr>
+                        </thead>
+
+                        @if (Model.Count > 0)
+                        {
+                            foreach (var item in Model)
+                            {
+                                <tr>
+                                    @{
+                                        string vehicleType = "";
+                                        switch (@item.VehicleType)
+                                        {
+                                            case 244001:
+                                                vehicleType = "drawbar trailer";
+                                                break;
+
+                                            case 244002:
+                                                vehicleType = "semi trailer";
+                                                break;
+
+                                            case 244003:
+                                                vehicleType = "rigid";
+                                                break;
+
+                                            case 244004:
+                                                vehicleType = "tracked";
+                                                break;
+
+                                            case 244005:
+                                                vehicleType = "spmt";
+                                                break;
+
+                                            case 244006:
+                                                vehicleType = "other in line";
+                                                break;
+
+                                            case 244007:
+                                                vehicleType = "other side by side";
+                                                break;
+
+                                            default:
+                                                vehicleType = "";
+                                                break;
+                                        }
+                                        <td class="text-color1">
+                                            <span id="first-column">@vehicleType</span>
+                                        </td>
+                                    }
+
+                                    @{
+                                        if (ViewBag.isNotifVehicle == true)
+                                        {
+                                            <td class="text-color2" id="@item.ConfigurationId" name="SP">
+                                                @item.ConfigurationName
+                                            </td>
+                                        }
+                                        else
+                                        {
+                                            item.ConfigurationName = item.ConfigurationName.Replace("'", "");
+                                            <td class="text-color2">
+                                                <a href="@Url.Action("ViewConfiguration", "VehicleConfig", new
+                                                     {
+                                                         B7vy6imTleYsMr6Nlv7VQ =
+                                                            STP.Web.Helpers.EncryptionUtility.Encrypt("vehicleID=" + @item.ConfigurationId)
+                                                     })" class="text-decoration-link">@item.ConfigurationName</a>
+                                            </td>
+                                        }
+                                    }
+                                    <td class="text-color1">@item.IndendedUse</td>
+                                    <td></td>
+                                    <td></td>
+                                    @*<td></td>*@
+                                    @{
+                                        if (ViewBag.isApplicationVehicle == true)
+                                        {
+                                            <td class="editdeletebtn" id="mid_row">
+                                                <a href="@Url.Action("EditConfiguration", "VehicleConfig", new
+                                                     {
+                                                         B7vy6imTleYsMr6Nlv7VQ =
+                                                            STP.Web.Helpers.EncryptionUtility.Encrypt("vehicleId=" + @item.ConfigurationId)
+                                                     })">
+                                                    <span class="btn btn-normal import-button" aria-hidden="true" data-icon="&#xe0f4;" title="Edit" width="20"> USE VEHICLE</span>
+                                                </a>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        }
+                                        else if (ViewBag.isNotifVehicle == true)
+                                        {
+                                            string vehname = @item.ConfigurationName;
+                                            string vehname1 = vehname.Replace("'", "");
+                                            <td class="editdeletebtn" id="mid_row">
+                                                <span id="mid_row_data">
+                                                    <button ConfigurationId="@item.ConfigurationId" VehicleName="'@vehname1'" class="btn btn-outline-primary btn-normal import-button importVehicle" aria-hidden="true" data-icon="&#xe0f4;">USE VEHICLE</button>
+                                                </span>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        }
+                                        else
+                                        {
+                                            <td></td>
+                                            <td>
+                                                <a href="@Url.Action("EditConfiguration", "VehicleConfig", new
+                                                     {
+                                                         B7vy6imTleYsMr6Nlv7VQ =
+                                                            STP.Web.Helpers.EncryptionUtility.Encrypt("vehicleId=" + @item.ConfigurationId)
+                                                     })">
+                                                    <img src="~/Content/assets/images/edit-icon.svg" title="Edit" width="20">
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="#" class="hrefDeleteVehicle" ConfigurationId="@item.ConfigurationId"  name="@item.ConfigurationName">
+                                                    <img src="~/Content/assets/images/delete-icon.svg" title="Delete" width="18">
+                                                </a>
+                                            </td>
+                                            <td><img src="~/Content/assets/images/star-disabled.svg" title="Favourites" width="20"></td>
+                                        }
+                                    }
+
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="9" style="text-align: center">
+                                    <span style="color: red">No records found</span>
+                                </td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- end of main content-->
+</body>
+<script src="~/Scripts/CspJs/VehicleConfig/AddedVehicleList.js?V@(Session["ProjectVersion"])"></script>

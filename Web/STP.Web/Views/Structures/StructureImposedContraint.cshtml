@@ -1,0 +1,695 @@
+@using STP.Domain
+@model STP.Domain.Structures.ImposedConstraints
+
+@{
+    Layout = null;
+}
+
+@{
+    TempData["RowIndex"] = 0;
+}
+<style>
+    .VerticalStyle {
+        width: inherit !important;
+        margin-left: 9px;
+    }
+
+    .error {
+        color: red !important;
+    }
+</style>
+
+<link href="~/Content/Style/Common/grid_css.css" rel="stylesheet" />
+
+@if (Model == null)
+{
+    <h4><span style="color: red">@Resources.Resource.WrongStructureMsg</span></h4>
+}
+else
+{
+
+    using (Html.BeginForm("EditSTRUCT_IMPOSED", "Structures", new { StructId = ViewBag.structureId, SectionId = ViewBag.sectionId }, FormMethod.Post, new { @id = "frmEditSTRUCT_IMPOSED" }))
+    {
+        <span id="manageImposed" style="display: none;">
+            @{
+                string title = "'" + "'" + ViewBag.structName + "'" + "' [" + ViewBag.ESRN + "]";
+            }
+            <h3>@Resources.Resource.StructImposedConstraint-@title</h3>
+            <div class="row">
+                <div class="col-lg-6 col-md-12 col-sm-12" style="padding-left: 0px;padding-right: 0px;">
+                    <div class="row mt-3">
+                        <div class="col-lg-6 col-md-6 col-sm-12" style="padding-left: 0px;">
+                            <label for="maSpacingId" class="text-normal">Height</label>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-12">
+                            @Html.TextBoxFor(m => m.Height, new { @id = "Height", @class = "edit-normal text_my frmbdr" })
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-12">
+                            <span class="edit-normal">m</span>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-lg-6 col-md-6 col-sm-12" style="padding-left: 0px;">
+                            <label for="maSpacingId" class="text-normal">Width</label>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-12">
+                            @Html.TextBoxFor(m => m.Width, new { @id = "Width", @class = "edit-normal text_my frmbdr" })
+
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-12">
+                            <span class="edit-normal">m</span>
+                        </div>
+                    </div>
+                    <div class="row mt-3">
+                        <div class="col-lg-6 col-md-6 col-sm-12" style="padding-left: 0px;">
+                            <label for="maSpacingId" class="text-normal">Length</label>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-12">
+                            @Html.TextBoxFor(m => m.Length, new { @id = "Length", @class = "edit-normal text_my frmbdr" })
+
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-12">
+                            <span class="edit-normal">m</span>
+                        </div>
+                    </div>
+
+                    @if (ViewBag.strucType == 1 || ViewBag.strucType == 3)
+                    {
+
+                        <div class="row mt-3">
+                            <div class="col-lg-6 col-md-6 col-sm-12" style="padding-left: 0px;">
+                                <label for="maSpacingId" class="text-normal">Gross weight</label>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                @Html.TextBoxFor(m => m.GrossWeight, new { @id = "GrossWeight", @class = "edit-normal text_my frmbdr" })
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-12">
+                                <span class="edit-normal">kg</span>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-6 col-md-6 col-sm-12" style="padding-left: 0px;">
+                                <label for="maSpacingId" class="text-normal">Axle weight</label>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                @Html.TextBoxFor(m => m.AxleWeight, new { @id = "AxleWeight", @class = "edit-normal text_my frmbdr" })
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-12">
+                                <span class="edit-normal">kg</span>
+                            </div>
+                        </div>
+                    }
+                    @if (ViewBag.strucType == 3)
+                    {
+
+                        <div class="row mt-3">
+                            <div class="col-lg-6 col-md-6 col-sm-12" style="padding-left: 0px;">
+                                <label for="maSpacingId" class="text-normal">Highway skew</label>
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                @Html.TextBoxFor(m => m.HighwaySkew, new { @id = "HighwaySkew", @class = "edit-normal text_my frmbdr" })
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-12" style="width:auto">
+                                <span class="edit-normal">degree</span>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <label for="maSpacingId" class="text-normal" style="padding-left: 0px; font-weight: bold;">Vertical alignment</label>
+
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <label for="maSpacingId" class="text-normal">Entry</label>
+                            </div>
+                            <div class="col-lg-4 col-md-3 col-sm-12">
+                                <span class="text-normal">Distance</span>@Html.TextBoxFor(m => m.VerticalAlignment.EntryDistance, new { @class = "edit-normal text_my frmbdr VerticalStyle", placeholder = "" })<span class="text-normal">m</span>
+                            </div>
+                            <div class="col-lg-4 col-md-3 col-sm-12">
+                                <span class="text-normal">Height</span>@Html.TextBoxFor(m => m.VerticalAlignment.EntryHeight, new { @class = "edit-normal text_my frmbdr VerticalStyle", placeholder = "" })<span class="text-normal">m</span>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <label for="maSpacingId" class="text-normal">Max height</label>
+                            </div>
+                            <div class="col-lg-4 col-md-3 col-sm-12">
+                                <span class="text-normal">Distance</span>@Html.TextBoxFor(m => m.VerticalAlignment.MaxDistance, new { @class = "edit-normal text_my frmbdr VerticalStyle", placeholder = "" })<span class="text-normal">m</span>
+
+                            </div>
+                            <div class="col-lg-4 col-md-3 col-sm-12">
+                                <span class="text-normal">Height</span>@Html.TextBoxFor(m => m.VerticalAlignment.MaxHeight, new { @class = "edit-normal text_my frmbdr VerticalStyle", placeholder = "" })<span class="text-normal">m</span>
+
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <label for="maSpacingId" class="text-normal">Exit</label>
+                            </div>
+                            <div class="col-lg-4 col-md-3 col-sm-12">
+                                <span class="text-normal">Distance</span>@Html.TextBoxFor(m => m.VerticalAlignment.ExitDistance, new { @class = "edit-normal text_my frmbdr VerticalStyle", placeholder = "" })<span class="text-normal">m</span>
+
+                            </div>
+                            <div class="col-lg-4 col-md-3 col-sm-12">
+                                <span class="text-normal">Height</span>@Html.TextBoxFor(m => m.VerticalAlignment.ExitHeight, new { @class = "edit-normal text_my frmbdr VerticalStyle", placeholder = "" })<span class="text-normal">m</span>
+                            </div>
+                        </div>
+                    }
+                    @if (ViewBag.strucType == 1)
+                    {
+
+                        <div class="row mt-3">
+                            <div class="col-lg-6 col-md-6 col-sm-12" style="padding-left: 0px;">
+                                <label for="maSpacingId" class="text-normal">
+                                    Maximum weight over<br>minimum distance
+                                </label>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12 pl-0">
+                                <div id="tabMaxWeightOvrDst" style="display:none">
+
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12" style="padding-left: 0px;">
+
+                                        @Html.TextBoxFor(m => m.MaxWeightOverMinDistanceWeight, new { @class = "edit-normal text_my frmbdr", placeholder = "", htmlAttributes = new { @min = "0", @max = "10" } })
+
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-12" style="width: 32%;">
+                                        <span class="edit-normal">kg over</span>
+                                    </div>
+                                </div>
+                                <div class="row mt-3">
+                                    <div class="col-lg-6 col-md-6 col-sm-12" style="padding-left: 0px;">
+                                        @Html.TextBoxFor(m => m.MaxWeightOverMinDistanceDistance, new { @class = "edit-normal text_my frmbdr", placeholder = "", min = 0, max = 9 })
+                                    </div>
+                                    <div class="col-lg-3 col-md-3 col-sm-12 pr-0">
+                                        <span class="edit-normal">m</span>
+                                    </div>
+                                    <div class="col-lg-1 col-md-1 col-sm-12 pl-0" id="btnMaxWeightOvrDstAdd">
+                                        <img src="~/Content/assets/images/Group 999.svg" width="30">
+                                    </div>
+                                    <span class="error" id="errMaxWeightOvrDst"></span>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-4">
+                            <div class="col-lg-4 col-md-4 col-sm-12" style="padding-left: 0px; padding-right: 0px;">
+                                <label for="maSpacingId" class="text-normal">Full HA load</label>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12" style="padding-left: 0px;">
+                                <div class="form-check ml-2 mb-2">
+                                    @Html.RadioButtonFor(m => m.HALoading, 1, new { @id = "HALoadingTrue", @class = "form-check-input" })
+
+                                    <label class="form-check-label text-normal text-color3"
+                                           for="flexRadioDefault1">
+                                        True
+                                    </label>
+                                </div>
+                                <div class="form-check ml-2">
+
+                                    @Html.RadioButtonFor(m => m.HALoading, 0, new { @id = "HALoadingFalse" , @class = "form-check-input" })
+                                    <label class="form-check-label text-normal text-color3"
+                                           for="flexRadioDefault1">
+                                        False or unknown
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-6 col-md-6 col-sm-12" style="padding-left: 0px;">
+                                <label for="maSpacingId" class="text-normal">
+                                    HB with associated HA live
+                                    load
+                                </label>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12" style="padding-left: 0px;">
+                                @Html.TextBoxFor(m => m.HBWithLiveLoad, new { @class = "text_my frmbdr" })
+                            </div>
+                        </div>
+                        <div class="row mt-3">
+                            <div class="col-lg-6 col-md-6 col-sm-12" style="padding-left: 0px;">
+                                <label for="maSpacingId" class="text-normal">
+                                    HB without associated HA live
+                                    load
+                                </label>
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-12" style="padding-left: 0px;">
+                                @Html.TextBoxFor(m => m.HBWithoutLiveLoad, new { @class = "text_my frmbdr" })
+                            </div>
+                        </div>
+                    }
+                    @if (ViewBag.strucType == 1 || ViewBag.strucType == 3)
+                    {
+
+                        <div class="row mt-4">
+                            <div class="col-lg-4 col-md-4 col-sm-12" style="padding-left: 0px; padding-right: 0px;">
+                                <label for="maSpacingId" class="text-normal">Signed gross weight</label>
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-sm-12" style="padding-left: 0px; padding-right: 0px;">
+                                <div class="form-check ml-2 mb-2">
+                                    @Html.RadioButtonFor(m => m.SignedGrossWeightRadio, "NotKnown", new { @id = "SignedGrossWeightNotKnownSigned", @class = "form-check-input"})
+
+                                    <label class="form-check-label text-normal text-color3"
+                                           for="flexRadioDefault1">
+                                        Not known if there is a signed constraint
+                                    </label>
+                                </div>
+                                <div class="form-check ml-2 mb-2">
+                                    @Html.RadioButtonFor(m => m.SignedGrossWeightRadio, "NoSigned", new { @id = "SignedGrossWeightNoSignedConst", @class = "form-check-input" })
+
+                                    <label class="form-check-label text-normal text-color3"
+                                           for="flexRadioDefault1">
+                                        No signed constraint
+                                    </label>
+                                </div>
+                                <div class="form-check ml-2 mb-2">
+                                    @Html.RadioButtonFor(m => m.SignedGrossWeightRadio, "MadeByEsdal", new { @id = "SignedGrossWeightMadeByEsdal", @class = "form-check-input" })
+
+                                    <label class="form-check-label text-normal text-color3"
+                                           for="flexRadioDefault1">
+                                        ESDAL will make the following<br>
+                                        values available to haulier
+                                    </label>
+                                </div>
+                                <div class="form-check ml-2 mb-4">
+                                    <div class="row form-check-label">
+                                        <div class="col-lg-6 col-md-6 col-sm-12 pl-0 pr-0">
+                                            @Html.TextBoxFor(m => m.SignedGrossWeightObj.GrossWeight, null, new { @class = "edit-normal text_my frmbdr", @id = "Signed_Gross_Weight" })
+
+                                        </div>
+                                        <div class="col-lg-2 col-md-2 col-sm-12" style="width: auto;">
+                                            <span class="edit-normal">kg</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-check pl-0 mb-2">
+                                    @Html.CheckBoxFor(m => m.SignedGrossWeightStatusBool, new { @id = "SignedGrossWeightCheck" })
+                                    @*<input type="checkbox" id="contact" class="checkbox pr-3" name="contact"
+                                        value="contact" width="28">*@
+                                    <label class="form-check-label text-normal text-color3"
+                                           for="flexRadioDefault1">
+                                        Constraint is physically signed
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mt-4">
+                            <div class="col-lg-4 col-md-4 col-sm-12" style="padding-left: 0px; padding-right: 0px;">
+                                <label for="maSpacingId" class="text-normal">Signed axle weight</label>
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-sm-12" style="padding-left: 0px; padding-right: 0px;">
+                                <div class="form-check ml-2 mb-2">
+                                    @Html.RadioButtonFor(m => m.SignedAxleWeightRadio, "NotKnown", new { @id = "SignedAxleWeightNotKnownSigned", @class = "form-check-input" })
+
+                                    <label class="form-check-label text-normal text-color3"
+                                           for="flexRadioDefault1">
+                                        Not known if there is a signed constraint
+                                    </label>
+                                </div>
+                                <div class="form-check ml-2 mb-2">
+                                    @Html.RadioButtonFor(m => m.SignedAxleWeightRadio, "NoSigned", new { @id = "SignedAxleWeightNoSignedConst", @class = "form-check-input" })
+
+                                    <label class="form-check-label text-normal text-color3"
+                                           for="flexRadioDefault1">
+                                        No signed constraint
+                                    </label>
+                                </div>
+                                <div class="form-check ml-2 mb-2">
+                                    @Html.RadioButtonFor(m => m.SignedAxleWeightRadio, "MadeByEsdal", new { @id = "SignedAxleWeightMadeByEsdal", @class = "form-check-input" })
+
+                                    <label class="form-check-label text-normal text-color3"
+                                           for="flexRadioDefault1">
+                                        ESDAL will make the following<br>
+                                        values available to haulier
+                                    </label>
+                                </div>
+                                <div class="form-check ml-2 mb-4">
+                                    <div class="row form-check-label">
+                                        <div class="col-lg-6 col-md-6 col-sm-12 pl-0 pr-0">
+                                            @Html.TextBoxFor(m => m.SignedAxleWeight.AxleWeight, new { @class = "edit-normal text_my frmbdr", @id = "Signed_Axcel_Weight" })
+
+                                        </div>
+                                        <div class="col-lg-2 col-md-2 col-sm-12" style="width: auto;">
+                                            <span class="edit-normal">kg</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-check pl-0 mb-2">
+                                    @Html.CheckBoxFor(m => m.SignedAxcelWeightStatusBool, new { @id = "SignedAxleWeightCheck" })
+
+                                    <label class="form-check-label text-normal text-color3"
+                                           for="flexRadioDefault1">
+                                        Constraint is physically signed
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    @if (ViewBag.strucType == 2)
+                    {
+                        <div class="row mt-4 pb-5">
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <label for="maSpacingId" class="text-normal">Signed height</label>
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-sm-12" style="padding-left: 0px; padding-right: 0px;">
+                                <div class="form-check ml-2 mb-2">
+                                    @Html.RadioButtonFor(m => m.SignedHeightRadio, "NotKnown", new { @id = "SignedHeightNotKnownSigned", @class = "form-check-input" })
+
+                                    <label class="form-check-label text-normal text-color3"
+                                           for="flexRadioDefault1">
+                                        Not known if there is a signed constraint
+                                    </label>
+                                </div>
+                                <div class="form-check ml-2 mb-2">
+                                    @Html.RadioButtonFor(m => m.SignedHeightRadio, "NoSigned", new { @id = "SignedHeightNoSignedConst", @class = "form-check-input" })
+
+                                    <label class="form-check-label text-normal text-color3"
+                                           for="flexRadioDefault1">
+                                        No signed constraint
+                                    </label>
+                                </div>
+                                <div class="form-check ml-2 mb-2">
+                                    @Html.RadioButtonFor(m => m.SignedHeightRadio, "MadeByEsdal", new { @id = "SignedHeightMadeByEsdal", @class = "form-check-input" })
+
+                                    <label class="form-check-label text-normal text-color3"
+                                           for="flexRadioDefault1">
+                                        ESDAL will make the following<br>
+                                        values available to haulier
+                                    </label>
+                                </div>
+                                <div class="form-check ml-2 mb-2">
+                                    <div class="row form-check-label">
+                                        <div class="col-lg-6 col-md-6 col-sm-12 pl-0 pr-0">
+                                            @Html.TextBoxFor(m => m.SignedHeight.HeightMeter, new { @class = "edit-normal text_my frmbdr", @id = "Signed_Height_Meter" })
+
+                                        </div>
+                                        <div class="col-lg-2 col-md-2 col-sm-12" style="width: auto;">
+                                            <span class="edit-normal">m</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-check ml-2 mb-2">
+                                    <div class="row form-check-label">
+                                        <div class="col-lg-6 col-md-6 col-sm-12 pl-0 pr-0">
+                                            @Html.TextBoxFor(m => m.SignedHeight.HeightFeet, new { @class = "edit-normal text_my frmbdr", @id = "Signed_Height_Feet" })
+
+                                        </div>
+                                        <div class="col-lg-2 col-md-2 col-sm-12" style="width: auto;">
+                                            <span class="edit-normal">ft</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-check ml-2 mb-4">
+                                    <div class="row form-check-label">
+                                        <div class="col-lg-6 col-md-6 col-sm-12 pl-0 pr-0">
+                                            @Html.TextBoxFor(m => m.SignedHeight.HeightInches, new { @class = "edit-normal text_my frmbdr", @id = "Signed_Height_Inches" })
+
+                                        </div>
+                                        <div class="col-lg-2 col-md-2 col-sm-12" style="width: auto;">
+                                            <span class="edit-normal">in</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-check pl-0 mb-2" >
+                                    @Html.CheckBoxFor(m => m.SignedHeightStatusBool, new { @id = "SignedHeightCheck" })
+
+                                    <label class="form-check-label text-normal text-color3"
+                                           for="flexRadioDefault1">
+                                        Constraint is physically signed
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12" style="padding-left: 0px;padding-right: 0px;">
+
+                    @if (ViewBag.strucType != 2)
+                    {
+
+                        <div class="row mt-4 pb-5">
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                <label for="maSpacingId" class="text-normal">Signed height</label>
+                            </div>
+                            <div class="col-lg-8 col-md-8 col-sm-12" style="padding-left: 0px; padding-right: 0px;">
+                                <div class="form-check ml-2 mb-2">
+                                    @Html.RadioButtonFor(m => m.SignedHeightRadio, "NotKnown", new { @id = "SignedHeightNotKnownSigned", @class = "form-check-input" })
+
+                                    <label class="form-check-label text-normal text-color3"
+                                           for="flexRadioDefault1">
+                                        Not known if there is a signed constraint
+                                    </label>
+                                </div>
+                                <div class="form-check ml-2 mb-2">
+                                    @Html.RadioButtonFor(m => m.SignedHeightRadio, "NoSigned", new { @id = "SignedHeightNoSignedConst", @class = "form-check-input" })
+
+                                    <label class="form-check-label text-normal text-color3"
+                                           for="flexRadioDefault1">
+                                        No signed constraint
+                                    </label>
+                                </div>
+                                <div class="form-check ml-2 mb-2">
+                                    @Html.RadioButtonFor(m => m.SignedHeightRadio, "MadeByEsdal", new { @id = "SignedHeightMadeByEsdal", @class = "form-check-input" })
+
+                                    <label class="form-check-label text-normal text-color3"
+                                           for="flexRadioDefault1">
+                                        ESDAL will make the following<br>
+                                        values available to haulier
+                                    </label>
+                                </div>
+                                <div class="form-check ml-2 mb-2">
+                                    <div class="row form-check-label">
+                                        <div class="col-lg-6 col-md-6 col-sm-12 pl-0 pr-0">
+                                            @Html.TextBoxFor(m => m.SignedHeight.HeightMeter, new { @class = "edit-normal text_my frmbdr", @id = "Signed_Height_Meter" })
+
+                                        </div>
+                                        <div class="col-lg-2 col-md-2 col-sm-12" style="width: auto;">
+                                            <span class="edit-normal">m</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-check ml-2 mb-2">
+                                    <div class="row form-check-label">
+                                        <div class="col-lg-6 col-md-6 col-sm-12 pl-0 pr-0">
+                                            @Html.TextBoxFor(m => m.SignedHeight.HeightFeet, new { @class = "edit-normal text_my frmbdr", @id = "Signed_Height_Feet" })
+
+                                        </div>
+                                        <div class="col-lg-2 col-md-2 col-sm-12" style="width: auto;">
+                                            <span class="edit-normal">ft</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-check ml-2 mb-4">
+                                    <div class="row form-check-label">
+                                        <div class="col-lg-6 col-md-6 col-sm-12 pl-0 pr-0">
+                                            @Html.TextBoxFor(m => m.SignedHeight.HeightInches, new { @class = "edit-normal text_my frmbdr", @id = "Signed_Height_Inches" })
+
+                                        </div>
+                                        <div class="col-lg-2 col-md-2 col-sm-12" style="width: auto;">
+                                            <span class="edit-normal">in</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-check pl-0 mb-2">
+                                    @Html.CheckBoxFor(m => m.SignedHeightStatusBool, new { @id = "SignedHeightCheck" })
+
+                                    <label class="form-check-label text-normal text-color3"
+                                           for="flexRadioDefault1">
+                                        Constraint is physically signed
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="row mt-4 pb-5">
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <label for="maSpacingId" class="text-normal">Signed width</label>
+                        </div>
+                        <div class="col-lg-8 col-md-8 col-sm-12" style="padding-left: 0px; padding-right: 0px;">
+                            <div class="form-check ml-2 mb-2">
+                                @Html.RadioButtonFor(m => m.SignedWidthRadio, "NotKnown", new { @id = "SignedWidthNotKnownSigned", @class = "form-check-input" })
+
+                                <label class="form-check-label text-normal text-color3"
+                                       for="flexRadioDefault1">
+                                    Not known if there is a signed constraint
+                                </label>
+                            </div>
+                            <div class="form-check ml-2 mb-2">
+                                @Html.RadioButtonFor(m => m.SignedWidthRadio, "NoSigned", new { @id = "SignedWidthNoSignedConst", @class = "form-check-input" })
+
+                                <label class="form-check-label text-normal text-color3"
+                                       for="flexRadioDefault1">
+                                    No signed constraint
+                                </label>
+                            </div>
+                            <div class="form-check ml-2 mb-2">
+                                @Html.RadioButtonFor(m => m.SignedWidthRadio, "MadeByEsdal", new { @id = "SignedWidthMadeByEsdal", @class = "form-check-input" })
+
+                                <label class="form-check-label text-normal text-color3"
+                                       for="flexRadioDefault1">
+                                    ESDAL will make the following<br>
+                                    values available to haulier
+                                </label>
+                            </div>
+                            <div class="form-check ml-2 mb-2">
+                                <div class="row form-check-label">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 pl-0 pr-0">
+                                        @Html.TextBoxFor(m => m.SignedWidth.WidthMeter, new { @class = "edit-normal text_my frmbdr", @id = "Signed_Width_Meter" })
+
+                                    </div>
+                                    <div class="col-lg-2 col-md-2 col-sm-12">
+                                        <span class="edit-normal">m</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-check ml-2 mb-2">
+                                <div class="row form-check-label">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 pl-0 pr-0">
+                                        @Html.TextBoxFor(m => m.SignedWidth.WidthFeet, new { @class = "edit-normal text_my frmbdr", @id = "Signed_Width_Feet" })
+
+                                    </div>
+                                    <div class="col-lg-2 col-md-2 col-sm-12">
+                                        <span class="edit-normal">ft</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-check ml-2 mb-4">
+                                <div class="row form-check-label" >
+                                    <div class="col-lg-6 col-md-6 col-sm-12 pl-0 pr-0">
+                                        @Html.TextBoxFor(m => m.SignedWidth.WidthInches, new { @class = "edit-normal text_my frmbdr", @id = "Signed_Width_Inches" })
+
+                                    </div>
+                                    <div class="col-lg-2 col-md-2 col-sm-12">
+                                        <span class="edit-normal">in</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-check pl-0 mb-2">
+                                @Html.CheckBoxFor(m => m.SignedWidthStatusBool, new { @id = "SignedWidthCheck" })
+
+                                <label class="form-check-label text-normal text-color3"
+                                       for="flexRadioDefault1">
+                                    Constraint is physically signed
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <label for="maSpacingId" class="text-normal">Signed length</label>
+                        </div>
+                        <div class="col-lg-8 col-md-8 col-sm-12" style="padding-left: 0px; padding-right: 0px;">
+                            <div class="form-check ml-2 mb-2">
+                                @Html.RadioButtonFor(m => m.SignedLengthRadio, "NotKnown", new { @id = "SignedLenNotKnownSigned", @class = "form-check-input" })
+
+                                <label class="form-check-label text-normal text-color3"
+                                       for="flexRadioDefault1">
+                                    Not known if there is a signed constraint
+                                </label>
+                            </div>
+                            <div class="form-check ml-2 mb-2">
+                                @Html.RadioButtonFor(m => m.SignedLengthRadio, "NoSigned", new { @id = "SignedLenNoSignedConst", @class = "form-check-input" })
+
+                                <label class="form-check-label text-normal text-color3"
+                                       for="flexRadioDefault1">
+                                    No signed constraint
+                                </label>
+                            </div>
+                            <div class="form-check ml-2 mb-2">
+                                @Html.RadioButtonFor(m => m.SignedLengthRadio, "MadeByEsdal", new { @id = "SignedLenMadeByEsdal", @class = "form-check-input" })
+
+                                <label class="form-check-label text-normal text-color3"
+                                       for="flexRadioDefault1">
+                                    ESDAL will make the following<br>
+                                    values available to haulier
+                                </label>
+                            </div>
+                            <div class="form-check ml-2 mb-2">
+                                <div class="row form-check-label">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 pl-0 pr-0">
+                                        @Html.TextBoxFor(m => m.SignedLength.LengthMeter, new { @class = "edit-normal text_my frmbdr", @id = "Signed_Length_Meter" })
+
+                                    </div>
+                                    <div class="col-lg-2 col-md-2 col-sm-12">
+                                        <span class="edit-normal">m</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-check ml-2 mb-2">
+                                <div class="row form-check-label">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 pl-0 pr-0">
+                                        @Html.TextBoxFor(m => m.SignedLength.LengthFeet, new { @class = "edit-normal text_my frmbdr", @id = "Signed_Length_Feet" })
+
+                                    </div>
+                                    <div class="col-lg-2 col-md-2 col-sm-12">
+                                        <span class="edit-normal">ft</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-check ml-2 mb-4">
+                                <div class="row form-check-label">
+                                    <div class="col-lg-6 col-md-6 col-sm-12 pl-0 pr-0">
+                                        @Html.TextBoxFor(m => m.SignedLength.LengthInches, new { @class = "edit-normal text_my frmbdr", @id = "Signed_Length_Inches" })
+
+                                    </div>
+                                    <div class="col-lg-2 col-md-2 col-sm-12">
+                                        <span class="edit-normal">in</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-check pl-0 mb-2" >
+                                @Html.CheckBoxFor(m => m.SignedLengthStatusBool, new { @id = "SignedLenCheck" })
+
+                                <label class="form-check-label text-normal text-color3"
+                                       for="flexRadioDefault1">
+                                    Constraint is physically signed
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="flexer mt8" style="justify-content: left !important;margin-left: 164px;">
+                <button type="button" id="btnsaveSVData1" class="btn outline-btn-primary SOAButtonHelper">SAVE</button>
+                <button type="button" id="btnCancel" class="btn outline-btn-primary SOAButtonHelper ml2">CANCEL</button>
+            </div>
+        </span>
+        @Html.HiddenFor(m => m.MaxWeightOverMinDistanceWeight, new { @id = "MaxWeightOverminDist_Weight" })
+        @Html.HiddenFor(m => m.MaxWeightOverMinDistanceDistance, new { @id = "MaxWeightOverminDist_Distance" })
+    }
+}
+@{
+<input type="hidden" value="@ViewBag.strucType" id="hf_strucType" name="hf_strucType" />
+<input type="hidden" value="@ViewBag.value" id="hf_value" name="hf_value" />
+    @Html.Hidden("hf_SignedHeightStatus", Model.SignedHeightStatus)
+    @Html.Hidden("hf_SignedLengthStatus", Model.SignedLengthStatus)
+    @Html.Hidden("hf_SignedWidthStatus", Model.SignedWidthStatus)
+    @Html.Hidden("hf_SignedGrossWeightStatus", Model.SignedGrossWeightStatus)
+    @Html.Hidden("hf_SignedAxleWeightStatus", Model.SignedAxleWeightStatus)
+    @Html.Hidden("hf_HALoading", Model.HALoading)
+    @Html.Hidden("hf_HeightMeter", Model.SignedHeight.HeightMeter)
+    @Html.Hidden("hf_HeightFeet", Model.SignedHeight.HeightFeet)
+    @Html.Hidden("hf_HeightInches", Model.SignedHeight.HeightInches)
+    @Html.Hidden("hf_WidthMeter", Model.SignedWidth.WidthMeter)
+    @Html.Hidden("hf_WidthFeet", Model.SignedWidth.WidthFeet)
+    @Html.Hidden("hf_WidthInches", Model.SignedWidth.WidthInches)
+    @Html.Hidden("hf_LengthMeter", Model.SignedLength.LengthMeter)
+    @Html.Hidden("hf_LengthFeet", Model.SignedLength.LengthFeet)
+    @Html.Hidden("hf_LengthInches", Model.SignedLength.LengthInches)
+    @Html.Hidden("hf_GrossWeight", Model.GrossWeight)
+    @Html.Hidden("hf_AxleWeight", Model.AxleWeight)
+    @Html.Hidden("hf_MaxWeightOverMinDistanceWeight", Model.MaxWeightOverMinDistanceWeight)
+    @Html.Hidden("hf_MaxWeightOverMinDistanceDistance", Model.MaxWeightOverMinDistanceDistance)
+<input type="hidden" value="@ViewBag.structureId" id="hf_structureId" name="hf_structureId" />
+<input type="hidden" value="@ViewBag.sectionId" id="hf_sectionId" name="hf_sectionId" />
+<input type="hidden" value="@ViewBag.StructureId" id="hf_StructureId" name="hf_StructureId" />
+}
+

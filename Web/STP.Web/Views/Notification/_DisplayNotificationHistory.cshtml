@@ -1,0 +1,139 @@
+@using PagedList.Mvc
+@using System.Text.RegularExpressions;
+@model PagedList.IPagedList<STP.Domain.LoggingAndReporting.NotificationHistory>
+@{
+    int listCount = 0;
+    listCount = (int)Session["PageSize"];
+    int totalCount = Model.PageCount;
+    int? pageNum = ViewBag.page;
+    long NotificationId = ViewBag.NotificationId;
+    long ProjectId = ViewBag.ProjectId;
+    int pageSize = 10;
+    if (ViewBag.pageSize != null)
+    {
+        pageSize = ViewBag.pageSize;
+    }
+}
+@Html.Hidden("pageSizeVal", pageSize)
+@Html.Hidden("pageNum", pageNum)
+@Html.Hidden("TotalPages", totalCount)
+@Html.Hidden("NotificationId", NotificationId)
+@{var sortOrder = ViewBag.SortOrder != null ? (int)ViewBag.SortOrder : 1;//date
+    var sortType = ViewBag.SortType != null ? (int)ViewBag.SortType : 1;//desc
+}
+<div class="pb-4">
+    <div class="main-table mt-0 pt-0 movements">
+        <table class="esdal-table">
+            <thead>
+                <tr class="bgColor3 ">
+                    <th>
+                        <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,1)" data-action="AuditlogSort" data-sortval="1">Datetime</span>
+
+                    </th>
+                    <th>Event</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            @if (Model.Count > 0)
+            {
+                foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-color1">
+                            @item.NotifDate
+                        </td>
+                        <td class="text-color1">@item.ActionType</td>
+                        <td class="text-color1">
+                            @{
+                                var desc = item.Description;
+                                    desc = desc.Trim();
+                                    var text = Regex.Replace(desc, @"[A-Za-z0-9]{3,6}\/[0-9]{1,6}\/([^\s!.']+)", m =>
+                                     string.Format("<span class='btn-open-movement-by-histroy-ref' data-esdalrefno='{1}'>{0}</span>", m.Groups[0].Value, Html.Encode(m.Groups[0].Value.Replace("'", ""))));
+                                    @Html.Raw(text)
+                            }
+                            @*@item.Description*@
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr class="bgColor2">
+                    <td colspan="7" style="text-align: center; color:red">
+                        @Resources.Resource.NoRecordFound
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</div>
+
+@if (Model.Count > 0)
+{
+
+    <div class="">
+        <div class="row pagination" id="NotificationHistory">
+            <div class="col-lg-3 col-md-3">
+                @if (Model.TotalItemCount > 0)
+                {
+                    <div class="text-color2 total-records-number p-0">
+                        Total number of records : @Model.TotalItemCount
+                    </div>
+                }
+            </div>
+            <div class="col-lg-6 col-md-6 text-center">
+                @Html.PagedListPager(Model, page => Url.Action("DisplayNotificationHistory",
+                        new
+                             {
+                                 page,
+                                 sortOrder = ViewBag.SortOrder,
+                                 sortType = ViewBag.SortType,
+                            pageSize = ViewBag.pageSize,
+                            notificationId = NotificationId,
+                            projectId = ProjectId
+                        }), new PagedListRenderOptions
+                        {
+                            DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                            DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                            LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                            LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                            DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                            DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                            MaximumPageNumbersToDisplay = 3,
+                            DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                            EllipsesFormat = "...",
+                            LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+                            LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+                        });
+
+            </div>
+            @if (Model.TotalItemCount > 10)
+            {
+                <div class="col-lg-3 col-md-3 col-sm-12 text-normal pr-0 absolute">
+                    Number of items to display per page
+                    <select class="form-select mb-3" style="width:100px;" aria-label=".form-select-lg example" id="pageSizeSelect">
+                        <option val="10" @(pageSize == 10 ? "selected" : "")>10</option>
+                        <option val="20" @(pageSize == 20 ? "selected" : "")>20</option>
+                        <option val="50" @(pageSize == 50 ? "selected" : "")>50</option>
+                        <option val="100" @(pageSize == 100 ? "selected" : "")>100</option>
+                    </select>
+                </div>
+            }
+        </div>
+    </div>
+
+
+
+}
+@{
+    string GetSortDefaultClass(int sortTypeVal, int sortOrderVal, int valToCheck)
+    {
+        var sortClass = ""; // 1-desc , 0-asc
+        if (sortOrderVal == valToCheck)
+        {
+            sortClass = sortTypeVal == 1 ? "sorting_desc" : "sorting_asc";
+        }
+        return sortClass;
+    }
+
+}

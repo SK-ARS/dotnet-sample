@@ -1,0 +1,77 @@
+@using System.Web.Optimization
+@using STP.Domain
+@using PagedList.Mvc
+@using STP.Common.Constants
+
+@{
+
+    int Month = Convert.ToInt32(ViewBag.Month);
+    int Year = Convert.ToInt32(ViewBag.Year);
+    string UserType = ViewBag.UserType;
+
+    @Html.Hidden("hdnMonth", Month)
+    @Html.Hidden("hdnYear", Year)
+    @Html.Hidden("hdnUserType", UserType)
+}
+<div class="" id="structure_History_Pagination">
+    <div class="" id="div_session_length_list">
+        <div id="div_tbl_grid" runat="server" class="main-table">
+            <table>
+                <tr>
+                    <th class="first-column-padding">@Resources.Resource.Day</th>
+                    @if (ViewBag.UserType == "POLICE" || ViewBag.UserType == "ALL")
+                    {
+                        <th>@Resources.Resource.PoliceSession</th>
+                    }
+                    @if (ViewBag.UserType == "SOA" || ViewBag.UserType == "ALL")
+                    {
+                        <th>@Resources.Resource.SOASession</th>
+                    }
+                    @if (ViewBag.UserType == "HAULIER" || ViewBag.UserType == "ALL")
+                    {
+                        <th>@Resources.Resource.HaulierSession</th>
+                    }
+                </tr>
+
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-color1">@item.StartDate.ToString("dd/MM/yyyy")</td>
+                        @if (ViewBag.UserType == "POLICE" || ViewBag.UserType == "ALL")
+                        {
+                            <td class="text-color2 ShowPeriodicSessionPolice ShowPeriodicSession" style="cursor: pointer;" data-startdatem="@item.StartDate.ToString("MM")" data-startdatey="@item.StartDate.ToString("yyyy")" data-utypeid="696002" data-usertype="@ViewBag.UserType">@((int)item.PoliceSessionCount)</td>
+                    
+                        }
+                        @if (ViewBag.UserType == "SOA" || ViewBag.UserType == "ALL")
+                        {
+                            <td class="text-color2 ShowPeriodicSessionsoa ShowPeriodicSession" style="cursor: pointer;" data-startdatem="@item.StartDate.ToString("MM")" data-startdatey="@item.StartDate.ToString("yyyy")" data-utypeid="696007" data-usertype="@ViewBag.UserType">@((int)item.SOASessionCount)</td>
+                        
+                        }
+                        @if (ViewBag.UserType == "HAULIER" || ViewBag.UserType == "ALL")
+                        {
+                            <td class="text-color2 ShowPeriodicSessionhaulier ShowPeriodicSession" style="cursor: pointer;" data-startdatem="@item.StartDate.ToString("MM")" data-startdatey="@item.StartDate.ToString("yyyy")" data-utypeid="696001" data-usertype="@ViewBag.UserType">@((int)item.HaulierSessionCount)</td>
+                   
+                        }
+                    </tr>
+                }
+            </table>
+            <br />
+            @if (ViewBag.TotalCount <= 0)
+            {
+                <div class="redcolor aligncenter">@Resources.Resource.NoRecordFound</div>
+            }
+        </div>
+        <div id="div_export_list">
+            @if (ViewBag.TotalCount > 0)
+            {
+                <button id="btnExport" type="submit" class="btn outline-btn-primary SOAButtonHelper ml2">@Resources.Resource.Export</button>
+            }
+            &nbsp;
+            <button type="button" id="BackAfftParty" class="btn outline-btn-primary SOAButtonHelper ml2">@Resources.Resource.BtnBack</button>
+            
+        </div>
+    </div>
+</div>
+
+
+<script src="~/Scripts/Report/_SessionLengthHistoryTypeWise.js?V@(Session["ProjectVersion"])"></script>

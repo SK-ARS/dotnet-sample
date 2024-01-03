@@ -1,0 +1,295 @@
+
+@{
+    ViewBag.Title = "ManageNews";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using PagedList.Mvc
+@model PagedList.IPagedList<STP.Domain.DocumentsAndContents.InformationModel>
+
+@{
+    string type = Convert.ToString(TempData["type"]);
+    string pageName = Convert.ToString(TempData["PageName"]);
+    string heading = Convert.ToString(TempData["heading"]);
+
+    int pageSize = 10;
+    if (ViewBag.pageSize != null)
+    {
+        pageSize = ViewBag.pageSize;
+    }
+    int? pageNum = ViewBag.page;
+    int listCount = 0;
+    listCount = pageSize;
+    string strHeading = "MANAGE NEWS";
+    string strButtonName = "NEW NEWS";
+    string strPageName = "ManageNews";
+    if (heading.ToLower() == "help & information")
+    {
+        strHeading = "MANAGE HELP AND INFORMATIONS";
+        strButtonName = "NEW INFORMATION";
+        strPageName = "ManageHelpAndInformations";
+    }
+    else if (heading.ToLower() == "news")
+    {
+        strHeading = "MANAGE NEWS";
+        strButtonName = "NEW NEWS";
+        strPageName = "ManageNews";
+    }
+    else if (heading.ToLower() == "download")
+    {
+        strHeading = "MANAGE DOCUMENTS";
+        strButtonName = "NEW DOCUMENT";
+        strPageName = "ManageDocuments";
+    }
+    else if (heading.ToLower() == "external link")
+    {
+        strHeading = "MANAGE LINKS";
+        strButtonName = "NEW LINK";
+        strPageName = "ManageLinks";
+    }
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.INFORMATION;
+}
+<style>
+    #ui-id-1 {
+        width: 25% !important;
+        top: 24% !important;
+        left: 74% !important;
+        position: fixed !important;
+    }
+
+    
+    .absolute {
+        position: absolute;
+        right: -51px;
+    }
+
+
+
+    .filtered-icon {
+        background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 90% #2b5795;
+        background-size: 1rem;
+    }
+
+    .esdal-filter-icon {
+        background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 0 #2b5795;
+        background-size: 1rem;
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        position: absolute;
+        margin-left: 3px;
+    }
+
+    #manage-news th:nth-child(1) span {
+        padding-left: 14px !important;
+    }
+
+</style>
+@Html.Hidden("pageName", pageName)
+
+@{
+    var sortOrder = ViewBag.SortOrder != null ? (int)ViewBag.SortOrder : 1;
+    var sortType = ViewBag.SortType != null ? (int)ViewBag.SortType : 1;//sortType=0,3 - desc  //sortType=1,2 - asc
+}
+
+<div id="helpdesk">
+    <!-- banner -->
+    <section id="banner">
+        <div class="container-fluid" id="banner-container">
+            <div>
+                <div class="header">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+                            <div class="button mr-0">
+                                <button id="btn-manage" class="btn btn-outline-primary btn-normal pl-8 pr-8 manage" role="button" aria-pressed="true" data-create="Create" data-id="0">
+                                    @strButtonName
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-8 col-md-8 col-sm-12">
+                            <div class="title">
+                                @strHeading
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- table -->
+                <div class="main-table" id="manage-news">
+                    @Html.Hidden("pageSizeVal", pageSize)
+                    @Html.Hidden("pageNum", pageNum)
+                    <table class="esdal-table">
+                        <thead>
+                            <tr>
+                                @*Above line commented based on ESDAL4.1*@
+                                <th class="manage-news-name">
+                                    <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,2)" data-action="InformationSort" data-sortval="2"> Name </span>
+
+                                </th>
+                                @if (heading.ToLower() == "link" || heading.ToLower() == "download")
+                                {
+                                    <th>Display Name</th>
+                                }
+                                else
+                                {
+                                    <th>Headline</th>
+                                }
+                                <th>
+                                    Priority
+                                </th>
+                                @*@if (heading.ToLower() == "download")
+                        {
+                            <th>Received Date</th>
+                        }
+                        else
+                        {*@
+                                <th class="manage-news-name">
+                                    <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,3)" data-action="InformationSort" data-sortval="3"> Published Date </span>
+
+                                </th>
+                                @*}*@
+                                <th>Suppressed</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td class="text-color1">@item.Name </td>
+                                    <td class="text-color1">@item.Title </td>
+                                    <td>
+                                        @if (item.PriorityName.ToLower() == "hot")
+                                        {
+                                            <button class="btn btn-normal btn-color1" role="button"
+                                                    aria-pressed="true">
+                                                hot
+                                            </button>
+                                        }
+                                        else if (item.PriorityName.ToLower() == "high")
+                                        {
+                                            <button class="btn btn-normal btn-color2" role="button"
+                                                    aria-pressed="true">
+                                                high
+                                            </button>
+                                        }
+                                        else
+                                        {
+                                            <button class="btn btn-normal btn-color3" role="button"
+                                                    aria-pressed="true">
+                                                low
+                                            </button>
+                                        }
+                                    </td>
+                                    <td class="text-color1">@item.PublishedDate.ToString("dd-MM-yyyy")</td>
+                                    @if (item.Suppressed == 1)
+                                    {
+                                        <td class="text-color1">
+                                            Yes
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td class="text-color1">
+                                            No
+                                        </td>
+                                    }
+                                    <td colspan="2">
+                                        <div id="mid_row">
+                                            <span class="pr-md-4">
+                                                <img style="cursor:pointer;" id="btn-information" class="information" src="~/Content/assets/images/edit-icon.svg" width="20" data-mode="Edit" data-contentid="@item.ContentId" title="Edit">
+                                            </span>
+                                            <span class="pr-md-1">
+                                                <img style="cursor:pointer;" id="btn-delete" src="~/Content/assets/images/delete-icon.svg" width="18" data-contentid="@item.ContentId" data-name="@item.Name.Replace("'", "")" title="Delete">
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                            @if (Model.TotalItemCount == 0)
+                            {
+                                <tr>
+                                    <td colspan="7" style="color:red;text-align: center">@Resources.Resource.NoResultFound</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <input type="hidden" name="SortOrderValue" id="SortOrderValue" value="@sortOrder" />
+                    <input type="hidden" name="SortTypeValue" id="SortTypeValue" value="@sortType" />
+                </div>
+                <!-- end of table -->
+                @if (Model.Count > 0)
+                {
+                    if (listCount < @ViewBag.TotalCount)
+                    {
+            <div class="row pagination-container-new newspaginator">
+                <div class="col-lg-4">
+                    @if (Model.TotalItemCount > 0)
+                    {
+                        <div class="text-color2 total-records-number">
+                            Total number of records : @Model.TotalItemCount
+                        </div>
+                    }
+                </div>
+                @if (Model.TotalItemCount > 10)
+                {
+                    <div class="col-lg-3 col-md-3 col-sm-12 text-normal pr-0 absolute">
+                        Number of items to display per page
+                        <select class="form-select mb-3" style="width:100px;" aria-label=".form-select-lg example" id="pageSizeSelect">
+                            <option val="10" @(pageSize == 10 ? "selected" : "")>10</option>
+                            <option val="20" @(pageSize == 20 ? "selected" : "")>20</option>
+                            <option val="50" @(pageSize == 50 ? "selected" : "")>50</option>
+                            <option val="100" @(pageSize == 100 ? "selected" : "")>100</option>
+                        </select>
+                    </div>
+                }
+                <div class="col-lg-8 text-center">
+                    <div id="newspaginator" class="table-pagination">
+                        @Html.PagedListPager(Model, page => Url.Action(strPageName,
+                       new { page, pageSize = pageSize, sortType = ViewBag.sortType, sortOrder = ViewBag.sortOrder }
+                             //new
+                             //{
+                             //    B7vy6imTleYsMr6Nlv7VQ =
+                             //       STP.Web.Helpers.EncryptionUtility.Encrypt("page=" + page +
+                             //       "&pageSize=" + pageSize +
+                             //       "&sortType=" + ViewBag.sortType +
+                             //       "&sortOrder=" + ViewBag.sortOrder)
+                             //}
+                             ),
+                             new PagedListRenderOptions
+                             {
+                                 DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                                 DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                                 LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                                 LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                                 DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                                 DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                                 MaximumPageNumbersToDisplay = 3,
+                                 DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                                 EllipsesFormat = "...",
+                                 LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+                                 LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+                             })
+                    </div>
+                </div>
+            </div>
+                    }
+                }
+              
+            </div>
+        </div>
+    </section>
+</div>
+@{
+    string GetSortDefaultClass(int sortTypeVal, int sortOrderVal, int valToCheck)
+    {
+        var sortClass = ""; //1-asc, 1-desc ,
+        if (sortOrderVal == valToCheck)
+        {
+            sortClass = sortTypeVal == 1 ? "sorting_desc" : "sorting_asc";
+        }
+        return sortClass;
+    }
+}
+<input type="hidden" value="@ViewBag.SaveMsg" id="hf_SaveMsg" name="hf_SaveMsg" />
+@Html.Hidden("hf_pageName", pageName)
+<script src="~/Scripts/Information/ManageNews.js?V@(Session["ProjectVersion"])"></script>

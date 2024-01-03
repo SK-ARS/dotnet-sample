@@ -1,0 +1,343 @@
+@using PagedList.Mvc
+@using STP.Domain
+@model PagedList.IPagedList<STP.Domain.DocumentsAndContents.FeedbackDomain>
+@{
+    var SearchListInfo = new List<STP.Domain.DocumentsAndContents.FeedbackDomain>
+{
+                        new STP.Domain.DocumentsAndContents.FeedbackDomain{SearchType="0",FeedbackTypeName="All"},
+                        new STP.Domain.DocumentsAndContents.FeedbackDomain{SearchType="1",FeedbackTypeName="Complaint"},
+                        new STP.Domain.DocumentsAndContents.FeedbackDomain{SearchType="2",FeedbackTypeName="Suggestion"},
+                        new STP.Domain.DocumentsAndContents.FeedbackDomain{SearchType="3",FeedbackTypeName="General complaint"},
+                        new STP.Domain.DocumentsAndContents.FeedbackDomain{SearchType="4",FeedbackTypeName="Fault"}
+                    };
+
+    ViewBag.SearchInfo = new SelectList(SearchListInfo, "FeedbackType", "FeedbackTypeName");
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.ADMIN;
+}
+@{
+    int listCount = 0;
+    listCount = (int)Session["PageSize"];
+    int totalItemCount = Model.TotalItemCount;
+    int pageSize = 10;
+    if (ViewBag.pageSize != null)
+    {
+        pageSize = ViewBag.pageSize;
+        listCount = pageSize;
+    }
+
+    int? pageNum = ViewBag.page;
+}
+@Html.Hidden("listCount", listCount)
+@Html.Hidden("pageSizeVal", pageSize)
+@Html.Hidden("pageNum", pageNum)
+<style>
+    input::placeholder {
+        color: rgb(0, 0, 0);
+        -webkit-text-stroke: 1.00px rgba(0, 0, 0, 0);
+        font-size: 15.00px;
+        font-weight: 500;
+        font-style: italic;
+        font-family: lato_light, Arial;
+    }
+
+    .filtered-icon {
+        background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 90% #2b5795;
+        background-size: 1rem;
+    }
+
+    .absolute {
+        position: absolute;
+        right: 150px;
+        width: 157px;
+        height: 120px;
+        padding-right: 0%;
+        white-space: nowrap;
+    }
+
+    .esdal-filter-icon {
+        background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 0 #2b5795;
+        background-size: 1rem;
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        position: absolute;
+        margin-left: 3px;
+    }
+
+    .main-table th:nth-child(1) span {
+        padding-left: 14px !important;
+    }
+
+    .filter-table-icon {
+        position: absolute;
+        bottom: -13px;
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+        left: 57px;
+    }
+
+    .filter-table-icons {
+        position: absolute;
+        bottom: -13px;
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+        left: 19px;
+    }
+
+    .feedback-table-header:hover {
+        background-color: white;
+        color: rgba(39, 87, 149, 1);
+    }
+</style>
+@{
+    var sortOrder = ViewBag.SortOrder != null ? (int)ViewBag.SortOrder : 1;//1-name
+    var sortType = ViewBag.SortType != null ? (int)ViewBag.SortType : 0;//0-asc
+    var isTypeFilterEnabled = !string.IsNullOrEmpty(ViewBag.Searchtype) && ViewBag.Searchtype != "0";
+    var isNameFilterEnabled = !string.IsNullOrEmpty(ViewBag.searchString);
+    var isAllFilterEnabled = isTypeFilterEnabled || isNameFilterEnabled;
+}
+<body style="overflow-y: auto;" id="soa-structure-list">
+    <div id="filters" class="sidenav filter-sidenav">
+        <div class="row sidenav-header">
+            <div class="col-10 text-center">
+                <div class="text-normal-hyperlink mt-3" style="font-size: x-large;">
+                    FILTER
+                </div>
+            </div>
+            <div class="col-1">
+                <a href="#" id="closefilter" class="closebtnfeedback  close-filter-icon-common">&times;</a>
+            </div>
+        </div>
+
+
+        <hr style="margin-top: 0;">
+        <div class="filter-list">
+            <div class="row">
+
+                <div class="row pb-2 pt-2">
+                    <div class="col-lg-11 col-sm-11 col-md-11">
+                        @*@Html.DropDownList("searchType", new SelectList(@SearchListInfo, "SearchType", "FeedbackTypeName"), new { @id = "DDsearchFeedback", @class = "form-select mb-3", @style = "overflow: scroll;float: left;width: -webkit-fill-available;", @onChange = "SetSearchText()" })*@
+                        @Html.DropDownList("searchType", new SelectList(@SearchListInfo, "SearchType", "FeedbackTypeName"), new { @id = "DDsearchFeedback", @class = "form-select mb-3", @style = "overflow: scroll;float: left;width: -webkit-fill-available;" })
+                    </div>
+                </div>
+                <div class="row pb-4">
+                    <div class="col-lg-11 col-sm-11 col-md-11">
+                        <div class="pr-0 pl-0 mr-0 ml-0 mt-5 mb-0 input-field">
+                            <input class="text-normal" type="text" id="Searchtext" name="Searchtype" value="@ViewBag.searchString">
+
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+        </div>
+        <div class="row pt-6 pl-3 pr-2" id="org_filter_btn">
+
+            <div class="col-lg-8 col-md-8 col-sm-12 filter-entry">
+                <div class="button mr-0 mb-2">
+                    <input type="hidden" name="SortOrderValue" id="SortOrderValue" value="@sortOrder" />
+                    <input type="hidden" name="SortTypeValue" id="SortTypeValue" value="@sortType" />
+
+                    <button class="btn btn-outline-primary btn-normal" style="width: 98%;" role="button" aria-pressed="true" id="SearchFilter">
+                        SEARCH
+                    </button>
+                </div>
+
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 filter-entry">
+                <div class="button mr-0 mb-2">
+                    <button class="btn btn-outline-primary btn-normal" role="button" style="width: 104%;" aria-pressed="true" id="btn_ClearFilter">
+                        CLEAR
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <section id="banner">
+        <div class="container-fluid" id="banner-container">
+            <div>
+                <div class="header">
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="title" style="text-align: center;">
+                                MANAGE FEEDBACK
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- table -->
+                <div class="main-table p-unset overflow-hidden" id="manage-user">
+                    <div class="table-responsive">
+                        <table class="esdal-table">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,1)" data-action="FeedbackSort" data-sortval="1">Feedback </span>
+                                        <span class="filter-table-icon"><img id="filterimagecode" style="display:@(isNameFilterEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                    </th>
+                                    <th>
+                                        Type
+                                        <span class="filter-table-icons"><img id="filterimagecode" style="display:@(isTypeFilterEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                    </th>
+                                    <th class="feedback-table-header" style="width: 20%;">
+                                        <span>Published Date </span>
+                                    </th>
+                                    <th>User Name</th>
+                                    <th class="table-filter" style=" width: 4%;">
+                                        <img id="filterimage1" class="open-filter-icon-common" data-width="350" src="~/Content/assets/images/filter-icon.svg" title="Open filter" width="30">
+                                        <span class="filtered-icon-table "><img id="filterimage" style="display:@(isAllFilterEnabled?"block":"none")" src="~/Content/assets/images/filtered-icon.svg" title="Clear filter"></span>
+                                    </th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Count > 0)
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            @if (item.OpenCheck == 0)
+                                            {
+                                                if (@item.Description == null || @item.Description == " ")
+                                                {
+                                                    <td class="text-color1"> <a href="#"><span id="openChk">N/A</span></a></td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-color1">
+
+                                                        <a href="#" FeedBackId="@item.FeedBackId" OpenCheck="@item.OpenCheck" class="view-feedbackDetails" style="text-decoration:none;color: rgba(39, 87, 149, 1);">
+                                                            @(item.Description.Length > 120 ? item.Description.Substring(0, 120) + " ... " : item.Description)
+
+                                                        </a>
+                                                    </td>
+                                                }
+                                            }
+
+                                            @if (item.OpenCheck == 1)
+                                            {
+                                                if (@item.Description == null || @item.Description == "")
+                                                {
+                                                    <td class="text-color1"><a href="#"><span id="openChk" class="link green">N/A</span></a></td>
+                                                }
+                                                else
+                                                {
+                                                    <td class="text-color1">
+
+                                                        <a a href="#" class="view-feedbackDetails" FeedBackId="@item.FeedBackId" OpenCheck="@item.OpenCheck" style="text-decoration: none; color: rgba(39, 87, 149, 1);">@(item.Description.Length > 120 ? item.Description.Substring(0, 120) + " ... " : item.Description)  </a>
+                                                    </td>
+                                                }
+                                            }
+                                            <td class="text-color1">@item.FeedbackTypeName</td>
+                                            <td class="text-color1" style="width:100px">@item.ShowDateTime</td>
+                                            <td class="text-color2" style="width:200px">
+                                                <a href="#" class="contact-details" ContactId="@item.ContactId" style="text-decoration:none;color: rgba(92, 92, 92, 1);cursor:default">
+                                                    @item.FullName
+                                                </a>
+                                            </td>
+                                            <td colspan="2">
+                                                <img src="~/Content/assets/images/delete-icon.svg" class="deletefdback" title="Delete" width="18" data-FeedBackId="@item.FeedBackId" data-FeedbackTypeName="@item.FeedbackTypeName" id="@item.FeedBackId" , name="@item.FeedbackTypeName">
+                                            </td>
+
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5" style="text-align:center"> <span style="color:red">@Resources.Resource.NoRecordFound</span></td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="row pagination-container-new feedbackpaginator">
+                        <div class="col-lg-3">
+                            @if (Model.TotalItemCount > 0)
+                            {
+                                <div class="text-color2 total-records-number">
+                                    Total number of records : @Model.TotalItemCount
+                                </div>
+                            }
+                        </div>
+                        @if (listCount < Model.TotalItemCount)
+                        {
+                            <div class="col-lg-6 text-center">
+                                <div id="feedbackpaginator" class="table-pagination">
+                                    @Html.PagedListPager(Model, page => Url.Action("ListFeedback",
+                                           new
+                                           {
+                                               B7vy6imTleYsMr6Nlv7VQ =
+                                                                 STP.Web.Helpers.EncryptionUtility.Encrypt(
+                                                                 "page=" + page +
+                                                                 "&pageSize=" + pageSize +
+                                                                 "&flag=" + @ViewBag.SearchFlag +
+                                                                 "&searchType=" + @ViewBag.Searchtype +
+                                                                 "&searchString=" + @ViewBag.searchString +
+                                                                 "&sortType=" + sortType +
+                                                                 "&sortOrder=" + sortOrder)
+                                           }),
+                                           new PagedListRenderOptions
+                                           {
+                                               DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                                               DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                                               LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                                               LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                                               DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                                               DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                                               MaximumPageNumbersToDisplay = 3,
+                                               DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                                               EllipsesFormat = "...",
+                                               LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+                                               LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+                                           });
+                                </div>
+                            </div>
+                        }
+                        @if (Model.TotalItemCount > 10)
+                        {
+                            <div class="col-lg-3 col-md-3 col-sm-12 text-normal pr-0 absolute">
+                                Number of items to display per page
+                                <select class="form-select mb-3" style="width:100px;" aria-label=".form-select-lg example" id="pageSizeSelect">
+                                    <option val="10" @(pageSize == 10 ? "selected" : "")>10</option>
+                                    <option val="20" @(pageSize == 20 ? "selected" : "")>20</option>
+                                    <option val="50" @(pageSize == 50 ? "selected" : "")>50</option>
+                                    <option val="100" @(pageSize == 100 ? "selected" : "")>100</option>
+                                </select>
+                            </div>
+                        }
+                        @*}*@
+                    </div>
+                </div>
+
+
+
+                <div id="causionReport">
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+</body>
+@{
+    string GetSortDefaultClass(int sortTypeVal, int sortOrderVal, int valToCheck)
+    {
+        var sortClass = ""; //0-asc, 1-desc ,
+        if (sortOrderVal == valToCheck)
+        {
+            sortClass = sortTypeVal == 1 ? "sorting_desc" : "sorting_asc";
+        }
+        return sortClass;
+    }
+}
+<script src="~/Scripts/Feedback/ListFeedback.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Feedback/MostRecentFeedbacks.js?V@(Session["ProjectVersion"])"></script>

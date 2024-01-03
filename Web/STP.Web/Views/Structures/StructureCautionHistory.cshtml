@@ -1,0 +1,118 @@
+@{ 
+    Layout = null;
+}
+@using System.Web.Optimization
+@using STP.Domain
+@using PagedList.Mvc
+@model PagedList.IPagedList<STP.Domain.Structures.StructureModel>
+
+
+@{
+    int pageSize = ViewBag.pageSize;
+    int? pageNum = ViewBag.page;
+
+    int StructureID = Convert.ToInt32(ViewBag.StructureID);
+    int SectionID = Convert.ToInt32(ViewBag.SectionID);
+
+    @Html.Hidden("pageSizeVal", pageSize)
+    @Html.Hidden("pageNum", pageNum)
+    @Html.Hidden("hdnstructureId", StructureID)
+    @Html.Hidden("hdnSectionID", SectionID)
+}
+
+@{
+    bool isAdmin = false;
+    int portalType = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var user = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        portalType = user.UserTypeId;
+        if (portalType == 696006 || user.IsAdmin == 1)
+        {
+            isAdmin = true;
+        }
+    }
+}
+<div id="StructureCautionHistoryContainer">
+    <style>
+
+        .outline-btn-primary:hover {
+            color: rgba(39, 87, 149, 1);
+        }
+    </style>
+    <div class="flexer justify-content-start mt-5 widthP40">
+        <button class="btn outline-btn-primary SOAButtonHelper fAdd addingcausion" arg1="newCaution">
+            NEW CAUTION
+        </button>
+        <button class="btn outline-btn-primary SOAButtonHelper fAdd ml2 backingcausion" style="padding: 0.5rem 0rem;">VIEW CAUTION LIST</button>
+    </div>
+    <div class="main-table mt-5" id="history-soa">
+        <table>
+            <thead>
+                <tr>
+                    <th class="pl-5">@Resources.Resource.DateAndTime</th>
+                    <th class="pl-5">@Resources.Resource.Details</th>
+                </tr>
+            </thead>
+            <tbody class="tbColor">
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td class="text-color1 tbColor align-value-top pl-5">
+                            @item.OccuredTime
+                        </td>
+                        <td class="text-color1 tbColor align-value-top pl-5">
+                            @Html.Raw(item.HistoryDetails)
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="bottom-pagination">
+        @if (@ViewBag.TotalCount > 0)
+        {
+            <div class="pagination" id="paginator">
+                @Html.PagedListPager(Model, page => Url.Action("StructureCautionHistory",
+                new
+                {page= page,
+                        pageSize=pageSize,
+                        structureId=ViewBag.StructureId,
+                        sectionId=ViewBag.sectionId
+                }),
+                PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions
+                {
+                    DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                    DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                    LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                    LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                    DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                    DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                    MaximumPageNumbersToDisplay = 3,
+                    DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                    EllipsesFormat = "...",
+                    LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+                    LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+                },
+                new AjaxOptions
+                {
+                    HttpMethod = "Get",
+                    UpdateTargetId = "generalSettingsId"
+                }));
+            </div>
+        }
+        else
+        {
+            <div class="error invalid-feedback" style="display: block !important; text-align: center;">@Resources.Resource.NoRecordFound</div>
+        }
+    </div>
+    <div class="button main-button mr-0 mb-2 mt-4">
+        <button class="btn btn-outline-primary btn-normal backingcausion" role="button" aria-pressed="true"
+                style="width: 10rem;float: right;">
+            BACK
+        </button>
+    </div>
+    <input type="hidden" value="@ViewBag.StructureId" id="hf_StructureId" name="hf_StructureId" />
+    <input type="hidden" value="@ViewBag.sectionId" id="hf_sectionId" name="hf_sectionId" />
+</div>
+@*<script src="~/Scripts/Structures/StructureCautionHistory.js?V@(Session["ProjectVersion"])"></script>*@

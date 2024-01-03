@@ -1,0 +1,30 @@
+<div id="div_first_time_user">
+</div>
+<div id="div_change_pass" style="width:900px !important;">
+    @{
+        Html.RenderAction("ChangePassword", "Account");
+    }
+</div>
+<style>
+    #div_first_time_user {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        /*background:url(../Content/Images/Common/MasterPage/login_screen.png) no-repeat;*/
+        background-color: #cfc5c5;
+        z-index: 20000;
+        /*opacity:0.1;*/
+    }
+
+    #div_change_pass {
+        z-index: 30000;
+        position: absolute;
+        left: 20%;
+        top: 5%;
+        z-index: 50000;
+    }
+</style>
+
+<script src="~/Scripts/Generic/FirstTimeUser.js?V@(System.Configuration.ConfigurationManager.AppSettings["projectVersion"])"></script>

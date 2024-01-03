@@ -1,0 +1,140 @@
+@model STP.Domain.MovementsAndNotifications.Notification.NotificationStatusModel
+
+@{
+    if (ViewBag.SORTSetCollab == false)
+    {
+        Layout = null;
+    }
+}
+<style>
+    #Description {
+        width: 100%;
+    }
+</style>
+@Html.Hidden("STATUS", Model.STATUS)
+@Html.Hidden("DOCUMENT_ID", Model.DOCUMENT_ID)
+<div id="exampleModalCenter2" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document"
+         style="max-width: 40rem; margin: auto;">
+        <div class="modal-content CustModel" style="width: 40rem; height: auto; border: none;">
+            <div class="modal-header pt-2" style="justify-content: end;">
+                <span aria-hidden="true" class="close" data-dismiss="modal"
+                      aria-label="Close" id="CloseViewCollab" style="cursor: pointer;">&times;</span>
+            </div>
+            <div class="modal-body pt-0">
+                <div class="row mb-1 pb-3">
+                    <span class="text-normal pr-2 text-align-center"
+                          style="font-family: lato_light; font-size: 25px; margin-top: -2rem; width: 91%;">
+                        Set Internal Collaboration
+                    </span>
+                </div>
+                <div id="collab-details" class="pl-4 pr-4" style="text-align: start;">
+                    <div class="row pb-2">
+                        <div class="col-sm-4 col-md-6 col-lg-4  text-normal text-align-start">
+                            Contact Name
+                        </div>
+                        <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                            @Html.DisplayFor(model => model.FIRST_NAME) @Html.DisplayFor(model => model.SUR_NAME)
+                        </div>
+                    </div>
+                    <div class="row pb-2">
+                        <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                            Organisation Name
+                        </div>
+                        <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0 pl-0 pb-0 pr-0">
+                            @Html.DisplayFor(model => model.OrganisationName)
+                        </div>
+                    </div>
+                    <div class="row pb-2">
+                        <div class="col-sm-4 col-md-6 col-lg-4 pr-0 text-normal">
+                            Affected party specified collaboration status
+                        </div>
+                        <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0 pb-0 pl-0 pr-0">
+                            @if (!string.IsNullOrEmpty(Model.NotificationStatus))
+                            {@Html.DisplayFor(model => model.NotificationStatus)}
+                        else
+                        { <span>Unknown</span>}
+                        </div>
+                    </div>
+                    <div class="row pb-2">
+                        <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                            Internal Collaboration <br>Status
+                        </div>
+                        <div class="col-sm-4 col-md-5 col-lg-8 pt-0 pl-0">
+                            <div id="table-head">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio"
+                                           name="statusradiogroup" value="327001" id="Radio1">
+                                    <label class="form-check-label edit-normal pl-0 pr-0 pt-0 pb-0"
+                                           for="flexRadioDefault1">
+                                        Accepted
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio"
+                                           name="statusradiogroup" value="327002" id="Radio2">
+                                    <label class="form-check-label edit-normal pl-0 pr-0 pt-0 pb-0"
+                                           for="flexRadioDefault1">
+                                        Rejected
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio"
+                                           name="statusradiogroup" value="327003" id="Radio3">
+                                    <label class="form-check-label edit-normal pl-0 pr-0 pt-0 pb-0"
+                                           for="flexRadioDefault1">
+                                        Under Assessment
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pb-2">
+                        <div class="col-sm-4 col-md-6 col-lg-4 pr-0 text-normal">
+                            Notes
+                        </div>
+                        <div class="col-sm-4 col-md-5 col-lg-8 pl-0 pt-0">
+                            @Html.HiddenFor(model => model.NOTES)
+
+
+                            @Html.TextAreaFor(model => model.NOTES, new { id = "Description", @rows = "7", @class = "form-control" })
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="notemsg">
+                <div class="error" id="updateInternalNote">No changes made for internal notes and status</div>
+                <span class="error" id="ValidStatus">@Resources.Resource.InternalStatus</span>
+            </div>
+            <div class="flexer text-align-center pt-2 pb-4"
+                 style="margin-left: auto;margin-right: auto;">
+                <div class="button main-button mr-2">
+                    <button class="btn btn-outline-primary btn-normal pl-8 pr-8" role="button"
+                            id="SaveNotes" aria-pressed="true">
+                        SAVE
+                    </button>
+                </div>
+                <div class="button main-button mr-2">
+                    <button class="btn btn-outline-primary btn-normal pl-7 pr-7" role="button"
+                            id="cancel" aria-pressed="true">
+                        CANCEL
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@{
+<input type="hidden" value="@ViewBag.SORTSetCollab" id="hf_SORTSetCollab" name="hf_SORTSetCollab" />
+<input type="hidden" value="@ViewBag.SORTSetCollab" id="hf_SORTSetCollab" name="hf_SORTSetCollab" />
+<input type="hidden" value="@ViewBag.SORTSetCollab" id="hf_SORTSetCollab" name="hf_SORTSetCollab" />
+}
+@Html.Hidden("hf_First_Name", Model.FIRST_NAME)
+@Html.Hidden("hf_Sur_Name", Model.SUR_NAME)
+
+
+@*<script src="~/Scripts/Notification/CreateInternalCollaboration.js?V@(Session["ProjectVersion"])"></script>*@

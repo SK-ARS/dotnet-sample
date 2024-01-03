@@ -1,0 +1,102 @@
+@using System.Web.Optimization
+@using STP.Domain
+@using PagedList.Mvc
+
+@{
+
+    @*@Html.AntiForgeryToken()*@
+    @Html.ValidationSummary(true)
+    @Html.Hidden("SORTUserListInfo")
+}
+
+@{
+    bool isAdmin = false;
+    int portalType = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var user = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        portalType = user.UserTypeId;
+        if (portalType == 696006 || user.IsAdmin == 1)
+        {
+            isAdmin = true;
+        }
+    }
+    string allocationtype = ViewBag.AllocationType;
+}
+
+@Html.Hidden("txtallocationtype", allocationtype)
+
+<link href="~/Content/Style/Common/alertbox.css" rel="stylesheet" />
+<link href="~/Content/Style/Common/style.css" rel="stylesheet" />
+<link href="~/Content/Style/Common/grid_css.css" rel="stylesheet" />
+<link href="~/Content/Style/Common/PagedList.css" rel="stylesheet" />
+
+@*@System.Web.Optimization.Scripts.Render("~/bundles/UpdateCheckingStatusPopup")*@
+<style type="text/css">
+    #checkerusers {
+        width: 217px;
+    }
+
+    .tdcls {
+        height: 23px;
+        margin-top: 5PX;
+    }
+</style>
+
+<div class="modal-header pt-3 pb-3 pr-3 pl-3 pb-3s" style="display: contents;">
+    <div class="row" style="margin-top: -1rem;">
+        <div class="col-lg-9 col-sm-7 col-md-7 pl-4 pt-8">
+            <span class="text-normal pr-2" style="font-family: lato_light;font-size:25px;margin-top: -2rem;float: right;">
+                Complete checking
+            </span>
+        </div>
+        <div class="col-lg-3 col-sm-5 col-md-5 pr-4">
+            <div style="justify-content: end;" class="update-check-stat-close-popup">
+                <span aria-hidden="true" class="close pl-0 ml-2 pt-1 update-check-stat-close-popup"
+                      data-dismiss="modal" aria-label="Close" id="close-pop"  style="cursor:pointer;">&times;</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<span class="PopupHelpName" id="CreateCandidateRoute"></span>
+<div class="row pl-4 pr-4 pt-2">
+    @if (ViewBag.SORTUserListInfo != null)
+    {
+        <div class="row pb-3">
+            <div class="col-lg-5 col-md-5 col-sm-5 text-normal">
+                Returned to
+            </div>
+            <div class="col-lg-7 col-md-7 col-sm-7">
+                @Html.DropDownList("checkerusers", ViewBag.SORTUserListInfo as SelectList, "--Select user--", new { @class = "form-select text-normal" })
+                <span id="validcehckerusers" class="error invalid-feedback"></span>
+            </div>
+        </div>
+    }
+<div class="row pb-3">
+    <div class="col-lg-5 col-md-5 col-sm-5 text-normal">
+        Checking Outcome
+    </div>
+    <div class="col-lg-7 col-md-7 col-sm-7">
+        <input type="radio" name="checkingstatus" value="301003" class="form-check-input rbtnstatus" style="float: left; margin-top: 5px;" id="cspositive"><span style="float:left;" id="spancspos">Positive</span>
+        <input type="radio" name="checkingstatus" value="301004" class="form-check-input rbtnstatus" style="margin-left: 33px; margin-top: 5px" id="csnegative"><span id="spancsneg">Negative</span>
+        <span id="validrbtncehckerusers" class="error invalid-feedback"></span>
+    </div>
+</div>
+    <div class="row pb-2">
+        <div class="flexer text-align-center pt-2 pb-4 pl-6 pr-4" style="margin-left: auto;margin-right: auto;">
+            <div class="button main-button mr-2">
+                <button class="btn btn-outline-primary btn-normal pl-8 pr-8" role="button" aria-pressed="true" id="btn-candidate" >
+                    SEND
+                </button>
+            </div>
+            <div class="button main-button mr-0">
+                <button class="btn btn-outline-primary btn-normal pl-7 pr-7" role="button" aria-pressed="true" id="btn-close" >
+                    CANCEL
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+@*<script src="~/Scripts/SORTApplication/UpdateCheckingStatusPopup.js?V@(Session["ProjectVersion"])"></script>*@

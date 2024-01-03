@@ -1,0 +1,213 @@
+﻿@model STP.Domain.MovementsAndNotifications.Movements.MovementsInboxFilter
+@using STP.Domain
+@using STP.Domain.MovementsAndNotifications.Movements
+@{
+    int appType = 1;
+    bool IsRelatedMov = false;
+}
+@if (ViewBag.IsRelatedMov != null)
+{
+    IsRelatedMov = ViewBag.IsRelatedMov;
+}
+@Html.Hidden("ApplicationType", appType)
+@Html.Hidden("IsRelatedMov", IsRelatedMov)
+@Html.Hidden("Logged_In", Session["Logged_In"])
+@Html.Hidden("userTypeId", Session["userTypeId"])
+@{
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.MOVEMENTS;
+    MovementsInboxFilter objMovementsFilter = new MovementsInboxFilter();
+    if (Session["g_moveInboxFilter"] != null)
+    {
+        objMovementsFilter = (MovementsInboxFilter)Session["g_moveInboxFilter"];
+    }
+    else
+    {
+        objMovementsFilter.Unopened = true;
+        Session["g_moveInboxFilter"] = objMovementsFilter;
+    }
+}
+
+<input type="hidden" value="@ViewBag.structureID" id="hf_structureId" name="hf_structureId" />
+
+@*<style>
+        #ui-datepicker-div th:nth-child(2) span {
+            color: #212529 !important;
+        }
+        #ui-datepicker-div th:last-child {
+            background-color: rgba(39, 87, 149, 1) !important;
+        }
+    </style>*@
+<style>
+    #second-header .btn.btn-primary:hover {
+        color: white;
+        background-color: rgba(39, 87, 149, 1);
+    }
+
+    #second-header .btn.btn-primary:focus {
+        color: white;
+    }
+</style>
+<body style="overflow-y: auto;" id="helpdesk">
+    <section id="banner">
+        @{
+            Html.RenderAction("HotNews", "Information");
+        }
+
+        <div class="container-fluid" id="banner-container">
+            <div class="col-lg-12 col-md-12 col-sm-12 header">
+                @*@using (Ajax.BeginForm("FilterMoveInbox", "Movements", new { structureID = Convert.ToString(Session["structureID"]), structureNm = Convert.ToString(Session["structureNm"]), ESRN = Convert.ToString(Session["ESRN"]) }, new AjaxOptions { OnSuccess = "FilterSuccess", OnBegin = "OnBegin", OnFailure = "OnFailure" }, new { @id = "outsideFilterMoveInboxSOA" }))
+                {*@
+                <div id = "outsideFilterMoveInboxSOA">
+                    <div class="row align-items-center">
+                        @if (ViewBag.structureID == 0)
+                        {
+                            <div class="col-lg-1 col-md-1 col-sm-12"></div>
+                            <div class="col-lg-2 col-md-2 col-sm-6">
+                                <div class="button mr-0">
+                                    <div class="pb-2">
+                                        <button class="validationmsg dropdwon_new" id="movements" role="button" data-bs-toggle="dropdown" aria-expanded="false">Select Action</button>
+                                        <ul class="dropdown-menu plan_mom_drop" aria-labelledby="movements" style="min-width:243px;">
+                                            <li><a class="edit-normal" id="btnRemoveFromFolder" href="#">Remove From Folder</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        @if (ViewBag.structureID == 0)
+                        {
+                            <div class="col-lg-4 col-md-4 col-sm-4"></div>
+                        }
+                        else
+                        {
+                            string title = "'" + "'" + ViewBag.StructureNm + "'" + "' [" + @ViewBag.ESRN + "]";
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="text-normal pr-2" style="font-family: lato_light;font-size:25px;">Notifications affecting structure - @title</div>
+                            </div>
+                        }
+                        @if (ViewBag.structureID == 0)
+                        {
+                            <div class="col-lg-3 col-md-3 col-sm-12">
+                                <div id="table-head" class="align-items-center">
+                                    <span class="details mt-2 pl-2 pr-3">
+                                        ESDAL Reference No
+                                    </span>
+                                    <input class="text-highlight mr-r1 txt-mib-esdal-ref-search" id="ESDALReference" type="text" name="ESDALReference">
+                                    <span>
+                                        <img src="~/Content/assets/images/search-icon.svg" width="20">
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-2 col-sm-12">
+                                <div style="display:flex;">
+                                    <span class="details mt-2 pl-2 mr-2">
+                                        Unopened
+                                    </span>
+                                    @{
+                                        var isChecked = objMovementsFilter != null ? objMovementsFilter.Unopened : false;
+                                    }
+                                    <label class="switch">
+                                        <input type="checkbox" id="UnopenedToggle"  @(isChecked?"checked":"") name="Unopened">
+                                        <div class="slider round unopened-toggle">
+                                            <span class="on">ON</span>
+                                            <span class="off">OFF</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+                </div>
+                @*}*@
+            </div>
+            <div id="div_movement_list" class="movement-inbox">
+                @if (ViewBag.structureID == 0)
+                {
+                    //using same list in Structures/ReviewSummary Related Inbox items
+                    @Html.Partial("_FolderManagement")
+                }
+                <div class="div_so_movement flex-fill" style="overflow-x:auto;">
+                    @{
+                        switch (appType)
+                        {
+                            case 1:
+                                Html.RenderAction("PoliceMovementInbox", new { page = ViewBag.page, pageSize = ViewBag.pageSize, structureID = ViewBag.structureID, structureNm = ViewBag.StructureNm, ESRN = ViewBag.ESRN, IsRelatedMov = ViewBag.IsRelatedMov });
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- filter settings -->
+    <div id="filters" class="sidenav filter-sidenav pt-3 soa-police-movement-filter">
+        <div class="row sidenav-header pl-3 pr-3">
+            <div class="col-11 col-md-11 col-sm-11" style="text-align: center;">
+                <span>
+                    FILTER
+                </span>
+            </div>
+            <div class="col-1 col-md-1 col-sm-1">
+                <div id="closeFilters" href="#" class="pt-0 pb-0 pr-0 text-normal-hyperlink close-filter-icon-common"
+                     style="cursor:pointer;font-size: xxx-large; text-align: right;">&times;</div>
+            </div>
+        </div>
+        <hr style="margin-top: 0;">
+        <div class="sort-portal">
+            <div class="filter-list" id="filter_movement">
+                @using (Ajax.BeginForm("FilterMoveInbox", "Movements", new { structureID = Convert.ToString(Session["structureID"]), structureNm = Convert.ToString(Session["structureNm"]), ESRN = Convert.ToString(Session["ESRN"]) }, new AjaxOptions { OnSuccess = "FilterSuccess", OnBegin = "OnBegin", OnFailure = "OnFailure" }, new { @id = "frmFilterMoveInbox" }))
+                {
+                    <input type="hidden" name="SortOrderValue" id="SortOrderValue" value="6" />
+                    <input type="hidden" name="SortTypeValue" id="SortTypeValue" value="1" />
+                    <input type="hidden" value="@ViewBag.structureID" id="structureID" name="structureID" />
+                    Html.RenderAction("SOAPoliceSearch", Model);
+                    <div class="mt-5 mb-4 filters" data-target="div_movement_inbox_filter_advanced">
+                        <div class="row">
+                            <div class="col-11 col-md-11 col-sm-11">
+                                <span>
+                                    Advanced
+                                </span>
+                            </div>
+                            <div class="col-lg-1 col-md-1 col-sm-1">
+                                <img id="chevlon-up-icon2" class="chevlon-up-icon" src="~/Content/assets/images/up-chevlon-filter.svg" width="20"
+                                     style="display: none;">
+                                <img id="chevlon-down-icon2" class="chevlon-down-icon" src="~/Content/assets/images/down-chevlon-filter.svg" width="20"
+                                     style="display: block">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="div_movement_inbox_filter_advanced" class="pl-4" style="display:none;">
+                        @{Html.RenderAction("MoveInboxAdvancedSearch", new { userType = ViewBag.UserType, IsStruRelMove = IsRelatedMov });}
+                    </div>
+                    <div class="row pt-6 pl-3 pr-2" id="org_filter_btn">
+                        <div class="col-lg-8 col-md-8 col-sm-12 filter-entry">
+                            <div class="button mr-0 mb-2">
+                                <button class="btn btn-outline-primary btn-normal" type="button" role="button" aria-pressed="true" id="SearchSOAList">
+                                    SEARCH
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-12 filter-entry">
+                            <div class="button mr-0 mb-2">
+                                <button class="btn btn-outline-primary btn-normal" role="button" aria-pressed="true" id="ClearAdvanced">
+                                    CLEAR
+                                </button>
+                            </div>
+                            <!-- </div> -->
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <!-- end of filter settings -->
+</body>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Movements/jQuery.policesoafilter.js?V@(Session["ProjectVersion"])"></script>
+@*<script src="~/Scripts/Movements/SOAPoliceSearch.js?V@(Session["ProjectVersion"])"></script>*@
+<script src="~/Scripts/Movements/MovementInboxList.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Movements/PoliceMovementInbox.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Movements/MoveInboxAdvancedSearch.js?V@(Session["ProjectVersion"])"></script>
+

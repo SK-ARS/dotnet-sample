@@ -1,0 +1,97 @@
+﻿@{ 
+    var opened = "";
+    if(Session["IsFolderOpened"]!=null && Convert.ToBoolean(Session["IsFolderOpened"]) == true)
+    {
+        opened = "active-folder-nav";
+    }
+}
+<div id="folder-nav" class="@opened">
+    <!--class="active-folder-nav"-->
+    <span class="folder-header-title">Folders
+    @*<i class="pl-2 fa fa-info-circle folder-info" aria-hidden="true" data-bs-original-title="Left click a movement and drag to a folder to add it"
+       data-toggle="tooltip" data-placement="top" ></i>*@
+    </span>
+    <div class="untag-container">
+        @*<button class="btn-remove untag" style="display: none;" type="button">
+            <i class="fa fa-tag" aria-hidden="true"></i>
+            UN TAG
+        </button>*@
+        <span class="shrink-btn" id="menu-btn">
+            <img class="folder-close" src="/Content/assets/images/folder.svg" title="Open Folders">
+            <img class="folder-open" src="/Content/assets/images/collapse-arrow.svg" title="Hide Folders">
+        </span>
+        <div class="grand-parent-folder">
+            <div class="create-folder dropend">
+                <a class="icon" href="#" data-bs-toggle="dropdown" aria-label="Menu"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>
+                <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                    <li><a class="dropdown-item add-new" href="#"><i class="fa fa-folder"></i> New Folder</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <span id="folder_Help_Menu">Left click a movement and drag to a folder to add it</span>
+    <ul id="parentfolder_ul" class="tree" style="margin-top: 5px !important;" >
+        <li id="parentFolder01" draggable="false" class="folder-item parent-tree-list default-li" data-id="0" data-name="All">
+            <label for="parentFolder01">
+                @*<div class="folder-drop dropend">
+            <a class="icon" href="#" data-bs-toggle="dropdown" aria-label="Menu"><i class="fa fa-ellipsis-h" aria-hidden="true"></i></a>
+            <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                <li><a class="dropdown-item  add-new" href="#"><i class="fa fa-folder"></i> New Folder</a></li>
+            </ul>
+        </div>*@
+                <a class="clickable"><span>All</span></a>
+            </label>
+            @*<input id="parentFolderCheck01" value="" type="checkbox">
+                <ul class="child-tree"></ul>*@
+        </li>
+    </ul>
+</div>
+
+<div class="modal fade" id="AddFolder" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content ">
+            <div class="modal-header pt-2 text-center">
+                <h5 id="staticBackdropLabel" class="modal-title w-100 pt-4" style="font-family: lato_light;font-size:25px;">
+                    Add folder
+                </h5>
+                <span aria-hidden="true" class="close" data-bs-dismiss="modal" aria-label="Close">×</span>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <input type="hidden" id="hfIsEdit" />
+                        <input type="hidden" id="hfFolderId" />
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12 col-md-12 pr-0">
+                                <div class="pr-5 pl-3 pt-3 mr-3 ml-3 mb-0 input-field">
+                                    <input class="text-decorate " id="folderName" name="folderName" placeholder="Name" type="text"
+                                           autocomplete="off" value="">
+                                    <span class="error_message" id="err_folderName"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer pt-4">
+                <button type="button" class="btn btn-outline-primary btn-normal" id="btnAddFolder">SAVE</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="lowerleft" class="success-msg">
+    <div class="row">
+        <div class="col-sm-11"><div class="message"></div></div>
+        <div class="col-sm-1"><a href="#" style=" color: #fff;" class="close-message"><i class="fa fa-times" aria-hidden="true"></i></a></div>
+    </div>
+</div>
+<div id="folderInfoMessage">
+    <div class="row">
+        <div class="col-sm-12"><div class="message"></div></div>
+    </div>
+</div>
+
+<script src="~/Scripts/Movements/folderManagement.js?V@(Session["ProjectVersion"])"></script>
+<link href="~/Content/Style/Common/FolderManagement/folder-management.css?V@(Session["ProjectVersion"])" rel="stylesheet" />
+<script nonce="@STP.Web.Helpers.NonceHelper.ScriptNonce()"></script>

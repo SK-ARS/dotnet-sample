@@ -1,0 +1,175 @@
+@using STP.Domain.Routes;
+@using STP.Domain.VehiclesAndFleets.Configuration;
+@{
+    var RouteVehiclelist = (List<MovementVehicleList>)ViewBag.MovementRouteVehicleList;
+}
+@if (RouteVehiclelist != null && RouteVehiclelist.Count > 0)
+{
+    foreach (var route in RouteVehiclelist)
+    {
+        <div class="row pt-8 pr-8" id="viewroutes">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <span class="title">Route Part @route.RoutePartNo</span>
+            </div>
+            <div class="col-lg-6 col-md-6 col-sm-12" id="table-head" style="justify-content: end;">
+                <span id="table-head">
+                    <div class="button main-button mr-3 pr-3">
+                        <button class="btn btn-outline-primary btn-normal ViewRouteOnMap" role="button" aria-pressed="true" RoutePartId=@route.RoutePartId  RouteType='planned'>
+                            VIEW ROUTE
+                        </button>
+                    </div>
+                    <span class="viewrouteparts" RoutePartNo='viewroutedetails_' + @route.RoutePartNo>
+                        <img src="~/Content/assets/images/up-chevlon-filter.svg" width="15" id="chevlon-up-icon1" 
+                             style="display: none; cursor: pointer;">
+                        <img src="~/Content/assets/images/down-chevlon-filter.svg" width="15" id="chevlon-down-icon1" style="cursor: pointer;">
+                    </span>
+                    
+                </span>
+            </div>
+        </div>
+        <hr style="margin-right: 3rem;">
+        <div class="mt-4 main-entry" id="viewroutedetails_@route.RoutePartNo" style="display: none;">
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 pr-6">
+                    <div class="row mb-2">
+                        <div class="col-lg-12 col-md-12 col-sm-12 pt-5 title">
+                            @route.RoutePartName
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-2 col-md-2 col-lg-2 pr-0">
+                            <label class="text-normal">Start</label>
+                        </div>
+                        <div class="col-sm-6 col-md-8 col-lg-8 options">
+                            <img src="~/Content/assets/Icons/map-startpoint.svg" width="15" alt="vehicle-2">
+                            <span class="edit-normal">@route.FromAddress</span>
+                            <hr>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-2 col-md-2 col-lg-2 pr-0">
+                        </div>
+                        <div class="col-sm-6 col-md-8 col-lg-8">
+                            <div class="options" style="position: absolute; padding-left: 2rem; display: none;">
+                                <div>
+                                    <img src="~/Content/assets/images/Group 692.svg" alt="vehicle-2" class="mr-2"><span class="edit-normal">Water crossing</span>
+                                </div>
+                                <textarea class="form-control mt-5" id="exampleFormControlTextarea1"
+                                          placeholder="Fill in extra info" rows="2"></textarea>
+                            </div>
+                            <img src="~/Content/assets/Icons/map-startpoint.svg" width="10" alt="vehicle-2"
+                                 style="position:absolute;padding-top: 7.5rem;display: none;">
+                            <img src="~/Content/assets/images/Path 333.svg" alt="vehicle-2"
+                                 style="position:relative;padding-left: 0.3rem;">
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-2 col-md-2 col-lg-2 pr-0">
+                            <label class="text-normal">End</label>
+                        </div>
+                        <div class="col-sm-6 col-md-8 col-lg-8 options">
+                            <img src="~/Content/assets/Icons/map-endpoint.svg" width="15" alt="vehicle-2">
+                            <span class="edit-normal">@route.ToAddress</span>
+                            <hr>
+                        </div>
+                    </div>
+                    @*<div class="row footer-content mt-3">
+                        <div class="col-lg-4 col-md-6 col-sm-6 mb-2">
+                            <div class="button main-button mr-0">
+                                <button class="btn btn-primary btn-normal" role="button"
+                                        aria-pressed="true">
+                                    SAVE
+                                    ROUTE
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6 mb-2">
+                            <div class="button main-button mr-0">
+                                <button class="btn btn-primary btn-normal" role="button"
+                                        aria-pressed="true">
+                                    EDIT
+                                    ROUTE
+                                </button>
+                            </div>
+                        </div>
+                    </div>*@
+                </div>
+                <div id="viewmap_@route.RoutePartId" class="col-lg-6 col-md-6 col-sm-12 col-xs-12" style="border: red 1px;">
+
+                </div>
+            </div>
+            
+
+            @{
+                Html.RenderAction("ApplicationVehicles", "VehicleConfig", new { VehicleList = route.VehicleList });//@Model.ApplicationRevId
+            }
+
+            @*<div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
+            <div class="row mb-2">
+                <div class="col-lg-12 col-md-12 col-sm-12 pt-5 title">
+                    Return route
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-2 col-md-2 col-lg-2 pr-0">
+                    <label class="text-normal">Start</label>
+                </div>
+                <div class="col-sm-6 col-md-8 col-lg-8 options">
+                    <img src="~/Content/assets/images/route-start-icon.svg" width="15" alt="vehicle-2">
+                    <span class="edit-normal">20 Hinton Ln, Knottingley WF11 8TB</span>
+                    <hr>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-2 col-md-2 col-lg-2 pr-0">
+                </div>
+                <div class="col-sm-6 col-md-8 col-lg-8">
+                    <div class="options" style="position:absolute;padding-left: 2rem;">
+                        <div>
+                            <img src="~/Content/assets/images/Group 692.svg" alt="vehicle-2" class="mr-2"><span class="edit-normal">Water crossing</span>
+                        </div>
+                        <textarea class="form-control mt-5" id="exampleFormControlTextarea1"
+                                  placeholder="Fill in extra info" rows="2"></textarea>
+                    </div>
+                    <img src="~/Content/assets/images/route-start-icon.svg" width="10" alt="vehicle-2"
+                         style="position:absolute;padding-top: 7.5rem;">
+                    <img src="~/Content/assets/images/Path 333.svg" alt="vehicle-2"
+                         style="position:relative;padding-left: 0.3rem;">
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-2 col-md-2 col-lg-2 pr-0">
+                    <label class="text-normal">End</label>
+                </div>
+                <div class="col-sm-6 col-md-8 col-lg-8 options">
+                    <img src="~/Content/assets/images/destination-icon.svg" width="15" alt="vehicle-2">
+                    <span class="edit-normal">51 Carlisle St,Goole DN14 5DU </span>
+                    <hr>
+                </div>
+            </div>
+            <div class="row footer-content mt-3">
+                <div class="col-lg-4 col-md-6 col-sm-6 mb-2">
+                    <div class="button main-button mr-0">
+                        <button class="btn btn-primary btn-normal" role="button"
+                                aria-pressed="true">
+                            SAVE
+                            ROUTE
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 col-sm-6 mb-2">
+                    <div class="button main-button mr-0">
+                        <button class="btn btn-primary btn-normal" role="button"
+                                aria-pressed="true">
+                            EDIT
+                            ROUTE
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+
+        </div>
+    }
+}
+<script src="~/Scripts/CspJs/Application\PartialView/_ApplicationRoutes.js?V@(Session["ProjectVersion"])"></script>

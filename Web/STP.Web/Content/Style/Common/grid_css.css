@@ -1,0 +1,751 @@
+/*
+=======================================================================
+Grid Control CSS start from here
+========================================================================
+*/
+/*commented for ESDAL4*/
+/*table{ border-collapse: collapse;font-family: 'Helvetica', Arial, sans-serif; margin-bottom: 10px; float: left; width:100%; font-size:13px;}*/ /* removed margin-top:10px;*/
+caption {  margin: 16px auto; }
+/*commented for ESDAL4*/
+/*table th {padding: 10px 9px 10px 0px;}
+td { padding: 5px 5px 5px 0px;}
+th{font-size: 13px; }
+table td{font-size: 13px; vertical-align: middle; color: #414193; }
+table tr{ border-bottom: 1px solid #cccce2; border-left:0px solid #cccce2; border-right: 0px solid #cccce2; }*/
+/*table tr:first-child{ border:none; background:none;}*//*table tr:first-child{ background:none;}*/ 
+
+/*commented for ESDAL4*/
+/*table tr:nth-child(odd) {background: #f0f0f0;}
+table th { color: #fff; text-align: left;}*/
+.table {
+	border-collapse: collapse;
+	font-family: 'Helvetica', Arial, sans-serif;
+	margin-bottom: 10px;
+	margin-top: 10px;
+	float: left;
+	width: 100%;
+	font-size: 13px;
+}
+.table caption {  margin: 16px auto; }
+.table th {padding: 10px 9px 10px 0px;}
+.table td { padding: 5px 5px 5px 5px;}
+.table th{font-size: 13px; color: #414193;}
+.table td{font-size: 13px; vertical-align: middle; color: #414193; }
+.table tr{ border:none !important;  background:none !important;}
+.alter { margin:0px !important;}
+.alter th {padding: 2px; font-size:10px !important;}
+.alter td {font-size:10px !important;}
+.alter tr:nth-child(odd) {background:#DCDCDC !important;}
+    .table .headgradd {background: rgb(210,223,237); /* Old browsers */
+background: -moz-linear-gradient(top,  rgba(210,223,237,1) 0%, rgba(166,192,227,1) 0%, rgba(200,215,235,1) 55%, rgba(175,199,232,1) 99%, rgba(153,181,219,1) 100%, rgba(186,208,239,1) 100%, rgba(190,208,234,1) 100%, rgba(121,155,200,1) 100%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(210,223,237,1)), color-stop(0%,rgba(166,192,227,1)), color-stop(55%,rgba(200,215,235,1)), color-stop(99%,rgba(175,199,232,1)), color-stop(100%,rgba(153,181,219,1)), color-stop(100%,rgba(186,208,239,1)), color-stop(100%,rgba(190,208,234,1)), color-stop(100%,rgba(121,155,200,1))); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top,  rgba(210,223,237,1) 0%,rgba(166,192,227,1) 0%,rgba(200,215,235,1) 55%,rgba(175,199,232,1) 99%,rgba(153,181,219,1) 100%,rgba(186,208,239,1) 100%,rgba(190,208,234,1) 100%,rgba(121,155,200,1) 100%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top,  rgba(210,223,237,1) 0%,rgba(166,192,227,1) 0%,rgba(200,215,235,1) 55%,rgba(175,199,232,1) 99%,rgba(153,181,219,1) 100%,rgba(186,208,239,1) 100%,rgba(190,208,234,1) 100%,rgba(121,155,200,1) 100%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top,  rgba(210,223,237,1) 0%,rgba(166,192,227,1) 0%,rgba(200,215,235,1) 55%,rgba(175,199,232,1) 99%,rgba(153,181,219,1) 100%,rgba(186,208,239,1) 100%,rgba(190,208,234,1) 100%,rgba(121,155,200,1) 100%); /* IE10+ */
+background: linear-gradient(to bottom,  rgba(210,223,237,1) 0%,rgba(166,192,227,1) 0%,rgba(200,215,235,1) 55%,rgba(175,199,232,1) 99%,rgba(153,181,219,1) 100%,rgba(186,208,239,1) 100%,rgba(190,208,234,1) 100%,rgba(121,155,200,1) 100%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d2dfed', endColorstr='#799bc8',GradientType=0 ); /* IE6-9 */
+
+
+}
+#tbl_movementlist td {padding:0px !important;}
+#header-fixed tbody {display:none;}
+.container{
+  width:100%;
+  margin:auto;
+}
+/*commented for ESDAL4*/
+/*table{
+  border-collapse:collapse;
+  width:100%;
+}*/
+.fixed{
+  top:98px;
+  position:fixed;
+  width:auto;
+  display:none;
+  border:none;
+}
+
+
+
+.row {border:none !important;}
+.row_span{border:none !important;}
+
+
+.tdbutton{ 
+	width: 63px; 
+	height: 23px;  
+	background: #cdcdda; 
+	color:#212181;  
+	margin-right: 15px;
+	margin-bottom: 0px;
+	font-size:11px;
+}
+.tdbuttonauto{ 
+	width: auto; 
+	height: 23px;  
+	background: #cdcdda; 
+	color:#212181;  
+    padding: 0px 5px 0px 5px;
+	margin-right: 15px;
+	margin-bottom: 0px;
+	font-size:11px;
+}
+
+
+.tdleft{ float: left;}
+.tdright{float: right;}
+[data-icon]:before{ padding-right: 0px;  }
+.link {cursor:pointer;text-decoration:underline;}
+.blue {color:##0000FF;}
+.green {color:#428181;}
+td .spanunit {margin-top: 5px;float: left;}
+
+/*
+=======================================================================
+Form Control CSS start from here
+========================================================================
+*/
+
+.form{
+	width: 100%;
+	float: left;
+	/*background:#F7F7F7;*/
+	 font-family: 'Helvetica', Arial, sans-serif; 
+	 /*margin-top: 20px; margin-bottom: 20px; */
+	 -moz-border-radius-topleft: 10px;
+	-webkit-border-top-left-radius:10px;
+ 	border-top-left-radius: 10px;
+	-moz-border-radius-topright: 10px;
+	-webkit-border-top-right-radius: 10px;
+	border-top-right-radius: 10px;
+	
+}
+.form .head{ 
+	color: #fff; 
+	text-align: left; 
+	font-size: 15px; font-weight: bold;
+	width: 892px;
+    float:left;
+	background-color: #006699;
+	padding-top: 10px; padding-bottom: 0px; padding-left: 10px;
+	-moz-border-radius-topleft: 10px;
+	-webkit-border-top-left-radius:10px;
+ 	border-top-left-radius: 10px;
+	-moz-border-radius-topright: 10px;
+	-webkit-border-top-right-radius: 10px;
+	border-top-right-radius: 10px;
+   
+
+}
+
+.form .head span{ height:15px; width:15px; -webkit-border-radius: 50%;-moz-border-radius: 50%;border-radius: 50%; 
+	background:rgba(203, 204, 216, 1);
+    float:right; padding:5px;
+    color: rgba(116, 116, 164, 1);
+    font-size:15px;
+    margin-right:10px;
+    margin-bottom:10px; cursor:pointer;
+}
+/*.form .head .page_help {background:url('../../Images/Common/MasterPage/ESDAL2_help.png') no-repeat;}*/
+.form .head span:hover{ -webkit-box-shadow: inset 0px 0px 9px -3px rgba(0,0,0,1);-moz-box-shadow: inset 0px 0px 9px -3px rgba(0,0,0,1);box-shadow: inset 0px 0px 9px -3px rgba(0,0,0,1); }
+.form .body{ 
+	background: #F7F7F7; 
+	color: #414193; 
+	text-align: left; 
+	font-size: 13px;  
+	width: 880px; height: auto; float: left;
+	padding-top: 10px; padding-bottom: 10px;  padding-left: 10px; padding-right: 10px;
+	
+	-moz-border-radius-bottomright: 10px;
+	-webkit-border-bottom-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+	-moz-border-radius-bottomleft: 10px;
+	-webkit-border-bottom-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+	border-left: 1px solid #cccce2;	border-right: 1px solid #cccce2; border-bottom: 1px solid #cccce2;
+}
+
+.nonhead tr{/* border-bottom: 1px solid rgba(113, 113, 121, 0.05);*/ border:none;}
+.body .error {width: 100%;float: left;color: #e80c4d;height: auto;font-size: 11px;}
+.body .tabStruc_detail { margin-top:-8px !important; margin-bottom:0px;}
+.body .axle {width:auto; float:left;}
+.axle td { padding:2px!important; 
+}
+.body table {margin-top:10px !important;}
+.axletext {width: 75px !important; float: left;margin-bottom: 5px; margin-top: 5px; font-size:13px;}
+.axletext1 {width: 75px !important; float: left;margin-bottom: 5px; margin-top: 5px; font-size:13px;}
+
+.nonhead tr:first-child{background:none !important;}
+/*.nonhead td:first-child{ width:165px !important; }*/
+.nonhead td:first-child{ width:210px !important; }
+.nonhead td{margin:0px; padding:0px; padding-bottom:5px; padding-top:5px;}
+.body label { font-size: 13px;font-weight: 700;}
+.form table{ float: left; width: 413px ; border:none;}
+    .form table tr {background:none !important;}
+.form input[type='text']{
+	width: 216px; height: 16px; float: left;
+	padding-left: 10px;font-size:13px; font-family:'Helvetica', Arial, sans-serif;
+
+}
+tr .sub { width:auto;}
+table .cstable {width:auto; padding:0px; }
+.dyntitle {float:left; height:auto; width:auto;}
+.dyntitle:first-letter {text-transform:capitalize;}
+.form h5 {font-size: 15px;
+color: #D1216F;
+}
+.table_right{ margin-left:32px;}
+.form textarea{
+	width: 220px; height: 65px; float: left;
+	padding-left: 5px;
+	resize:none;font-size:13px;
+
+}
+.form select{
+	width: 228px; height: 28px; float: left;
+	padding-left: 10px;font-size:13px;
+
+}
+.right_text_content {text-align:right !important;}
+.form  #pageSizeSelect {
+margin-bottom: 20px;
+margin-top: 5px;
+width:46px !important; height:20px !important; padding-left:0px;
+}
+.unit_text{
+	width: 85px !important; height: 25px; float: left;	
+	padding-left: 10px;
+	margin-right: 10px !important;font-size:13px;
+    text-align:right;
+
+}
+ .unit{width: 122px !important; height: 27px; float: none;padding-left: 10px;font-size:13px;}
+ .unit1{width: 102px !important; height: 27px; float: none;padding-left: 10px;font-size:13px;}
+  .unit-travelspeed{width: 54px !important; height: 27px; float: none;padding-left: 0px !important;font-size:13px;}
+ .axleunit{
+	width: 100px !important; height: 27px; float: none;	
+	padding-left: 10px;font-size:13px;
+	
+
+}
+.axlebasic { min-width:334px; max-width:730px; height:auto; overflow-x:scroll; float:left;
+}
+.axlewrapper {width:100% !important; float:left; height:auto; }
+    .axlewrapper .error { font-size:12px; margin-top:10px;}
+.axlebox {width:auto; float:left; height:500px;}
+.form .hint{ width: 100%; float: left; font-size: 11px; color: #000;}
+
+			/*
+			-----------------------------------------
+			Form Elements Border color #aaaabe;
+			-----------------------------------------
+			*/
+			.frmbdr{ border: 1px solid #aaaabe;}
+			.btnbdr{ border: 1px solid rgb(170, 170, 191);}
+			/*
+			-----------------------------------------
+			table/form header background color #aaaabe;
+			-----------------------------------------
+			*/  
+			.headgrad{
+				/*background-image: -webkit-linear-gradient(rgb(46, 110, 110) 0px, rgb(64, 127, 127) 100%);
+ 				background-image:    -moz-linear-gradient(rgb(46, 110, 110) 0px, rgb(64, 127, 127) 100%);
+	 			background-image:      -o-linear-gradient(rgb(46, 110, 110) 0px, rgb(64, 127, 127) 100%);
+	 			background-image:     -ms-linear-gradient(rgb(46, 110, 110) 0px, rgb(64, 127, 127) 100%);
+				background-image:         linear-gradient(rgb(46, 110, 110) 0px, rgb(64, 127, 127) 100%);*/
+                background-image: -webkit-linear-gradient(rgb(19, 96, 168) 0px, rgb(1, 77, 147) 100%);
+ 				background-image:    -moz-linear-gradient(rgb(19, 96, 168) 0px, rgb(1, 77, 147) 100%);
+	 			background-image:      -o-linear-gradient(rgb(19, 96, 168) 0px, rgb(1, 77, 147) 100%);
+	 			background-image:     -ms-linear-gradient(rgb(19, 96, 168) 0px, rgb(1, 77, 147) 100%);
+				background-image:         linear-gradient(rgb(19, 96, 168) 0px, rgb(1, 77, 147) 100%);
+                background:#006699;
+                font-size : 13px;
+                }
+            .headgrad1{
+				background-image: -webkit-linear-gradient(rgb(11, 87, 158) 0px, rgb(1, 77, 147) 100%);
+ 				background-image:    -moz-linear-gradient(rgb(11, 87, 158) 0px, rgb(1, 77, 147) 100%);
+	 			background-image:      -o-linear-gradient(rgb(11, 87, 158) 0px, rgb(1, 77, 147) 100%);
+	 			background-image:     -ms-linear-gradient(rgb(11, 87, 158) 0px, rgb(1, 77, 147) 100%);
+				background-image:         linear-gradient(rgb(11, 87, 158) 0px, rgb(1, 77, 147) 100%);
+                background:#006699;
+                font-size : 13px; text-align:center; 
+				}
+            .headgrad2{
+				background-image: -webkit-linear-gradient(rgb(19, 96, 168) 0px, rgb(11, 87, 158) 100%);
+ 				background-image:    -moz-linear-gradient(rgb(19, 96, 168) 0px, rgb(11, 87, 158) 100%);
+	 			background-image:      -o-linear-gradient(rgb(19, 96, 168) 0px, rgb(11, 87, 158) 100%);
+	 			background-image:     -ms-linear-gradient(rgb(19, 96, 168) 0px, rgb(11, 87, 158) 100%);
+				background-image:         linear-gradient(rgb(19, 96, 168) 0px, rgb(11, 87, 158) 100%);
+                background:#006699;
+                font-size : 13px; text-align:center;
+				}
+				
+			/*
+			-----------------------------------------
+			button background color #aaaabe;
+			-----------------------------------------
+			*/
+			.btngrad{
+				background-image: -webkit-linear-gradient(rgb(243, 243, 243) 0px, rgb(204, 212, 223) 100%);
+ 				background-image:    -moz-linear-gradient(rgb(243, 243, 243) 0px, rgb(204, 212, 223) 100%);
+	 			background-image:      -o-linear-gradient(rgb(243, 243, 243) 0px, rgb(204, 212, 223) 100%);
+	 			background-image:     -ms-linear-gradient(rgb(243, 243, 243) 0px, rgb(204, 212, 223) 100%);
+				background-image:         linear-gradient(rgb(243, 243, 243) 0px, rgb(204, 212, 223) 100%);
+				}
+			/*
+			-----------------------------------------
+			border radius 3px
+			-----------------------------------------
+			*/
+			
+			.btnrds{
+				-webkit-border-radius:3px;
+				-moz-border-radius:3px;
+				-ms-border-radius:3px;
+				-o-border-radius:3px;
+				border-radius:3px;
+			}
+			
+/*
+=======================================================================
+Button Control CSS start from here
+========================================================================
+*/
+.create1{
+	float:left; margin-left:0px; margin-top:0px; height:30px; width: auto; padding: 5px;  color:#212181; 
+ 
+ 	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(237, 237, 240, 0.6);
+	   -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(237, 237, 240, 0.6);
+         box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(237, 237, 240, 0.6);
+}
+.create{
+	float:left; margin-left:2px; margin-top:0px; height:30px; width: auto; padding: 5px;  color:#212181; 
+ 
+ 	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(237, 237, 240, 0.6);
+	   -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(237, 237, 240, 0.6);
+         box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(237, 237, 240, 0.6);
+}
+.next{
+	float:right; margin-right:20px; margin-top:10px; height:30px; width:100px;  color:#212181; 
+ 
+ 	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(237, 237, 240, 0.6);
+	   -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(237, 237, 240, 0.6);
+         box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(237, 237, 240, 0.6);
+}
+.nextnorightmargin{
+	float:right;margin-top:10px; height:30px; width:100px;  color:#212181; 
+ 
+ 	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(237, 237, 240, 0.6);
+	   -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(237, 237, 240, 0.6);
+         box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(237, 237, 240, 0.6);
+}
+.delete {display:none;}
+
+
+
+
+/*
+=======================================================================
+vehicle component CSS start from here
+========================================================================
+*/
+
+
+.vehiclecomp_div{ height:75px; float:left; width:100%;}
+.vehiclecomp_div div{  height:75px; float:left; width:100px; background-color:none;  opacity:1;}
+.vehiclecomp_div img{ width:100px; height:100px; float:left; }
+.vehiclecomp_active{ 
+	/*background:rgba(204, 204, 204, 0.34); */
+	/*border:1px solid rgb(170, 170, 191);*/
+	animation:flash 2s infinite;
+	-webkit-animation:flash 2s infinite;-moz-animation:flash 2s infinite; }
+
+
+
+/*
+=======================================================================
+popup CSS start from here
+========================================================================
+*/
+
+#overlay{
+height:100%; width:100%; float:left; margin:0px; padding:0px; background:rgba(0, 0, 0, 0.6); z-index:1100;  position:fixed; overflow:auto;top:0;left:0;display:none; 
+}
+
+#overlay_anim{
+height:100%; width:100%; float:left; margin:0px; padding:0px; background:rgba(0, 0, 0, 0.6); z-index:1100;  position:fixed; overflow:auto;top:0;left:0; 
+}
+
+#dialogue{
+	margin:auto; height:auto ; width:902px; z-index:1000;   margin-top:2%; margin-bottom:3%; overflow:hidden;
+	-webkit-box-shadow: 1px 0px 30px rgba(50, 50, 50, 1);
+    -moz-box-shadow:    1px 0px 30px rgba(50, 50, 50, 1);
+    box-shadow:         1px 0px 30px rgba(50, 50, 50, 1);
+    border-radius : 10px;
+    -moz-border-radius : 10px;
+    -webkit-border-radius: 10px;
+    /*background:#F7F7F7;*/
+}
+#dialogue1{
+	margin:auto; height:auto ; width:902px; z-index:1000;   margin-top:2%; margin-bottom:3%; overflow:hidden;
+	-webkit-box-shadow: 1px 0px 30px rgba(50, 50, 50, 1);
+    -moz-box-shadow:    1px 0px 30px rgba(50, 50, 50, 1);
+    box-shadow:         1px 0px 30px rgba(50, 50, 50, 1);
+    border-radius : 10px;
+    -moz-border-radius : 10px;
+    -webkit-border-radius: 10px;
+    /*background:#F7F7F7;*/
+}
+
+#dialogue_popup{
+	margin:auto; height:auto ; width:902px; z-index:1000;   margin-top:2%; margin-bottom:3%; overflow:hidden;
+	-webkit-box-shadow: 1px 0px 30px rgba(50, 50, 50, 1);
+    -moz-box-shadow:    1px 0px 30px rgba(50, 50, 50, 1);
+    box-shadow:         1px 0px 30px rgba(50, 50, 50, 1);
+    border-radius : 10px;
+    -moz-border-radius : 10px;
+    -webkit-border-radius: 10px;
+    /*background:#F7F7F7;*/
+}
+
+#overlaypopup2{
+height:100%; width:100%; float:left; margin:0px; padding:0px; background:rgba(0, 0, 0, 0.6); z-index:1101;  position:fixed; overflow:auto;top:0;left:0; display:none;
+}
+
+#dialoguepopup2{
+	margin:auto; height:auto ; width:902px; z-index:1000;   margin-top:2%; margin-bottom:3%; overflow:hidden;
+	-webkit-box-shadow: 1px 0px 30px rgba(50, 50, 50, 1);
+    -moz-box-shadow:    1px 0px 30px rgba(50, 50, 50, 1);
+    box-shadow:         1px 0px 30px rgba(50, 50, 50, 1);
+    border-radius : 10px;
+    -moz-border-radius : 10px;
+    -webkit-border-radius: 10px;
+}
+
+/*
+=======================================================================
+Filtering  CSS start from here
+========================================================================
+*/
+ 
+.filter {
+    width:100%; height:auto; float:left;
+}
+.filter1 {
+    width:76%; height:auto; float:left; margin:0px !important;
+}
+    .filter div {
+        float: left; height:35px; width:180px; color:#212181; 
+    }
+     .filter1 div {
+        float: left; height:35px; width:180px; color:#212181; 
+    }
+#selection_Config  .filter div {
+        float: left; height:35px; width:180px !important; color:#212181; 
+    }
+
+
+.filter select{
+	width: 233px; height: 27px; float: left;
+	padding-left: 10px;padding-top: 2px;font-size:13px;
+
+}
+
+/*===========================================
+    Another div styles
+===========================================*/
+
+#RegisterPage { width:100%; float:left; height:auto;
+               
+}
+#axlePage tr{border-bottom: 1px solid #cccce2; border-left:1px solid #cccce2; border-right: 1px solid #cccce2;}
+#axlePage td {
+    text-align: center;
+}
+.axlebtncpy { float:left; height:28px; width:auto; color:#212181; font-size:9px; margin-bottom:2px; margin-top:2px; margin-right:0px;
+}
+.tblaxlebtn {width:auto; float:left;
+}
+    .tblaxlebtn tr:first-child { border-left:none; border-right:none;
+
+    }
+#tabs div { height:auto; margin-bottom:5px;
+}
+.body1 .error { font-size:9px;
+}
+/*Conform dialog*/
+#pop-overlay {height: 100%;width: 100%;float: left;margin: 0px;padding: 0px;background: rgba(0, 0, 0, 0.6);z-index: 1000;position: fixed;overflow: scroll;top: 0;left: 0;}
+#overlay_popup{height:100%; width:100%; float:left; margin:0px; padding:0px; background:rgba(0, 0, 0, 0.6); z-index:70000;  position:fixed; overflow:scroll;top:0;left:0;}
+
+#POP-dialogue{
+ margin:auto; height:auto ; width:361px; z-index:1000;   margin-top:20%;  overflow:hidden;
+ -webkit-box-shadow: 1px 0px 30px rgba(50, 50, 50, 1);
+    -moz-box-shadow:    1px 0px 30px rgba(50, 50, 50, 1);
+    box-shadow:         1px 0px 30px rgba(50, 50, 50, 1);
+    border-radius : 10px;
+    -moz-border-radius : 10px;
+    -webkit-border-radius: 10px;
+}
+
+.popup{
+ width: 361px;
+ float: left;
+ 
+  font-family: 'Helvetica', Arial, sans-serif; 
+  /*margin-top: 20px; margin-bottom: 20px; */
+  -moz-border-radius-topleft: 10px;
+ -webkit-border-top-left-radius:10px;
+  border-top-left-radius: 10px;
+ -moz-border-radius-topright: 10px;
+ -webkit-border-top-right-radius: 10px;
+ border-top-right-radius: 10px;
+ 
+}
+.popup .head{ 
+ color: #fff; 
+ text-align: left; 
+ font-size: 15px; font-weight: bold;
+ width: 360px;
+    float:left;
+ background-color: #026767;
+ padding-top: 0px; padding-bottom: 0px; padding-left: 10px;
+ -moz-border-radius-topleft: 10px;
+ -webkit-border-top-left-radius:10px;
+  border-top-left-radius: 10px;
+ -moz-border-radius-topright: 10px;
+ -webkit-border-top-right-radius: 10px;
+ border-top-right-radius: 10px;
+
+}
+.popup .span{ height:15px; width:15px; -webkit-border-radius: 50%;-moz-border-radius: 50%;border-radius: 50%; 
+ background: #DBE9F0;
+  /*background: linear-gradient(top, rgba(231,241,249,1) 0%,rgba(200,215,226,1) 100%);*/ background:#CCCCCC;
+ float:right; padding:5px;
+  color: #4A5359;
+  margin-right:17px;
+  margin-bottom:10px; cursor:pointer;
+}
+.popup .footer{width:367px; float:left;  padding-bottom:10px;-moz-border-radius-bottomright: 10px;
+ -webkit-border-bottom-right-radius: 10px;
+ border-bottom-right-radius: 10px;
+ -moz-border-radius-bottomleft: 10px;
+ -webkit-border-bottom-left-radius: 10px;
+ border-bottom-left-radius: 10px;
+ border-left: 1px solid #cccce2; border-right: 1px solid #cccce2; border-bottom: 1px solid #cccce2; 
+ color: #414193; }
+.popup span{ margin-top:10px; float:left;}
+.popup .head span:hover{ background:#fff; }
+.popup .body{ 
+ background: #F7F7F7; 
+ color: #414193; 
+ text-align: left; 
+ font-size: 13px;  
+ width: 349px; height: 75px; float: left;
+ padding-top: 10px; padding-bottom: 10px;  padding-left: 10px; padding-right: 10px;
+ text-align:center;
+ 
+ 
+}
+
+.cancel{ margin-left:65px; margin-right:30px; }
+.ok{ margin-right:30px}
+.padd10 {margin-right:10px;}
+.txt_val_right {text-align:right;}
+#leftpanel th {padding-left:10px !important;}
+#leftpanel tr {
+	/*background: none !important;*/
+	border: none;
+}
+#leftpanel_quickmenu th {padding-left:10px !important;}
+.quick_tbl tr { background:#eeeeee; border:none; border-bottom:1px solid #cdcdda;}
+.quick_tbl tr td { height:20px; color:#fff; padding:0px; }
+.quick_tbl a {color:#000; padding-left:10px; height:25px; width:100%; float:left;  padding-top:7px;}
+.quick_tbl a:hover {color:rgba(50, 50, 50, 1);}
+.quick_tbl tr:hover { background:#CCCCCC; }
+.nobg tr:nth-child(odd) {background: #FFFFFF !important;}
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+================================
+Animations
+================================
+*/
+
+
+
+@-webkit-keyframes flash {
+	0%, 50%, 100% {opacity: 1;}	25%, 75% {opacity: 0;}
+}
+
+@-moz-keyframes flash {
+	0%, 50%, 100% {opacity: 1;}	
+	25%, 75% {opacity: 0;}
+}
+
+@-o-keyframes flash {
+	0%, 50%, 100% {opacity: 1;}	
+	25%, 75% {opacity: 0;}
+}
+
+@keyframes flash {
+	0%, 50%, 100% {opacity: 1;}	
+	25%, 75% {opacity: 0;}
+}
+
+.flash {
+	-webkit-animation-name: flash;
+	-moz-animation-name: flash;
+	-o-animation-name: flash;
+	animation-name: flash;
+}
+
+
+.cancel{ margin-left:65px; margin-right:30px; }
+.ok{ margin-right:30px}
+
+
+.pageSizeSelector {
+    width:100%;
+    float:left;
+}
+
+/*=======================================================
+    Vehicle component icons goes here
+========================================================*/
+
+.vehiclecomponent { height:75px; float:left; background:url("../../Images/Common/MasterPage/icons_vehicle.jpg") no-repeat;}
+.centre {margin-top:37.5px; margin-bottom:37.5px; float:left;}
+.sidebysidetop {float: left;height: 75px;}
+.sidebysidebottom {margin-top: 75px;margin-left: -105px;float: left;height: 75px;}
+.semitractor { background-position: 0px 0px; }
+.semitrailer { background-position: -200px 0px;}
+.drawbartractor { background-position: -200px -75px;}
+.drawbartrailer { background-position: 0px -75px;}
+.spmt { background-position:-500px 0px;}
+.tracked { background-position: -300px -75px;}
+.rigidvehicle { background-position: -100px 0px;}
+.crane { background-position: -300px 0px;}
+.recoveryvehicle  { background-position: -100px -75px;}
+.recoveredvehicle  { background-position: -500px -75px;}    
+.engineeringplant { background-position: -400px -75px;}
+.wheeledvehicle { background-position: -400px 0px;}
+
+
+/*=======================================================
+    borderless table goes here
+=======================================================*/
+
+
+.tbl_config {
+    border:none;
+}
+
+    .tbl_config tr {
+        border:none;
+    }
+
+h4 {
+    color:#414193;
+}    
+
+
+
+
+
+/*=======================================================
+    axle config td
+=======================================================*/
+.wheel_space {
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+
+.div_img_line {
+    width:100px;
+    height:100px;
+    float:left;
+    margin-right:5px;
+}
+
+
+.cursor {
+    cursor:pointer;
+}
+
+/*=======================================================
+    User preference table style goes here
+=======================================================*/
+
+.userpre_tbl {width:400px; float:left;  }
+.userpre_tbl tr td:first-child {width:240px; float:left;   }
+.userpre_tbl tr { background:none; border:none;}
+.userpre_form {width:200px; float:initial;}
+.userpre_tbl tr td {}
+
+
+
+
+
+
+/*=======================================================
+    vehicleConfig fleet listing
+=======================================================*/
+.keyword { float:left; margin-right:10px; margin-top:5px;}
+#txt_search {height: 12px; margin-top: 2px;}
+.rem_th_pad {padding:0px 0px 0px 3px !important;}
+.tbl_registration {float:left; width:99% !important; height:auto;}
+
+
+/*=======================================================
+    quick links table style goes here
+=======================================================*/
+#form_ChangePassword tr {border:none; background:none !important; color:#414193;}
+.passinputlength {width: 311px !important; height:30px !important; }.passinputlength1 {width: 295px !important; height:20px !important;  }
+
+
+/*======================================
+    Styles for inner popup loading
+======================================*/
+
+.popoverlay {height:100%; width:100%; float:left; margin:0px; padding:0px; background:#F7F7F7; z-index:11000;  top:0;left:0; display:none;}
+.poploading {height:11px;width:16px;margin:auto;float:none;background:url(../../Images/Common/content_loader.gif) no-repeat center center;margin-top: 30%;margin-bottom: 30%;}
+.config_body {display:block;
+	}
+/*.poploading {height:11px;width:16px;margin:auto;float:none;background:url(../../Images/Common/content_loader.gif) no-repeat center center;margin-top:25%;display:none;}*/
+
+
+
+.selectRow {
+    width:50px !important;
+}
+
+
+.hasSidebySide {
+    float: left;
+    height: 190px;
+    width: 100%;
+}
+
+#div_general .nonhead { width:413px;}
+
+
+/*======================================
+    Styles for map canceling waypoint
+======================================*/
+/*.canwaypoint { height:7px; width:7px; float:left; background:url("") no-repeat; }
+.canwaypoint span { background-position:0px 8px;}
+.canwaypoint span:hover { background-position:0px 0px;}*/
+
+/*#div_view_config {margin-left:-10px !important;}*/

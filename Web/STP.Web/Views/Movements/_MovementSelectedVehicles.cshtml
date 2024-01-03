@@ -1,0 +1,229 @@
+@using STP.Domain.VehiclesAndFleets.Configuration
+@using STP.Domain.Workflow
+@{
+    var VehicleList = (List<MovementVehicleConfig>)ViewBag.MovementSelectedVehicles;
+    var FavoriteVehicles = (List<VehicleList>)ViewBag.FavoriteVehicles;
+    var MovementTypeClass = (VehicleMovementType)ViewBag.MovementTypeClass;
+    var IsAddVehicleError = ViewBag.VehicleError == null ? 0 : (int)ViewBag.VehicleError;
+    var IsAddVehicleErrorMsg = (string)ViewBag.vehicleValidationError;
+    var isVr1 = false;
+    var isNotif = false;
+    var isSoApp = false;
+    var isAgreedNotif = false;
+    var planMovePayLoad = new PlanMvmntPayLoad();
+    if (ViewBag.PlanMvmntPayLoad != null)
+    {
+        planMovePayLoad = (PlanMvmntPayLoad)ViewBag.PlanMvmntPayLoad;
+        isAgreedNotif = planMovePayLoad.IsAgreedNotified;
+    }
+
+    if (MovementTypeClass != null)
+    {
+        if (MovementTypeClass.MovementType == (int)STP.Common.Enums.MovementType.vr_1)
+        {
+            isVr1 = true;
+        }
+        else if (MovementTypeClass.MovementType == (int)STP.Common.Enums.MovementType.notification)
+        {
+            isNotif = true;
+        }
+        else if (MovementTypeClass.MovementType == (int)STP.Common.Enums.MovementType.special_order)
+        {
+            isSoApp = true;
+        }
+    }
+}
+
+@if (VehicleList != null)
+{
+    if (!isAgreedNotif)
+    {
+        <div class="new-vehicle">
+            <div class="pb-4">
+                <span class="pr-3">
+                    <button class="btn outline-btn-primary SOAButtonHelper pl-4 pr-4 btnAddVehicle validationmsg" style="width:auto;" id="movements" role="button" data-bs-toggle="dropdown" aria-expanded="false">ADD VEHICLE</button>
+                    <ul class="dropdown-menu mt-2 ml-4" aria-labelledby="movements">
+                        <li class="pl-4"><a class="create_vehicle edit-normal" href="#">Create Vehicle</a></li>
+                        <hr>
+                        <li class="pl-4"><a class="choose_from_fleet edit-normal" href="#">Choose from fleet</a></li>
+                        <hr>
+                        <li class="pl-4"><a class="choose_from_prvmovement edit-normal" href="#">Choose from previous movement</a></li>
+                        <hr>
+                        <li class="pl-4"><a class="choosefromsimilarcombinations edit-normal" href="#">Enter dimensions to fetch similar vehicle from fleet</a></li>
+                        <hr>
+                        <li>
+                            <a class="dropdown-item text-decorate" href="#">Favourites</a> <hr>
+                            <ul class="sub-list" style="padding-left: 0 !important;">
+                                @foreach (var item in FavoriteVehicles)
+                                {
+                                    <li class="pr-2 pl-4 vehicleformovement" href="#" data-vehicleid=@item.VehicleId data-flag=2>
+
+                                        <div class="row">
+                                            <div class="col-lg-10 col-md-10 col-sm-10">
+                                                <span>
+                                                    <a class="dropdown-item edit-normal" href="#">
+                                                        @item.InternalName
+                                                    </a>
+                                                </span>
+                                            </div>
+                                            <div class="col-lg-2 col-md-2 col-sm-2">
+                                                <span>
+                                                    <img src="~/Content/assets/images/star-enabled.svg" width="20"
+                                                         alt="vehicle-1">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <hr class="pl-0">
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                </span>
+            </div>
+        </div>
+    }
+    foreach (var vehicleDetails in VehicleList)
+    {
+        Html.RenderAction("GetSelectedVehicleDetails", new { vehicleDetails = vehicleDetails, favoriteVehicles = FavoriteVehicles, isAgreedNotif = isAgreedNotif, vehicleCount = VehicleList.Count });
+        <hr style="margin-right: 2%;">
+    }
+}
+@{
+    Html.RenderAction("GetAssessmentDetails", new { isBackCall = ViewBag.IsBackCall, task = 2 });
+}
+
+
+@{
+    if (isAgreedNotif || Session["AmendVehicle"] != null)
+    {
+        @Html.Hidden("vehicleConfigId", 0)
+        <!--Amend popup start-->
+        <div class="modal fade" id="amendmentPopup" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header pt-2">
+                        <div class="row" style="margin-top: 1rem; width: 100%;">
+                            <div class="col-lg-9 col-sm-9 col-md-9 pl-4 pt-4">
+                                <span class="text-normal pr-2" style="font-family: lato_light;font-size:25px;margin-top: -2rem;float: right;">
+                                    Edit registration
+                                </span>
+                            </div>
+                        </div>
+                        <span aria-hidden="true" id="spnclose" class="close" data-dismiss="modal"
+                              aria-label="Close">&times;</span>
+                    </div>
+                    <div class="modal-body">
+
+                    </div>
+                    <div class="modal-footer pt-4">
+                        <button type="button" class="btn btn-outline-primary" data-dismiss="modal" id="btnSaveAmend">SAVE</button>
+                        <button type="button" id="btnclose" class="btn btn-outline-primary" data-dismiss="modal">CANCEL</button>
+                        <div class="cv-spinner" id="AmendLoader" style="display:none">
+                            <span class="spinner"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--Amend popup end-->
+
+        <style type="text/css">
+            #amendmentPopup #div_reg_config_vehicle {
+                width: 100%;
+                padding: 0px 2rem;
+            }
+
+            #amendmentPopup .delete {
+                background: url(../../Content/assets/images/delete-icon.svg) no-repeat 4px;
+                background-size: 19px !important;
+            }
+
+            #amendmentPopup th {
+                background-color: rgba(39, 87, 149, 1);
+                color: #fff;
+            }
+
+            #WarningPopup, #SuccessPopupAction {
+                z-index: 1061 !important;
+            }
+
+            #amendmentPopup .tblregcomponent {
+                padding-left: 8px !important;
+            }
+
+            #amendmentPopup .tbl_registration th:first-child {
+                border-radius: 25px 0px 0px 0px !important;
+            }
+
+            #amendmentPopup .tbl_registration td {
+                background-color: rgba(39, 87, 149, 0.05) !important;
+            }
+
+            #amendmentPopup .tbl_registration .RegistrationComponent {
+                background-color: transparent !important;
+            }
+        </style>
+    }
+
+    <div class="modal fade" id="axleAmendmentPopup" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 70rem;">
+            <div class="modal-content" style="width: 70rem; height: auto; padding: 15px 2rem;">
+                <div class="modal-header pt-2">
+                    <div class="row" style="width: 100%;text-align: center;">
+                        <div class="col-lg-12 col-sm-12 col-md-12">
+                            <span class="text-normal pr-2"
+                                  style="font-family: lato_light;font-size:25px;color:#ff0000">
+                                Incorrect axle assignment for vehicle : <span class="vehicle-name-span"></span>, Please update
+                            </span>
+                        </div>
+                    </div>
+                    <span aria-hidden="true" id="spnCloseAxleAmend" class="close fa fa-times" data-dismiss="modal" aria-label="Close" style="font-size: 30px;"></span>
+                </div>
+                <div class="modal-body">
+                    <div class="allAxleDetailsAmendPopUpContainer">
+
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-5 col-sm-5 col-md-5 pr-0">
+                            <label class="text-normal" style="text-align: right;float: right;">No. of axles for conventional tractor</label>
+                        </div>
+                        <div class="col-lg-5 col-sm-5 col-md-5 pr-0">
+                            <div class="input-field">
+                                <input type="hidden" id="hfVehicleIdForAxleEdit" />
+                                <input type="hidden" id="hfCompIdForAxleEdit" />
+                                <input class="text-decorate " id="txtAxleNumber" name="txtAxleNumber" placeholder="" type="text"
+                                       autocomplete="off" value="">
+                                <span class="error_message" id="err_folderName"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer pt-4">
+                    <button type="button" class="btn btn-outline-primary" data-dismiss="modal" id="btnSaveAxleAmend" style="width: 200px;">SAVE</button>
+                    <button type="button" id="btnCloseAxleAmendPopup" class="btn btn-outline-primary" data-dismiss="modal" style="width: 200px;">CANCEL</button>
+                    <div class="cv-spinner" id="AxleAmendLoader" style="display:none">
+                        <span class="spinner"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<input type="hidden" value="@ViewBag.MovementId" id="hf_MovementId" name="hf_MovementId" />
+<input type="hidden" value="@ViewBag.isVr1" id="hf_isVr1" name="hf_isVr1" />
+<input type="hidden" value="@ViewBag.isNotif" id="hf_isNotif" name="hf_isNotif" />
+<input type="hidden" value="@ViewBag.isSoApp" id="hf_isSoApp" name="hf_isSoApp" />
+
+@Html.Hidden("hf_IsAddVehicleError", IsAddVehicleError)
+@Html.Hidden("hf_VehicleListNull", VehicleList == null)
+@Html.Hidden("hf_IsAddVehicleErrorMsg", IsAddVehicleErrorMsg)
+@Html.Hidden("hf_pmvehicleclass", MovementTypeClass.VehicleClass)
+@Html.Hidden("hf_pmmovetype", MovementTypeClass.MovementType)
+@Html.Hidden("hf_IsVehicleRouteAssigned", planMovePayLoad.IsRouteVehicleAssigned)
+@{
+    var vehicleIds = VehicleList.Select(x => x.VehicleId).ToList();
+    @Html.Hidden("hf_vehicleIds", Html.Raw(Json.Encode(vehicleIds)))
+}

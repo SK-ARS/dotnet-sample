@@ -1,0 +1,508 @@
+@using PagedList.Mvc
+@model PagedList.IPagedList<STP.Domain.Routes.RouteModel.RoutePartDetails>
+
+
+@{
+    int listCount = 0;
+    listCount = Session["PageSize"] != null ? (int)Session["PageSize"] : 10;
+    long apprevisionId = ViewBag.ApprevisionId;
+    int totalPageCount = Model.PageCount;
+    int isAdmin = 0;
+    int userTypeID = 0;
+    int userOrgID = 0;
+    int i = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        userTypeID = sessionValues.UserTypeId;
+        userOrgID = (int)sessionValues.OrganisationId;
+        if (sessionValues.IsAdmin == 1)
+        {
+            isAdmin = 1;
+        }
+    }
+    int pageSize = 1;
+    if (ViewBag.pageSize != null)
+    {
+        pageSize = ViewBag.pageSize;
+    }
+    int? pageNum = ViewBag.page;
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.ROUTES;
+}
+
+@{
+    bool isAccessible = false;
+    if (isAdmin == 1 && userTypeID == 696006)
+    {
+        isAccessible = true;
+    }
+}
+@{ foreach (var item in Model)
+    {
+        <style>
+            #btnrouteimport_@item.RouteId .outline-btn-primary {
+                padding: 4px !important;
+            }
+
+        </style>
+    } }
+<style>
+
+    .filtered-icon {
+        background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 90% #2b5795;
+        background-size: 1rem;
+    }
+
+    .esdal-filter-icon {
+        background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 0 #2b5795;
+        background-size: 1rem;
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        position: absolute;
+        margin-left: 3px;
+    }
+
+    .filter-table-icon {
+        position: absolute;
+        bottom: -13px;
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+        left: 26px;
+    }
+
+    .movements td:nth-child(1) {
+        text-align: left;
+        padding-left: 1%;
+        cursor: pointer;
+    }
+
+    .movements th:last-child {
+        background-color: white;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .text-normal input::placeholder {
+        color: rgb(0, 0, 0);
+        -webkit-text-stroke: 1.00px rgba(0, 0, 0, 0);
+        font-size: 15.00px;
+        font-weight: 500;
+        font-style: italic;
+        font-family: lato_light, Arial;
+    }
+
+    .routes th:nth-child(1) {
+        padding-left: 1% !important;
+    }
+
+    .routes th:nth-child(10) {
+        background-color: rgba(39, 87, 149, 1);
+    }
+</style>
+@Html.Hidden("ApplicationrevId", apprevisionId)
+@{ var sortOrder = ViewBag.SortOrder != null ? (int)ViewBag.SortOrder : 1;
+    var sortType = ViewBag.SortType != null ? (int)ViewBag.SortType : 0;
+    var isUserSearchStringFilterEnabled = !string.IsNullOrEmpty(ViewBag.UserSearchString);
+    var filterFavouritesRoutes = ViewBag.filterFavouritesRoutes != null && ViewBag.filterFavouritesRoutes;
+    var isAllFilterEnabled = isUserSearchStringFilterEnabled || filterFavouritesRoutes; }
+
+<!-- banner -->
+<section id="banner" class="route-part-library-container">
+    <div class="container-fluid" id="banner-container">
+        <div class="routes" id="route-list">
+            @Html.Hidden("pageSizeVal", pageSize)
+            @Html.Hidden("pageNum", pageNum)
+            @if (ViewBag.ImportFlag != true)
+            {
+                <div class="header">
+                    <div class="row">
+                        <div class="col-lg-5 col-md-5 col-sm-12">
+                            <div class="button mr-0">
+                                <button class="btn btn-outline-primary btn-normal" role="button" aria-pressed="true" id="btnCreateRT">
+                                    NEW ROUTE
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6 col-sm-12">
+                            <div class="title">
+                                ROUTES
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- table -->
+            <div class="main-table movements" id="routelibrary">
+                <table class="esdal-table route-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,1)" data-action="RouteLibrarySort" data-sortval="1">Route Name </span>
+                                <span class="filter-table-icon">
+                                    <img id="filterimages" style="display:@(isUserSearchStringFilterEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg">
+                                </span>
+                            </th>
+                            @*<th></th>*@
+                            <th>Description</th>
+                            <th>Route Edited/Created</th>
+                            <th>
+                                <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,2)" data-action="RouteLibrarySort" data-sortval="2">
+                                    Created At:
+                                </span>
+                                <span class="filter-table-icon">
+                                    <img id="filterimages" style="display:@(isUserSearchStringFilterEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg">
+                                </span>
+                            </th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            @if (ViewBag.ImportFlag != true)
+                            {
+                                <th></th>
+                                <th></th>
+                            }
+
+                            <th class="table-filter-header">
+                                <img src="~/Content/assets/images/filter-icon.svg" class="open-filter-icon-common" data-targetContainer=".route-part-library-filter" data-width="400" id="IDopenFilters" title="Open filter" width="38">
+                                <span class="filtered-icon-table"><img id="filterimage" style="display:@(isAllFilterEnabled?"block":"none")" src="~/Content/assets/images/filtered-icon.svg" title="Clear filter"></span>
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{ foreach (var item in Model)
+                            {
+                                i++;
+                                string UpDate = @item.LastUpdate.ToString("dd/MM/yyyy HH:mm:ss");
+                                                <tr>
+                                                    @if (ViewBag.IsSOApplication == true)//this condition is for Application page
+                                                    {
+                                                        <td class="text-color2" style="text-align:left;"><a class="text-decoration-link ViewRoutescls" href="#" DataRouteID1="@item.RouteId" dataRouteType1="@item.RouteType" DataRtName="@item.RouteName.Replace("'", "\\'")"> @item.RouteName</a></td>
+                                                    }
+                                                    else if (ViewBag.isNotifroute == true)//this condition is for notification page
+                                                    {
+                                                        <td class="text-color2" style="text-align:left"><a class="text-decoration-link ViewRoutescls" href="#" DataRouteID1="@item.RouteId" dataRouteType1="@item.RouteType" DataRtName="@item.RouteName.Replace("'", "\\'")"> @item.RouteName</a></td>
+
+                                                    }
+                                                    else //this else condition is for route library page //" '' " were removed
+                                                    {
+                                                        <td class="text-color2 style=" text-align:left""><a class="text-decoration-link showRouteDetailscls" href="#" DataRouteID3="@item.RouteId" dataRouteType3="@item.RouteType" DataRtName3="@item.RouteName.Replace("'", "\\'")"> @item.RouteName</a></td>
+                                                    }
+                                                    @*<td class="text-color1">@item.RouteType</td>*@
+                                                    @if (item.RouteDescr.Length > 0)
+                                                    {
+                                                        <td class="route-description viewRouteDiscriptionCls" DataI="@i">
+                                                            <img id="chevlon-down-icon_@i" src="~/Content/assets/images/chevlon-down.svg" width="25">
+                                                            <img id="chevlon-up-icon_@i" src="~/Content/assets/images/chevlon-up.svg" width="25"
+                                                                 style="display: none;">
+                                                        </td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td></td>
+                                                    }
+                                                    @if (item.IsBrokenLib >= 1)
+                                                    {
+                                                        <td class="text-color1">Before 2021 Map Upgrade</td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td></td>
+                                                    }
+
+                                                    @if (UpDate.Contains("01/01/0001"))
+                                                    {
+
+                                                        <td></td>
+                                                    }
+                                                    else
+                                                    {
+                                                        <td class="text-color1">@item.LastUpdate.ToString("dd/MM/yyyy HH:mm:ss")</td>
+                                                    }
+
+                                                    <td></td>
+                                                    <td></td>
+                                                    <td></td>
+
+                                                    @{
+
+                                                        if (ViewBag.ImportFlag == true) // copy route part from library in SO
+                                                        {
+                                                            <td colspan="2">
+                                                                @*<button DataRouteIDim="@item.RouteId" dataRouteTypeim="@item.RouteType" data-name="@item.RouteName" id="btnrouteimport_@item.RouteId" class="tdbutton tdright btngrad btnrds btnbdr btn btn-normal import-button btn-outline-primary ImportRouteInAppLibraryCls" aria-hidden="true" data-icon="&#xe0f4;">Import</button>*@
+                                                                <button DataRouteIDim="@item.RouteId" dataRouteTypeim="@item.RouteType" data-name="@item.RouteName" id="btnrouteimport_@item.RouteId" class="tdbutton tdright btngrad btnrds btnbdr btn btn-normal import-button btn-outline-primary ImportRouteInAppLibraryCls" aria-hidden="true">USE ROUTE</button>
+                                                            </td>
+
+                                                        }
+                                                        else if (ViewBag.isNotifroute == true)
+                                                        {
+                                                            <td colspan="2">
+                                                                @*<button DataRouteIDlkm="@item.RouteId" dataRouterneim="@item.RouteName.Replace("'", "\\'")'" data-name="@item.RouteName" id="btnrouteimport_@item.RouteId" class="tdbutton tdright btngrad btnrds btnbdr btn btn-normal import-button btn-outline-primary Importrouteinnotifcls" aria-hidden="true" data-icon="&#xe0f4;">Import</button>*@
+                                                                <button DataRouteIDlkm="@item.RouteId" dataRouterneim="@item.RouteName.Replace("'", "\\'")'" data-name="@item.RouteName" id="btnrouteimport_@item.RouteId" class="tdbutton tdright btngrad btnrds btnbdr btn btn-normal import-button btn-outline-primary Importrouteinnotifcls" aria-hidden="true">USE ROUTE</button>
+                                                            </td>
+
+                                                        }
+                                                        else
+                                                        {
+                                                            if (ViewBag.PageFlag != "1")
+                                                            {
+                                                                <td></td>
+                                                                <td>
+                                                                    <div id="mid_row"  esdal-table">
+                                                                        <a class="showRouteDetailscls" href="#" DataRouteID3="@item.RouteId" dataRouteType3="@item.RouteType" DataRtName3="@item.RouteName.Replace("'", "\\'")">
+                                                                            <img src="~/Content/assets/images/edit-icon.svg" width="20" class="btn-edit cusror-pointer" data-userid="@item.RouteId" title="Edit">
+                                                                        </a>
+                                                                    </div>
+                                                                </td>
+                                                                <td>
+                                                                    <a href="#" class="DLTECSL" DataRouteIDdm="@item.RouteId" dataRouterneims="@item.RouteName.Replace("'", "\\'")'">
+                                                                        <img src="~/Content/assets/images/delete-icon.svg" title="Delete" width="18">
+                                                                    </a>
+
+                                                                </td>
+
+                                                            }
+                                                        }
+                                                    }
+                                                    @if (ViewBag.ImportFlag != true)
+                                                    {
+                                                        int isFavourites = item.IsFavourites;
+                                                        var CatIdEnStar = item.RouteId + "__isFavouriteEn";
+                                                        var CatIdDisStar = item.RouteId + "__isFavouriteDis";
+
+                                                        <td>
+
+                                                            @if (isFavourites == 0)
+                                                            {
+                                                                <div id=@CatIdDisStar class="displayBlock">
+                                                                    <img src="~/Content/assets/images/star-disabled.svg" id="disabled_star" title="Favourites" width="20" DataRtID="@item.RouteId" class="mouseCursor disabled_star1">
+                                                                </div>
+                                                                <div id=@CatIdEnStar class="displayNone">
+                                                                    <img src="~/Content/assets/images/star-enabled.svg" id="enabled_star" title="Favourites" width="20" DataRtID2="@item.RouteId" class="mouseCursor enabled_star1">
+
+                                                                </div>
+
+
+                                                            }
+                                                            else
+                                                            {
+                                                                <div id=@CatIdEnStar class="displayBlock">
+                                                                    <img src="~/Content/assets/images/star-enabled.svg" id="enabled_star" title="Favourites" width="20" DataRtID3="@item.RouteId" class="mouseCursor enabled_star2">
+
+                                                                </div>
+                                                                <div id=@CatIdDisStar class="displayNone">
+                                                                    <img src="~/Content/assets/images/star-disabled.svg" id="disabled_star" title="Favourites" width="20" DataRtID4="@item.RouteId" class="mouseCursor disabled_star2">
+                                                                </div>
+
+                                                            }
+                                                        </td>
+                                                    }
+
+                                                </tr>
+
+                                if (ViewBag.ImportFlag != true)
+                                {
+                                    <tr id="description_@i" class="route-description" style="display: none;">
+                                        <td colspan="10" id="route-description">
+                                            <div>
+                                                @if (item.RouteDescr.Length > 0)
+                                                {
+                                                    <span>Description</span><br>
+                                                    <div style="white-space: pre-line">@item.RouteDescr</div>
+                                                }
+                                                else
+                                                {
+                                                    <span>No description</span><br>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                   }
+                                }}
+                            @if (@Model.TotalItemCount == 0)
+                            {
+                                <tr>
+                                    <td colspan="10" style="text-align: center"><span style="color: red">@Resources.Resource.NoResultFound</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                </table>
+
+                <!-- end of table -->
+                @*@if (listCount < Model.TotalItemCount)
+                    {*@
+                @if (@Model.TotalItemCount > 0)
+                {
+                <div class="row pagination-container-new routelibrary-pagination">
+                    <div class="col-lg-3">
+                        @if (Model.TotalItemCount > 0)
+                        {
+                            <div class="text-color2 total-records-number">
+                                Total number of records : @Model.TotalItemCount
+                            </div>
+                        }
+                    </div>
+                    <div class="col-lg-6 text-center">
+                        @{
+                            int x = 0;
+                        }
+                        @if (filterFavouritesRoutes == true)
+                        {
+                            x = 1;
+                        }
+                        @if (listCount < Model.TotalItemCount)
+                        {
+
+                            <div class="table-pagination">
+                                @Html.PagedListPager(Model, page => Url.Action("RoutePartLibrary",
+                                  new
+                                  {
+                                      B7vy6imTleYsMr6Nlv7VQ =
+                                             STP.Web.Helpers.EncryptionUtility.Encrypt("sortOrder=" + sortOrder +
+                                             "&sortType=" + sortType +
+                                             "&filterFavouritesRoutes=" + x),
+                                      page
+                                  }),
+                                  new PagedListRenderOptions
+                                  {
+                                      DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                                      DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                                      LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                                      LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                                      DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                                      DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                                      MaximumPageNumbersToDisplay = 3,
+                                      DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                                      EllipsesFormat = "...",
+                                      LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+                                      LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+                                  });
+                            </div>
+                        }
+
+                        @Html.Hidden("TotalPages", totalPageCount)
+                    </div>
+                    @if (Model.TotalItemCount > 10)
+                    {
+                        <div class="col-lg-3 col-md-3 col-sm-12 text-normal pr-0">
+                            Number of items to display per page
+                            <select class="form-select mb-3 RouteLibrarypagesizeselect" style="width:100px;" aria-label=".form-select-lg example" id="pageSizeSelectRouteLibrary">
+                                <option val="10" @(pageSize == 10 ? "selected" : "")>10</option>
+                                <option val="20" @(pageSize == 20 ? "selected" : "")>20</option>
+                                <option val="50" @(pageSize == 50 ? "selected" : "")>50</option>
+                                <option val="100" @(pageSize == 100 ? "selected" : "")>100</option>
+                            </select>
+                        </div>
+                    }
+                </div>
+                }
+                @*}*@
+            </div>
+        </div>
+
+    </div>
+</section>
+<!-- filter settings -->
+<div id="filters" class="sidenav filter-sidenav route-filters route-part-library-filter">
+
+    <div class="row sidenav-header">
+        <div class="col-10 text-center">
+            <div class="text-normal-hyperlink mt-3" style="font-size: x-large;">
+                FILTER
+            </div>
+        </div>
+        <div class="col-1">
+            <a href="#" id="closebtn" class="close-filter-icon-common">&times;</a>
+        </div>
+    </div>
+
+
+    <hr style="margin-top: 0;">
+    <div class="filter-entry">
+        <div class="row mb-4 pl-5 pr-6">
+            <div class="col-lg-12 col-mb-12 col-sm-12">
+                <input class="text-normal" type="text" id="searchText" name="search" value="@ViewBag.UserSearchString" placeholder="Route name">
+            </div>
+        </div>
+    </div>
+    <br />
+    <div class="row" style="margin-left:15px">
+        <div class="col-lg-2 col-md-4 col-sm-4">
+            @Html.CheckBox("SearchFavouritesRoutes", (bool)ViewBag.filterFavouritesRoutes, new { @class = "checkbox checkall", @name = "FilterFavouritesRoutes", @id = "FilterFavouritesRoutes" })
+        </div>
+        <div class="col-lg-10 col-sm-8 col-md-8 pr-0">
+
+            <span>Search within favourites</span>
+        </div>
+    </div>
+
+    <div class="row pt-6 pl-0 pr-2">
+
+        <div class="col-lg-8 col-md-8 col-sm-12 filter-entry">
+            <!-- <div class="header mt-4"> -->
+            <div class="button mr-0 mb-2">
+                <input type="hidden" name="SortOrderValue" id="SortOrderValue" value="@sortOrder" />
+                <input type="hidden" name="SortTypeValue" id="SortTypeValue" value="@sortType" />
+                <button class="btn btn-outline-primary btn-normal" id="SearchRoutePartByName" role="button" aria-pressed="true" style="width: 101%; margin-left: 13px;">
+                    SEARCH
+                </button>
+            </div>
+            <!-- </div> -->
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-12 filter-entry">
+            <!-- <div class="header mt-4"> -->
+            <div class="button mr-0 mb-2">
+                <button class="btn btn-outline-primary btn-normal" id="IDclearRouteSearch" role="button" aria-pressed="true" style="width: 90%;">
+                    CLEAR
+                </button>
+            </div>
+            <!-- </div> -->
+        </div>
+    </div>
+</div>
+
+<!-- end of filter settings -->
+@{
+    string GetSortDefaultClass(int sortTypeVal, int sortOrderVal, int valToCheck)
+    {
+        var sortClass = ""; //0-asc, 1-desc ,
+        if (sortOrderVal == valToCheck)
+        {
+            sortClass = sortTypeVal == 1 ? "sorting_desc" : "sorting_asc";
+        }
+        return sortClass;
+    }
+}
+<script src="~/Scripts/Routes/RoutePartLibrary.js?V@(DateTime.Now.Ticks)"></script>
+<script src="~/Scripts/Routes/_SelectRouteByImport.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Routes/MovementRoute.js"></script>
+
+<style>
+    #pop-warning {
+        opacity: 1;
+        padding:10%;
+    }
+    .routes tr:nth-child(4n-3) {
+        background-color: rgba(255, 255, 255, 0.050980392156862744);
+    }
+
+    .routes tr:nth-child(odd):not(:nth-child(4n-3)) {
+        background: white !important;
+    }
+
+    .routes tr:nth-child(4n-2) {
+        background-color: rgba(255, 255, 255, 0.050980392156862744);
+    }
+
+    .routes tr:nth-child(even):not(:nth-child(4n-2)) {
+        background: white !important;
+    }
+    .vehicle-setting .main-table {
+        border-radius: 25px 0px 0px 0px !important;
+    }
+</style>
+

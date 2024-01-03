@@ -1,0 +1,257 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Configurable>
+  <MenuItems>
+    <Project id="1">
+
+      <MainMenu id="13000" name="Movements">
+        <SubMenu id="13001" name="Movements" url="../Movements/MovementList"></SubMenu>
+        <SubMenu id="13002" name="Folders" url="../ManageFolder/ListFolders"></SubMenu>       
+        <SubMenu id="13003" name="List movements" url="../SORTApplication/SORTInbox"></SubMenu>
+        <SubMenu id="13004" name="Create SO" url="../SORTApplication/SORTListMovemnets"></SubMenu>
+        <SubMenu id="13005" name="Create VR-1" url="../SORTApplication/SORTListMovemnets"></SubMenu>
+        <SubMenu id="13006" name="Inbox" url="../Movements/MovementInboxList"></SubMenu>
+      </MainMenu>
+
+      <MainMenu id="12000" name="Structures">
+        <SubMenu id="12001" name="My structures" url="../Structures/StructureList"></SubMenu>
+        <SubMenu id="12002" name="My structures/constraints map" url="../Structures/MyStructures"></SubMenu>
+        <SubMenu id="12003" name="Manage structure delegations" url="../Structures/MyDelegationArrangement"></SubMenu>
+        <!--<SubMenu id="12004" name="Create Delegation Arrangements" url="../Home/NotImplemented"></SubMenu>-->
+        <SubMenu id="12005" name="Manage road delegations" url="../Structures/ShowRoadDelegation"></SubMenu>
+      </MainMenu>
+      
+      
+      <MainMenu id="10000" name="Applications">
+        <SubMenu id="10001" name="Apply for Special Order" url="../Application/CreateSOApplication"></SubMenu>
+        <SubMenu id="10002" name="Apply for VR-1" url="../Application/VR1InitialDetails"></SubMenu>
+        <!--<SubMenu id="10003" name="Apply and notify VR-1" url="../Home/NotImplemented"></SubMenu>-->
+      </MainMenu>
+
+      <MainMenu id="20000" name="Notifications">
+        <SubMenu id="20001" name="Make notification" url="../Notification/MakeNotification"></SubMenu>
+        <!--<SubMenu id="20001" name="Make simplified notification" url="../Notification/SimplifiedNotification"></SubMenu>
+        <SubMenu id="20002" name="Make detailed notification" url="../Notification/DetailedNotification"></SubMenu>-->
+      </MainMenu>
+
+      <MainMenu id="30000" name="Dispensations">
+        <!--<SubMenu id="30001" name="List Dispensations" url="../Dispensation/ListDispensation"></SubMenu>-->
+      </MainMenu>
+
+      <MainMenu id="40000" name="Routes">
+        <SubMenu id="40001" name="Route library" url="../Routes/RoutePartLibrary"></SubMenu>
+        <!--<SubMenu id="40002" name="A2B Planning" url="../Routes/A2BPlanningPage"></SubMenu>-->
+        <SubMenu id="40002" name="View map / plan route" url="../Routes/LibraryRoutePartDetails"></SubMenu>
+      </MainMenu>
+
+      <MainMenu id="40003" name="Map" url="../Structures/MyStructures">
+        <SubMenu id="40004" name="My constraints map" url="../Structures/MyStructures"></SubMenu>
+      </MainMenu>
+
+      <MainMenu id="50000" name="Fleet">
+        <SubMenu id="50001" name="Components" url="../Vehicle/FleetComponent"></SubMenu>
+        <SubMenu id="50002" name="Configurations" url="../VehicleConfig/VehicleConfigList"></SubMenu>
+      </MainMenu>
+
+      <MainMenu id="60000" name="Contacts">
+        <SubMenu id="60001" name="Contact directory" url="../Contact/ContactList"></SubMenu>
+        <SubMenu id="60002" name="Address book" url="../AddressBook/AddressList"></SubMenu>
+      </MainMenu>
+
+      <MainMenu id="70000" name="Information">
+        <SubMenu id="70001" name="News" url="../Information/ViewNewsList"></SubMenu>
+        <SubMenu id="70002" name="Help &amp; information" url="../Information/ViewInformationList"></SubMenu>
+        <SubMenu id="70003" name="Document library" url="../Information/ViewDownloadList"></SubMenu>
+        <SubMenu id="70004" name="External links" url="../Information/ViewLinkList"></SubMenu>
+      </MainMenu>
+      
+      <MainMenu id="14000" name="Distribution">
+        <SubMenu id="14001" name="View distribution status" url="../DistributionStatus/ViewDistributionStatus"></SubMenu>
+      </MainMenu>
+      <MainMenu id="100000" name="Manage roads">
+        <SubMenu id="100001" name="Manage road delegation" url="../RoadDelegation/GetRoadDelegationList"></SubMenu>
+        <SubMenu id="100002" name="Manage road ownership" url="../RoadOwnership/showRoadOwnership"></SubMenu>
+      </MainMenu>
+      <MainMenu id="80000" name="User">
+        <SubMenu id="80001" name="Set preferences" url="../#" ></SubMenu>
+        <SubMenu id="80002" name="Change password" url="../#"></SubMenu>
+        <SubMenu id="80003" name="Logout" url="../Account/Logout"></SubMenu>
+      </MainMenu>
+     
+      <MainMenu id="90000" name="Publishing">
+        <SubMenu id="90001" name="Manage news" url="../Information/NewsList"></SubMenu>
+        <SubMenu id="90002" name="Manage help &amp; information" url="../Information/HelpAndInformationList"></SubMenu>
+        <SubMenu id="90003" name="Manage document library" url="../Information/DownloadList"></SubMenu>
+        <SubMenu id="90004" name="Manage external links" url="../Information/LinkList"></SubMenu>
+      </MainMenu>
+      
+      <!--<MainMenu id="11000" name="Admin">
+        
+        -->
+        <!--<SubMenu id="11001" name="Manage Users" url="../Account/Register"></SubMenu>-->
+			<!--
+        <SubMenu id="11001" name="Manage users/contacts" url="../Account/userList"></SubMenu>
+        <SubMenu id="11002" name="Manage organisations" url="../Organisation/ManageOrganisation"></SubMenu>
+        <SubMenu id="11003" name="Manage feedback" url="../Feedback/ListFeedback"></SubMenu>
+      </MainMenu>-->
+    
+      <MainMenu id="15000" name="Reports">
+        <SubMenu id="15001" name="Session length" url="../Report/SessionLengthReport"></SubMenu>
+        <SubMenu id="15002" name="Communication" url="../Report/CommunicationReport"></SubMenu>
+        <SubMenu id="15003" name="Industry liaison" url="../Report/IndustryLiaisonReport"></SubMenu>
+        <SubMenu id="15004" name="Report per Haulier / SOA / Police" url="../Report/ReportPerUser"></SubMenu>
+        <SubMenu id="15005" name="NEN report" url="../NENNotification/NEN_HelpdeskReport"></SubMenu>
+      </MainMenu>
+
+      <MainMenu id="300000" name="Audit log">
+      </MainMenu>
+
+      <MainMenu id="16000" name="Holiday">
+
+      </MainMenu>
+
+      <MainMenu id="11000" name="Admin">
+
+        <!--<SubMenu id="11001" name="Manage Users" url="../Account/Register"></SubMenu>-->
+        <SubMenu id="11001" name="Manage users/contacts" url="../Account/userList"></SubMenu>
+        <SubMenu id="11002" name="Manage organisations" url="../Organisation/ManageOrganisation"></SubMenu>
+        <SubMenu id="11003" name="Manage feedback" url="../Feedback/ListFeedback"></SubMenu>
+        <SubMenu id="11004" name="NE haulier" url="../NENNotification/ListNEHaulier"></SubMenu>
+
+      </MainMenu>
+    </Project>    
+    
+  </MenuItems>
+
+  <PasswordChange>
+    <ExpiryPeriod value="45"></ExpiryPeriod>
+    <NotificationPeriod value="5"></NotificationPeriod>
+  </PasswordChange>
+
+
+
+  <dates>
+    <date code="01">1</date>
+    <date code="02">2</date>
+    <date code="03">3</date>
+    <date code="04">4</date>
+    <date code="05">5</date>
+    <date code="06">6</date>
+    <date code="07">7</date>
+    <date code="08">8</date>
+    <date code="09">9</date>
+    <date code="10">10</date>
+    <date code="11">11</date>
+    <date code="12">12</date>
+    <date code="13">13</date>
+    <date code="14">14</date>
+    <date code="15">15</date>
+    <date code="16">16</date>
+    <date code="17">17</date>
+    <date code="18">18</date>
+    <date code="19">19</date>
+    <date code="20">20</date>
+    <date code="21">21</date>
+    <date code="22">22</date>
+    <date code="23">23</date>
+    <date code="24">24</date>
+    <date code="25">25</date>
+    <date code="26">26</date>
+    <date code="27">27</date>
+    <date code="28">28</date>
+    <date code="29">29</date>
+    <date code="30">30</date>
+    <date code="31">31</date>
+  </dates>
+
+  <months>
+    <month code="01">January</month>
+    <month code="02">February</month>
+    <month code="03">March</month>
+    <month code="04">April</month>
+    <month code="05">May</month>
+    <month code="06">June</month>
+    <month code="07">July</month>
+    <month code="08">August</month>
+    <month code="09">September</month>
+    <month code="10">October</month>
+    <month code="11">November</month>
+    <month code="12">December</month>
+  </months>
+
+
+  <years>
+    <year code="1983">1983</year>
+    <year code="1984">1984</year>
+    <year code="1985">1985</year>
+    <year code="1986">1986</year>
+    <year code="1987">1987</year>
+    <year code="1988">1988</year>
+    <year code="1989">1989</year>
+    <year code="1990">1990</year>
+    <year code="1991">1991</year>
+    <year code="1992">1992</year>
+    <year code="1993">1993</year>
+    <year code="1994">1994</year>
+    <year code="1995">1995</year>
+    <year code="1996">1996</year>
+    <year code="1997">1997</year>
+    <year code="1998">1998</year>
+    <year code="1999">1999</year>
+    <year code="2000">2000</year>
+    <year code="2001">2001</year>
+    <year code="2002">2002</year>
+    <year code="2003">2003</year>
+    <year code="2004">2004</year>
+    <year code="2005">2005</year>
+    <year code="2006">2006</year>
+    <year code="2007">2007</year>
+    <year code="2008">2008</year>
+    <year code="2009">2009</year>
+    <year code="2010">2010</year>
+    <year code="2011">2011</year>
+    <year code="2012">2012</year>
+    <year code="2013">2013</year>
+    <year code="2014">2014</year>
+    <year code="2015">2015</year>
+    <year code="2016">2016</year>
+    <year code="2017">2017</year>
+    <year code="2018">2018</year>
+    <year code="2019">2019</year>
+    <year code="2020">2020</year>
+    <year code="2021">2021</year>
+    <year code="2022">2022</year>
+    <year code="2023">2023</year>
+    <year code="2024">2024</year>
+    <year code="2025">2025</year>
+    <year code="2026">2026</year>
+    <year code="01">1983</year>
+    <year code="01">1983</year>
+    <year code="01">1983</year>
+    <year code="01">1983</year>
+    <year code="01">1983</year>
+    <year code="01">1983</year>
+    <year code="01">1983</year>
+    <year code="01">1983</year>
+    <year code="01">1983</year>
+    <year code="01">1983</year>
+    <year code="01">1983</year>
+    <year code="01">1983</year>
+  </years>
+
+  <association>
+    <membership value="3277">ALEN</membership>
+    <membership value="1204">BIFA</membership>
+    <membership value="1202">CPA</membership>
+    <membership value="3021">FTA</membership>
+    <membership value="1203">HTA</membership>
+    <membership value="1200">RHA</membership>
+    <membership value="5514">VCA</membership>
+  </association>
+
+  <TermsConditions>
+    <acceptedTermID>3</acceptedTermID>
+    <requiredTerm>3</requiredTerm>
+    <Terms>Welcome to our website. If you continue to browse and use this website you are agreeing to comply with and be bound by the following terms and conditions of use, which together with our privacy policy govern [business name]’s relationship with you in relation to this website. The term “[business name]” or “us” or “we” refers to the owner of the website whose registered office is [address]. The term “you” refers to the user or viewer of our website. The use of this website is subject to the following terms of use:</Terms>
+  </TermsConditions>
+</Configurable>
+<!--1) The content of the pages of this website is for your general information and use only. It is subject to change without notice. \n 2) Neither we nor any third parties provide any warranty or guarantee as to the accuracy, timeliness, performance, completeness or suitability of the information and materials found or offered on this website for any particular purpose. You acknowledge that such information and materials may contain inaccuracies or errors and we expressly exclude liability for any such inaccuracies or errors to the fullest extent permitted by law. \n 3) Your use of any information or materials on this website is entirely at your own risk, for which we shall not be liable. It shall be your own responsibility to ensure that any products, services or information available through this website meet your specific requirements. \n 4) This website contains material which is owned by or licensed to us. This material includes, but is not limited to, the design, layout, look, appearance and graphics. Reproduction is prohibited other than in accordance with the copyright notice, which forms part of these terms and conditions. \n 5) All trademarks reproduced in this website, which are not the property of, or licensed to the operator, are acknowledged on the website. \n 6) Unauthorised use of this website may give to a claim for damages and/or be a criminal offence. \n 7) From time to time this website may also include links to other websites. These links are provided for your convenience to provide further information. They do not signify that we endorse the website(s). We have no responsibility for the content of the linked website(s). \n 8) You may not create a link to this website from another website or document without [business name]’s prior written consent. \n 9) Your use of this website and any dispute arising out of such use of the website is subject to the laws of England and Wales.</Terms>-->

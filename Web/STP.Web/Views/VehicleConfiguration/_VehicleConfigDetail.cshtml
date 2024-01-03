@@ -1,0 +1,285 @@
+﻿@model STP.Domain.VehicleAndFleets.Component.VehicleConfiguration
+@using STP.Domain.VehiclesAndFleets.Configuration
+
+@{
+    var componentTypeList = (List<STP.Domain.VehiclesAndFleets.Configuration.VehicleConfigList>)ViewBag.ComponentTypeList;
+    int rowCount = Model.VehicleConfigParamList.Count;
+    int secondSet = rowCount / 2;
+    int firstRowSet = rowCount - secondSet;
+    var vehicleConfigObjTempData = (STP.Domain.VehicleAndFleets.Component.VehicleConfiguration)ViewBag.VehicleConfigObjTempData;
+    var heaviest = (from s in vehicleConfigObjTempData.VehicleConfigParamList
+                    where s.ParamModel == "HeaviestComponentWeight"
+                    select s.ParamValue).FirstOrDefault();
+    var NotifFrontOverhang = (from s in vehicleConfigObjTempData.VehicleConfigParamList
+                              where s.ParamModel == "Front_Overhang"
+                              select s.ParamValue).FirstOrDefault();
+    var NotifRearOverhang = (from s in vehicleConfigObjTempData.VehicleConfigParamList
+                             where s.ParamModel == "Rear_Overhang"
+                             select s.ParamValue).FirstOrDefault();
+    var NotifRightOverhang = (from s in vehicleConfigObjTempData.VehicleConfigParamList
+                              where s.ParamModel == "Right_Overhang"
+                              select s.ParamValue).FirstOrDefault();
+    var NotifLeftOverhang = (from s in vehicleConfigObjTempData.VehicleConfigParamList
+                             where s.ParamModel == "Left_Overhang"
+                             select s.ParamValue).FirstOrDefault();
+    var AxleCount = (from s in vehicleConfigObjTempData.VehicleConfigParamList
+                     where s.ParamModel == "Number of Axles"
+                     select s.ParamValue).FirstOrDefault();
+    var TrailerWeight = (from s in vehicleConfigObjTempData.VehicleConfigParamList
+                         where s.ParamModel == "HeaviestComponentWeight"
+                         select s.ParamValue).FirstOrDefault();
+    var TractorWeight = (from s in vehicleConfigObjTempData.VehicleConfigParamList
+                         where s.ParamModel == "HeaviestComponentWeight"
+                         select s.ParamValue).FirstOrDefault();
+    string internalName = (from s in Model.VehicleConfigParamList
+                           where s.ParamModel == "Internal Name"
+                           select s.ParamValue).FirstOrDefault();
+    string formalName = (from s in Model.VehicleConfigParamList
+                         where s.ParamModel == "Formal Name"
+                         select s.ParamValue).FirstOrDefault();
+
+    int? unitValue = 1;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        unitValue = sessionValues.VehicleUnits;
+    }
+    bool planMovement = ViewBag.IsMovement;
+    bool candidateVehicle = ViewBag.IsCandidate;
+    @Html.Hidden("UnitValue", unitValue)
+    <input type="hidden" value="@ViewBag.IsMovement" id="IsMovement" name="IsMovement" />
+}
+
+<div class="row pb-4">
+    <div class="col-lg-12 pt-5 title pr-0" style="font-family: lato_bold;">Vehicle Configuration</div>
+</div>
+@{
+    Html.RenderAction("GetVehicleImage", "VehicleConfig", new { componentIdList = componentTypeList });
+}
+<div class="row mt-4 main-entry">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+        <div class="row">
+            <div class="col-lg-7 col-md-7 col-sm-12">
+                @for (int i = 0; i < firstRowSet; i++)
+                {
+                    if (Model.VehicleConfigParamList[i].ParamModel != "Internal Name")
+                    {
+                        <div class="row mb-2">
+                            @if ((planMovement || candidateVehicle) && (Model.VehicleConfigParamList[i].ParamModel == "Formal Name"))
+                            {
+                                <div class="col-sm-4 col-md-6 col-lg-6 pr-0">
+                                    <label class="text-normal">Internal name</label>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-sm-4 col-md-6 col-lg-6 pr-0">
+                                    <label class="text-normal">@Model.VehicleConfigParamList[i].DisplayString</label>
+                                </div>
+                            }
+
+                            <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                                @if (Model.VehicleConfigParamList[i].ParamModel == "HeaviestComponentWeight")
+                                {
+                                    Model.VehicleConfigParamList[i].ParamValue = heaviest;
+                                }
+                                @if (Model.VehicleConfigParamList[i].ParamModel == "Front Overhang")
+                                {
+                                    Model.VehicleConfigParamList[i].ParamValue = NotifFrontOverhang;
+                                }
+                                @if (Model.VehicleConfigParamList[i].ParamModel == "Rear Overhang")
+                                {
+                                    Model.VehicleConfigParamList[i].ParamValue = NotifRearOverhang;
+                                }
+                                @if (Model.VehicleConfigParamList[i].ParamModel == "Right Overhang")
+                                {
+                                    Model.VehicleConfigParamList[i].ParamValue = NotifRightOverhang;
+                                }
+                                @if (Model.VehicleConfigParamList[i].ParamModel == "Left Overhang")
+                                {
+                                    Model.VehicleConfigParamList[i].ParamValue = NotifLeftOverhang;
+                                }
+                                @if (Model.VehicleConfigParamList[i].ParamModel == "Number of Axles")
+                                {
+                                    if (AxleCount == "Select")
+                                    {
+                                        Model.VehicleConfigParamList[i].ParamValue = null;
+                                    }
+                                    else
+                                    {
+                                        Model.VehicleConfigParamList[i].ParamValue = AxleCount;
+                                    }
+
+                                }
+                                @if (String.IsNullOrEmpty(Model.VehicleConfigParamList[i].ParamValue))
+                                {
+                                    <input class="edit-normal Noborder" type="text" name="v_@Model.VehicleConfigParamList[i].ParamModel" value="" disabled>
+                                }
+                                else
+                                {
+                                    if (@Model.VehicleConfigParamList[i].ParamModel == "Speed")
+                                    {
+                                        if (Model.VehicleConfigParamList[i].ParamValue.ToString() == "0")
+                                        {
+                                            <input class="edit-normal Noborder" type="text" name="v_@Model.VehicleConfigParamList[i].ParamModel" value="" disabled>
+                                        }
+                                        else
+                                        {
+                                            <input class="edit-normal Noborder" type="text" name="v_@Model.VehicleConfigParamList[i].ParamModel" value="@Model.VehicleConfigParamList[i].ParamValue" disabled>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <input class="edit-normal Noborder" type="text" name="v_@Model.VehicleConfigParamList[i].ParamModel" value="@Model.VehicleConfigParamList[i].ParamValue" disabled>
+                                    }
+                                }
+                                @if (!string.IsNullOrEmpty(Model.VehicleConfigParamList[i].ParamValue))
+                                {
+                                    if (@Model.VehicleConfigParamList[i].ParamModel == "Speed")
+                                    {
+                                        if (unitValue == 692001)
+                                        {
+                                            <label class="text-normal">kph</label>
+                                        }
+                                        else if (unitValue == 692002)
+                                        {
+                                            <label class="text-normal">mph</label>
+                                        }
+
+                                    }
+                                    else if (Model.VehicleConfigParamList[i].DropDownList.Count > 0)
+                                    {
+                                        if (unitValue == 692001)
+                                        {
+                                            <label class="text-normal">m</label>
+                                        }
+                                        else if (unitValue == 692002)
+                                        {
+                                            <label class="text-normal">ft</label>
+                                        }
+                                    }
+                                    else if (@Model.VehicleConfigParamList[i].ParamModel == "Weight" || @Model.VehicleConfigParamList[i].ParamModel == "AxleWeight" || @Model.VehicleConfigParamList[i].ParamModel == "TrainWeight")
+                                    {
+                                        <label class="text-normal">kg</label>
+                                    }
+
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+            <div class="col-lg-5 col-md-5 col-sm-5 col-sm-12 col-xs-12">
+
+                @for (int i = firstRowSet; i < rowCount; i++)
+                {
+                    if (Model.VehicleConfigParamList[i].ParamModel != "Internal Name")
+                    {
+                        <div class="row mb-2">
+                            <div class="col-sm-4 col-md-6 col-lg-6 pr-0">
+                                <label class="text-normal">@Model.VehicleConfigParamList[i].DisplayString</label>
+                            </div>
+                            <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                                @if (Model.VehicleConfigParamList[i].ParamModel == "HeaviestComponentWeight")
+                                {
+                                    Model.VehicleConfigParamList[i].ParamValue = heaviest;
+                                }
+                                @if (Model.VehicleConfigParamList[i].ParamModel == "Front Overhang")
+                                {
+                                    Model.VehicleConfigParamList[i].ParamValue = NotifFrontOverhang;
+                                }
+                                @if (Model.VehicleConfigParamList[i].ParamModel == "Rear Overhang")
+                                {
+                                    Model.VehicleConfigParamList[i].ParamValue = NotifRearOverhang;
+                                }
+                                @if (Model.VehicleConfigParamList[i].ParamModel == "Right Overhang")
+                                {
+                                    Model.VehicleConfigParamList[i].ParamValue = NotifRightOverhang;
+                                }
+                                @if (Model.VehicleConfigParamList[i].ParamModel == "Left Overhang")
+                                {
+                                    Model.VehicleConfigParamList[i].ParamValue = NotifLeftOverhang;
+                                }
+                                @if (Model.VehicleConfigParamList[i].ParamModel == "Number of Axles")
+                                {
+                                    if (AxleCount == "Select")
+                                    {
+                                        Model.VehicleConfigParamList[i].ParamValue = null;
+                                    }
+                                    else
+                                    {
+                                        Model.VehicleConfigParamList[i].ParamValue = AxleCount;
+                                    }
+
+                                }
+                                @if (String.IsNullOrEmpty(Model.VehicleConfigParamList[i].ParamValue))
+                                {
+                                    <input class="edit-normal Noborder" type="text" name="v_@Model.VehicleConfigParamList[i].ParamModel" value="" disabled>
+                                }
+                                else
+                                {
+                                    if (@Model.VehicleConfigParamList[i].ParamModel == "Speed")
+                                    {
+                                        if (Model.VehicleConfigParamList[i].ParamValue.ToString() == "0")
+                                        {
+                                            <input class="edit-normal Noborder" type="text" name="v_@Model.VehicleConfigParamList[i].ParamModel" value="" disabled>
+                                        }
+                                        else
+                                        {
+                                            <input class="edit-normal Noborder" type="text" name="v_@Model.VehicleConfigParamList[i].ParamModel" value="@Model.VehicleConfigParamList[i].ParamValue" disabled>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <input class="edit-normal Noborder" type="text" name="v_@Model.VehicleConfigParamList[i].ParamModel" value="@Model.VehicleConfigParamList[i].ParamValue" disabled>
+                                    }
+                                }
+                                @if (!string.IsNullOrEmpty(Model.VehicleConfigParamList[i].ParamValue))
+                                {
+                                    if (@Model.VehicleConfigParamList[i].ParamModel == "Speed")
+                                    {
+                                        if (unitValue == 692001)
+                                        {
+                                            <label class="text-normal">kph</label>
+                                        }
+                                        else if (unitValue == 692002)
+                                        {
+                                            <label class="text-normal">mph</label>
+                                        }
+
+                                    }
+                                    else if (Model.VehicleConfigParamList[i].DropDownList.Count > 0)
+                                    {
+                                        if (unitValue == 692001)
+                                        {
+                                            <label class="text-normal">m</label>
+                                        }
+                                        else if (unitValue == 692002)
+                                        {
+                                            <label class="text-normal">ft</label>
+                                        }
+                                    }
+                                    else if (@Model.VehicleConfigParamList[i].ParamModel == "Weight" || @Model.VehicleConfigParamList[i].ParamModel == "AxleWeight" || @Model.VehicleConfigParamList[i].ParamModel == "TrainWeight")
+                                    {
+                                        <label class="text-normal">kg</label>
+                                    }
+
+                                }
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="row mt-4">
+    <div class="col-lg-6 col-md-12 col-sm-12">
+        @{
+            Html.RenderAction("ViewConfigRegistration", "VehicleConfig", new { vehicleRegistrations = Model.VehicleRegList });
+        }
+    </div>
+</div>
+<div id="axle_error_msg" class="error invalid-feedback" style="display: block !important;"></div>

@@ -1,0 +1,129 @@
+@{
+    bool isAdmin = false;
+    int portalType = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var user = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        portalType = user.UserTypeId;
+        if (portalType == 696006 || user.IsAdmin == 1)
+        {
+            isAdmin = true;
+        }
+    }
+}
+@{
+    Layout = null;
+}
+@model STP.Domain.HelpdeskTools.RetransmitDetails
+    <style>
+        .remove-bottom-line{
+            border-bottom:none!important;
+        }
+        #txt_email{
+            width:auto;
+        }
+        .fade:not(.show) {
+            opacity: 1;
+        }
+    </style>
+
+    <div class="modal fade backdrop-overlay show" id="retransmitPopup" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        @Html.Hidden("transmission_id")
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 40rem;">
+            <div class="modal-content" style="width: 40rem;height: auto;">
+                <div class="modal-header pt-3 pb-3 pr-3 pl-3 pb-3s" style="display: contents;">
+                    <div class="row" style="margin-top: -1rem;">
+                        <div class="col-lg-7 col-sm-7 col-md-7 pl-4 pt-8">
+                            <span class="text-normal pr-2"
+                                  style="font-family: lato_light;font-size:25px;margin-top: -2rem;float: right;">
+                                Retransmit
+                            </span>
+                        </div>
+                        <div class="col-lg-5 col-sm-5 col-md-5 pr-4">
+                            <div style="justify-content: end;" id="table-head">
+                                @*<span>
+                                    <img src="~/Content/assets/images/Group 1801.svg" class="mt-4 mr-2"
+                                         width="18">
+                                </span>*@
+                                
+                                <span aria-hidden="true" class="close pl-0 ml-2 pt-1"
+                                      data-dismiss="modal" aria-label="Close" id="close-general" >&times;</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-body pt-0">
+
+                    <div id="collab-details" class="pl-4 pr-4 text-align-left">
+                        <div class="row pb-2">
+                            <div class="col-sm-4 col-md-6 col-lg-4  text-normal text-align-start">
+                                @Html.LabelFor(m => m.ContactName)
+                            </div>
+                            <div class="col-7 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Html.DisplayFor(m => m.ContactName, new { @class = "remove-bottom-line" })
+                                @Html.ValidationMessageFor(m => m.ContactName)
+                            </div>
+                        </div>
+                        <div class="row pb-2">
+                            <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                                Organisation name
+                            </div>
+                            <div class="col-7 input-field edit-normal pt-0 pl-0 pb-0 pr-0">
+                                @Html.DisplayFor(m => m.OrganisationName, new { @class = "remove-bottom-line" })
+                                @Html.ValidationMessageFor(m => m.OrganisationName)
+                            </div>
+                        </div>
+                        
+
+                        <div class="row pb-2">
+                            <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                                Email
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-8 pt-0 pl-0">
+                                <div>
+                                    <div class="row" @*class="form-check"*@ style="display: flex;">
+                                        <span>
+                                            
+                                            @if (Model.distFlag)
+                                            {
+                                                @Html.TextBoxFor(m => m.Email, new { @id = "txt_email", @class = "edit-normal mb-0 pl-0 pr-0 pt-0 pb-0",placeholder="NA"})
+                                            }
+                                            else
+                                            {
+                                                @Html.TextBoxFor(m => m.Email, new { @id = "txt_email", @class = "edit-normal mb-0 pl-0 pr-0 pt-0 pb-0", placeholder = "NA" })
+                                            }
+                                        </span>
+                                    </div>
+                                    <div class="row">
+                                        @Html.ValidationMessageFor(m => m.Email, "Please enter a valid email address", new { @id = "ValidEmail", @class = "error invalid-feedback" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                       
+                    </div>
+                </div>
+                <div class="flexer text-align-center pt-2 pb-4"
+                     style="margin-left: auto;margin-right: auto;">
+                    <div class="button main-button mr-2">
+                        <button type="button" class="btn btn-outline-primary btn-normal pl-8 pr-8"
+                                aria-pressed="true" id="btn-transmit" data-TransmissionId="@ViewBag.TransmissionId" >
+                            TRANSMIT
+                        </button>
+                    </div>
+                    <div class="button main-button mr-0">
+
+                        <button class="btn btn-outline-primary btn-normal pl-7 pr-7" type="button"
+                                aria-pressed="true" id="close-popup" >
+                            CANCEL
+                        </button>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+@*}*@
+@*<script src="~/Scripts/DistributionStatus/Retransmit.js?V@(Session["ProjectVersion"])"></script>*@

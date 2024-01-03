@@ -1,0 +1,125 @@
+@model List<STP.Domain.Routes.AppRouteList>
+
+@{
+
+    var modelcnt = 0;
+    long routerevision_id = ViewBag.routerevision_id;
+    modelcnt = Model.Count;
+
+    @Html.Hidden("hdf_routerevision_id", routerevision_id);
+    Layout = null;
+    var RouteList = (List<STP.Domain.Routes.AppRouteList>)Model;
+}
+
+<div class="form" style="display:none">
+    <div class="head headgrad">
+        <div class="dyntitleConfig">Route List</div>
+        <span aria-hidden="true" data-icon="" id="span-close" class="span-close"></span>
+        <form action="../Generic/HelpBuilder" id="form_html_helpbuilder" method="post" novalidate="novalidate" style="width:auto !important;float:right;" target="_blank">
+            <input id="url_html" name="url" type="hidden" value="">
+            <input id="flag" name="flag" type="hidden" value="">
+        </form>
+        <span id="span-help" title="Help"></span>
+    </div>
+    <div class="body">
+        <span class="PopupHelpName" id="RouteList"></span>
+        <div id="tblroutelist">
+            <table id="TabRouteList" style="width: 100%;" class="GridTable tblheaderfix">
+                <thead style="width: 100%;">
+                    <tr>
+                        <th class="headgrad" style="width: 80px; text-align: left;">Route parts</th>
+
+                        <th class="headgrad" style="width: 80px; text-align: left;">Route type</th>
+
+                        <th class="headgrad" style="width: 80px; text-align: left;">Route description</th>
+                        <th class="headgrad" style="width: 215px; text-align: left;"></th>
+                    </tr>
+                </thead>
+                <tbody id="sortable" style="width: 100%;">
+                    @{
+                        for (int j = 0; j < Model.Count; j++)
+                        {
+                            <tr id='@j' data-id="@Model[j].RouteID" data-type=" @Model[j].RouteType">
+                                <td>
+                                    <span data-name="@Model[j].RouteName" id="btnrouteimport_@Model[j].RouteID"></span>
+                                    <span class="green link"
+                                          id="spanShowRouteDetails"
+                                          data-routeId="@Model[j].RouteID"
+                                          data-routeType="@Model[j].RouteType">@Model[j].RouteName</span>
+                                    </td>
+                                    <td>@Model[j].RouteType</td>
+                                    <td>@Model[j].RouteDescription</td>
+                                    <td>
+                                        @if (ViewBag.IsRelaStruMov == false)
+                                        {
+                                            if (ViewBag.IsIsCreateApplication == true)
+                                            {<button id="btnImportRouteInApp"
+                                                     data-btnImportrouteId="@Model[j].RouteID"
+                                                     data-btnImportrouteType="@Model[j].RouteType" name="@Model[j].RouteName"
+                                                     class="tdbutton tdright btngrad btnrds btnbdr vehicleactions" aria-hidden="true" data-icon="&#xe000;">
+                                                    Import
+                                                </button>}
+                                            else
+                                            {<button id="btnImportRoute"
+                                                     data-btnImportRouterouteId="@Model[j].RouteID"
+                                                     data-btnImportRouterouteName="@Model[j].RouteName"
+                                                     name="@Model[j].RouteName" class="tdbutton tdright btngrad btnrds btnbdr vehicleactions" aria-hidden="true" data-icon="&#xe000;">
+                                                    Import
+                                                </button>}
+                                        }
+                                    </td>
+                                </tr>
+
+                            }
+                            if (Model.Count == 0)
+                            {
+                                <tr>
+                                    <td colspan="4"><span style="color: red">Route not found.</span></td>
+                                </tr>
+                            }
+                    }
+                </tbody>
+            </table>
+
+            <table id="ViewRouetDetail" style="display:none">
+                <tr><th colspan="2" class="headgrad">Route Part Name</th></tr>
+                <tr><td colspan="2"><span id="RouteName"></span></td></tr>
+                <tr id="trHeaderDescription"><th colspan="2" class="headgrad">Route Description</th></tr>
+                <tr id="trdesc"><td colspan="2"><span id="RouteDesc"></span></td></tr>
+                <tr><th colspan="2" id="trRoute" class="headgrad">Route</th></tr>
+                <tr id="trStarting"><td style="width:100px">Starting </td><td><span id="Starting"></span></td></tr>
+                <tr id="trVia">
+                    <td style="vertical-align:top">via / Waypoint </td>
+                    <td>
+                        <table id="Tabvia" class="table">
+                        </table>
+                    </td>
+                </tr>
+                <tr id="trEnding"><td>Ending </td><td><span id="Ending"></span></td></tr>
+                <tr>
+                    <td colspan="2">
+                        <div id="RouteMap">
+                        </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" id="TDbtnBackToRouteList">
+                        <button class="btn_reg_back next btngrad btnrds btnbdr" id="btnGotoRouteLibrary" aria-hidden="true" data-icon="" type="button">Back</button>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+@foreach (var route in RouteList)
+{
+    Html.RenderAction("SetCandiRouteDetails", new { route });
+}
+<div class="button main-button mr-0 col-lg-2">
+    <button class="btn btn-outline-primary btn-normal" id="btnBactoGen" role="button"
+            aria-pressed="true">
+        BACK
+    </button>
+</div>

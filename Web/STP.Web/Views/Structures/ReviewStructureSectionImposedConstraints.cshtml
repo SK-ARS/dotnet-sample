@@ -1,0 +1,388 @@
+@{
+    bool dimension = false;
+    bool constraints = false;
+    bool svData = false;
+    bool ica = false;
+
+    STP.Domain.Structures.DimensionConstruction objDimentionConstruction = ViewBag.DimentionConstruction;
+
+    List<STP.Domain.Structures.SpanData> objListSpanData = ViewBag.ListSpanData;
+    string feet_mr = null;
+    string inch_mr = null;
+    string feet = null, inch = null;
+    string signed_value = "";
+    string[] arr_signed_value = null;
+}
+
+@functions{
+    public string getDisplayString(double? mtrs, double? feet)
+    {
+
+        string dis_mtrs = " ";
+        double inches = 0;
+        double feet1 = 0;
+        double mr_to_feet = 0;
+        string returnstr = "";
+        //return str;
+
+        if (mtrs == null || mtrs == 0)
+        {
+            {
+                if (feet != null && feet != 0)
+                {
+                    mtrs = feet * 0.3048;
+                    dis_mtrs = string.Format("{0:0.00}", mtrs);
+                    double value = (double)feet;
+                    feet1 = ((int)value);
+                    double deci = Math.Round((value - (int)value) * 12);
+                    inches = deci;
+
+                }
+
+            }
+        }
+        else if (feet == null || feet == 0)
+        {
+            dis_mtrs = Convert.ToString(mtrs);
+            feet = (double)mtrs * 3.28;
+
+            double value = (double)feet;
+            feet1 = ((int)value);
+            double deci = Math.Round((value - (int)value) * 12);
+            inches = deci;
+
+        }
+        else if ((mtrs != null || mtrs != 0) && (feet != null && feet != 0))
+        {
+            dis_mtrs = Convert.ToString(mtrs);
+
+            double value = (double)feet;
+            feet1 = value;
+        }
+
+        returnstr = dis_mtrs + " m " + " / " + feet1 + "'";
+        if (inches != 0)
+            returnstr = returnstr + "  " + inches + "''";
+        return returnstr;
+    }
+
+}
+@{
+    STP.Domain.Structures.ImposedConstraints objImposedConstraints = ViewBag.ImposedConstraintas;
+}
+@{
+    Layout = null;
+}
+<div class="modal-header pt-4">
+    <span class="details pl-3">Structure imposed constraints</span>
+</div>
+<div id="signedConstraints">
+    @if (ViewBag.userTypeID == 696008)
+    {
+        if ((objImposedConstraints.Height != null && (int)objImposedConstraints.Height != 0))
+        {
+            constraints = true;
+            <div class="row ml-0 pt-1">
+                <div class="col-5 pl-5 text-normal">
+                    @Resources.Resource.Height
+                </div>
+                <div class="col-7 details1">
+                    @objImposedConstraints.Height m
+                </div>
+            </div>
+        }
+        if ((objImposedConstraints.Width != null && (int)objImposedConstraints.Width != 0))
+        {
+            constraints = true;
+            <div class="row ml-0 pt-1">
+                <div class="col-5 pl-5 text-normal">
+                    @Resources.Resource.Width
+                </div>
+                <div class="col-7 details1">
+                    @objImposedConstraints.Width m
+                </div>
+            </div>
+        }
+        if ((objImposedConstraints.Length != null && (int)objImposedConstraints.Length != 0))
+        {
+            constraints = true;
+            <div class="row ml-0 pt-1">
+                <div class="col-5 pl-5 text-normal">
+                    @Resources.Resource.Length
+                </div>
+                <div class="col-7 details1">
+                    @objImposedConstraints.Length m
+                </div>
+            </div>
+        }
+        if ((objImposedConstraints.GrossWeight != null && (int)objImposedConstraints.GrossWeight != 0))
+        {
+            constraints = true;
+            <div class="row ml-0 pt-1">
+                <div class="col-5 pl-5 text-normal">
+                    @Resources.Resource.GrossWeight
+                </div>
+                <div class="col-7 details1">
+                    @objImposedConstraints.GrossWeight kg
+                </div>
+            </div>
+        }
+        if ((objImposedConstraints.AxleWeight != null && (int)objImposedConstraints.AxleWeight != 0))
+        {
+            constraints = true;
+            <div class="row ml-0 pt-1">
+                <div class="col-5 pl-5 text-normal">
+                    @Resources.Resource.AxleWeight
+                </div>
+                <div class="col-7 details1">
+                    @objImposedConstraints.AxleWeight kg
+                </div>
+            </div>
+        }
+        if ((objImposedConstraints.HighwaySkew != null))
+        {
+            constraints = true;
+            <div class="row ml-0 pt-1">
+                <div class="col-5 pl-5 text-normal">
+                    Highway skew
+                </div>
+                <div class="col-7 details1">
+                    @objImposedConstraints.HighwaySkew deg
+                </div>
+            </div>
+        }
+
+        if ((objImposedConstraints.VerticalAlignment.EntryDistance != null && objImposedConstraints.VerticalAlignment.EntryDistance != 0) && (objImposedConstraints.VerticalAlignment.EntryHeight != null && objImposedConstraints.VerticalAlignment.EntryHeight != 0)
+           && (objImposedConstraints.VerticalAlignment.MaxDistance != null && objImposedConstraints.VerticalAlignment.MaxDistance != 0) && (objImposedConstraints.VerticalAlignment.MaxHeight != null && objImposedConstraints.VerticalAlignment.MaxHeight != 0)
+             && (objImposedConstraints.VerticalAlignment.ExitDistance != null && objImposedConstraints.VerticalAlignment.ExitDistance != 0) && (objImposedConstraints.VerticalAlignment.ExitHeight != null && objImposedConstraints.VerticalAlignment.ExitHeight != 0))
+        {
+            dimension = true;
+            constraints = true;
+            <div class="row ml-0 pt-1">
+                <div class="col-5 pl-5 text-normal">
+                    Vertical / Horizontal alignment
+                </div>
+                <div class="col-7 details1">
+                    <div class="col-2">
+                        <label for="maSpacingId" class="text-normal">Entry</label>
+                    </div>
+                    <div class="col-2">
+                        <label for="maSpacingId" class="text-normal">Max</label>
+                    </div>
+                    <div class="col-2">
+                        <label for="maSpacingId" class="text-normal">Exit</label>
+                    </div>
+                    <div class="col-2 details1">
+                        @objImposedConstraints.VerticalAlignment.EntryHeight m
+                    </div>
+                    <div class="col-2 details1">
+                        @objImposedConstraints.VerticalAlignment.MaxHeight m
+                    </div>
+                    <div class="col-2 details1">
+                        @objImposedConstraints.VerticalAlignment.ExitHeight m
+                    </div>
+                    <div class="col-2 details1">
+                        @objImposedConstraints.VerticalAlignment.EntryDistance m
+                    </div>
+                    <div class="col-2 details1">
+                        @objImposedConstraints.VerticalAlignment.MaxDistance m
+                    </div>
+                    <div class="col-2 details1">
+                        @objImposedConstraints.VerticalAlignment.ExitDistance m
+                    </div>
+
+                </div>
+            </div>
+
+        }
+
+        if ((objImposedConstraints.MaxWeightOverMinDistance != null && objImposedConstraints.MaxWeightOverMinDistance.TonnesOver != ""))
+        {
+            constraints = true;
+            <div class="row ml-0 pt-1">
+                <div class="col-5 pl-5 text-normal">
+                    @Resources.Resource.MaxWeightOvrDst
+                </div>
+                <div class="col-7 details1">
+                    @objImposedConstraints.MaxWeightOverMinDistance.TonnesOver kg
+                </div>
+            </div>
+        }
+        if ((objImposedConstraints.MaxWeightOverMinDistanceDistance != null && objImposedConstraints.MaxWeightOverMinDistanceDistance != ""))
+        {
+            constraints = true;
+
+            string[] arrWeight = objImposedConstraints.MaxWeightOverMinDistanceWeight.Split(',');
+            string[] arrDistance = objImposedConstraints.MaxWeightOverMinDistanceDistance.Split(',');
+            <div class="row ml-0 pt-1">
+                <div class="col-5 pl-5 text-normal">
+                    @Resources.Resource.MaxWeightOvrDst
+                </div>
+                @for (int i = 0; i < arrWeight.Length; i++)
+                {
+                    <div class="col-7 details1">
+                        @arrWeight[i] kg &#64; @arrDistance[i] m
+                    </div>
+                }
+
+            </div>
+        }
+        if (objImposedConstraints.HALoading != null)
+        {
+            constraints = true;
+            string strHALoading = objImposedConstraints.HALoading == 1 ? "True" : "False or Unknown";
+            <div class="row ml-0 pt-1">
+                <div class="col-5 pl-5 text-normal">
+                    @Resources.Resource.FullHALoad
+                </div>
+                <div class="col-7 details1">
+                    @strHALoading
+                </div>
+            </div>
+        }
+        if (objImposedConstraints.HBWithLiveLoad != null && (int)objImposedConstraints.HBWithLiveLoad != 0)
+        {
+            constraints = true;
+            <div class="row ml-0 pt-1">
+                <div class="col-5 pl-5 text-normal">
+                    @Resources.Resource.HBRateWithLoad
+                </div>
+                <div class="col-7 details1">
+                    @objImposedConstraints.HBWithLiveLoad
+                </div>
+            </div>
+        }
+        if (objImposedConstraints.HBWithoutLiveLoad != null && (int)objImposedConstraints.HBWithoutLiveLoad != 0)
+        {
+            constraints = true;
+            <div class="row ml-0 pt-1">
+                <div class="col-5 pl-5 text-normal">
+                    @Resources.Resource.HBRateWithoutLoad
+                </div>
+                <div class="col-7 details1">
+                    @objImposedConstraints.HBWithoutLiveLoad
+                </div>
+            </div>
+        }
+
+    }
+
+    @if (
+    (objImposedConstraints.SignedHeight.HeightMeter != null && (int)objImposedConstraints.SignedHeight.HeightMeter != 0) ||
+    (objImposedConstraints.SignedHeight.HeightFeet != null && (int)objImposedConstraints.SignedHeight.HeightFeet != 0)
+    )
+    {
+    constraints = true;
+    signed_value = getDisplayString(objImposedConstraints.SignedHeight.HeightMeter, objImposedConstraints.SignedHeight.HeightFeet);
+    <div class="row ml-0 pt-1">
+        <div class="col-5 pl-5 text-normal">
+            @Resources.Resource.SignedHeight
+        </div>
+        <div class="col-7 details1">
+            @signed_value
+        </div>
+    </div>
+    }
+
+
+    @if (
+    (objImposedConstraints.SignedWidth.WidthMeter != null && (int)objImposedConstraints.SignedWidth.WidthMeter != 0) ||
+    (objImposedConstraints.SignedWidth.WidthFeet != null && (int)objImposedConstraints.SignedWidth.WidthFeet != 0)
+    )
+    {
+    constraints = true;
+
+
+    signed_value = getDisplayString(objImposedConstraints.SignedWidth.WidthMeter, objImposedConstraints.SignedWidth.WidthFeet);
+    <div class="row ml-0 pt-1">
+        <div class="col-5 pl-5 text-normal">
+            @Resources.Resource.SignedWidth
+        </div>
+        <div class="col-7 details1">
+            @signed_value
+        </div>
+    </div>
+    }
+
+
+    @if (
+    (objImposedConstraints.SignedLength.LengthMeter != null && (int)objImposedConstraints.SignedLength.LengthMeter != 0) ||
+    (objImposedConstraints.SignedLength.LengthFeet != null && (int)objImposedConstraints.SignedLength.LengthFeet != 0)
+    )
+    {
+        constraints = true;
+        signed_value = getDisplayString(objImposedConstraints.SignedLength.LengthMeter, objImposedConstraints.SignedLength.LengthFeet);
+        <div class="row ml-0 pt-1">
+            <div class="col-5 pl-5 text-normal">
+                @Resources.Resource.SignedLen
+            </div>
+            <div class="col-7 details1">
+                @signed_value
+            </div>
+        </div>
+    }
+
+    @if (objImposedConstraints.SignedGrossWeightObj.GrossWeight != null && (int)objImposedConstraints.SignedGrossWeightObj.GrossWeight != 0)
+    {
+        constraints = true;
+        <div class="row ml-0 pt-1">
+            <div class="col-5 pl-5 text-normal">
+                @Resources.Resource.SignedGrossWeight
+            </div>
+            <div class="col-7 details1">
+                @objImposedConstraints.SignedGrossWeightObj.GrossWeight kg
+            </div>
+        </div>
+    }
+    else if (objImposedConstraints.SignedGrossWeightObj.GrossWeight != null && (int)objImposedConstraints.SignedGrossWeightObj.GrossWeight == 0)
+    {
+        constraints = true;
+        <div class="row ml-0 pt-1">
+            <div class="col-5 pl-5 text-normal">
+                @Resources.Resource.SignedGrossWeight
+            </div>
+            <div class="col-7 details1">
+                No signed constraint
+            </div>
+        </div>
+    }
+    @if (objImposedConstraints.SignedAxleWeight.AxleWeight != null && (int)objImposedConstraints.SignedAxleWeight.AxleWeight != 0)
+    {
+        constraints = true;
+        <div class="row ml-0 pt-1">
+            <div class="col-5 pl-5 text-normal">
+                @Resources.Resource.SignedAxleWeight
+            </div>
+            <div class="col-7 details1">
+                @objImposedConstraints.SignedAxleWeight.AxleWeight kg
+            </div>
+        </div>
+    }
+    else if (objImposedConstraints.SignedAxleWeight.AxleWeight != null && (int)objImposedConstraints.SignedAxleWeight.AxleWeight == 0)
+    {
+        constraints = true;
+        <div class="row ml-0 pt-1">
+            <div class="col-5 pl-5 text-normal">
+                @Resources.Resource.SignedAxleWeight
+            </div>
+            <div class="col-7 details1">
+                No signed constraint
+            </div>
+        </div>
+    }
+</div>
+<div class="row ml-0 pt-1">
+    <div class="col-8 pl-5 text-normal" id="ErrorMsg" style="display:none;">
+        No signed constraints
+    </div>
+</div>
+
+@if (!constraints)
+{
+<div class="row ml-0 pt-1">
+    <div class="col-8 pl-5 text-normal" id="ErrorMsg" style="display:block;">
+        No signed constraints
+    </div>
+</div>
+}
+<script src="~/Scripts/Structures/ReviewStructureSectionImposedConstraints.js?V@(Session["ProjectVersion"])"></script>

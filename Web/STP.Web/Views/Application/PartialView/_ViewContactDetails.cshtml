@@ -1,0 +1,155 @@
+﻿@using System.Web.Optimization
+@using STP.Domain
+@model STP.Domain.SecurityAndUsers.HAContact
+
+@{
+    bool isAdmin = false;
+    int portalType = 0;
+
+    string isClosed = "false";
+    long analysisId = 0;
+    long notiId = 0;
+    string refNumber = "";
+    string type = "";
+
+    if (Session["UserInfo"] != null)
+    {
+        var user = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        portalType = user.UserTypeId;
+        if (portalType == 696006 || user.IsAdmin == 1)
+        {
+            isAdmin = true;
+        }
+    }
+
+    if (Request.QueryString["isClosed"] != null && Request.QueryString["isClosed"] == "true")
+    {
+        isClosed = "true";
+    }
+
+    if (isClosed == "true")
+    {
+
+        if (Session["analysisID"] != null)
+        {
+            analysisId = Convert.ToInt64(Session["analysisID"]);
+        }
+
+        if (Session["NotificationID"] != null)
+        {
+            notiId = Convert.ToInt64(Session["NotificationID"]);
+        }
+
+        if (Session["ESDALRefNumber"] != null)
+        {
+            refNumber = Convert.ToString(Session["ESDALRefNumber"]);
+            refNumber = refNumber.Replace("#", "~");
+        }
+
+        if (Session["Type"] != null)
+        {
+            type = Convert.ToString(Session["Type"]);
+        }
+    }
+}
+
+<div>
+    @if (ViewBag.ShowXML == 0)
+    {
+        
+            <div class="col-lg-7 col-sm-12 col-md-5 pl-6 pb-6">
+                <div class="heading-medium pt-3 pb-3">
+                    Contact details
+                </div>
+                <div class="row pb-1">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        Organisation name
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Html.LabelFor(model => model.OrganisationName, Model.OrganisationName)
+                    </div>
+                </div>
+                <div class="row pb-1">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        Organisation type
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        POLICE
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        Contact name
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @{if (Model.Title != "")
+                            {
+                                @Html.LabelFor(model => model.ContactName, Model.ContactName + " (" + Model.Title + ")")
+                            }
+                            else
+                            {
+                                @Html.LabelFor(model => model.ContactName, Model.ContactName)
+                            }}
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        Address
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Html.LabelFor(model => model.HAAddress1, Model.HAAddress1)<br />
+                        @Html.LabelFor(model => model.HAAddress2, Model.HAAddress2)<br />
+                        @Html.LabelFor(model => model.HAAddress3, Model.HAAddress3)<br />
+                        @Html.LabelFor(model => model.HAAddress4, Model.HAAddress4)<br />
+                        @Html.LabelFor(model => model.HAAddress5, Model.HAAddress5)
+                    </div>
+                </div>
+                <div class="row pb-1">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        Postcode
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Html.LabelFor(model => model.PostCode, Model.PostCode)
+                    </div>
+                </div>
+                <div class="row pb-1">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        Telephone
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Html.LabelFor(model => model.Telephone, Model.Telephone)
+                    </div>
+                </div>
+                <div class="row pb-1">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        Fax
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Html.LabelFor(model => model.Fax, Model.Fax)
+                    </div>
+                </div>
+                <div class="row pb-1">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        Email
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        <a href="mailto:@Model.Email" style="cursor:pointer;">@Html.LabelFor(model => model.Email, Model.Email, new { @class = "text-normal text-color2" })</a>
+                    </div>
+                </div>
+            </div>            
+      
+    }
+    else if (ViewBag.ShowXML == 1)
+    {
+        if (ViewBag.ContactDetails == null || ViewBag.ContactDetails == "")
+        {
+            <div class="error invalid-feedback" style="display: block !important; text-align: center;">No contact details</div>
+        }
+        else
+        {
+
+            @Html.Raw(ViewBag.ContactDetails)
+
+        }
+    }
+</div>

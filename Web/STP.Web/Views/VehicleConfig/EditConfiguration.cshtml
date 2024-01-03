@@ -1,0 +1,43 @@
+﻿@using STP.Domain.VehiclesAndFleets.Component
+@{
+    int movementId = ViewBag.movementId;
+    int vehicleTypeId = (int)ViewBag.vehicleTypeId;
+    int vehicleId = (int)ViewBag.vehicleId;
+    //var componentList = ViewBag.componentList;
+    string mvmntName = ViewBag.movementClassificationName;
+    bool isApplication = ViewBag.IsApplication;
+    bool isCandidate = ViewBag.isCandidate;
+
+    @Html.Hidden("vehicleId", vehicleId);
+    @Html.Hidden("movement_Id", movementId);
+
+    @Html.Hidden("prevMovementId", movementId);
+
+    @Html.Hidden("vehicleType_Id", vehicleTypeId);
+    @Html.Hidden("movementClassificationName", mvmntName)
+    @Html.Hidden("IsApplication", isApplication)
+    @Html.Hidden("IsCandidate", isCandidate)
+
+    if (isApplication)
+    {
+        Layout = null;
+    }
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.VEHICLES;
+}
+
+
+@*<section id="banner" class="vehicle-setting">
+    <div class="container-fluid" id="banner-container">
+        <div id="vehicles" class="new-vehicle">*@
+
+<div class="row">
+    @{
+        //Html.RenderAction("CreateConfiguration", new { componentIdLists = componentList, isEdit = 1, vehicleConfigId = vehicleId, isMovement = isApplication });
+
+        Html.RenderAction("CreateConfiguration", new { isEdit = 1, vehicleConfigId = 0, isMovement = isApplication, isCandidate = ViewBag.isCandidate });
+    }
+</div>
+@*</div>
+        </div>
+    </section>*@
+

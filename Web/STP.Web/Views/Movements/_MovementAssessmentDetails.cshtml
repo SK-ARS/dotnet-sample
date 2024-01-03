@@ -1,0 +1,426 @@
+﻿@model STP.Domain.MovementsAndNotifications.Movements.PlanMovementType
+@using STP.Common.Enums;
+@using STP.Domain.VehiclesAndFleets
+@using STP.Common.Constants
+@{
+    int userTypeID = 0;
+    long notif = Session["notivso"] != null ? (long)Session["notivso"] : 0;
+    if (notif == 0)
+    {
+        if (ViewBag.PoliceNotice > 0 && ViewBag.soa > 0)
+        {
+            notif = (int)VSOType.soapolice;
+        }
+        else if (ViewBag.PoliceNotice > 0)
+        {
+            notif = (int)VSOType.police;
+        }
+        else if (ViewBag.soa > 0)
+        {
+            notif = (int)VSOType.soa;
+        }
+    }
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        userTypeID = sessionValues != null ? sessionValues.UserTypeId : 0;
+    }
+    bool isSortApp = userTypeID == UserType.Sort;
+    bool isNotify = ViewBag.IsNotify != null ? ViewBag.IsNotify : false;
+    var isSpecialOrderOrVr1 = false;
+    bool ShowRadioButton = ViewBag.ShowRadioButton != null ? ViewBag.ShowRadioButton : false;
+    string VehicleClassDesc = ViewBag.VehicleClassDesc != null ? ViewBag.VehicleClassDesc : string.Empty;
+    var IsAddVehicleError = ViewBag.VehicleError == null ? 0 : (int)ViewBag.VehicleError;
+    int VehicleClass = ViewBag.VehicleClass != null ? (int)ViewBag.VehicleClass : 0;
+    string SORTCreateJob = ViewBag.SORTCreateJob != null ? ViewBag.SORTCreateJob : "0";
+    string SORTAllocateJob = ViewBag.SORTAllocateJob != null ? ViewBag.SORTAllocateJob : "0";
+    int PrevMovementType = ViewBag.PrevMovementType != null ? (int)ViewBag.PrevMovementType : 0;
+}
+<style>
+    .descfont {
+        font-weight: 600;
+        font-size: 12px;
+    }
+</style>
+<div class="row mt-4 main-entry" id="movementGeneralDetails">    
+    <div class="col-lg-12 col-md-12 col-sm-12" style="text-align: right">
+        <label class="text-normal">* indicates mandatory fields</label>
+    </div>
+    <input type="hidden" id="Revise_AllocateUserId" name="Revise_AllocateUserId" value="@Model.AllocateUserId" />
+    <div class="col-lg-6 col-md-12 col-sm-12">
+        <div class="row mb-2">
+            <div class="col-sm-4 col-md-4 col-lg-4 pr-0">
+                <label class="text-normal" style="white-space:nowrap">My Reference Number *</label>
+            </div>
+            <div class="col-sm-12 col-md-7 col-lg-7 input-field">
+                <input class="edit-normal wd100" type="text" name="RefNo" id="RefNo" value="@Model.HaulierRef">
+                <span id="spnHaulier_Reference" class="error invalid-feedback" style="display:block;"></span>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-sm-12 col-md-4 col-lg-4 pr-0">
+                <label class="text-normal">Date From *</label>
+            </div>
+            <div class="col-sm-12 col-md-7 col-lg-7 input-field">
+                @if (Model.MovementStart.ToShortDateString() != "01/01/0001" && Model.MovementStart != null)
+                {
+                    <input type="text" value="@Model.MovementStart.ToString("dd-MM-yyyy")" readonly="readonly" id="FromDate" class="text-normal datepicker edit-normal wd100" name="FromDate" />
+                }
+                else
+                {
+                    <input type="text" value="@DateTime.Now.ToString("dd-MM-yyyy")" readonly="readonly" id="FromDate" class="text-normal datepicker edit-normal wd100" name="FromDate" />
+                }
+                @Html.Hidden("StartTime", Model.MovementStart.ToLongTimeString())
+                <span id="spnFromDate" class="error invalid-feedback" style="display:block"></span>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-sm-4 col-md-4 col-lg-4 pr-0">
+                <label class="text-normal">Date To *</label>
+            </div>
+            <div class="col-sm-12 col-md-7 col-lg-7 input-field">
+                @if (Model.MovementEnd.ToShortDateString() != "01/01/0001" && Model.MovementEnd != null)
+                {
+                    <input type="text" value="@Model.MovementEnd.ToString("dd-MM-yyyy")" readonly="readonly" id="ToDate" class="text-normal datepicker edit-normal wd100" name="ToDate" />
+                }
+                else
+                {
+                    <input type="text" value="@DateTime.Now.ToString("dd-MM-yyyy")" readonly="readonly" id="ToDate" class="text-normal datepicker edit-normal wd100" name="ToDate" />
+                }
+                @Html.Hidden("EndTime", Model.MovementEnd.ToLongTimeString())
+                <span id="spnToDate" class="error invalid-feedback" style="display:block"></span>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-sm-4 col-md-4 col-lg-4 pr-0">
+                <label class="text-normal">From Summary (e.g. town or port)*</label>
+            </div>
+            <div class="col-sm-12 col-md-7 col-lg-7 input-field text-normal">
+                <input class="edit-normal wd100" type="text" name="FromSummary" id="FromSummary" value="@Model.FromDesc">
+                <span id="lblFromSummary" class="error invalid-feedback" style="display:block;"></span>
+            </div>
+        </div>
+        <div class="row mb-2">
+            <div class="col-sm-4 col-md-4 col-lg-4 pr-0">
+                <label class="text-normal">To Summary (e.g. town or port)*</label>
+            </div>
+            <div class="col-sm-12 col-md-7 col-lg-7 input-field text-normal">
+                <input class="edit-normal wd100" type="text" name="ToSummary" id="ToSummary" value="@Model.ToDesc" />
+                <span id="lblToSummary" class="error invalid-feedback" style="display:block;"></span>
+            </div>
+        </div>
+        @{
+            int payLoadMovementType = ViewBag.PayLoadMovementType != null ? Convert.ToInt32(ViewBag.PayLoadMovementType) : 0;
+            if (payLoadMovementType != 0)//for new application-it will be zero
+            {
+                ViewBag.MovementType = payLoadMovementType;// if payload has value, we need to use that for further
+            }
+
+            isSpecialOrderOrVr1 = ViewBag.MovementType == (int)MovementType.special_order || ViewBag.MovementType == (int)MovementType.vr_1;
+            var isNotification = ViewBag.MovementType == (int)MovementType.notification;
+
+            var vehicleClass = ViewBag.VehicleClass;
+            vehicleClass = ViewBag.PayLoadVehicleClass != null && ViewBag.PayLoadVehicleClass != 0 ?
+                ViewBag.PayLoadVehicleClass : vehicleClass;
+
+            var style = "display:none";
+            if (ShowRadioButton)
+            {
+                style = "";
+            }
+            var existingVal = Model.ApplicationType;
+        }
+
+        <div class="row mb-2" id="So_Vr_Radio" style="@style">
+            <div class="col-sm-4 col-md-4 col-lg-4 pr-0">
+                <label class="text-normal">SO/VR1 Application or Notification</label>
+            </div>
+            <div class="col-sm-12 col-md-6 col-lg-5 input-field text-normal" id="table-head">
+                <div class="form-check ml-2">
+                    @{
+                        var isApplicationChecked = isSpecialOrderOrVr1 && PrevMovementType != (int)MovementType.notification ? "checked=checked" : "";
+                        //241002 -- (int)VehicleClassificationType.SpecialOrder
+                        var applicationValue = vehicleClass == 241002 ? (int)MovementType.special_order :
+                                                                            (int)MovementType.vr_1;
+                    }
+                    <input class="form-check-input" type="radio" name="applicationType"
+                           id="ApplicationRadio" value="@applicationValue" @isApplicationChecked>
+
+                    <label class="form-check-label label1 text-color3" for="ApplicationRadio">
+                        Application
+                    </label>
+                </div>
+                @{
+                    //if sort, only application, no notification
+                    var isNotificationChecked = isNotification || PrevMovementType == (int)MovementType.notification ? "checked=checked" : "";
+                    var notificationValue = (int)MovementType.notification;
+                    <div class="form-check ml-2" id="notifradio">
+                        <input class="form-check-input" type="radio" name="applicationType"
+                               id="NotificationRadio" value="@notificationValue" @isNotificationChecked>
+                        <label class="form-check-label label1 text-color3" for="NotificationRadio">
+                            Notification
+                        </label>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row bottom-info-card">
+    @if (ViewBag.MovementType == (int)MovementType.no_movement)
+    {
+        <div class="col-lg-12 col-md-12 col-sm-12 notifassess">
+            @if (isSortApp)
+            {
+                <span class="text-normal text-align-justify pl-0" id="vehicleassesserror" style="color:red;">
+                    The highlighted vehicle(s) is not categorised as a SO, please edit or remove the vehicle(s).
+                </span>
+            }
+            else
+            {
+                <span class="text-normal text-align-justify pl-0">
+                    One or more of your vehicles does not require a notification. Please remove or edit the vehicle before proceeding.
+                    If you need assistance please contact the helpdesk on 0300 470 3733
+                </span>
+            }
+        </div>
+
+    }
+    else
+    {
+        <div class="col-lg-4 col-md-4 col-sm-12 notifassess">
+            @if (isNotify || ViewBag.NotifyMessage != null)
+            {
+                <span class="text-normal text-align-justify pl-0">
+                    @ViewBag.NotifyMessage
+                </span>
+            }
+            else
+            {
+                if (ViewBag.AssessedMovementType == "")
+                {
+                    <span class="text-normal text-align-justify pl-0">
+                        Based on the details you’ve filled in<br>
+                        system couldn't identify the movement
+                    </span><br>
+                }
+                else
+                {
+                    <span class="text-normal text-align-justify pl-0">
+                        Based on the details you've filled in<br>
+                        this movement will be a
+                    </span><br>
+                }
+                <span class="text-normal-bold" style="color: black; text-transform: uppercase;">@ViewBag.AssessedMovementType</span>
+            }
+
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-12 notifassessin" style="display:none">
+            @if (isNotify || ViewBag.NotifyMessage != null)
+            {
+                <span class="text-normal text-align-justify pl-0">
+                    @ViewBag.NotifyMessage
+                </span>
+            }
+            else
+            {
+
+                if (ViewBag.AssessedMovementMessage == "")
+                {
+                    <span class="text-normal text-align-justify pl-0">
+                        Based on the details you’ve filled in<br>
+                        system couldn't identify the movement
+                    </span><br>
+                }
+                else
+                {
+                    <span class="text-normal text-align-justify pl-0">
+                        Based on the details you’ve filled in<br>
+                        this movement will be a
+                    </span><br>
+                }
+                <span class="text-normal-bold" style="color: black; text-transform: uppercase;">@ViewBag.AssessedMovementMessage</span>
+            }
+
+        </div>
+    }
+    @if (ViewBag.MovementType != (int)MovementType.no_movement)
+    {
+
+        var messageString = (string)ViewBag.AssessedMovementMessage;
+        int messagestringsoa = ViewBag.soa;
+        var splitMessageArray = messageString.Split(';');
+        int messageStringPolice = ViewBag.PoliceNotice;
+
+        if (ViewBag.count == 1)
+        {
+            <div class="col-lg-4 col-md-4 col-sm-12 hiding" style="display:@(isSpecialOrderOrVr1|| VehicleClass== (int)VehicleEnums.VehicleClassificationType.VehicleSpecialOrder ? "none" : "block")">
+                @{
+                    <span class="text-normal text-align-justify pl-0"><b>Notification Period </b></span><br />
+                    messageString = (string)ViewBag.AssessedMovementMessage;
+
+                    messagestringsoa = ViewBag.soa;
+
+                    splitMessageArray = messageString.Split(';');
+                    messageStringPolice = ViewBag.PoliceNotice;
+                }
+
+
+                @if (VehicleClass == (int)VehicleEnums.VehicleClassificationType.SpecialOrder
+                    || VehicleClass == (int)VehicleEnums.VehicleClassificationType.StgoailCat1
+                    || VehicleClass == (int)VehicleEnums.VehicleClassificationType.StgoailCat2
+                    || VehicleClass == (int)VehicleEnums.VehicleClassificationType.StgoailCat3)
+                {
+                    if (messagestringsoa != 0)
+                    {
+                        <span class="text-normal text-align-justify pl-0">SOA Notification Period -  @messagestringsoa clear working days</span><br />
+                    }
+                    if (messageStringPolice != 0)
+                    {
+                        <span class="text-normal text-align-justify pl-0">Police Notification Period - @messageStringPolice clear working days</span><br />
+                    }
+                }
+                else
+                {
+                    foreach (var item in splitMessageArray)
+                    {
+                        if (VehicleClass == (int)VehicleEnums.VehicleClassificationType.SpecialOrder || VehicleClass == (int)VehicleEnums.VehicleClassificationType.VehicleSpecialOrder)
+                        {
+                        <span class="text-normal text-align-justify pl-0" style="display:none">@item</span><br />
+                        }
+                        else
+                        {
+                        <span class="text-normal text-align-justify pl-0">@item</span><br />
+                        }
+                    }
+                }
+
+            </div>
+        }
+        else
+        {
+            <div class="col-lg-4 col-md-4 col-sm-12 hiding" id="vehicleAssessments" style="display:@(isSpecialOrderOrVr1|| VehicleClass== (int)VehicleEnums.VehicleClassificationType.VehicleSpecialOrder ? "none" : "block")">
+                @{
+                    <span class="text-normal text-align-justify pl-0"><b>Notification Period </b></span><br />
+                    messageString = (string)ViewBag.AssessedMovementMessage;
+
+                    messagestringsoa = ViewBag.soa;
+
+                    splitMessageArray = messageString.Split(';');
+                    messageStringPolice = ViewBag.PoliceNotice;
+                }
+
+
+                @if (VehicleClass == (int)VehicleEnums.VehicleClassificationType.SpecialOrder
+                    || VehicleClass == (int)VehicleEnums.VehicleClassificationType.StgoailCat1
+                    || VehicleClass == (int)VehicleEnums.VehicleClassificationType.StgoailCat2
+                    || VehicleClass == (int)VehicleEnums.VehicleClassificationType.StgoailCat3)
+                {
+                    if (messagestringsoa != 0)
+                    {
+                        <span class="text-normal text-align-justify pl-0">SOA Notification Period -  @messagestringsoa clear working days</span><br />
+                    }
+                    if (messageStringPolice != 0)
+                    {
+                        <span class="text-normal text-align-justify pl-0">Police Notification Period - @messageStringPolice clear working days </span><br />
+                    }
+                }
+                else
+                {
+                    foreach (var item in splitMessageArray)
+                    {
+                        if (VehicleClass == (int)VehicleEnums.VehicleClassificationType.SpecialOrder || VehicleClass == (int)VehicleEnums.VehicleClassificationType.VehicleSpecialOrder)
+                        {
+                            <span class="text-normal text-align-justify pl-0" style="display:none">@item</span><br />
+                        }
+                        else
+                        {
+                            <span class="text-normal text-align-justify pl-0">@item</span><br />
+                        }
+                    }
+                }
+            </div>
+        }
+        if (userTypeID != UserType.Sort)
+        {
+            if (ViewBag.count > 1 && VehicleClass != (int)VehicleEnums.VehicleClassificationType.VehicleSpecialOrder)
+            {
+                <div class="col-lg-4 col-md-4 col-sm-12 effe " id="sortapplication" style="display:@(isSpecialOrderOrVr1|| VehicleClass== (int)VehicleEnums.VehicleClassificationType.VehicleSpecialOrder ? "none" : "block")">
+                    <span class="text-normal text-align-justify pl-0"><b> Notification Period  </b></span><br />
+                    @{
+                        if (messagestringsoa != 0)
+                        {
+                            <span class="text-normal text-align-justify pl-0">SOA Notification Period -  @messagestringsoa clear working days</span><br />
+                        }
+                        if (messageStringPolice != 0)
+                        {
+                            <span class="text-normal text-align-justify pl-0">Police Notification Period - @messageStringPolice clear working days</span><br />
+                        }
+                    }
+                </div>
+            }
+            if (ViewBag.count == 1)
+            {
+                <div class="col-lg-4 col-md-4 col-sm-12 effe " style="display:@(isSpecialOrderOrVr1|| VehicleClass== (int)VehicleEnums.VehicleClassificationType.VehicleSpecialOrder ? "none" : "block")">
+
+                    @{
+                        if (messagestringsoa != 0 && notif == (int)VSOType.soa && (VehicleClass != (int)VehicleEnums.VehicleClassificationType.VehicleSpecialOrder))
+
+                        {
+                            <span class="text-normal text-align-justify pl-0"><b> Notification Period  </b></span><br />
+                            <span class="text-normal text-align-justify pl-0">SOA Notification Period -  @messagestringsoa clear working days</span><br />
+
+                        }
+                        else if (messageStringPolice != 0 && notif == (int)VSOType.police && (VehicleClass != (int)VehicleEnums.VehicleClassificationType.VehicleSpecialOrder))
+                        {
+                            <span class="text-normal text-align-justify pl-0"><b> Notification Period  </b></span><br />
+                            <span class="text-normal text-align-justify pl-0">Police Notification Period - @messageStringPolice clear working days</span><br />
+
+                        }
+                        else if (messageStringPolice != 0 && notif == (int)VSOType.soapolice && (VehicleClass != (int)VehicleEnums.VehicleClassificationType.VehicleSpecialOrder))
+                        {
+                            <span class="text-normal text-align-justify pl-0"><b> Notification Period  </b></span><br />
+                            <span class="text-normal text-align-justify pl-0">SOA Notification Period -  @messagestringsoa clear working days</span><br />
+                            <span class="text-normal text-align-justify pl-0">Police Notification Period - @messageStringPolice clear working days</span><br />
+
+                        }
+                        else if (messageStringPolice != 0 && messagestringsoa != 0 && (VehicleClass != (int)VehicleEnums.VehicleClassificationType.VehicleSpecialOrder))
+                        {
+                            <span class="text-normal text-align-justify pl-0"> SOA Notification Period -  @messagestringsoa clear working days</span><br />
+                            <span class="text-normal text-align-justify pl-0"> Police Notification Period - @messageStringPolice clear working days</span><br />
+                        }
+
+                    }
+                </div>
+            }
+        }
+        if (IsAddVehicleError > 0)
+        {
+            string messageErr = "";
+            if (IsAddVehicleError == 1 || IsAddVehicleError == 2)
+            {
+                if (!string.IsNullOrWhiteSpace(VehicleClassDesc) && VehicleClassDesc.ToUpper() == "NO VEHICLE CLASSIFICATION")
+                {
+                    messageErr = "The vehicle(s) highlighted is " + VehicleClassDesc + ".Please edit or remove the vehicle to continue";
+                }
+                else
+                {
+                    messageErr = "The vehicle(s) highlighted is not " + VehicleClassDesc + ".Please edit or remove the vehicle to continue";
+                }
+            }
+            else if ((IsAddVehicleError == 10 || ViewBag.sortVr1 == true) && isSortApp == true)
+            {
+                messageErr = "The highlighted vehicle(s) is not categorised as a SO, please edit or remove the vehicle(s)";
+            }
+            if (!string.IsNullOrWhiteSpace(messageErr))
+            {
+                <span id="vehicleassesserror" style="color:red;"><br />@messageErr</span>
+            }
+        }
+    }
+</div>
+@Html.Hidden("hf_isSpecialOrderOrVr1", isSpecialOrderOrVr1)
+@Html.Hidden("hf_VSOTypeNew", notif)
+@Html.Hidden("hf_VehicleClassNew", VehicleClass)
+@Html.Hidden("hf_SORTCreateJob", SORTCreateJob)
+@Html.Hidden("hf_SORTAllocateJob", SORTAllocateJob)

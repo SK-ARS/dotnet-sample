@@ -1,0 +1,487 @@
+@model STP.Domain.Applications.SORTSpecialOrder
+@{
+    ViewBag.Title = "SORT Create Special Order";
+    var vehiclecount = 1;
+    var editflag = 0;
+    if (ViewBag.iseditflag != null)
+    {
+        editflag = 1;
+    }
+}
+<div class="main-sort-content" style="background-color: white;">
+    <div class="main-title mb-3" style="color: rgba(0,0,0,.55);">
+        @if (Model.SONumber != null)
+        {
+            <span>Special Order - @Model.SONumber</span>
+        }
+        else
+        {
+            <span>Create Special Order</span>
+        }
+    </div>
+    <div class="pl-5">
+        @using (Html.BeginForm("CreateSpecialOrder", "SORTApplication", FormMethod.Post, new { id = "frm_SpecialOrder" }))
+        {
+            <div>
+                @Html.HiddenFor(model => model.SONumber)
+                @Html.HiddenFor(model => model.Template)
+                @Html.HiddenFor(model => model.ESDALNo)
+                @Html.HiddenFor(model => model.ProjectID)
+                @Html.HiddenFor(model => model.VersionID)
+                @Html.HiddenFor(model => model.State)
+                @Html.Hidden("Esdalrefno")
+                @Html.HiddenFor(model => model.SpecialOrderCount)
+                @Html.HiddenFor(model => model.PlannerID)
+                @Html.HiddenFor(model => model.ProjectStatus)
+
+            </div>
+            @Html.Hidden("Iseditflag", editflag)
+            <div>
+                <div class="pt-4">
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 col-sm-12">
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                    <label class="text-normal">Create Date*</label>
+                                </div>
+                                <div class="col-sm-4 col-md-6 col-lg-5 input-field">
+                                    @Html.TextBoxFor(model => model.SOCreateDate, new { @class = "edit-normal", @id = "SOCreateDate", @name = "SOCreateDate" })
+                                </div>
+                            </div>
+                            <div class="row mb-2 pt-4">
+                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                    <label class="text-normal">Expiry Date*</label>
+                                </div>
+                                @if (Model.ExpiryDate != null && Model.ExpiryDate != "")
+                                {
+                                    <div class="col-sm-4 col-md-6 col-lg-5 input-field">
+                                        <input class="edit-normal" type="text" id="ExpiryDate" name="ExpiryDate" value=@Model.ExpiryDate readonly="readonly">
+                                        <span id="expirydate_error" class="error invalid-feedback" style="display: block !important;"></span>
+
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-sm-4 col-md-6 col-lg-5 input-field">
+                                        <input class="edit-normal" type="text" id="ExpiryDate" name="ExpiryDate" value=@DateTime.Now.AddMonths(6).ToString("dd/MM/yyyy") readonly="readonly">
+                                        <span id="expirydate_error" class="error invalid-feedback" style="display: block !important;"></span>
+
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-12">
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                    <label class="text-normal">Signature Date*</label>
+                                </div>
+                                @if (Model.SignDate != null && Model.SignDate != "")
+                                {
+                                    <div class="col-sm-4 col-md-6 col-lg-5 input-field">
+                                        <input class="edit-normal" type="text" id="SignDate" name="SignDate" value=@Model.SignDate readonly="readonly">
+                                        <span id="signdate_error" class="error invalid-feedback" style="display: block !important;"></span>
+
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-sm-4 col-md-6 col-lg-5 input-field">
+                                        <input class="edit-normal" type="text" id="SignDate" name="SignDate" value=@DateTime.Now.ToString("dd/MM/yyyy") readonly="readonly">
+                                        <span id="signdate_error" class="error invalid-feedback" style="display: block !important;"></span>
+
+                                    </div>
+                                }
+                            </div>
+                            <div class="row pb-2 pt-4">
+                                <div class="col-lg-5 col-md-4 col-sm-4 text-normal">
+                                    Signatory*
+                                </div>
+                                <div class="col-lg-5 col-md-6 col-sm-6">
+                                    @Html.DropDownListFor(model => model.Signatory, ViewBag.SORTUserListInfo as SelectList, "Select user", new { @class = "form-select text-normal select1" })
+                                    <span id="signatory_error" class="error invalid-feedback" style="display: block !important;"></span>
+
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                    <label class="text-normal">Signatories Role*</label>
+                                </div>
+                                <div class="col-sm-4 col-md-6 col-lg-5 input-field">
+                                    @Html.TextBoxFor(model => model.SignatoryRole, new { @maxlength = "35", @class = "edit-normal" })
+                                    <span id="signatoryrole_error" class="error invalid-feedback" style="display: block !important;"></span>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div>
+                <div class="heading-medium pt-4 pb-4">
+                    Overview of special documents
+                </div>
+                <div class="row pb-6">
+                    <div class="col-lg-3 col-md-6 col-sm-12">
+                        <div class="row mb-2">
+                            <div class="col-lg-2 col-sm-6 col-md-5">
+                                <span class="rectangle-view1"></span>
+                            </div>
+                            <div class="col-lg-10 col-sm-6 col-md-7 text-normal">
+                                Combination vehicle/route is already
+                                assigned to a special order document
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-lg-2 col-sm-6 col-md-5">
+                                <span class="rectangle-view2"></span>
+                            </div>
+                            <div class="col-lg-10 col-sm-6 col-md-7 text-normal">
+                                Combination vehicle/route is (being)
+                                assigned in the current special order
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-lg-2 col-sm-6 col-md-5">
+                                <span class="rectangle-view3"></span>
+                            </div>
+                            <div class="col-lg-10 col-sm-6 col-md-7 text-normal">
+                                Not applicable combination of vehicle
+                                and route part
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-9 col-md-8 col-sm-12">
+                        <div class="infoSteps">
+                            <div class="text-normal pb-4">
+                                To assign a vehicle/route combination to
+                                a special order document:
+                            </div>
+                            <ul class="pt-0 pb-0 pr-0 mt-0 mb-0 ml-0 mr-0">
+                                <li class="text-normal">
+                                    Left-mouse click on a white box to select a
+                                    vehicle/route combination
+                                </li>
+                                <li class="text-normal"> Click add</li>
+                                <li class="text-normal">
+                                    Click apply: ESDAL displays a suggested document
+                                    template based on the vehicle/load characteristics
+                                </li>
+                                <li class="text-normal">
+                                    Select the document template (or can be changed if
+                                    necessary)
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="div_matrix">
+                    @if (ViewBag.RVCoverage != null)
+                    {
+                        <div class="row pt-8">
+                            <div class="col-lg-4 col-md-6 col-sm-6 text-normal">
+                            </div>
+                            <div class="col-lg-6 col-md-6 col-sm-6">
+                                <div class="row">
+                                    @{
+                                        int displayedVehicleCount = 0;
+                                    }
+                                    @foreach (var vehicle in ViewBag.RoutesVehicles)
+                                    {
+                                        if (vehicle.RVName == "")
+                                        {
+                                            <div class="col-lg-1 col-sm-1 col-md-1">
+                                                <div class="text-normal rect-values pl-3">
+                                                    Vehicle @vehiclecount
+                                                </div>
+                                            </div>
+                                            vehiclecount++;
+                                        }
+                                        else
+                                        {
+                                            if (displayedVehicleCount == 0)
+                                            {
+                                                <div class="col-lg-1 col-sm-1 col-md-1" style="padding-left:0%;">
+                                                    <div class="text-normal rect-values pl-3">
+                                                        @vehicle.RVName
+                                                    </div>
+                                                </div>
+                                            }
+                                            else
+                                            {
+                                                <div class="col-lg-1 col-sm-1 col-md-1" style="padding-left:2%;">
+                                                    <div class="text-normal rect-values pl-3">
+                                                        @vehicle.RVName
+                                                    </div>
+                                                </div>
+                                            }
+
+                                        }
+                                        displayedVehicleCount++;
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3 pt-8">
+                            @{
+                                var idCount = 0;
+                            }
+                            @foreach (var route in ViewBag.RVCoverage)
+                            {
+                                var routeCoverageVehicleCount = 0;
+                                var cvcount = 0;
+                                <div class="row" style="padding-bottom:1%">
+                                    <div class="col-lg-4 col-md-6 col-sm-6 text-normal">
+                                        @route.RPName
+                                    </div>
+                                    <div class="col-lg-6 col-md-6 col-sm-6">
+                                        <div class="row">
+                                            @foreach (var rveh in route.Vehicles)
+                                            {
+                                                cvcount++;
+                                                var routeVehicleCount = 0;
+                                                var columnMappingId = 0;
+
+                                                foreach (var routevehicle in ViewBag.RoutesVehicles)
+                                                {
+                                                    routeVehicleCount++;
+                                                    idCount++;
+                                                    columnMappingId++;
+                                                    if (routeCoverageVehicleCount < routeVehicleCount)
+                                                    {
+                                                        routeCoverageVehicleCount++;
+                                                        if (rveh.VehicleId == routevehicle.VehicleId && route.RoutePartId == routevehicle.RoutePartId)
+                                                        {
+                                                            if (rveh.Include == true)
+                                                            {
+                                                                if (rveh.isExist == true)
+                                                                {
+                                                                    <div class="col-lg-1 col-sm-1 col-md-1 " data-rid="@route.RoutePartId" data-vid="@rveh.VehicleId" data-oid="" title="Route Id:@route.RoutePartId, Vehicle Id:@rveh.VehicleId">
+                                                                        <span class="rectangle-view2 excludedDiv columMapping_@columnMappingId crnt2" id="span_@idCount" data-rid="@route.RoutePartId" data-vid="@rveh.VehicleId" data-oid="@rveh." title="Route Id:@route.RoutePartId, Vehicle Id:@rveh.VehicleId" data-bs-toggle="dropdown" aria-expanded="false"></span>
+                                                                        <span class="rectangle-view2" href="#" id="rect-view2" role="button"
+                                                                              data-bs-toggle="dropdown" aria-expanded="false"
+                                                                              style="display: none;"></span>
+                                                                        <ul class="dropdown-menu" id="rect-view">
+                                                                            <li><a class="dropdown-item addingmatrix" href="#" arg1="@route.RoutePartId" arg2="@rveh.VehicleId" arg3="" arg4="@idCount" arg5="@columnMappingId">Add</a></li>
+                                                                            <hr>
+                                                                            <li>
+                                                                                <a class="dropdown-item removingmatrix" href="#" arg1="@route.RoutePartId" arg2="@rveh.VehicleId" arg3="" arg4="@idCount">Remove</a>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <div class="col-lg-1 col-sm-1 col-md-1" data-rid="@route.RoutePartId" data-vid="@rveh.VehicleId" data-oid="@rveh.OrderNo" title="Route Id:@route.RoutePartId, Vehicle Id:@rveh.VehicleId">
+                                                                        <span class="rectangle-view1 columMapping_@columnMappingId crnt1 span-count" id="span_@idCount" data-rid="@route.RoutePartId" data-vid="@rveh.VehicleId" data-oid="@rveh.OrderNo" title="Route Id:@route.RoutePartId, Vehicle Id:@rveh.VehicleId" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                        </span>
+                                                                        <span class="rectangle-view2" href="#" id="rect-view2" role="button"
+                                                                              data-bs-toggle="dropdown" aria-expanded="false"
+                                                                              style="display: none;"></span>
+                                                                        <ul class="dropdown-menu" id="rect-view">
+                                                                            <li>
+                                                                                <a class="dropdown-item addingmatrix" href="#" arg1="@route.RoutePartId" arg2="@rveh.VehicleId" arg4="@idCount" arg5="@columnMappingId"><img class="mr-2 img-fluid" src="~/Content/assets/images/circular-add-icon.svg">Add</a>
+                                                                            </li>
+                                                                            <hr>
+                                                                            <li>
+                                                                                <a class="dropdown-item removingmatrix" href="#" arg1="@route.RoutePartId" arg2="@rveh.VehicleId" arg4="@idCount"> <img class="mr-2 img-fluid" src="~/Content/assets/images/circular-cancel-icon.svg">Remove</a>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                <div class="col-lg-1 col-sm-2 col-md-2" id="rect-view" data-rid="@route.RoutePartId" data-vid="@rveh.VehicleId" data-oid="" title="Route Id:@route.RoutePartId, Vehicle Id:@rveh.VehicleId">
+                                                                    <span class="rectangle-view4 columMapping_@columnMappingId crnt4 span-count" id="span_@idCount" data-rid="@route.RoutePartId" data-vid="@rveh.VehicleId" data-oid="@rveh.OrderNo" title="Route Id:@route.RoutePartId, Vehicle Id:@rveh.VehicleId" data-bs-toggle="dropdown" role="button"
+                                                                          aria-expanded="false"></span>
+                                                                    <span class="rectangle-view2 span-count " href="#" id="rect-view2" role="button"
+                                                                          data-bs-toggle="dropdown" aria-expanded="false"
+                                                                          style="display: none;"></span>
+                                                                    <ul class="dropdown-menu" id="rect-view">
+                                                                        <li><a class="dropdown-item addingmatrix" href="#" arg1="@route.RoutePartId" arg2="@rveh.VehicleId" arg3="" arg4="@idCount" arg5="@columnMappingId"><img class="mr-2 img-fluid" src="~/Content/assets/images/circular-add-icon.svg">Add</a></li>
+                                                                        <!-- <hr> -->
+                                                                        <li>
+                                                                            <a class="dropdown-item removingmatrix" href="#" arg1="@route.RoutePartId" arg2="@rveh.VehicleId" arg3="" arg4="@idCount"><img class="mr-2 img-fluid" src="~/Content/assets/images/circular-cancel-icon.svg">Remove</a>
+                                                                        </li>
+                                                                    </ul>
+                                                                </div>
+
+                                                            }
+                                                            if (route.VCount != cvcount)
+                                                            {
+                                                                break;
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+
+                                                            <div class="col-lg-1 col-sm-2 col-md-2" id="rect-view" data-rid="@route.RoutePartId" data-vid="@rveh.VehicleId" data-oid="" title="Route Id:@route.RoutePartId, Vehicle Id:@rveh.VehicleId">
+                                                                <span class="rectangle-view3 columMapping_@columnMappingId crnt3" id="span_@idCount" data-rid="@route.RoutePartId" data-vid="@rveh.VehicleId" data-oid="@rveh.OrderNo" title="Route Id:@route.RoutePartId, Vehicle Id:@rveh.VehicleId" data-bs-toggle="dropdown" role="button"
+                                                                      aria-expanded="false"></span>
+                                                                <span class="rectangle-view2 span-count" href="#" id="rect-view2" role="button"
+                                                                      data-bs-toggle="dropdown" aria-expanded="false"
+                                                                      style="display: none;"></span>
+                                                            </div>
+
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+
+                </div>
+
+                <div>
+                    <div class="flexer justify-content-center pt-4">
+                        <button class="btn outline-btn-primary SOAButtonHelper" type="button" id="btnapply"
+                                style="width: auto;">
+                            APPLY
+                        </button>
+                    </div>
+                </div>
+                <div class="row pt-4">
+                    <div class="col-lg-7 col-sm-12 col-md-7">
+                        <div class="infoSteps ml-0 pt-3 pr-3 pl-3 pb-3">
+                            <div class="text-normal" id="div_sugg_template">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row pt-6">
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="row pb-2">
+                            <div class="col-lg-3 col-md-4 col-sm-4 text-normal">
+                                Template*
+                            </div>
+                            <div class="col-lg-5 col-md-6 col-sm-6">
+                                <select id="ddltemplate" class="form-select text-normal select1">
+                                    <option value="0">Select Template</option>
+                                    <option value="256001">2d1</option>
+                                    <option value="256002">2d4</option>
+                                    <option value="256003">2d5</option>
+                                    <option value="256004">2d7</option>
+                                    <option value="256005">2d8</option>
+                                    <option value="256006">2d9</option>
+                                    <option value="256007">2d4a</option>
+                                    <option value="256008">2d4b</option>
+                                    <option value="256009">2d7a</option>
+                                </select>
+                                <span id="dlltemplate_error" class="error invalid-feedback" style="display: block !important;"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="row mb-2">
+                            <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                <label class="text-normal">Recommended</label>
+                            </div>
+                            <div class="col-sm-4 col-md-6 col-lg-5 input-field">
+                                @Html.TextBoxFor(model => model.Recommended, new { @class = "edit-normal" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+                        <div class="row pb-2">
+                            <div class="col-lg-3 col-md-4 col-sm-4 text-normal">
+                                <a href="#" id="btnTemplatePreview">Preview</a>
+                            </div>
+                            <div class="col-lg-5 col-md-6 col-sm-6">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pt-4">
+                    <div class="flexer justify-content-center pt-4">
+                        <input type="button" value="SAVE" id="btnsave" class="btn outline-btn-primary SOAButtonHelper mr-2" />
+                        <input type="button" value="BACK" id="btnback" class="btn outline-btn-primary SOAButtonHelper " />
+
+                    </div>
+                </div>
+                <div>
+                    <input type="hidden" id="hiddenmodelstatus" value="@ViewBag.ModelStatus" name="hiddenmodelstatus" />
+                    @Html.HiddenFor(model => model.Applicability)
+                    @if (Model.Applicability != null)
+                    {
+                        <input type="hidden" name="isEdit" value="true" />
+                    }
+                    else
+                    {
+                        <input type="hidden" name="isEdit" value="false" />
+                    }
+                    <input type="hidden" id="Editflag" value="0" />
+                    <input type="hidden" id="saveStatus" value="@ViewBag.SOStatus" />
+                    <input type="hidden" id="hiddenremdcovrg" value="" name="RemovedCoverages" />
+                    <input type="hidden" id="hiddenstateval" name="Statevalue" />
+                    <input type="hidden" id="esdalReferenceWorkflow" name="esdalReferenceWorkflow" value="@ViewBag.EsdalReferenceWorkflow" />
+                </div>
+            </div>
+        }
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="templatePreviewModal" tabindex="-1" data-bs-backdrop="static" role="dialog" aria-labelledby="templatePreviewModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content" style="width: 38rem !important;">
+            <div class="modal-header">
+            </div>
+            <div class="modal-body">
+                <iframe name="template_frame" id="template_frame" width="100%" height="450px"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnModeClose" class="btn outline-btn-primary btn-secondary">CLOSE</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .modal-dialog {
+        width: 960px !important;
+    }
+
+    .Createspecial_context_wrapper {
+        background: steelblue;
+        width: 85px;
+        color: #fff;
+    }
+
+        .Createspecial_context_wrapper .context-menu-item {
+            height: 20px;
+            width: 100%;
+            text-align: center;
+            padding: 3px 0px 3px 0px;
+        }
+
+            .Createspecial_context_wrapper .context-menu-item:hover {
+                cursor: pointer;
+                background: rgb(46, 75, 100);
+            }
+
+    .notcontainDiv {
+        height: 20px;
+        width: 20px;
+        background-color: gray;
+        border: solid 1px black;
+    }
+
+    .contextMenu {
+        position: relative;
+        display: none;
+        z-index: 10;
+    }
+
+    .contextmenustyle {
+        display: block;
+        position: absolute;
+        margin-bottom: 0px;
+    }
+</style>
+<script src="~/Scripts/SORTApplication/CreateSpecialOrder.js?V@(Session["ProjectVersion"])"></script>

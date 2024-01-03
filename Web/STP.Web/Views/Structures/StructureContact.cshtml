@@ -1,0 +1,120 @@
+@model List<STP.Domain.Structures.StructureContact>
+@{
+    Layout = null;
+}
+<div class="form form_component structure-contact" id="form_component" ;>
+    <div class="modal" tabindex="-1" role="dialog" id="exampleModalCenter22" style="display: block; overflow-y: auto;">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" id="ViewRoadContacts" style="padding-bottom: 2rem; height: auto; border-radius: 0.3rem; width: 100%;">
+                <div class="modal-header pt-4">
+                    <span class="details pl-3 col-6" style="font-size:25px;">Contact details</span>
+                    <span aria-hidden="true" id="closcontact" class="close pl-0" data-dismiss="modal" aria-label="Close">&times;</span>
+                </div>
+
+                @if (Model != null && Model.Count != 0)
+                {
+
+                    foreach (var item in Model)
+                    {
+
+                        {
+                            int position = item.Position;
+                            String owner = "Primary Owner";
+                            switch (position)
+                            {
+                                case 1:
+                                    owner = "Primary Owner";
+                                    break;
+                                case 2:
+                                    owner = "First delegate";
+                                    break;
+                                case 3:
+                                    owner = "Second delegate";
+                                    break;
+                                default:
+                                    owner = "Third delegate";
+                                    break;
+                            }
+                            <div class="class=" col-lg-12 col-md-12 col-sm-12"">
+                                <div class="row ml-0 pt-4">
+                                    <div class="col-5 pl-5 text-normal">
+                                        Organisation name
+                                    </div>
+                                    <div class="col-7 details1">
+                                        @(item.OrganisationName + Html.Raw("    ") + "(" + owner + ")")
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="class=" col-lg-12 col-md-12 col-sm-12"">
+                                <div class="row ml-0 pt-1">
+                                    <div class="col-5 pl-5 text-normal">
+                                        Contact name
+                                    </div>
+                                    <div class="col-7 details1">
+                                        @item.ContactName
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="class=" col-lg-12 col-md-12 col-sm-12"">
+                                <div class="row ml-0 pt-3">
+                                    <div class="col-5 pl-5 text-normal">
+                                        Address
+                                    </div>
+                                    <div class="col-7 details1">
+                                        @item.AddressLine1  <br> @item.AddressLine2 <br> @item.AddressLine3 <br> @item.AddressLine4
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="class=" col-lg-12 col-md-12 col-sm-12"">
+                                <div class="row ml-0 pt-1">
+                                    <div class="col-5 pl-5 text-normal">
+                                        Post code
+                                    </div>
+                                    <div class="col-7 details1">
+                                        @item.PostCode
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="class=" col-lg-12 col-md-12 col-sm-12"">
+                                <div class="row ml-0 pt-1">
+                                    <div class="col-5 pl-5 text-normal">
+                                        Telephone
+                                    </div>
+                                    <div class="col-7 details1">
+                                        @item.Telephone
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="class=" col-lg-12 col-md-12 col-sm-12"">
+                                <div class="row ml-0 pt-1">
+                                    <div class="col-5 pl-5 text-normal">
+                                        Fax
+                                    </div>
+                                    <div class="col-7 details1">
+                                        @item.Fax
+                                    </div>
+                                </div>
+                                <div class="row ml-0 pt-1">
+                                    <div class="col-5 pl-5 text-normal">
+                                        Email
+                                    </div>
+                                    <div class="col-7 details1">
+                                        @item.Email
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                    }
+                }
+                else
+                {
+                    <div class="error invalid-feedback" style="display: block !important; text-align: center;">No record found</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@*<script src="~/Scripts/Structures/StructureContact.js?V@(Session["ProjectVersion"])"></script>*@

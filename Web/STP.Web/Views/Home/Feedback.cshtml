@@ -1,0 +1,78 @@
+@model STP.Domain.SecurityAndUsers.PrivacyDisclaimer
+@using System.Web.Optimization
+@using STP.Domain.SecurityAndUsers
+@using STP.Common.Constants
+@{
+    ViewBag.Title = "Feedback";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    UserInfo currentUserInfo = null;
+    string loggedInUser = string.Empty;
+
+    if (Session["UserInfo"] != null)
+    {
+        currentUserInfo = (UserInfo)Session["UserInfo"];
+
+        loggedInUser = currentUserInfo.UserName;
+    }
+ }   
+<style>
+    .hideValidationMsg
+    {
+        display:none;
+    }
+    .form-check-input
+    {
+        padding:inherit!important;
+    }
+    textarea
+    {
+        font-style:normal!important;
+    }
+</style>
+<!-- main content-->
+<section id="banner">
+    <div class="feedback-main mt-md-1 p-8 pt-4">
+        <div class="feedback-main-row-1 text-center">
+            <h2 class="text-normal ml-2 pl-11">FEEDBACK</h2>
+        </div>
+
+        <div class="feedback-main-row-2">
+           
+            <label for="COMPLAINT"><span class="text-normal"><input type="radio" id="COMPLAINT" name="fav_language" value="1" class="form-check-input"> Report a complaint</span></label>
+            <label for="SUGGESTION"><span class="text-normal"><input type="radio" id="SUGGESTION" name="fav_language" value="2" class="form-check-input"> Make a suggestion</span></label>
+            <label for="GENERAL_REQUEST">
+                <span class="text-normal"><input type="radio" id="GENERAL_REQUEST" name="fav_language" value="3" class="form-check-input"> Make a general request </span>
+            </label>
+            <label for="SYSTEM_FAULT"> <span class="text-normal"><input type="radio" id="SYSTEM_FAULT" name="fav_language" value="4" class="form-check-input"> Report a fault </span></label>
+</div>
+
+        <div class="feedback-main-row-3">
+            @*<p class="text-normal">Feedback</p>
+        <textarea rows="8" cols="72">Type your feedback</textarea>*@
+            <label for="Description" class="text-normal pr-6 pt-3">Feedback</label>
+            @Html.TextAreaFor(model => model.Description, new { placeholder = "Type your feedback", @id = "Description", @cols = "76", @rows = "8", @class = "multiLineTextBox" })
+            @Html.ValidationMessageFor(model => model.Description)
+            <br />
+            <br />
+
+        </div>
+        <span id="DescriptionValidationMsg" class="hideValidationMsg"></span>
+        <div class="feedback-main-row-4 text-center mt-4">
+            <button id="btn-sndfeedbk" class="btn outline-btn-primary btn-normal" value='Send' type="submit" >
+                SAVE
+            </button>
+        </div>
+    </div>
+</section>
+<!-- end of main content-->
+    
+
+
+@*<script src="~/Scripts/Common/jQueryPageList.list.js?V@(Session["ProjectVersion"])"></script>*@
+@System.Web.Optimization.Scripts.Render("~/bundles/jQueryPageListlist")
+@{ 
+    @Html.Hidden("hf_loggedInUser", loggedInUser);
+}
+
+<script src="~/Scripts/Home/Feedback.js?V@(Session["ProjectVersion"])"></script>

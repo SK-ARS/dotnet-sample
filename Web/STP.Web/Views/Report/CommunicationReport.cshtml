@@ -1,0 +1,117 @@
+@using PagedList.Mvc
+@model STP.Domain.LoggingAndReporting.CommunicationModel
+@using STP.Common.Constants
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.REPORTS;
+}
+@{
+
+    var MonthList = new List<STP.Domain.LoggingAndReporting.CommunicationModel>
+{
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {NumericMonth=1,Month  = "January"},
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {NumericMonth=2,Month = "February"},
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {NumericMonth=3,Month = "March"},
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {NumericMonth=4,Month = "April"},
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {NumericMonth=5,Month = "May"},
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {NumericMonth=6,Month = "June"},
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {NumericMonth=7,Month = "July"},
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {NumericMonth=8,Month = "August"},
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {NumericMonth=9,Month = "September"},
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {NumericMonth=10,Month = "October"},
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {NumericMonth=11,Month = "November"},
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {NumericMonth=12,Month = "December"}
+                    };
+
+    var YearList = new List<STP.Domain.LoggingAndReporting.CommunicationModel>
+{
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {Year=DateTime.Now.Year},
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {Year=DateTime.Now.Year-1},
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {Year=DateTime.Now.Year-2},
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {Year=DateTime.Now.Year-3},
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {Year=DateTime.Now.Year-4},
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {Year=DateTime.Now.Year-5},
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {Year=DateTime.Now.Year-6},
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {Year=DateTime.Now.Year-7},
+                        new STP.Domain.LoggingAndReporting.CommunicationModel {Year=DateTime.Now.Year-8}
+                    };
+
+}
+<style>
+    .redcolor {
+        color: red;
+        margin-top: 1rem !important;
+    }
+
+    .aligncenter {
+        text-align: center;
+    }
+
+    #reports-Section {
+        background-color: white;
+    }
+</style>
+<div id="helpdesk">
+    <!--main content -->
+    <section id="banner">
+        <div class="container-fluid communication-report" id="banner-container">
+            <div id="register">
+                <div id="reports-Section">
+
+                    <div class="row pt-2 pb-2 pr-3 vehicle-setting">
+
+                        <div class="col-lg-12 col-md-12 col-sm-12 pr-4 pl-4">
+                            <div class="row">
+                                <div class="col-lg-8 col-md-8 col-sm-12 text-normal title" style="margin-top:5px;">
+                                    Communication Report
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-12 text-normal" style="margin-top:10px;">
+                                    <div class="row">
+                                        <div class="col-lg-2 col-md-2 col-sm-12 text-normal" style="margin-top:5px;">
+                                            @Resources.Resource.Period
+                                        </div>
+                                        <div class="col-lg-4 col-md-4 col-sm-12">
+                                            @Html.DropDownListFor(m => m.Month, new SelectList(@MonthList, "NumericMonth", "Month"), new
+                                       {
+                                           @id = "DDStartMonth",
+                                           @class = "form-select mb-3 mr-0 mb-0",
+                                           @style = "overflow: scroll;width: 100%;color: rgba(39, 87, 149, 1);"
+                                       })
+                                        </div>
+                                        <div class="col-lg-4 col-md-4 col-sm-12">
+                                            @Html.DropDownListFor(m => m.Year, new SelectList(@YearList, "Year", "Year"), new
+                                       {
+                                           @id = "DDStartYear",
+                                           @class = "form-select mb-3 mr-0 mb-0",
+                                           @style = "overflow: scroll;width: 100%;color: rgba(39, 87, 149, 1);"
+                                       })
+                                        </div>
+                                        <div class="col-lg-1 col-md-1 col-sm-12">
+                                            <div class="flexer justify-content-center">
+                                                <span>
+                                                    <img src="/Content/assets/images/search-icon.svg" width="20" id="btnSearch" style="cursor:pointer;">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div id="CommunicationReport" style="margin: 1% 1% 1% 1% !important">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </section>
+</div>
+
+
+<script src="~/Scripts/Report/CommunicationReport.js?V@(Session["ProjectVersion"])"></script>
+

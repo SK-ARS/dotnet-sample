@@ -1,0 +1,344 @@
+@using System.Web.Optimization
+@using STP.Domain.RoadNetwork.Constraint
+@using PagedList.Mvc
+
+@{
+    int userTypeID = 0;
+    Layout = null;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        userTypeID = sessionValues.UserTypeId;
+    }
+    string mode = ViewBag.mode;
+}
+@{
+    bool isAdmin = false;
+    int portalType = 0;
+    string ConstId = Convert.ToString(ViewBag.ConstraintID);
+    if (Session["UserInfo"] != null)
+    {
+        var user = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        portalType = user.UserTypeId;
+        if (portalType == 696006 || user.IsAdmin == 1)
+        {
+            isAdmin = true;
+        }
+    }
+
+    ConstraintModel Constraintmodelalter = new ConstraintModel();
+    if (!string.IsNullOrEmpty(Convert.ToString(TempData["Constraintmodelalter"])))
+    {
+        Constraintmodelalter = (ConstraintModel)TempData["Constraintmodelalter"];
+    }
+
+}
+
+<div id="soa-structure-detail" class="caution-add-report">
+    @Html.Hidden("ConstraintID", ConstId)
+    <style>
+        .LeftpanelConst {
+            height: auto !important;
+            min-height: 35rem !important;
+            width: 26rem !important;
+        }
+
+        .outline-btn-primary {
+            padding: 8px !important;
+        }
+
+        #dialogue {
+            height: inherit !important;
+            box-shadow: inherit !important;
+            width: auto !important;
+            margin-left: 0px !important;
+            margin-top: 132px !important;
+        }
+    </style>
+    <section id="banner" class="map-icons">
+        <div>
+            <!-- check-caution -->
+            <div id="createConsDiv" class="card LeftpanelConst" style="position: absolute;" id="check-caution">
+                <div class="card-content" id="soa-structure-detail">
+                    @if (ViewBag.viewCaution == 0)
+                    {
+                        <div class="title" id="warning">
+                            Check Caution<br>
+                            @*<img src="assets/images/warning-icon2.svg" width="30" style="position: relative;">*@
+                            <img src="~/Content/assets/images/warning-icon2.svg" width="30" style="position: relative;">
+                            <div class="edit-normal">Are you sure you want to add this caution?</div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="title" id="warning">
+                            View Caution
+                        </div>
+                    }
+
+                    <div class="row mt-4 main-entry">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                    <label class="text-normal">Owner</label>
+                                </div>
+                                <div class="col-sm-4 col-md-5 col-lg-7 input-field text-normal">
+                                    @Constraintmodelalter.OrganisationName
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                    <label class="text-normal">Name*</label>
+                                </div>
+                                <div class="col-sm-4 col-md-5 col-lg-7 input-field text-normal">
+                                    @Constraintmodelalter.CautionName
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                    <label class="text-normal">Action</label>
+                                </div>
+                                <div class="col-sm-4 col-md-5 col-lg-5 text-normal">
+                                    <div class="col-sm-12 col-md-12 col-lg-12 pl-0 input-field text-normal">
+                                        @if (Constraintmodelalter.SelectedType.ToString() == "SpecificAction")
+                                        {
+                                            <label>Specific Action</label>
+                                        }
+                                        else
+                                        {
+                                            <label>Standard Caution</label>
+
+                                        }
+                                        @*<input type="radio" checked="checked" id="html" name="fav_language" value="HTML" class="pr-4">*@
+                                    </div>
+                                    @if (Constraintmodelalter.DirectionName != null)
+                                    {
+                                        {
+                                            bool fontBold = Constraintmodelalter.Bold;
+                                            bool fontItalic = Constraintmodelalter.Italic;
+                                            bool fontUnderline = Constraintmodelalter.UnderLine;
+
+                                            <span style="@(fontBold ? "font-weight: bold;" : "") @(fontItalic ? "font-style: italic;" : "") @(fontUnderline ? "text-decoration: underline;" : "")">
+                                                @Html.Raw(string.Format(Constraintmodelalter.DirectionName))
+                                            </span>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                    <label class="text-normal">Height</label>
+                                </div>
+                                <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                    @Constraintmodelalter.Height
+                                    @if (Constraintmodelalter.Height != "")
+                                    {
+                                        if (ViewBag.UOM == 692001)
+                                        {
+                                            <span class="pl-1">m</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="pl-1"> ft/in</span>
+                                        }
+                                    }
+
+
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                    <label class="text-normal">Width</label>
+                                </div>
+                                <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                    @Constraintmodelalter.Width
+                                    @if (Constraintmodelalter.Width != "")
+                                    {
+                                        if (ViewBag.UOM == 692001)
+                                        {
+                                            <span class="pl-1">m</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="pl-1"> ft/in</span>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                    <label class="text-normal">Length</label>
+                                </div>
+                                <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                    @Constraintmodelalter.Length
+                                    @if (Constraintmodelalter.Length != "")
+                                    {
+                                        if (ViewBag.UOM == 692001)
+                                        {
+                                            <span class="pl-1">m</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="pl-1"> ft/in</span>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                    <label class="text-normal">Gross weight</label>
+                                </div>
+                                <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                    @if (Constraintmodelalter.GrossWeight != 0)
+                                    {
+                                        @Constraintmodelalter.GrossWeight
+                                        <span class="pl-1">
+                                            @("t")
+                                        </span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                    <label class="text-normal">Axle weight</label>
+                                </div>
+                                <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                    @if (Constraintmodelalter.AxleWeight != 0)
+                                    {
+                                        @Constraintmodelalter.AxleWeight
+                                        <span class="pl-1">
+                                            @("t")
+                                        </span>
+                                    }
+
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                    <label class="text-normal">Speed</label>
+                                </div>
+                                <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                    @Constraintmodelalter.Speed
+                                    @if (Constraintmodelalter.Speed != "")
+                                    {
+                                        if (ViewBag.UOM == 692001)
+                                        {
+                                            <span class="pl-1">kph</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="pl-1"> mph</span>
+                                        }
+                                    }
+                                </div>
+                            </div>
+                            <div class="row mb-4">
+                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                    <label class="text-normal">Owner is contact</label>
+                                </div>
+                                <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                    @if (Constraintmodelalter.CreatorIsContact)
+                                    {
+                                        <span>Yes</span>
+                                    }
+                                    else
+                                    {
+                                        <span>No</span>
+                                    }
+                                </div>
+                            </div>
+                            @if (ViewBag.viewCaution == 0)
+                            {
+                                <div class="row pt-4">
+                                    <div class="col-sm-4 col-md-6 col-lg-5 pr-0 mr-2">
+                                        <div class="button">
+                                            <button class="btn outline-btn-primary btn-normal btn-cau-save-cautions-report" role="button" aria-pressed="true" data-toggle="modal">
+                                                SAVE
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-3 input-field text-normal">
+                                        <div class="button button-normal mr-0">
+                                            <button class="btn outline-btn-primary btn-normal btn-cau-create-caution-from-report" role="button" aria-pressed="true" data-toggle="modal" data-target="#exampleModalCenter1">
+                                                CANCEL
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="row pt-4">
+                                    <div class="col-sm-4 col-md-5 col-lg-3 input-field text-normal">
+                                        @*<div class="button button-normal mr-0">
+                                                    SAVE
+                                                </button>
+                                            </div>*@
+                                    </div>
+                                    <div class="col-sm-4 col-md-6 col-lg-5 pr-0 ml2">
+                                        <div class="button">
+                                            <button class="btn outline-btn-primary btn-normal btn-review-caution" role="button" aria-pressed="true">
+                                                CANCEL
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <img id="card-swipecon1" src="/Content/assets/images/card-swipe-on.svg" width="30" class="btn-cau-open-nav" style="cursor: pointer; margin-left: 0px; margin-top: 210px;">
+            <img id="card-swipecon2" src="/Content/assets/images/card-swipe-off.svg" width="30" class="btn-cau-close-nav" style="cursor: pointer; margin-left: 381px; margin-top: 210px;">
+
+            <!-- end of check-caution -->
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog"
+                 aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header pt-0">
+
+                        </div>
+                        <div class="modal-body">
+                            @*<img src="assets/images/completed.svg" width="30" >*@
+                            <img src="~/Content/assets/images/completed.svg" width="30"  />
+                            <div id="CautionCreatedDiv" class="edit-normal"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary btn-review-caution" data-bs-dismiss="modal">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="createCotfailedPopup" tabindex="-1" role="dialog"
+                 aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header pt-0">
+                        </div>
+                        <div class="modal-body">
+                            <img src="~/Content/assets/images/warning-icon2.svg" width="30">
+                            <div id="FaildMsgContent" class="edit-normal">
+                                Constraint creation failed.
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary btn-reload-popup-cau" data-bs-dismiss="modal">OK</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    <input type="hidden" value="@ConstId" id="ConstraintID" name="ConstraintID" />
+    <input type="hidden" value="@ViewBag.CautionId" id="CautionId" name="CautionId" />
+    <input type="hidden" value="@ViewBag.mode" id="mode" name="mode" />
+</div>
+
+
+@*<script src="~/Scripts/Constraint/CautionAddReport.js?V1.1"></script>*@

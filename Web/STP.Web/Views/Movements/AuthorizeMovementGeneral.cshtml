@@ -1,0 +1,1509 @@
+@model STP.Domain.MovementsAndNotifications.Movements.MovementModel
+@using System.Globalization
+@using STP.Domain.MovementsAndNotifications.Movements
+@using STP.Domain.MovementsAndNotifications.Notification
+@using System.Linq
+
+@using STP.Domain.SecurityAndUsers
+@{
+    int accordian = 1;
+    int userTypeId = 0;
+    UserInfo currentSessionInfo = null;
+    if (Session["UserInfo"] != null)
+    {
+        currentSessionInfo = (UserInfo)Session["UserInfo"];
+        userTypeId = currentSessionInfo.UserTypeId;
+    }
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.MOVEMENTS;
+
+    long contactId = 0;
+    long organisationId = 0;
+
+    if (Model != null && Model.ContactId > 0)
+    {
+        contactId = Model.ContactId;
+    }
+
+    if (currentSessionInfo != null && currentSessionInfo.OrganisationId > 0)
+    {
+        organisationId = currentSessionInfo.OrganisationId;
+    }
+
+    string routeType = Model.Route == null ? "" : Model.Route;
+
+    string vehicle_classification = Model.VehicleClassificationName;
+    int NotesFromhaul = 0;
+    if (Model.NotesFromHaulier != null)
+    {
+        Model.NotesFromHaulier = Model.NotesFromHaulier.Replace("|\r\n", " ").Replace("\r", " ");
+        Model.NotesFromHaulier = Model.NotesFromHaulier.Replace("\n", " ").Replace("#@GBP@#", "£").Replace("#@Pound@#", "€").Replace("#@GEL@#", "₾").Replace("#@BGN@#", "лв").Replace("#@Turkey@#", "₺");
+
+        NotesFromhaul = Model.NotesFromHaulier.Length;
+    }
+
+    string DRN = string.Empty;
+    bool isNen = false;
+    if (ViewBag.IsNen != null)
+    {
+        isNen = ViewBag.IsNen;
+    }
+    bool isNenViaApi = false;
+    if (Model.Route.ToLower() == "ne notification api" || Model.Route.ToLower() == "ne renotification api")
+    {
+        isNenViaApi = true;
+    }
+
+    if (Model.DispensationList != null && Model.DispensationList.Count > 0)
+    {
+        foreach (var dispItem in Model.DispensationList)
+        {
+            if (string.IsNullOrEmpty(DRN))
+            {
+                DRN = dispItem.DRN;
+            }
+            else
+            {
+                DRN = "," + dispItem.DRN;
+            }
+        }
+    }
+
+    long V_INBOX_ID = 0;
+    long nenId = 0;
+    string contentRefNo = "";
+    int isHistoric = 0;
+    if (ViewBag.InboxId != "")
+    {
+        V_INBOX_ID = Convert.ToInt64(ViewBag.InboxId);
+    }
+    bool NextNoLongerAffected = false;
+    if (ViewBag.NextNoLongerAffected != null)
+    {
+        NextNoLongerAffected = ViewBag.NextNoLongerAffected;
+    }
+    bool authorizeMovementGeneral = false;
+
+    if (ViewBag.AuthorizeMovementGeneral != null)
+    {
+        authorizeMovementGeneral = ViewBag.AuthorizeMovementGeneral;
+    }
+    if (ViewBag.Nen_Id != null)
+    {
+        nenId = Convert.ToInt64(ViewBag.Nen_Id);
+    }
+    if (ViewBag.Content_ref_no != null)
+    {
+        contentRefNo = ViewBag.Content_ref_no;
+    }
+    if (ViewBag.IsHistoric != null)
+    {
+        isHistoric = Convert.ToInt32(ViewBag.IsHistoric);
+    }
+}
+
+@Html.Hidden("AuthorizeMovementGeneral", authorizeMovementGeneral)
+@Html.Hidden("HFSortFlag", false)
+@Html.Hidden("NotescontactId", contactId)
+@Html.Hidden("NextNoLongerAffected", NextNoLongerAffected)
+@Html.Hidden("hf_IsNen", isNen)
+@Html.Hidden("hf_IsNenViaApi", isNenViaApi)
+
+@Html.Hidden("accordian", accordian)
+@Html.Hidden("userid", userTypeId)
+@Html.Hidden("Analysis_id")
+@Html.Hidden("Firsttime")
+@Html.Hidden("OrgId", organisationId)
+@Html.Hidden("RouteId", Model.RoutePartId)
+@Html.Hidden("RouteName", Model.Route)
+@Html.Hidden("RouteType", Model.RouteType)
+@Html.Hidden("HFNEN_ID", nenId)
+@Html.Hidden("HdnInboxID", V_INBOX_ID)
+
+@Html.Hidden("IsNEN_authorizedMov", false)
+@Html.Hidden("hfVERSION_ID", Model.VersionId)
+@Html.Hidden("ESDAL_Reference", Model.NotificationCode == null ? null : Model.NotificationCode.Replace("#", "~"))
+@Html.Hidden("StructAnalysisID", Model.AnalysisId)
+@Html.Hidden("ShowAllAffectStruct", false)
+@Html.Hidden("NOTIFICATION_ID", Model.NotificationId)
+@Html.Hidden("REVISION_ID", Model.RevisionId)
+@Html.Hidden("DOCUMENT_ID", Model.DocumentId)
+@Html.Hidden("EMail", Model.EmailAddress)
+@Html.Hidden("IS_MOST_RECENT", Model.IsMostRecent)
+@Html.Hidden("hfContentRefNum", contentRefNo)
+@Html.Hidden("hfIsHistoric", isHistoric)
+@if (Session["RouteFlag"] == null)
+{
+    Session["RouteFlag"] = 3;
+}
+<style>
+    #movement-map .btn:hover {
+        background-color: rgba(39, 87, 149, 1) !important;
+        border-color: rgba(39, 87, 149, 1) !important;
+        color: white !important;
+    }
+
+    #listitem .list-stream {
+        padding-right: 0% !important;
+        cursor: pointer;
+    }
+
+    #movement-map .details1 {
+        padding-left: 2% !important;
+    }
+
+    .auth-move-general-map-container .RouteAppraisalToolbar {
+        left: 50% !important;
+    }
+</style>
+<body style="overflow-y: auto;">
+    <section id="banner">
+        <div class="container-fluid" id="banner-container">
+            <div id="container-sub" style="background-color: white;padding-left: 4%; padding-right: 1%;">
+                <div class="row" id="helpdeskDelegation">
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 mt-3" id="movement-details">
+                        <div class="heading mb-5 mt-3" style="font-size:27px !important;"> @Resources.Resource.AuthorizeMovementGeneral  <span style="font-size:27px !important;">@Model.NotificationCode</span></div>
+
+                        @if (Model.RequiresVR1 == 1 || Model.IsMostRecent == 0)
+                        {
+                            <h4 class="warningmsg" style="color: rebeccapurple; font-size:1rem;">
+                                @if (Model.RequiresVR1 == 1)
+                                {
+                                    if (string.IsNullOrEmpty(Model.VR1Number))
+                                    {
+                                        <span> This movement was notified without a VR1 number</span>
+                                    }
+                                }
+                                @if (Model.IsMostRecent == 0)
+                                {
+                                    <span> Warning(s): This is not the latest version of the movement</span>
+                                }
+                            </h4>
+                        }
+                        <div class="row">
+                            <div class="col-md-5 col-sm-12 details-new">
+                                From Description
+                            </div>
+                            <div class="col-md-7 col-sm-12 details-new-1">
+                                @Model.FromDescription
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 col-sm-12 details-new">
+                                To Description
+                            </div>
+                            <div class="col-md-7 col-sm-12 details-new-1">
+                                @Model.ToDescription
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 col-sm-12 details-new">
+                                Movement Classification
+                            </div>
+                            <div class="col-md-7 col-sm-12 details-new-1">
+                                @if (!string.IsNullOrEmpty(Model.VehicleClassificationName))
+                                {
+
+                                    @Model.VehicleClassificationName;
+
+
+                                }
+                                else
+                                { @Resources.Resource.NoneProvided}
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-5 col-sm-12 details-new">
+                                @Resources.Resource.HaulierRef
+                            </div>
+                            <div class="col-md-7 col-sm-12 details-new-1">
+                                @if (!string.IsNullOrEmpty(Model.HauliersReference))
+                                {
+                                    @Model.HauliersReference
+                                }
+                                else
+                                {
+                                    <span>@Resources.Resource.NoneProvided</span>
+                                }
+                            </div>
+                        </div>
+                        <div class="row pt-3">
+                            <div class="col-md-5 col-sm-12 details-new">
+                                Collaboration Status
+                            </div>
+                            <div class="col-md-7 col-sm-12 details-new-1">
+                                @if (Model.Status > 0)
+                                {
+
+                                    var num = Model.Status;
+                                    num = Math.Round(num * 100) / 100;
+                                    if (num != 327001 && num != 327002 && num != 327003)
+                                    {
+                                        @Resources.Resource.UnspecifiedOnly
+                                        <span class="pl-2 ViewCollaboration" style="cursor:pointer;" title="Edit Status" DocumentId=@Model.DocumentId InboxId=@ViewBag.InboxId AnalysisId=@Model.AnalysisId><img src="~/Content/assets/images/edit-icon.svg" style="width: 17px;"></span>
+                                    }
+                                    else
+                                    {
+                                        if (num == 327001 || num == 313005)
+                                        {
+                                            <li>
+                                                <input class="form-check-input" type="radio" id="html" name="fav_language" value="HTML" checked><span class="pl-2 details1 ">Accepted</span>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li>
+                                                <input class="form-check-input" type="radio" id="html" name="fav_language" value="HTML" disabled><span class="pl-2 details1 ">Accepted</span>
+                                            </li>
+                                        }
+                                        if (num == 327002 || num == 313006)
+                                        {
+                                            <li>
+                                                <input class="form-check-input" type="radio" id="html" name="fav_language" value="HTML" checked><span class="pl-2 details1">Rejected</span>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li>
+                                                <input class="form-check-input" type="radio" id="html" name="fav_language" value="HTML" disabled><span class="pl-2 details1">Rejected</span>
+                                            </li>
+                                        }
+                                        if (num == 327003)
+                                        {
+                                            <li>
+                                                <input class="form-check-input" type="radio" id="html" name="fav_language" value="HTML" checked><span class="pl-2 details1">Under Assessment</span>
+                                            </li>
+                                        }
+                                        else
+                                        {
+                                            <li>
+                                                <input class="form-check-input" type="radio" id="html" name="fav_language" value="HTML" disabled><span class="pl-2 details1">Under Assessment</span>
+                                            </li>
+                                        }
+                                        <span class="pl-2 ViewCollaborationEdit" style="cursor:pointer;" title="Edit Status" DocumentId=@Model.DocumentId InboxId=@ViewBag.InboxId AnalysisId=@Model.AnalysisId><img src="~/Content/assets/images/edit-icon.svg" style="width: 17px;"></span>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <div class="row pt-3 pb-3">
+                            <div class="col-md-5 col-sm-12 details-new">
+                                Collaboration Notes
+                            </div>
+                            <div class="col-md-7 col-sm-12 details-new-1">
+                                @if (Model.CollaborationNotes != null && Model.CollaborationNotes.Count > 0)
+                                {
+                                    foreach (var item in Model.CollaborationNotes)
+                                    {
+                                        string mailText = "";
+                                        if (item.Acknowledged == 2 || item.Acknowledged == 3) { mailText = "(mailed collaboration notes)"; }
+                                        @Html.Raw(item.When); @mailText
+                                        <br />
+                                        @Html.Raw(item.Notes.Replace("PLEASE NOTE", "<br /><br />PLEASE NOTE"))
+                                        <br />
+                                        if ((item.Acknowledged == 1 || item.Acknowledged == 2) && item.AcknowledgedWhen != null)
+                                        {
+                                            <div class="NotesWidthInner"><i>Read by haulier @item.AcknowledgedWhen.ToString("dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture) </i></div>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <span>@Resources.Resource.NoneProvided</span>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-5 col-sm-12 details-new">
+                                ESDAL Reference
+                            </div>
+                            <div class="col-md-7 col-sm-12 details-new-1">
+                                @if (!string.IsNullOrEmpty(Model.NotificationCode))
+                                {
+                                    @Model.NotificationCode
+                                }
+                                else
+                                {
+                                    <span>@Resources.Resource.NoneProvided</span>
+                                }
+                            </div>
+                        </div>
+
+                        @if (Model.VehicleClassificationName != null && Model.VehicleClassificationName.ToUpper() == "VSO")
+                        {
+                            <div class="row">
+                                <div class="col-md-5 col-sm-12 details-new">
+                                    VSO Number
+                                </div>
+                                <div class="col-md-7 col-sm-12 details-new-1">
+
+                                    @Model.VSONo
+
+                                </div>
+                            </div>
+                        }
+
+
+
+                        @if (Model.VehicleClassificationName != null && Model.VehicleClassificationName.ToLower() == "special order")
+                        {
+                            <div class="row">
+                                <div class="col-md-5 col-sm-12 details-new">
+                                    @Resources.Resource.HAReference
+                                </div>
+                                <div class="col-md-7 col-sm-12 details-new-1">
+                                    @if (!string.IsNullOrEmpty(Model.HAJobFileReference))
+                                    {@Model.HAJobFileReference.Replace("NoneProvided", "None provided")}
+                                else
+                                {
+                                    <span>@Resources.Resource.NoneProvided</span>
+                                }
+                                </div>
+                            </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Model.VehicleClassificationName) && Convert.ToString(Model.VehicleClassificationName).Trim().ToLower() != "special order")
+                        {
+                            if (Model.RequiresVR1 != null && (Model.VR1s != null || Model.RequiresVR1 == 1))
+                            {
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-12 details-new">
+                                        @Resources.Resource.AssociatedVR1Information
+                                    </div>
+                                    <div class="col-md-7 col-sm-12 details-new-1">
+                                        @if (Model.VR1s != null && Model.VR1s.Count > 0)
+                                        {
+                                            List<VR1> distinctVR1s = Model.VR1s.GroupBy(p => p.VR1Number).Select(g => g.First()).ToList();
+                                            <div>
+                                                <table>
+                                                    <tr style="background-color: rgba(39, 87, 149, 0.1);">
+                                                        <td class="colum1" style="width:2px;">@Resources.Resource.VR1Number</td>
+                                                        <td class="colum1" style="width:2px">@Resources.Resource.ScottishNumber</td>
+                                                    </tr>
+                                                    @foreach (var item in distinctVR1s)
+                                                    {
+                                                        <tr>
+                                                            <td class="colum2" style="width:8%;">@item.VR1Number</td>
+                                                            <td class="colum2" style="width:8%;">
+                                                                @if (string.IsNullOrEmpty(item.ScottishVR1Number))
+                                                                {
+                                                                    <span>N/A</span>
+                                                                }
+                                                                else
+                                                                {
+                                                                    @item.ScottishVR1Number
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                </table>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span>@Resources.Resource.NoAssociatedVR1Numbers</span>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                        @if (Model.SpecialOrders != null && Model.SpecialOrders.Count > 0 && (Model.Route.ToLower() == "agreement" ||
+                            Model.Route.ToLower() == "notification" || Model.Route.ToLower() == "renotification" || Model.Route.ToLower() == "amendment to agreement" ||
+                            Model.Route.ToLower() == "recleared" || Model.Route.ToLower() == "ne agreed notification" || Model.Route.ToLower() == "ne notification" ||
+                            Model.Route.ToLower() == "ne renotification" || Model.Route.ToLower() == "ne agreed renotification" ||
+                            Model.Route.ToLower() == "ne notification api" || Model.Route.ToLower() == "ne renotification api"))
+                        {
+                            <div class="row">
+                                <div class="col-md-5 col-sm-12 details-new">
+                                    @Resources.Resource.SpecialOrder
+                                </div>
+                                <div class="col-md-7 col-sm-12 details-new-1">
+                                    <div class="col-lg-8 col-md-8 col-sm-12">
+                                        <table>
+                                            <tr style="background-color: rgba(39, 87, 149, 0.1);">
+                                                <td class="colum1" style="width: 2px;">@Resources.Resource.SOhash</td>
+                                                <td class="colum1" style="width: 2px; white-space: nowrap;">@Resources.Resource.SignedOn</td>
+                                                <td class="colum1" style="width: 2px; white-space: nowrap;">Expires on</td>
+                                            </tr>
+                                            @foreach (var item in Model.SpecialOrders)
+                                            {
+                                                <tr>
+                                                    <td class="colum2" style="width: 5%; white-space: nowrap;">@item.OrderNo</td>
+                                                    <td class="colum2" style="width: 8%; white-space: nowrap;">
+                                                        @if (item.SignedDate.ToString("dd-MM-yyyy") != "01-01-0001")
+                                                        {@item.SignedDate.ToString("dd-MM-yyyy")}
+                                                    </td>
+                                                    <td class="colum2" style="width: 8%; white-space: nowrap;">
+                                                        @if (item.ExpiryDate.ToString("dd-MM-yyyy") != "01-01-0001")
+                                                        {@item.ExpiryDate.ToString("dd-MM-yyyy")}
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                        else if (Model.SoNumbers != null && Model.SoNumbers != string.Empty && ((Model.Route.ToLower() == "notification" ||
+                            Model.Route.ToLower() == "renotification") || ((Model.Route.ToLower() == "ne agreed notification" ||
+                            Model.Route.ToLower() == "ne notification" || Model.Route.ToLower() == "ne renotification" ||
+                            Model.Route.ToLower() == "ne agreed renotification" || Model.Route.ToLower() == "ne notification api" ||
+                            Model.Route.ToLower() == "ne renotification api"))))
+                        {
+                            <div class="row">
+                                <div class="col-md-5 col-sm-12 details-new">
+                                    @Resources.Resource.SpecialOrder
+                                </div>
+                                <div class="col-md-7 col-sm-12 details-new-1">
+                                    @Model.SoNumbers
+                                </div>
+                            </div>
+                        }
+
+
+                        <div class="row">
+                            <div class="col-md-5 col-sm-12 details-new">
+                                @Resources.Resource.ReceivedOn
+                            </div>
+                            <div class="col-md-7 col-sm-12 details-new-1">
+                                @if (Model.Route != null && (Model.Route.ToLower() == "reproposal" || Model.Route.ToLower() == "proposal" ||
+                                    Model.Route.ToLower() == "amendment to agreement" || Model.Route.ToLower() == "no longer affected" ||
+                                    Model.Route.ToLower() == "recleared" || Model.Route.ToLower() == "agreement" || Model.Route.ToLower() == "vrl planned route"))
+                                {
+
+                                    if (Model.ApplicationDate.ToString("dd-MM-yyyy") != "01-01-0001")
+                                    {
+                                        @Model.ApplicationDate.ToString("dd-MM-yyyy")
+                                    }
+                                    else
+                                    {
+                                        <span>@Resources.Resource.NoneProvided</span>
+                                    }
+                                }
+                                else
+                                {
+                                    if (Model.ReceivedDate.ToString("dd-MM-yyyy") != "01-01-0001")
+                                    {
+                                        @Model.ReceivedDate.ToString("dd-MM-yyyy HH:mm")
+                                    }
+                                    else
+                                    {
+                                        <span>@Resources.Resource.NoneProvided</span>
+                                    }
+                                }
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-5 col-sm-12 details-new">
+                                @Resources.Resource.HaulierContact
+                            </div>
+                            <div class="col-md-7 col-sm-12 details-new-1">
+                                @if (!string.IsNullOrEmpty(Model.HaulierContact))
+                                {
+                                    if (@ViewBag.NotificationId > 0)
+                                    {
+                                        <a href="#" style="text-decoration: none;" NotificationId=@ViewBag.NotificationId class="text-decoration-link ViewContactedPartiesByNotification">
+                                            @Model.HaulierContact
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <a href="#" style="text-decoration: none;" data-revisionid="@Model.RevisionId" data-versionid="@Model.VersionId" class="text-decoration-link ViewContactedPartiesByProposal">
+                                            @Model.HaulierContact
+                                        </a>
+                                    }
+                                }
+                                else
+                                { <span>@Resources.Resource.NoneProvided</span>}
+                            </div>
+                        </div>
+                        @if (Model.Route != null && ((Model.Route.ToLower() == "notification" || Model.Route.ToLower() == "renotification") ||
+                            ((Model.Route.ToLower() == "ne agreed notification" || Model.Route.ToLower() == "ne notification" ||
+                            Model.Route.ToLower() == "ne renotification" || Model.Route.ToLower() == "ne notification api" ||
+                            Model.Route.ToLower() == "ne renotification api"))))
+                        {
+                            if (!string.IsNullOrEmpty(Model.OnBehalfOf))
+                            {
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-12 details-new">
+                                        On Behalf of
+                                    </div>
+                                    <div class="col-md-7 col-sm-12 details-new-1">
+                                        @Model.OnBehalfOf
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                        <div class="row">
+                            <div class="col-md-5 col-sm-12 details-new">
+                                Other Contact Details
+                            </div>
+                            <div class="col-md-7 col-sm-12 details-new-1">
+                                @if (!string.IsNullOrEmpty(Model.OtherContactDetails))
+                                {
+                                    if (@ViewBag.NotificationId > 0)
+                                    {
+                                        <span>@Model.OtherContactDetails</span>
+                                    }
+                                    else
+                                    {
+                                        <span>@Model.OtherContactDetails</span>
+                                    }
+
+                                }
+                                else
+                                { <span>@Resources.Resource.NoneProvided</span>}
+                            </div>
+                        </div>
+                        @if (Model.Route != null && ((Model.Route.ToLower() == "notification" || Model.Route.ToLower() == "renotification") ||
+                            ((Model.Route.ToLower() == "ne agreed notification" || Model.Route.ToLower() == "ne notification" ||
+                            Model.Route.ToLower() == "ne renotification" || Model.Route.ToLower() == "ne agreed renotification" ||
+                            Model.Route.ToLower() == "ne notification api" || Model.Route.ToLower() == "ne renotification api"))))
+                        {
+                            <div class="row">
+                                <div class="col-md-5 col-sm-12 details-new">
+                                    @Resources.Resource.Licence
+                                </div>
+                                <div class="col-md-7 col-sm-12 details-new-1">
+                                    @if (!string.IsNullOrEmpty(Model.Licence))
+                                    {
+                                        @Model.Licence
+                                    }
+                                    else
+                                    {<span>@Resources.Resource.NoneProvided</span>}
+                                </div>
+                            </div>
+                        }
+
+                        @if (Model.Route != null && ((Model.Route.ToLower() == "notification" || Model.Route.ToLower() == "renotification") ||
+                            ((Model.Route.ToLower() == "ne agreed notification" || Model.Route.ToLower() == "ne notification" ||
+                            Model.Route.ToLower() == "ne renotification" || Model.Route.ToLower() == "ne notification api" ||
+                            Model.Route.ToLower() == "ne renotification api"))))
+                        {
+                            if (userTypeId == 696007)
+                            {
+                                <div class="row">
+                                    <div class="col-md-5 col-sm-12 details-new">
+                                        @Resources.Resource.IndemnityConfirmation
+                                    </div>
+                                    <div class="col-md-7 col-sm-12 details-new-1">
+                                        @if (!string.IsNullOrEmpty(Model.IndemnityConfirmation))
+                                        {
+                                            if (@Model.IndemnityConfirmation.ToLower() == "yes")
+                                            {
+                                                <a href="#" style="text-decoration: none;" NotificationId=@ViewBag.NotificationId MoveStartDate=@Model.MoveStartDate.ToString("dd-MM-yyyy") MoveEndDate=@Model.MoveEndDate.ToString("dd-MM-yyyy") class="text-decoration-link ViewIndemnityConfirmation">@Model.IndemnityConfirmation</a>
+                                            }
+                                            else
+                                            { @Model.IndemnityConfirmation
+                                        }
+                                    }
+                                    else
+                                    {<span> @Resources.Resource.NoneProvided </span>}
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                        @if (Model.Route != null && ((Model.Route.ToLower() != "notification" && Model.Route.ToLower() != "renotification") &&
+                            (Model.Route.ToLower() != "ne agreed notification" && Model.Route.ToLower() != "ne notification" &&
+                            Model.Route.ToLower() != "ne renotification" && Model.Route.ToLower() != "ne agreed renotification" &&
+                            Model.Route.ToLower() != "ne notification api" && Model.Route.ToLower() != "ne renotification api")))
+                        {
+                            <div class="row">
+                                <div class="col-md-5 col-sm-12 details-new">
+                                    @Resources.Resource.DistributionNotes
+                                </div>
+                                <div class="col-md-7 col-sm-12 details-new-1">
+                                    @if (!string.IsNullOrEmpty(Model.Notes))
+                                    {@Model.Notes}
+                                else
+                                { <span>@Resources.Resource.NoneProvided</span>}
+                                </div>
+                            </div>
+                        }
+
+                        @if (Model.VehicleClassification == 241001 || Model.VehicleClassification == 241002)
+                        {
+                            <div class="row">
+                                <div class="col-md-5 col-sm-12 details-new">
+                                    @Resources.Resource.HAContact
+                                </div>
+                                <div class="col-md-7 col-sm-12 details-new-1">
+                                    @if (!string.IsNullOrEmpty(Model.HAContact))
+                                    {<a href="#" HAContactId=@Model.HAContactId class="text-decoration-link ViewContactedParties">@Model.HAContact</a>}
+                                else
+                                { <span>@Resources.Resource.NoneProvided</span>}
+                                </div>
+                            </div>
+                        }
+
+                        <div class="row">
+                            <div class="col-md-5 col-sm-12 details-new">
+                                @Resources.Resource.NumberofMovements
+                            </div>
+                            <div class="col-md-7 col-sm-12 details-new-1">
+                                @if (Model.TotalMoves > 0)
+                                {
+                                    @Model.TotalMoves
+                                }
+                                else
+                                {@Resources.Resource.NoneProvided}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 col-sm-12 details-new">
+                                @Resources.Resource.NumberOfPiecesMoved
+                            </div>
+                            <div class="col-md-7 col-sm-12 details-new-1">
+                                @if (Model.MaxPartPerMove > 0)
+                                {
+                                    @Model.MaxPartPerMove
+                                }
+                                else
+                                {@Resources.Resource.NoneProvided}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 col-sm-12 details-new">
+                                @Resources.Resource.Load
+                            </div>
+                            <div class="col-md-7 col-sm-12 details-new-1">
+                                @if (!string.IsNullOrEmpty(Model.LoadDescription))
+                                {
+                                    @Model.LoadDescription
+                                }
+                                else
+                                {@Resources.Resource.NoneProvided}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 col-sm-12 details-new">
+                                Movement Date<span style="float: right;">@Resources.Resource.From.ToLower()</span>
+                            </div>
+                            <div class="col-md-7 col-sm-12 details-new-1">
+                                @if (Model.MoveStartDate.ToString("dd-MM-yyyy") != "01-01-0001")
+                                {
+                                    @Model.MoveStartDate.ToString("dd-MM-yyyy")
+                                    <span class="timepadding">@Model.StartTime.ToString("HH:mm")</span>
+                                }
+                                else
+                                {<span>@Resources.Resource.NoneProvided</span>}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-5 col-sm-12 details-new">
+                                <span style="float: right;" class="pr-3">@Resources.Resource.To.ToLower()</span>
+                            </div>
+                            <div class="col-md-7 col-sm-12 details-new-1">
+                                @if (@Model.MoveEndDate.ToString("dd-MM-yyyy") != "01-01-0001")
+                                {
+                                    @Model.MoveEndDate.ToString("dd-MM-yyyy")
+                                    <span class="timepadding">@Model.EndTime.ToString("HH:mm")</span>
+                                }
+                                else
+                                {<span>@Resources.Resource.NoneProvided</span>}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12" id="movement-map">
+                        @if (!string.IsNullOrEmpty(Model.ESDALReference))
+                        {
+                            <div id="printButtonDiv" class="button first-button pb-3" style="padding-bottom: 10px !important;">
+                                <button class="btn outline-btn-primary btn-normal" id="printbutton" role="button" aria-pressed="true">
+                                    PRINT
+                                </button>
+                            </div>
+                        }
+
+                        <div class="card pb-4" id="printOptions" style="display: none; z-index: 0;">
+                            <div style="text-align: center;padding-top: 5px;">
+                                <style>
+                                    .printOptions:hover {
+                                        background: #e9eef4;
+                                    }
+                                </style>
+
+                                <ul id="printOptions">
+                                    @{
+                                        string userType = "SOA";
+                                        if (userTypeId == 696002) { userType = "Police"; }
+                                        var docType = "notification";
+                                        if (Model.Route != null && (Model.Route.ToLower() == "agreed" || Model.Route.ToLower() == "agreement" ||
+                                            Model.Route.ToLower() == "vrl planned route"))
+                                        {
+                                            docType = "agreed";
+                                        }
+                                        else if (Model.Route != null && (Model.Route.ToLower() == "amendment to agreement")) { docType = "amendment to agreement"; }
+                                        else if (Model.Route != null && (Model.Route.ToLower() == "recleared")) { docType = "agreed"; }
+                                        else if (Model.Route != null && (Model.Route.ToLower() == "proposal")) { docType = "proposed"; }
+                                        else if (Model.Route != null && (Model.Route.ToLower() == "reproposal")) { docType = "reproposal"; }
+                                        else if (Model.Route != null && (Model.Route.ToLower() == "nolonger affected" || Model.Route.ToLower() == "no longer affected"))
+                                        { docType = "no longer affected"; }
+                                    }
+                                    <li class="details1 printOptions PrintReport" NotificationId=@Model.NotificationId ESDALReference="@Model.ESDALReference" DocType="@docType" UserType="@userType" DRN="@DRN">Print a detailed version</li>
+
+                                    @if (Model.Route != null && ((Model.Route.ToLower() == "notification" || Model.Route.ToLower() == "renotification") ||
+                                        (Model.Route.ToLower() == "ne agreed notification" || Model.Route.ToLower() == "ne notification" ||
+                                        Model.Route.ToLower() == "ne renotification" || Model.Route.ToLower() == "ne agreed renotification" ||
+                                        Model.Route.ToLower() == "ne notification api" || Model.Route.ToLower() == "ne renotification api")) &&
+                                        Model.VehicleClassificationName != null && (Model.VehicleClassificationName.ToLower().Contains("stgo") ||
+                                        Model.VehicleClassificationName.ToLower() == "wheeled construction and use" ||
+                                        Model.VehicleClassificationName.ToLower() == "c&u" ||
+                                        Model.VehicleClassificationName.ToLower() == "wheeled construction & use" ||
+                                        Model.VehicleClassificationName.ToLower() == "special order" || Model.VehicleClassificationName.ToLower() == "so"))
+                                    {
+                                        docType = "STGO";
+                                        if (Model.VehicleClassificationName.ToLower().Contains("wheeled construction") ||
+                                            Model.VehicleClassificationName.ToLower() == "c&u")
+                                        {
+                                            docType = "CandU";
+                                        }
+                                        else if (Model.VehicleClassificationName.ToLower() == "special order" || Model.VehicleClassificationName.ToLower() == "so")
+                                        {
+                                            docType = "special order";
+                                        }
+                                        <hr>
+                                        <li class="details1 printOptions PrintReducedReport" NotificationId=@Model.NotificationId ESDALReference="@Model.ESDALReference" DocType="@docType" UserType="@userType" DRN="@DRN">Print a reduced version(no recipient list)</li>
+
+                                        <input type="hidden" id="DivHeight" value="1">
+                                    }
+                                    else
+                                    {
+                                        <input type="hidden" id="DivHeight" value="2">
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+                        <div id="MarginTop">
+                            <div class="row auth-move-general-map-container" id="MapData">
+                                @{
+                                    if (!string.IsNullOrEmpty(Model.ESDALReference))
+                                    {
+                                        Html.RenderAction("MovementMap", "Movements", new { contRefNum = ViewBag.Content_ref_no, versionId = Model.VersionId, nenId = ViewBag.Nen_Id, isNen = isNen, isNenApi = isNenViaApi });
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <!-- table -->
+                    <!-- end of table -->
+                    <div class="row pt-5 viewsummary pr-0" id="listitem" style="display: list-item;">
+                        @if (Model.Route.ToLower() == "ne notification api" || Model.Route.ToLower() == "ne renotification api" || Model.Route.ToLower() == "ne agreed notification" || Model.Route.ToLower() == "ne agreed renotification")
+                        {
+                            <div class="pb-2 list-stream" id="inputRouteDescriptionsNEN">
+                                <div class="align-items-center routeDescription" AnalysisId=@Model.AnalysisId RevisionId=@Model.RevisionId>
+                                    <span class="text-normal-hyperlink">Haulier supplied NEN route description</span>
+                                    <img id="down-chevlon16" src="~/Content/assets/images/down-chevlon-filter.svg" class="cursor-pointer" style="float: right;" width="15">
+                                    <img id="up-chevlon16" src="~/Content/assets/images/up-chevlon-filter.svg" class="cursor-pointer" style="float: right;display: none;" width="15">
+                                </div>
+                                <hr>
+                                <div id='inputRouteDescriptions' class="pl-3 pr-3 pb-4 pt-4" style="display: none;">
+                                </div>
+                            </div>
+                        }
+                        <div class="pb-2 list-stream">
+                            <div class="align-items-center viewVehicleSummary">
+                                <span class="text-normal-hyperlink">Show Vehicles Configuration Summary</span>
+                                <img id="down-chevlon6" src="~/Content/assets/images/down-chevlon-filter.svg" class="cursor-pointer" style="float: right; display: block;" width="15">
+                                <img id="up-chevlon6" src="~/Content/assets/images/up-chevlon-filter.svg" class="cursor-pointer" style="float: right; display: none;" width="15">
+                            </div>
+                            <hr>
+                        </div>
+                        <div id="vehiclesummary" class="pl-3 pr-3 pb-4 pt-4" style="width: 100%; display: none;">
+                            @if (Model.VehicleConfigurations != null && Model.VehicleConfigurations.Count > 0)
+                            {
+                                foreach (var item in Model.VehicleConfigurations)
+                                {
+                                    var vehicleId = (int)item.VehicleId;
+                                    <div class="pb-2 list-stream vehicleSummary" style="cursor:pointer;" VehicleId=@item.VehicleId VehicleClassification=@item.VehicleClassification>
+                                        <div class="align-items-center">
+                                            <span class="text-normal-hyperlink">
+                                                @item.VehicleName
+                                            </span>
+                                            <input id="Vehicle_@vehicleId" type="hidden" />
+                                            <img id="chevlon-up-icon_@vehicleId" src="~/Content/assets/images/up-chevlon-filter.svg" class="cursor-pointer" style="display:none; float: right;" width="15">
+                                            <img id="chevlon-down-icon_@vehicleId" src="~/Content/assets/images/down-chevlon-filter.svg" class="cursor-pointer" style="float: right;display: block;"
+                                                 width="15">
+                                        </div>
+                                        <hr>
+                                    </div>
+                                    <div id="vehicleconfig_@vehicleId"></div>
+                                }
+                            }
+                            else
+                            {
+                                <div class="col-lg-5 col-md-6 col-sm-12 pr-6 pb-0">
+                                    <div>
+                                        <p class="edit-normal pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                            No Vehicles
+                                        </p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="pb-2 list-stream">
+                            <div class="align-items-center routeOverview" AnalysisId=@Model.AnalysisId RevisionId=@Model.RevisionId>
+                                <span class="text-normal-hyperlink">Route Overview</span>
+                                <img id="down-chevlon12" src="~/Content/assets/images/down-chevlon-filter.svg" class="cursor-pointer" style="float: right;" width="15">
+                                <img id="up-chevlon12" src="~/Content/assets/images/up-chevlon-filter.svg" class="cursor-pointer" style="float: right;display: none;" width="15">
+                            </div>
+                            <hr>
+                            <div id='routeDescription' class="pl-3 pr-3 pb-4 pt-4" style="display: none;">
+                            </div>
+                        </div>
+
+                        <div class="pb-2 list-stream">
+                            <div class="align-items-center routeRoads" AnalysisId=@Model.AnalysisId>
+                                <span class="text-normal-hyperlink">Roads On Route</span>
+                                <img src="~/Content/assets/images/down-chevlon-filter.svg" id="down-chevlon13" class="cursor-pointer" style="float: right;" width="15">
+                                <img src="~/Content/assets/images/up-chevlon-filter.svg" id="up-chevlon13" class="cursor-pointer" style="float: right;display: none;"
+                                     width="15">
+                            </div>
+                            <hr>
+                            <div id='RoadsRoute' class="pl-3 pr-3 pb-4 pt-4" style="width: 100%;display: none;">
+                            </div>
+                        </div>
+                        <div class="pb-2 list-stream">
+                            <div class="align-items-center affectedstructure" AnalysisId=@Model.AnalysisId>
+                                <span class="text-normal-hyperlink">Affected Structures</span>
+                                <img id="down-chevlon10" src="~/Content/assets/images/down-chevlon-filter.svg" class="cursor-pointer" style="float: right; display: block;" width="15">
+                                <img id="up-chevlon10" src="~/Content/assets/images/up-chevlon-filter.svg" class="cursor-pointer" style="float: right; display: none;" width="15">
+                            </div>
+                            <hr>
+                        </div>
+                        <div id="affectedstructure" class="pl-3 pr-3 pb-4 pt-4" style="width: 100%; display: none;">
+                            @if (Model.AnalysisId == 0)
+                            {
+                                <div class="col-lg-5 col-md-6 col-sm-12 pr-6 pb-0">
+                                    <div>
+                                        <p class="edit-normal pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                            No Affected Structures
+                                        </p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        @if (Model.Route != null && ((Model.Route.ToLower() != "notification" && Model.Route.ToLower() != "renotification") &&
+                            (Model.Route.ToLower() != "ne agreed notification" && Model.Route.ToLower() != "ne notification" &&
+                            Model.Route.ToLower() != "ne renotification" && Model.Route.ToLower() != "ne agreed renotification")))
+                        {
+                            <div class="pb-2 list-stream">
+                                <div class="align-items-center drivingInstruction" AnalysisId=@Model.AnalysisId>
+
+                                    <span class="text-normal-hyperlink">Driving Instructions</span>
+                                    <img id="down-chevlon14" src="~/Content/assets/images/down-chevlon-filter.svg" class="cursor-pointer" style="float: right; display: block;" width="15">
+                                    <img id="up-chevlon14" src="~/Content/assets/images/up-chevlon-filter.svg" class="cursor-pointer" style="float: right; display: none;" width="15">
+                                </div>
+                                <hr>
+                            </div>
+                            <div id="drivingInstruction" class="pl-3 pr-3 pb-4 pt-4" style="width: 100%; display: none;">
+                                @if (Model.AnalysisId == 0)
+                                {
+                                    <div class="col-lg-5 col-md-6 col-sm-12 pr-6 pb-0">
+                                        <div>
+                                            <p class="edit-normal pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                                No driving instructions
+                                            </p>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                        <div class="pb-2 list-stream notesFromHaulier">
+                            <div class="align-items-center">
+                                @if (contentRefNo != "" && contentRefNo != "0")
+                                {
+                                    <span class="text-normal-hyperlink">Notification Notes From Haulier</span>
+                                }
+                                else
+                                {
+                                    <span class="text-normal-hyperlink">Application Notes From Haulier</span>
+                                }
+                                <img id="down-chevlon3" class="cursor-pointer" src="~/Content/assets/images/down-chevlon-filter.svg" style="float: right;"
+                                     width="15">
+                                <img id="up-chevlon3" class="cursor-pointer" src="~/Content/assets/images/up-chevlon-filter.svg"
+                                     style="float: right;display: none;" width="15">
+                            </div>
+                            <hr>
+                        </div>
+                        <div id="notesFromHaulier" class="pt-3 pb-3 pl-8 " style="display: none;">
+                            <div>
+
+                            </div>
+                            <div style="width: 70%;">
+                                @if (NotesFromhaul > 0)
+                                {
+                                    <p class="edit-normal  pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0 ">
+                                        @Model.NotesFromHaulier
+                                    </p>
+
+                                }
+                                else
+                                {
+                                    <p class="edit-normal  pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                        Notes from haulier not found
+                                    </p>
+                                }
+
+                            </div>
+                        </div>
+                        <div class="pb-2 list-stream relatedCom">
+                            <div class="align-items-center">
+                                <span class="text-normal-hyperlink">Related Communications</span>
+                                <img id="down-chevlon5" src="~/Content/assets/images/down-chevlon-filter.svg" class="cursor-pointer" style="float: right;" width="15">
+                                <img id="up-chevlon5" src="~/Content/assets/images/up-chevlon-filter.svg" class="cursor-pointer" style="float: right;display: none;"
+                                     width="15">
+                            </div>
+                            <hr>
+                        </div>
+                        <div id="relatedCom" class="pt-3 pl-8" style="display: none;">
+                            @if (Model.RelatedCommunications != null && Model.RelatedCommunications.Count > 0)
+                            {
+                                <div class="row">
+                                    <div class="col-lg-9 col-md-12 col-sm-12">
+                                        <div class="row">
+                                            @foreach (var item in Model.RelatedCommunications)
+                                            {
+                                                <div class="col-6 pr-6">
+                                                    <div>
+                                                        <h3 class="heading-medium "><a class="RelatedCommunication" href="#" notificationId="@item.EncrapNotificationId" NotificationCode="@item.NotificationCode.Replace("#", "~")" EncryptESDALReference="@item.EncryptESDALReference" style="color: rgba(39, 87, 149, 1); text-decoration: none; font-size: 1.1vw;">@item.NotificationCode - @item.NotificationDate.ToString("dd-MM-yyyy")</a></h3>
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-lg-5 col-md-6 col-sm-12 pr-6 pb-0">
+                                    <div>
+                                        <p class="edit-normal pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                            @Resources.Resource.NoneProvided
+                                        </p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+                        @if (Model.Route != null && ((Model.Route.ToLower() != "notification" && Model.Route.ToLower() != "renotification") &&
+                            (Model.Route.ToLower() != "ne agreed notification" && Model.Route.ToLower() != "ne notification" &&
+                            Model.Route.ToLower() != "ne renotification" && Model.Route.ToLower() != "ne agreed renotification")))
+                        {
+                            if (!string.IsNullOrEmpty(Model.ESDALReference))
+                            {
+                                <div class="pb-2 list-stream NotesToHaulier">
+                                    <div class="align-items-center">
+                                        <span class="text-normal-hyperlink">Notes to haulier</span>
+                                        <img id="down-chevlon" src="~/Content/assets/images/down-chevlon-filter.svg" style="float: right;" class="cursor-pointer"
+                                             width="15">
+                                        <img id="up-chevlon" src="~/Content/assets/images/up-chevlon-filter.svg" class="cursor-pointer"
+                                             style="float: right;display: none;" width="15">
+                                    </div>
+                                    <hr>
+                                </div>
+                                <div id="NotesToHaulier" class="pt-3 pb-3 pl-4 text-normal" style="display: none;">
+                                    @if (string.IsNullOrEmpty(Model.AuthenticationNotesToHaulierContent))
+                                    {
+                                        <div class="col-lg-5 col-md-6 col-sm-12 pr-6 pb-0">
+                                            <div>
+                                                <p class="edit-normal pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                                    Notes to haulier not found.
+                                                </p>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(Model.AuthenticationNotesToHaulierContent)
+                                    }
+                                </div>
+                            }
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.ESDALReference))
+                        {
+                            <div class="pb-2 list-stream notesOnEscort">
+                                <div class="align-items-center">
+                                    <span class="text-normal-hyperlink">Notes On Escort</span>
+                                    <img id="down-chevlon1" src="~/Content/assets/images/down-chevlon-filter.svg" style="float: right;" class="cursor-pointer"
+                                         width="15">
+                                    <img id="up-chevlon1" src="~/Content/assets/images/up-chevlon-filter.svg" class="cursor-pointer"
+                                         style="float: right;display: none;" width="15">
+                                </div>
+                                <hr>
+                            </div>
+                            <div id="notesOnEscort" class="pt-3 pb-3 pl-8" style="display: none;">
+                                @if (userTypeId == 696007 || userTypeId == 696002)
+                                {
+                                    <div class="row">
+                                        <div class="col-lg-6 col-md-6 col-sm-12">
+                                            <p class="edit-normal pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0" id="updateEscortNotes" style="display:none;color:green;">
+                                                @Resources.Resource.NotesOnEscortUpdatedSuccessfully
+                                            </p>
+                                            @Html.TextAreaFor(model => model.NotesOnEscort, new { @id = "DescriptionOnEscort", @maxlength = "100", @rows = "8", @class = "form-control", @style = "width: 100%;" })
+
+                                            <div id="validateEscortNotes" class="error invalid-feedback" style="display: none;">Please enter the escort notes</div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-1 col-md-1 col-sm-6">
+                                            <div class="button main-button pt-3">
+                                                <button class="btn btn-outline-primary btn-normal SaveEscortNotes" type="button" aria-pressed="true" style="width:8rem;">
+                                                    SAVE
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div id="updatedEscortNotes">
+                                        @if (!string.IsNullOrEmpty(Model.NotesOnEscort))
+                                        {
+                                            @Html.TextAreaFor(model => model.NotesOnEscort, new { @placeholder = "Private escort provided", @id = "DescriptionOnEscort", @maxlength = "100", @rows = "8", @class = "form-control", @style = "width: 100%;" })
+                                        }
+                                        else
+                                        {
+                                            <span>@Resources.Resource.NoNotesOnEscort</span>
+                                        }
+                                    </div>
+                                }
+
+                            </div>
+
+                            <div class="pb-2 list-stream internalNotes">
+                                <div class="align-items-center">
+                                    <span class="text-normal-hyperlink">Internal Notes</span>
+                                    <img id="down-chevlon2" src="~/Content/assets/images/down-chevlon-filter.svg" class="cursor-pointer" style="float: right;"
+                                         width="15">
+                                    <img id="up-chevlon2" class="cursor-pointer" src="~/Content/assets/images/up-chevlon-filter.svg"
+                                         style="float: right;display: none;" width="15">
+                                </div>
+                                <hr>
+                            </div>
+                            <div id="internalNotes" class="pt-3 pb-3 pl-8" style="display: none;">
+                                <div class="row">
+                                    <div class="col-lg-6 col-md-6 col-sm-12">
+                                        <p class="edit-normal  pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0" id="updatenotes" style="display:none;color:green;">
+                                            @Resources.Resource.InternalNotesUpdatedSuccessfully
+                                        </p>
+                                        @Html.TextAreaFor(model => model.InternalNotes, new { @placeholder = "Fill in Internal notes", @id = "Description", @maxlength = "2000", @rows = "8", @class = "form-control", @style = "width: 100%;" })
+                                        <div id="validateInternalNotes" class="error invalid-feedback" style="display: none;">@Resources.Resource.PleaseEnterTheInternalNotes</div>
+
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-1 col-md-1 col-sm-6">
+                                        <div class="button main-button pt-3">
+                                            <button class="btn btn-outline-primary btn-normal" type="button" id="SaveNotes" aria-pressed="true" style="width:8rem;">
+                                                SAVE
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        }
+                        <div class="pb-2 list-stream" style="cursor:pointer;">
+                            <input type="hidden" id="hAnalysisId" value="@Model.AnalysisId" />
+                            <div class="align-items-center ShowContactList" AnalysisId=@Model.AnalysisId>
+                                <span class="text-normal-hyperlink">Contact List</span>
+                                <img id="down-chevlon-icon2" src="~/Content/assets/images/down-chevlon-filter.svg" class="cursor-pointer" style="float: right;" width="15">
+                                <img id="up-chevlon-icon2" src="~/Content/assets/images/up-chevlon-filter.svg" class="cursor-pointer" style="float: right;display: none;"
+                                     width="15">
+                            </div>
+                            <hr>
+                        </div>
+                        <div id="contact-list">
+                            @*load Vehicle Configuration Summary*@
+                        </div>
+                        <div class="pb-2 list-stream predefinedCautions">
+                            <div class="align-items-center">
+                                <span class="text-normal-hyperlink">Predefined Cautions </span>
+                                <img id="down-chevlon4" src="~/Content/assets/images/down-chevlon-filter.svg" class="cursor-pointer" style="float: right;"
+                                     width="15">
+                                <img id="up-chevlon4" src="~/Content/assets/images/up-chevlon-filter.svg" class="cursor-pointer"
+                                     style="float: right;display: none;" width="15">
+                            </div>
+                            <hr>
+                        </div>
+
+                        <div id="predefinedCautions" class="pt-3 pb-3 pl-8" style="display: none;">
+                            @if (Model.Route != null && ((!(Model.Route.ToLower() == "notification" || Model.Route.ToLower() == "renotification")) ||
+                                (!(Model.Route.ToLower() == "ne agreed notification" || Model.Route.ToLower() == "ne notification" ||
+                                Model.Route.ToLower() == "ne renotification" || Model.Route.ToLower() == "ne agreed renotification"))))
+                            {
+                                if (Model.IncludeDockCaution == 1)
+                                {
+                                    <div>
+                                        <b>@Resources.Resource.DockCaution</b>
+                                        <div>
+                                            <h3 class="heading-medium">@Resources.Resource.DockCaution</h3>
+                                        </div>
+                                        <div>
+                                            <p class="edit-normal pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                                The manufacturer and/or hauliers are reminded that it is their responsibility to negotiate with the appropriate dock manager for the movements within the dock area.
+                                            </p>
+                                        </div>
+                                        The manufacturer and/or hauliers are reminded that it is their responsibility to negotiate with the
+                                        <br />
+                                        appropriate dock manager for the movements within the dock area.<br />
+                                    </div>
+                                }
+                                <div>
+                                    <div>
+                                        <h3 class="heading-medium fw-bolder">Motorway Caution</h3>
+                                    </div>
+                                    <div>
+                                        <p class="edit-normal pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                            (a) When travelling on the motorway, vehicles must not travel on the hard shoulder or in the right hand lane.
+                                        </p>
+                                        <p class="edit-normal pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                            (b) When crossing motorway bridges, vehicles must travel in the left hand lane, unless otherwise stated in specific route cautions.
+                                        </p>
+                                        <p class="edit-normal pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                            (c) If over 4.877 m in height, height of load must be reduced to a minimum when travelling under motorway bridges.
+                                        </p>
+                                        <p class="edit-normal pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                            (d) If under but near 4.877 m in height, extreme caution must be exercised when travelling under motorway bridges.
+                                        </p>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <div class="pb-2 list-stream">
+                            <div class="align-items-center reviewProcHighway">
+                                <span class="text-normal-hyperlink">
+                                    Review Procedures For Highway And Bridge Authorities And
+                                    Police
+                                </span>
+                                <img id="down-chevlon11" src="~/Content/assets/images/down-chevlon-filter.svg" class="cursor-pointer" style="float: right;" width="15">
+                                <img id="up-chevlon11" src="~/Content/assets/images/up-chevlon-filter.svg" class="cursor-pointer" style="float: right;display: none;" width="15">
+                            </div>
+                            <hr>
+                            <div id="reviewproc" class="pt-3 pb-2 pl-8 mb-2" style="display: none;width: 70%;">
+                                <div class="pb-6">
+                                    <div>
+                                        <h3 class="heading-medium">
+                                            Approximate date of first movement:<br>
+                                            <p class="edit-normal pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                                @Model.MoveStartDate.ToShortDateString()
+                                            </p>
+                                        </h3>
+                                    </div>
+                                    <div>
+                                        <p class="edit-normal pl-0 pr-0 pb-3 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                            If, subsequent to the receipt of the agreed route below, emergency road or bridge
+                                            works,
+                                            including statutory undertaker’s works, become necessary on any road shown in this
+                                            route, the authority concerned is asked to inform the NH and the haulier concerned
+                                            without delay. Proposals for alternative routing should be formulated at this stage,
+                                            if
+                                            possible.
+                                        </p>
+                                        <p class="edit-normal pl-0 pr-0 pb-3 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                            The haulier must:
+                                        </p>
+                                        <div class="pb-3">
+                                            <ol type="a">
+                                                <li class="pb-0 mb-0 mt-0 pt-0">
+                                                    <p class="edit-normal pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                                        Contact all
+                                                        police authorities before movement takes place to arrange for suitable
+                                                        timings and escorts where required.
+                                                    </p>
+                                                </li>
+                                                <li class="pb-0 mb-0 mt-0 pt-0">
+                                                    <p class="edit-normal pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                                        Comply with
+                                                        all
+                                                        cautions specified in the route.
+                                                    </p>
+                                                </li>
+                                                <li class="pb-0 mb-0 mt-0 pt-0">
+                                                    <p class="edit-normal pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                                        Contact all
+                                                        Survey the route prior to movement to satisfy himself of the
+                                                        negotiabiliity
+                                                        of the vehicles concerned.
+                                                    </p>
+                                                </li>
+                                                <li class="pb-0 mb-0 mt-0 pt-0">
+                                                    <p class="edit-normal pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                                        Make
+                                                        arrangements
+                                                        with the highway authority for the removal, at his own expense, of any
+                                                        street furniture that may be necessary.
+                                                    </p>
+                                                </li>
+                                                <li class="pb-0 mb-0 mt-0 pt-0">
+                                                    <p class="edit-normal pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                                        Ensure that
+                                                        if
+                                                        the driver is unable to follow this route due to road-works or any other
+                                                        cause, he should telephone 0300 470 3004 for instructions on the
+                                                        diversion
+                                                        to be followed to avoid the obstructed route. At weekends and outside
+                                                        normal
+                                                        office hours (8.30 - 16.30) he should telephone 020 7944 5999 and inform
+                                                        the
+                                                        Duty Officer of the situation.
+
+                                                    </p>
+                                                </li>
+                                                <li class="pb-0 mb-0 mt-0 pt-0">
+                                                    <p class="edit-normal pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                                        Note that the
+                                                        issue of this route does not constitute authority to carry out the
+                                                        movement,
+                                                        which should not be undertaken until the relevant Special Order has been
+                                                        issued.
+                                                    </p>
+                                                </li>
+                                            </ol>
+                                        </div>
+                                        <p class="edit-normal pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                            The Secretary of State, in proposing the attached route, has satisfied himself as
+                                            far as
+                                            possible that all bridges which will be passed over can safely carry the loads which
+                                            have been reported to him provided that the conditions contained in the Special
+                                            Order
+                                            and the agreed route are complied with. He accepts no responsibility that any
+                                            vehicle
+                                            described in the Special Order can negotiate the proposed route and neither the
+                                            owner/interested party nor the operator of any such vehicle is relieved of any of
+                                            his
+                                            obligations or liabilities either under the Road Vehicle (Authorisation of Special
+                                            Types) (General) Order 2003 or otherwise.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="pb-2" id="table-head" style="width: 40%;">
+
+                                    <div style="display:none">
+                                        <p class="text-highlight pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">Signed</h3>
+                                        <p class="edit-normal pl-0 pr-0 pb-0 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                            @Model.UserName
+                                        </p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="pb-2 list-stream showaudit">
+                            <div class="align-items-center">
+                                <span class="text-normal-hyperlink">Show Audit Log</span>
+                                <img id="down-chevlon8" src="~/Content/assets/images/down-chevlon-filter.svg" class="cursor-pointer" style="float: right; display: block;" width="15">
+                                <img id="up-chevlon8" src="~/Content/assets/images/up-chevlon-filter.svg" class="cursor-pointer" style="float: right; display: none;" width="15">
+                            </div>
+                            <hr>
+                        </div>
+                        <div id="showaudit" class="mb-4 mt-3 pt-4" style="width: 95%; display: none;">
+
+                        </div>
+                        @if (Model.DispensationList != null && Model.DispensationList.Any())
+                        {
+                            <div class="pb-2 list-stream">
+                                <div class="align-items-center openDispensationList">
+
+                                    <span class="text-normal-hyperlink">Dispensations</span>
+                                    <img id="down-chevlon14" src="~/Content/assets/images/down-chevlon-filter.svg" class="cursor-pointer" style="float: right; display: block;" width="15">
+                                    <img id="up-chevlon14" src="~/Content/assets/images/up-chevlon-filter.svg" class="cursor-pointer" style="float: right; display: none;" width="15">
+                                </div>
+                                <hr>
+                            </div>
+                            <div id="dispensations" class="pl-3 pr-3 pb-4 pt-4" style="width: 100%; display: none;">
+                                <div class="main-table">
+                                    <table>
+                                        <tbody>
+                                            <tr style="background-color: rgba(39, 87, 149, 0.1);">
+                                                <th style="width: 2px;">DRN</th>
+                                                <th style="width: 2px; white-space: nowrap;">Summary</th>
+
+                                            </tr>
+                                        </tbody>
+                                        @foreach (var item in Model.DispensationList)
+                                        {
+                                            <tr>
+                                                <td class="colum2" style="width: 5%; white-space: nowrap;">@item.DRN</td>
+                                                <td class="colum2" style="width: 5%; white-space: nowrap;">@item.Summary</td>
+                                            </tr>
+                                        }
+                                    </table>
+                                </div>
+                            </div>
+
+                        }
+                    </div>
+                </div>
+                <div id="route" class="inner-map" style="display:none">
+                    <button class="btn outline-btn-primary routeEditBack SOAButtonHelper ml-2" type="button" id="editnenrouteback">BACK</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- filter settings -->
+    <div id="authorizeMovFilterDiv">
+        <div id="filters" class="sidenav filter-sidenav planRouteFilter-mov" style="height:100% !important">
+            <div class="row sidenav-header">
+                <div class="col-10 col-md-10 col-sm-10" style="text-align: center; margin-top: 5px; padding-left: 38px;">
+                    <span style="font-weight: bold; font-size: x-large;">
+                        SEARCH
+                    </span>
+                </div>
+                <div class="col-2 col-md-2 col-sm-2 pl-0">
+                    <a href="#" class="closebtn closeAuthorizeMovFilters">&times;</a>
+                </div>
+            </div>
+            <hr style="margin-top: 0;">
+
+            <div class="filter-list">
+                <div class="pr-0 pl-0 mr-0 ml-0 mt-4 mb-0 input-field" id="viewStructuresConstraints">
+                    <div class="row mt-4 align-items-center" style="display:none;">
+                        <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                            <input type="checkbox" id="All" class="checkbox" name="All" value="bulldozer"
+                                   width="25">
+                        </div>
+                        <div class="col-lg-10 col-sm-10 col-md-10">
+                            <span class="txtStyle">All</span>
+                        </div>
+                    </div>
+                    <div class="row mt-4 align-items-center" style="display:none;">
+                        <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                            <input type="checkbox" id="Affected" class="checkbox" name="Affected" value="bulldozer"
+                                   width="25">
+                        </div>
+                        <div class="col-lg-10 col-sm-10 col-md-10">
+                            <span id="AffectedLabel" class="txtStyle">Affected</span>
+                        </div>
+                    </div>
+                    <label class="switchstructure switch" style="display: inline-block !important">
+                        <input type="checkbox" id="toggleAllAffected" name="toggleAllAffected" value="true">
+                        <div class="slider round">
+                            <!--ADDED HTML -->
+                            <span id="All" class="on" style="color:white !important">All</span>
+                            <span id="Affected" class="off" style="color:white !important">Affected</span>
+                            <!--END-->
+                        </div>
+                    </label>
+                    <hr>
+                    <div class="row mt-4 align-items-center">
+                        <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                            <input type="checkbox" id="Structs" class="checkbox" name="Structs" value="bulldozer"
+                                   width="25">
+                        </div>
+                        <div class="col-lg-10 col-sm-10 col-md-10">
+                            <span class="txtStyle">Structures</span>
+                        </div>
+                    </div>
+                    <div class="row mt-4 align-items-center pl-7">
+                        <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                            <input type="checkbox" id="Underbridge" class="checkbox" name="Underbridge" value="bulldozer"
+                                   width="25">
+                        </div>
+                        <div class="col-lg-10 col-sm-10 col-md-10">
+                            <span class="txtStyle">Underbridge</span>
+                        </div>
+                    </div>
+                    <div class="row mt-4 align-items-center pl-7">
+                        <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                            <input type="checkbox" id="Overbridge" class="checkbox" name="Overbridge" value="bulldozer"
+                                   width="25">
+                        </div>
+                        <div class="col-lg-10 col-sm-10 col-md-10">
+                            <span class="txtStyle">Overbridge</span>
+                        </div>
+                    </div>
+                    <div class="row mt-4 align-items-center pl-7">
+                        <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                            <input type="checkbox" id="UnderAndOverbridge" class="checkbox" name="UnderAndOverbridge" value="bulldozer"
+                                   width="25">
+                        </div>
+                        <div class="col-lg-10 col-sm-10 col-md-10">
+                            <span class="txtStyle">Under and Over bridge</span>
+                        </div>
+                    </div>
+                    <div class="row mt-4 align-items-center pl-7">
+                        <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                            <input type="checkbox" id="LevelCrossing" class="checkbox" name="LevelCrossing" value="bulldozer"
+                                   width="25">
+                        </div>
+                        <div class="col-lg-10 col-sm-10 col-md-10">
+                            <span class="txtStyle">Level Crossing</span>
+                        </div>
+                    </div>
+                    <div class="row mt-4 align-items-center">
+                        <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                            <input type="checkbox" id="Constraints" class="checkbox" name="Constraints" value="bulldozer"
+                                   width="25">
+                        </div>
+                        <div class="col-lg-10 col-sm-10 col-md-10">
+                            <span class="txtStyle">Constraints</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end of filter settings -->
+</body>
+
+@{
+    <input type="hidden" value="@(ViewBag.Helpdesk_redirect!=null?ViewBag.Helpdesk_redirect.ToString():"false")" id="hf_Helpdesk_redirect" name="hf_Helpdesk_redirect" />
+    <input type="hidden" value="@ViewBag.NextNoLongerAffected" id="hf_NextNoLongerAffected" name="hf_NextNoLongerAffected" />
+    <input type="hidden" value="@ViewBag.Notificationid" id="hf_Notificationid" name="hf_Notificationid" />
+    <input type="hidden" value="@ViewBag.InboxId" id="hf_InboxId" name="hf_InboxId" />
+    <input type="hidden" value="@(ViewBag.SortMovement!=null?((bool)ViewBag.SortMovement).ToString():"False")" id="hf_SortMovement" name="hf_SortMovement" />
+    <input type="hidden" value="@ViewBag.Content_ref_no" id="hf_Content_ref_no" name="hf_Content_ref_no" />
+    @Html.Hidden("hf_contactId", contactId)
+    @Html.Hidden("hf_organisationId", organisationId)
+    @Html.Hidden("hf_routeType", routeType)
+    @Html.Hidden("hf_RouteFlag", Session["RouteFlag"])
+}
+<script src="~/Scripts/Movements/AuthorizeMovementGeneral.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Routes/A2BPlanning.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Routes/LibraryRoutePartDetails.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Routes/enterRouteDetail.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Routes/A2BLeftPanel.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Movements/_MovementMap.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/VehicleConfig/VehicleComponentDetails.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/VehicleComponentDetails.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Logging/NENAuditLogPopup.js?V@(Session["ProjectVersion"])"></script>
+
+<script src="~/Scripts/RouteAssessment/ListAnnotations.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/RouteAssessment/ListCautions.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/RouteAssessment/ListConstraints.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/RouteAssessment/ListAffectedRoads.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/RouteAssessment/ListAffectedStructures.js?V@(Session["ProjectVersion"])"></script>
+
+<script src="~/Scripts/Constraint/ViewConstraint.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Constraint/ReviewCautionsList.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Constraint/ReviewContactsList.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Constraint/ViewCaution.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Constraint/HaulierConstraintDetails.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/XSLT/AffectedStructures.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Structures/AffectedstructureSummaryPopup.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/XSLT/Annotations.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/XSLT/AffectedRoads.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/XSLT/DrivingInstruction.js?V@(Session["ProjectVersion"])"></script>
+
+<script src="~/Scripts/Logging/ListNENAuditPerNotification.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Movements/ViewCollaborationStatusAndNotes.js?V@(Session["ProjectVersion"])"></script>
+
+<script src="~/Scripts/Movements/LibraryNotesList.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Notification/CollabHistoryPopList.js?V@(Session["ProjectVersion"])"></script>
+
+<script src="~/Scripts/Notification/SearchTransmissionStatusPanel.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Application/ViewContactDetails.js?V@(Session["ProjectVersion"])"></script>
+
+<script src="~/Scripts/VehicleConfig/ViewConfiguration.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Structures/RoadContact.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/RoadOwnership/RoadOwnersContact.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Annotation/CreateAnnotation.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Structures/ReviewSummaryPopup.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Structures/StructureContact.js?V@(Session["ProjectVersion"])"></script>

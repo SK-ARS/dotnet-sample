@@ -1,0 +1,253 @@
+@using System.Web.Optimization
+@using STP.Domain
+@model STP.Domain.SecurityAndUsers.Organization
+@{
+    Layout = null;
+
+    int RevisionId = 0;
+    string SortStatus = "";
+    if (ViewBag.RevisionId != null)
+    {
+        RevisionId = ViewBag.RevisionId;
+    }
+    if (ViewBag.SortStatus != null)
+    {
+        SortStatus = ViewBag.SortStatus;
+    }
+
+    @Html.Hidden("SortStatus", SortStatus)
+    @Html.Hidden("RevisionId", RevisionId)
+
+}
+<style type="text/css">
+    .field-validation-error {
+        color: red;
+    }
+</style>
+
+@using (Html.BeginForm("SaveOrganisation", "Organisation", new { mode = ViewBag.mode, orgID = ViewBag.orgID, sortApp = ViewBag.sortApp, RevisionId = RevisionId, SORTStatus = SortStatus }, FormMethod.Post, new { @id = "form_Organisation" }))
+{
+    <div  id="sort-entry" style="padding-left: 2.2% !important;">      
+
+        <div colspan="6" style="background-color: white !important;">
+            <div class="pt-6 pb-6" style="display: flex;flex-wrap: wrap;width: 100% !important;">
+                <div style="width: 33%;">
+                    <div class="pb-3 wd-align">
+                        <div class="text-normal wd40" style="width: 45% !important ">
+                            Organisation Name
+                        </div>
+                        <div class="edit-normal wd50" id="viewOrgName">
+                            <span class="stHeading1 text1" id="spnOrgName" style="width:auto"></span>
+                        </div>
+                    </div>
+                    @if (ViewBag.sortApp != "SORTSO")
+                    {
+                        <div class="pb-3 wd-align">
+                            <div class="text-normal wd40" style="width: 45% !important ">
+                                Haulier Contact Name*
+                            </div>
+                            <div class="edit-normal wd50" id="viewOrgType">
+                                <select id="ddlHaulierContactName" class="form-select text-normal select1 " style="width: 90% !important;"></select>
+                            </div>
+                        </div>
+                        <div class="pb-3 wd-align">
+                            <div class="text-normal wd40" style="width: 45% !important ">
+                                <label class="text-normal"></label>
+                            </div>
+                            <div class="edit-normal wd50" id="viewOrgCode">
+                                @Html.TextBox("HaulierContactNameExist", null, new { @id = "HaulierContactNameExist" })
+                                <span id="err_ddl_ContactName" class="error invalid-feedback" style="display:block"></span>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        if (ViewBag.showHaulCnt == true)
+                        {
+                            <div class="pb-3 wd-align">
+                                <div class="text-normal wd40" style="width: 45% !important ">
+                                    Haulier Contact Name*
+                                </div>
+                                <div class="edit-normal wd50" id="viewOrgCode">
+                                    <select id="ddlHaulierContactName" class="form-select text-normal select1 "style="width: 90% !important;"></select>
+                                </div>
+                            </div>
+
+                            <div class="pb-3 wd-align">
+                                <div class="text-normal wd40" style="width: 45% !important ">
+                                    <label class="text-normal"></label>
+                                </div>
+                                <div class="edit-normal wd50" id="viewOrgCode">
+                                    @Html.TextBox("HaulierContactNameExist", null, new { @id = "HaulierContactNameExist", @autocomplete = "autocomplete" })
+                                    <span id="err_ddl_ContactName" class="error invalid-feedback" style="display:block"></span>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="pb-3 wd-align">
+                                <div class="text-normal wd40" style="width: 45% !important ">
+                                    Haulier Contact Name 
+                                </div>
+                                <div class="edit-normal wd50">
+                                    <span class="stHeading1 text1" id="spnHaulierContactName"></span>
+                                </div>
+                            </div>
+                        }
+                    }
+                    <div class="pb-3 wd-align">
+                        <div class="text-normal wd40" style="width: 45% !important ">
+                            Organisation Code
+                        </div>
+                        <div class="edit-normal wd50" id="spnOrgCode">
+
+                        </div>
+                    </div>
+
+                    <div class="pb-3 wd-align">
+                        <div class="text-normal wd40" style="width: 45% !important ">
+                            License Number
+                        </div>
+                        <div class="edit-normal wd50" id="spnLICENSE_NR">
+
+                        </div>
+                    </div>
+                </div>
+                <div style="width: 33%;">
+                    <div class="pb-3 wd-align">
+                        <div class="text-normal wd20">
+                            Address
+                        </div>
+                        <div class="edit-normal wd50">
+                            <div class="pb-3 wd100 edit-normal" id="spnAddressLine_1">
+
+                            </div>
+                            <div class="pb-3 wd100 edit-normal" id="spnAddressLine_2">
+
+                            </div>
+                            <div class="pb-3 wd100" id="spnAddressLine_3">
+
+                            </div>
+                            <div class="pb-3 wd100 edit-normal" id="spnAddressLine_4">
+
+                            </div>
+                            <div class="pb-3 wd100 edit-normal" id="spnAddressLine_5">
+
+                            </div>
+                            <span id="addrchk" style="color: red; width: 104%;" class="error-message"></span>
+                        </div>
+                    </div>
+                </div>
+                <div style="width: 33%;">
+                    <div class="pb-3 wd-align">
+                        <div class="text-normal wd30">
+                            Postcode
+                        </div>
+                        <div class="edit-normal wd50" id="spnPostCode">
+
+                        </div>
+                    </div>
+                    <div class="pb-3 wd-align">
+                        <div class="text-normal wd30">
+                            Country
+                            @Html.DropDownListFor(m => m.CountryID, ViewBag.CountryDropDown as SelectList, "Select Country", new { @class = "form-select pt-3 pb-3", @id = "CountryID", @style = "color: rgba(39, 87, 149, 1);display:none;" })
+                        </div>
+
+                        <div class="edit-normal wd50" id="spnCountryID">
+                        </div>
+                    </div>
+                    <div class="pb-3 wd-align">
+                        <div class="text-normal wd30">
+                            Phone
+                        </div>
+                        <div class="edit-normal wd50" id="spnPhone">
+
+                        </div>
+                    </div>
+
+                    <div class="pb-3 wd-align">
+                        <div class="text-normal wd30">
+                            Email Address
+                        </div>
+                        @if (ViewBag.sortApp != "SORTSO")
+                        {
+                            <div class="edit-normal wd50" id="viewEmail">
+                                @Html.TextBoxFor(m => m.EmailId, new { @id = "EmailIdSORT", @maxlength = "50" })
+                            </div>
+                        }
+                        else
+                        {
+                            if (ViewBag.showHaulCnt == true)
+                            {
+                                <div class="edit-normal wd50" id="viewEmail">
+                                    @Html.TextBoxFor(m => m.EmailId, new { @id = "EmailIdSORT", @maxlength = "50", @onkeyup = "retEmailIdSort(event)" })
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="edit-normal wd50" id="viewEmail">
+
+
+                                    <span class="stHeading1 text1" id="spnEmail"></span>
+
+
+                                </div>
+
+                            }
+                        }
+                    </div>
+                    <div class="pb-3 wd-align">
+                        <div class="text-normal wd30">
+                            Fax Number
+                        </div>
+                        @if (ViewBag.sortApp != "SORTSO")
+                        {
+                            <div class="edit-normal wd50" id="viewFax">
+                                @Html.TextBoxFor(m => m.Fax, new { @id = "FaxSORT", @maxlength = "30" })
+                            </div>
+                        }
+                        else
+                        {
+                            if (ViewBag.showHaulCnt == true)
+                            {
+                                <div class="edit-normal wd50" id="viewFax">
+                                    @Html.TextBoxFor(m => m.Fax, new { @id = "FaxSORT", @maxlength = "30", @onkeyup = "retFaxSort(event)" })
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="edit-normal wd50" id="viewFax">
+                                    <b>  <span class="stHeading1 text1" id="spnFax"></span>  </b>
+                                </div>
+                            }
+                        }
+                    </div>
+                    }
+                    <div class="pb-3 wd-align">
+                        <div class="text-normal wd30">
+
+                        </div>
+                        <div class="edit-normal wd50" id="viewWebsite">
+                            <span id="emailFaxValid" class="error invalid-feedback" style="display:block"></span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        @Html.Hidden("ddlHaulContFlag", null, new { @id = "ddlHaulContFlag" })
+        @Html.Hidden("hdnArrFax", null, new { @id = "hdnArrFax" })
+        @Html.Hidden("hdnArrEmail", null, new { @id = "hdnArrEmail" })
+        @Html.Hidden("hdnAddress1", null, new { @id = "hdnAddress1" })
+        @Html.Hidden("hdnAddress2", null, new { @id = "hdnAddress2" })
+        @Html.Hidden("hdnAddress3", null, new { @id = "hdnAddress3" })
+        @Html.Hidden("hdnAddress4", null, new { @id = "hdnAddress4" })
+        @Html.Hidden("hdnAddress5", null, new { @id = "hdnAddress5" })
+        @Html.Hidden("hdncountryid", null, new { @id = "hdncountryid" })
+        @Html.Hidden("hdnpostcode", null, new { @id = "hdnpostcode" })
+        @Html.Hidden("hdnphonenumber", null, new { @id = "hdnphonenumber" })
+        @Html.Hidden("hdncontactId", null, new { @id = "hdncontactId" })
+
+    </div>
+}
+@*<script src="~/Scripts/Organisation/_ViewExistingOrganisation.js?V@(Session["ProjectVersion"])"></script>*@

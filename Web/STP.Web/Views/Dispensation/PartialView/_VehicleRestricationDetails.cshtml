@@ -1,0 +1,71 @@
+@using System.Web.Optimization
+@using STP.Domain
+@model STP.Domain.MovementsAndNotifications.Movements.EditDispensationRestriction
+<div class="row mb-3">
+    <div class="col-sm-12 col-md-3 col-lg-3 pr-0">
+        <label class="text-normal">Gross weight</label>
+    </div>
+    <div class="col-sm-12 col-md-5 col-lg-3 input-field text-normal">
+        <input class="edit-normal" type="text" id="Gross_text" maxlength="11" name="Gross">
+    </div>
+    <div class="col-sm-12 col-md-3 col-lg-3 input-field text-normal">
+        t
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col-sm-12 col-md-3 col-lg-3 pr-0">
+        <label class="text-normal">Signed axle weight</label>
+    </div>
+    <div class="col-sm-12 col-md-5 col-lg-3 input-field text-normal">
+        <input class="edit-normal" type="text" id="Axle_text" maxlength="11" name="Axle">
+    </div>
+    <div class="col-sm-12 col-md-3 col-lg-3 input-field text-normal">
+        t
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col-sm-12 col-md-3 col-lg-3 pr-0">
+        <label class="text-normal">Overall length</label>
+    </div>
+    <div class="col-sm-12 col-md-5 col-lg-3 input-field text-normal">
+        <input class="edit-normal" type="text"  id="Length_text" maxlength="6" name="Length">
+    </div>
+    <div class="col-sm-12 col-md-3 col-lg-3 input-field text-normal">
+        m
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col-sm-12 col-md-3 col-lg-3 pr-0">
+        <label class="text-normal">Width</label>
+    </div>
+    <div class="col-sm-12 col-md-5 col-lg-3 input-field text-normal">
+        <input class="edit-normal" type="text" id="Width_text" maxlength="6" name="Width">
+    </div>
+    <div class="col-sm-12 col-md-3 col-lg-3 input-field text-normal">
+        m
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col-sm-12 col-md-3 col-lg-3 pr-0">
+        <label class="text-normal">Height</label>
+    </div>
+    <div class="col-sm-12 col-md-5 col-lg-3 input-field text-normal">
+       <input class="edit-normal" type="text" id="Height_text" maxlength="6" name="Height">
+    </div>
+    <div class="col-sm-12 col-md-3 col-lg-3 input-field text-normal">
+        m
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col-sm-12 col-md-3 col-lg-3 pr-0">
+        <span id="errorChk" value="" class="error"></span>
+    </div>
+    <div class="col-sm-12 col-md-5 col-lg-3 input-field text-normal">
+        <div class="button main-button">
+            <button class="btn btn-outline-primary btn-normal" role="button" aria-pressed="true" type="button" id="save-vehicle" >
+                UPDATE
+            </button>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/CspJs/Dispensation\PartialView/_VehicleRestricationDetails.js?V@(Session["ProjectVersion"])"></script>

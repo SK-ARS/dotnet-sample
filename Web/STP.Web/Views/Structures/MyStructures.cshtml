@@ -1,0 +1,579 @@
+
+@Html.Hidden("projectid")
+@Html.Hidden("IsAgreedAppl", "No")
+@Html.Hidden("HFStruCode", "0")
+@Html.Hidden("IsMyStructure", "No")
+@Html.Hidden("StruRelatedMove", "No")
+@Html.Hidden("IsMovListAvalabl", "No")
+
+@{
+    ViewBag.Title = "MyStructures";
+}
+@{
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.STRUCTURES;
+}
+@{
+    int IsAssesment = 0;
+    if (ViewBag.Assessmentflag != null)
+    {
+        IsAssesment = (int)ViewBag.Assessmentflag;
+    }
+}
+@*<head>*@
+<style>
+    .txtStyle {
+        color: #7d7d83 !important;
+    }
+
+    .mapsize {
+        height: 100vh !important;
+    }
+
+    #snackbar {
+        visibility: hidden;
+        min-width: 250px;
+        margin-left: -125px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 2px;
+        padding: 16px;
+        position: fixed;
+        z-index: 1;
+        left: 50%;
+        bottom: 35%;
+        font-size: 17px;
+    }
+
+        #snackbar.show {
+            visibility: visible;
+            -webkit-animation: fadein 0.5s, fadeout 0.5s 2.5s;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+    /*   .banner-align {
+            min-height: 90%;
+            height: auto !important;
+            height: 100%;
+        }*/
+    @@-webkit-keyframes fadein {
+        from {
+            bottom: 0;
+            opacity: 0;
+        }
+
+        to {
+            bottom: 35%;
+            opacity: 1;
+        }
+    }
+
+    @@keyframes fadein {
+        from {
+            bottom: 0;
+            opacity: 0;
+        }
+
+        to {
+            bottom: 35%;
+            opacity: 1;
+        }
+    }
+
+    @@-webkit-keyframes fadeout {
+        from {
+            bottom: 30px;
+            opacity: 1;
+        }
+
+        to {
+            bottom: 0;
+            opacity: 0;
+        }
+    }
+
+    @@keyframes fadeout {
+        from {
+            bottom: 30px;
+            opacity: 1;
+        }
+
+        to {
+            bottom: 0;
+            opacity: 0;
+        }
+    }
+</style>
+
+@*</head>*@
+@*<link href="~/Content/Style/Common/map.css" rel="stylesheet" />*@
+<link href="~/Content/Style/Common/grid_css.css" rel="stylesheet" />
+<body style="overflow-y: auto;" id="soa-structure" class="">
+    <section id="banner" class="map-icons">
+
+        <div id="displayConstraintHistory" style="display:none;">
+
+        </div>
+        <!-- map-setting-start -->
+        <div id="map" style="height: 99vh" class="google-map map-height"></div>
+        <button draggable="false" id="btnenlargemap" aria-label="Toggle fullscreen view" type="button"
+                style="background: none rgb(255, 255, 255); border: 0px; margin: 10px; padding: 0px; text-transform: none; appearance: none; position: absolute; cursor: pointer; user-select: none; border-radius: 2px; height: 39px; width: 41px; box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px; overflow: hidden; top: 14px; right: 2px;">
+            <img id="Minimzeicon" src="~/Content/assets/Icons/maximize-map.svg" alt="" style="height: 123px; width: 152px; margin-top: -42px; margin-left: -56px; margin-right: -19px; margin-bottom: -6px;" title="Toggle full screen view">
+            <img id="MaxmizeIocn" src="~/Content/assets/Icons/minimise-map.svg" alt="" style="height: 123px; width: 152px; margin-top: -43px; margin-left: -56px; margin-right: -4px; margin-bottom: -4px;" title="Toggle normal screen view">
+        </button>
+        <!-- map-setting-end -->
+
+        <div style="height: 20px;">
+        </div>
+
+
+        <div id="opnfiltr" class="filter-icon" style="width: 40px;left: -3px">
+            <img src="~/Content/assets/images/filter-icon2.svg" title="Open filter" width="35" style="color: black; cursor: pointer;">
+        </div>
+
+
+        <div id="mySidenav1" class="sidenav constraint-instruction" style="position: absolute;left: 0;padding-top: 0;display: none;">
+            <div class="title pt-0">
+                Making Constraint
+            </div>
+            <div class="card-text pl-5 pr-5">
+                <h4>Instructions</h4>
+                <p>
+                    1.While creating lines ensure to follow the roads
+                    as much as possible.
+                </p>
+                <p>
+                    2.Ensure that all points and connecting lines are always
+                    on road
+                </p>
+                <p>3.Select the highest zoom level for better accuracy</p>
+                <h4 class="pt-3">Note</h4>
+                <p class=" pb-4">
+                    You can pan the map even though line constraint
+                    creation tool is active by holding down and moving
+                </p>
+            </div>
+        </div>
+        <img id="card-swipe1" src="/Content/assets/images/card-swipe-on.svg" width="30" style="cursor: pointer; position: absolute; display: none">
+        <img id="card-swipe2" src="/Content/assets/images/card-swipe-on.svg" width="30" style="cursor: pointer; position: absolute; display: none">
+
+        <div id="soa-portal-map">
+            <div class="horizontal-center" style="width: 10.6rem;">
+                <ul class="nav navbar-nav navbar-left new-list">
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="PointConstraintImg">
+                            <img src="~/Content/assets/images/Group 467.svg" width="30" title="Create point constraint">
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="LinearConstraintImg">
+                            <img src="~/Content/assets/images/Group 468.svg" width="30" title="Create linear constraint">
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown navDropdown">
+                        <a class="nav-link" href="#" id="AreaConstraintImg">
+                            <img src="~/Content/assets/images/Group 469.svg" width="30" title="Create area constraint">
+                        </a>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- filter settings -->
+    <div id="filters" class="sidenav filter-sidenav planRouteFilter" style="height:100% !important">
+
+        <div class="row sidenav-header mt-3">
+            <div class="col-10 text-center">
+                <div class="text-normal-hyperlink mt-3" style="font-size: x-large;">
+                    SEARCH
+                </div>
+            </div>
+            <div class="col-1 pl-0" style="position: none;">
+                <a href="#" class="close-filter-icon-common" data-target="movementFilters" id="closeMovementFilters">&times;</a>
+            </div>
+        </div>
+
+
+
+
+        <hr style="margin-top: 0;">
+        <div class="filter-list">
+            <div class="filters">
+                <div class="row" id="viewstructconstraints">
+                    <div class="col-10 col-md-10 col-sm-10">
+                        <span>
+                            Structures and Constraints
+                        </span>
+                    </div>
+                    <div class="col-2 col-md-2 col-sm-2">
+                        <img id="chevlon-up-icon1" src="~/Content/assets/images/up-chevlon-filter.svg" width="20"
+                             style="display: none;">
+                        <img id="chevlon-down-icon1" src="~/Content/assets/images/down-chevlon-filter.svg" width="20"
+                             style="display: block">
+                    </div>
+                </div>
+            </div>
+
+            <div class="pr-0 pl-0 mr-0 ml-0 mt-4 mb-0 input-field" id="viewStructuresConstraints" style="display: none;">
+                @if (IsAssesment == 0)
+                {
+                    <div class="row mt-4 align-items-center">
+                        <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                            <input type="checkbox" id="OwnedByMe" class="checkbox" name="OwnedByMe" value="bulldozer"
+                                   width="25">
+                        </div>
+                        <div class="col-lg-10 col-sm-10 col-md-10">
+                            <span class="txtStyle">Owned by Me</span>
+                        </div>
+                    </div>
+                    <div class="row mt-4 align-items-center">
+                        <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                            <input type="checkbox" id="OwnedByOtherOrganisations" class="checkbox" name="OwnedByOtherOrganisations" value="bulldozer"
+                                   width="25">
+                        </div>
+                        <div class="col-lg-10 col-sm-10 col-md-10">
+                            <span id="AffectedLabel" class="txtStyle">Owned by Other Organisations</span>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row mt-4 align-items-center" style="display:none">
+                        <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                            <input type="checkbox" id="All" class="checkbox" name="All" value="bulldozer"
+                                   width="25">
+                        </div>
+                        <div class="col-lg-10 col-sm-10 col-md-10">
+                            <span class="txtStyle">All</span>
+                        </div>
+                    </div>
+                    <div class="row mt-4 align-items-center" style="display:none">
+                        <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                            <input type="checkbox" id="Affected" class="checkbox" name="Affected" value="bulldozer"
+                                   width="25">
+                        </div>
+                        <div class="col-lg-10 col-sm-10 col-md-10">
+                            <span id="AffectedLabel" class="txtStyle">Affected</span>
+                        </div>
+                    </div>
+                    <label class="switchstructure switch">
+                        <input type="checkbox" id="toggleAllAffected" name="toggleAllAffected" value="true">
+                        <div class="slider round">
+                            <!--ADDED HTML -->
+                            <span id="All" class="on" style="color:white !important">All</span>
+                            <span id="Affected" class="off" style="color:white !important">Affected</span>
+                            <!--END-->
+                        </div>
+                    </label>
+                }
+                <hr>
+                <div class="row mt-4 align-items-center">
+                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                        <input type="checkbox" id="Structs" class="checkbox" name="Structs" value="bulldozer"
+                               width="25">
+                    </div>
+                    <div class="col-lg-10 col-sm-10 col-md-10">
+                        <span class="txtStyle">Structures</span>
+                    </div>
+                </div>
+                <div class="row mt-4 align-items-center pl-7">
+                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                        <input type="checkbox" id="Underbridge" class="checkbox" name="Underbridge" value="bulldozer"
+                               width="25">
+                    </div>
+                    <div class="col-lg-10 col-sm-10 col-md-10">
+                        <span class="txtStyle">Underbridge</span>
+                    </div>
+                </div>
+                <div class="row mt-4 align-items-center pl-7">
+                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                        <input type="checkbox" id="Overbridge" class="checkbox" name="Overbridge" value="bulldozer"
+                               width="25">
+                    </div>
+                    <div class="col-lg-10 col-sm-10 col-md-10">
+                        <span class="txtStyle">Overbridge</span>
+                    </div>
+                </div>
+                <div class="row mt-4 align-items-center pl-7">
+                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                        <input type="checkbox" id="UnderAndOverbridge" class="checkbox" name="UnderAndOverbridge" value="bulldozer"
+                               width="25">
+                    </div>
+                    <div class="col-lg-10 col-sm-10 col-md-10">
+                        <span class="txtStyle">Under and Over bridge</span>
+                    </div>
+                </div>
+                <div class="row mt-4 align-items-center pl-7">
+                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                        <input type="checkbox" id="LevelCrossing" class="checkbox" name="LevelCrossing" value="bulldozer"
+                               width="25">
+                    </div>
+                    <div class="col-lg-10 col-sm-10 col-md-10">
+                        <span class="txtStyle">Level Crossing</span>
+                    </div>
+                </div>
+                <div class="row mt-4 align-items-center">
+                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                        <input type="checkbox" id="Constraints" class="checkbox" name="Constraints" value="bulldozer"
+                               width="25">
+                    </div>
+                    <div class="col-lg-10 col-sm-10 col-md-10">
+                        <span class="txtStyle">Constraints</span>
+                    </div>
+                </div>
+            </div>
+            <div class="my-3 filters">
+                <div class="row" id="boundaries">
+                    <div class="col-10 col-md-10 col-sm-10">
+                        <span>
+                            Boundaries
+                        </span>
+                    </div>
+                    <div class="col-2 col-md-2 col-sm-2">
+                        <img id="chevlon-up-icon2" src="~/Content/assets/images/up-chevlon-filter.svg" width="20"
+                             style="display: none;">
+                        <img id="chevlon-down-icon2" src="~/Content/assets/images/down-chevlon-filter.svg" width="20"
+                             style="display: block">
+                    </div>
+                </div>
+            </div>
+            <div class="pr-0 pl-0 mr-0 ml-0 mt-4 mb-0 input-field" id="viewBoundaries" style="display: none;">
+                <div class="row mt-4 align-items-center">
+                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                        <input type="checkbox" id="PoliceBoundaries" class="checkbox" name="PoliceBoundaries" value="bulldozer"
+                               width="25">
+                    </div>
+                    <div class="col-lg-10 col-sm-10 col-md-10">
+                        <span class="txtStyle">Police Authority Boundaries</span>
+                    </div>
+                </div>
+                <div class="row mt-4 align-items-center">
+                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                        <input type="checkbox" id="LABoundaries" class="checkbox" name="LABoundaries" value="bulldozer"
+                               width="25">
+                    </div>
+                    <div class="col-lg-10 col-sm-10 col-md-10">
+                        <span class="txtStyle">Local Authority Boundaries</span>
+                    </div>
+                </div>
+            </div>
+            <div class="my-3 filters">
+                <div class="row" id="divviewroads">
+                    <div class="col-10 col-md-10 col-sm-10">
+                        <span>
+                            Search roads
+                        </span>
+                    </div>
+
+                    <div class="col-2 col-md-2 col-sm-2">
+                        <img id="chevlon-up-icon21" src="~/Content/assets/images/up-chevlon-filter.svg" width="20"
+                             style="display: none;">
+                        <img id="chevlon-down-icon21" src="~/Content/assets/images/down-chevlon-filter.svg" width="20"
+                             style="display: block">
+                    </div>
+
+                </div>
+            </div>
+            <div id="viewroads" style="display: none;">
+                <div class="row mt-4 align-items-center">
+                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                        <input type="checkbox" id="NHBoundaries" class="checkbox" name="NHBoundaries" value="bulldozer"
+                               width="25">
+                    </div>
+                    <div class="col-lg-10 col-sm-10 col-md-10">
+                        <span class="txtStyle">NH and DBFO Area Boundaries</span>
+                    </div>
+                </div>
+                <div class="row mt-4 align-items-center">
+                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                        <input type="checkbox" id="TfLRoads" class="checkbox" name="TfLRoads" value="bulldozer"
+                               width="25">
+                    </div>
+                    <div class="col-lg-10 col-sm-10 col-md-10">
+                        <span class="txtStyle">TfL Roads</span>
+                    </div>
+                </div>
+                <div class="row mt-4 align-items-center">
+                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                        <input type="checkbox" id="WelshTrunkRoads" class="checkbox" name="bulldozer" value="bulldozer"
+                               width="25">
+                    </div>
+                    <div class="col-lg-10 col-sm-10 col-md-10">
+                        <span class="txtStyle">
+                            Welsh Trunk Roads
+                        </span>
+                    </div>
+                </div>
+                <div class="row mt-4 align-items-center">
+                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                        <input type="checkbox" id="ScottishTrunkRoads" class="checkbox" name="bulldozer" value="bulldozer"
+                               width="25">
+                    </div>
+                    <div class="col-lg-10 col-sm-10 col-md-10">
+                        <span class="txtStyle">Scottish Trunk Roads</span>
+                    </div>
+                </div>
+            </div>
+            <div class="pr-0 pl-0 mr-0 ml-0 mt-4 mb-0 input-field" id="viewAllstructures" style="display: none;">
+                <div class="row mt-4 align-items-center">
+                    <div class="col-lg-1 col-sm-2 col-md-1 mr-2">
+                        <input type="checkbox" id="bulldozer" class="checkbox" name="bulldozer" value="bulldozer"
+                               width="25">
+                    </div>
+                    <div class="col-lg-10 col-sm-10 col-md-10">
+                        <span class="txtStyle">
+                            AIL related Structures whether over under or both,
+                            public or private
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+    <!-- end of fikter settings -->
+    <div id="snackbar">Zoom-in to view structures/constraints</div>
+
+    <div class="modal fade" id="lineconstraintwarningpopup" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header pt-0">
+                    <span aria-hidden="true" class="closeconstraintpopup lineconstraintclose" data-dismiss="modal" aria-label="Close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <img src="~/Content/assets/images/warning-icon2.svg" width="30">
+                    <div class="edit-normal">Constraint creation is allowed only at zoom level 9 or above</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary lineconstraintclose" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="ConstraintcreationfailedPopup" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header pt-0 constraintcreationfailed" style="align-self: end;">
+                    <span aria-hidden="true" class="close" data-dismiss="modal" aria-label="Close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <img src="~/Content/assets/images/warning-icon2.svg"  width="30">
+                    <div class="edit-normal">
+                        Constraint creation failed. You do not have sufficient
+                        privilege to create constraints in the selected roads.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary constraintcreationfailed" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="modal fade" id="Poinsandlinesnotonroad" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header pt-0">
+                    <span aria-hidden="true" class="closeconstraintpopup closepoints" data-dismiss="modal" aria-label="Close">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <img src="~/Content/assets/images/warning-icon2.svg"  width="30">
+                    <div class="edit-normal">
+                        Points or/and joining lines are not on road.
+                        Please make sure created points and
+                        joining lines are on road.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary closepoints" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+<div id="dialogueSORTRelatedItems" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg" role="document" style=" max-width: 1036px;">
+        <div class="modal-content" style=" width: 100%;    padding: 30px;">
+            <div class="modal-body">
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn outline-btn-primary btn-normal backtomap" role="button" aria-pressed="true" data-dismiss="modal"
+                        style="width: 12rem !important;">
+                    CLOSE
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- end of filter settings -->
+<style>
+    #dialogueSORTRelatedItems table th {
+        color: white;
+    }
+
+    .LeftpanelConst1 {
+        margin-top: -4rem !important;
+        height: auto !important;
+        min-height: 19rem !important;
+        width: 24rem !important;
+    }
+
+    .Imgswipwarning {
+        margin-left: 23rem !important;
+        position: relative !important;
+        margin-top: -12rem !important;
+    }
+
+    .card {
+        cursor: auto !important;
+    }
+</style>
+
+<script src="~/Scripts/Common/Openlayers/ifx.OpenLayers_fix-1.0.1.js?V@(Session["ProjectVersion"])"></script>
+
+<input type="hidden" value="@ViewBag.IsAgreedAppl" id="hf_IsAgreedAppl" name="hf_IsAgreedAppl" />
+<input type="hidden" value="@ViewBag.StructureId" id="hf_StructureId" name="hf_StructureId" />
+<input type="hidden" value="@ViewBag.IsConstrId" id="hf_IsConstrId" name="hf_IsConstrId" />
+<input type="hidden" value="@ViewBag.X" id="hf_X" name="hf_X" />
+<input type="hidden" value="@ViewBag.x1" id="hf_x1" name="hf_x1" />
+<input type="hidden" value="@ViewBag.StructureCode" id="hf_StructureCode" name="hf_StructureCode" />
+<input type="hidden" value="@ViewBag.Y" id="hf_Y" name="hf_Y" />
+<input type="hidden" value="@ViewBag.x2" id="hf_x2" name="hf_x2" />
+<input type="hidden" value="@ViewBag.y1" id="hf_y1" name="hf_y1" />
+<input type="hidden" value="@ViewBag.y2" id="hf_y2" name="hf_y2" />
+<input type="hidden" value="@ViewBag.ConstraintID" id="hf_ConstraintID" name="hf_ConstraintID" />
+<input type="hidden" value="@ViewBag.Assessmentflag" id="hf_AssessStructFlag" name="hf_AssessStructFlag" />
+
+
+<script src="~/Scripts/Structures/MyStructures.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Structures/RoadContact.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/RoadOwnership/RoadOwnersContact.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Structures/StructureContact.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Constraint/ViewConstraint.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Constraint/ViewCaution.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Constraint/ReviewContactsList.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Constraint/HaulierConstraintDetails.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Constraint/CreateConstraint.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Constraint/EditConstraint.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Constraint/ReviewCautionsList.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Structures/UnsuitableStructureSummary.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Structures/ReviewSummaryPopup.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Structures/AffectedstructureSummaryPopup.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Application/ViewContactDetails.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Constraint/CreateCaution.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Constraint/ManageConstraintContact.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Constraint/CautionAddReport.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Constraint/ConstraintHistory.js?V@(Session["ProjectVersion"])"></script>

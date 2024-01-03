@@ -1,0 +1,239 @@
+@using System.Web.Optimization
+@using STP.Domain.Applications
+@using STP.Domain
+
+@model STP.Domain.Applications.SOApplication
+
+@{
+    ViewBag.Title = "SORTApplicationSummary";
+
+    int rev_id = 0;
+    long proj_id = 0;
+    if (ViewBag.Project_id != null)
+    {
+        proj_id = ViewBag.Project_id;
+    }
+    if (ViewBag.RevisionId != null)
+    {
+        rev_id = ViewBag.RevisionId;
+    }
+}
+@Html.Hidden("proj_id", proj_id)
+@Html.Hidden("rev_id", rev_id)
+
+<div>
+    <div class="cardSOA1 mt-0 ml-1 mb-4">
+        <h6 class="text-color3 stHeading1 m-0">Movement Summary</h6>
+    </div>
+    <div class="pl-6 pr-3">
+        <div class="row pb-3">
+            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                ESDAL Reference
+            </div>
+            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                @if (ViewBag.Status == "MoveVer")
+                {
+                    @Model.ESDALReference
+                }
+                else
+                {
+                    @Model.ESDALReference
+                }
+            </div>
+        </div>
+        <div class="row pb-3">
+            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                Haulier reference
+            </div>
+            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                @Model.HaulierReference
+            </div>
+        </div>
+        @if (ViewBag.Status == "MoveVer")
+        {
+            <div class="row pb-3">
+                <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                    Movement Name
+                </div>
+                <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                    @Model.MovementName
+                </div>
+            </div>
+
+            <div class="row pb-3">
+                <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                    Movement Status
+                </div>
+                <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                    @Model.MovementStatus
+                </div>
+            </div>
+            if (ViewBag.VR1App != true)
+            {
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                        Movement Agreed Date
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.MovementAgreedDate
+                    </div>
+                </div>
+            }
+            else
+            {
+
+                if (Model.VR1Number != "0" && Model.VR1Number != null)
+                {
+                    <div class="row pb-3">
+                        <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                            VR-1 Number
+                        </div>
+                        <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                            NH: @Model.VR1Number
+                        </div>
+                    </div>
+                }
+                if (Model.VR1ApprovalDate != "0" && Model.VR1ApprovalDate != null)
+                {
+                    <div class="row pb-3">
+                        <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                            VR1 Approval Date
+                        </div>
+                        <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                            @Model.VR1ApprovalDate
+                        </div>
+                    </div>
+                }
+
+            }
+            <div class="row pb-3">
+                <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                    Haulier Name
+                </div>
+                <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                    @Model.HaulierName
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="row pb-3">
+                <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                    Application Date
+                </div>
+                <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                    @Model.ApplicationDate
+                </div>
+            </div>
+            <div class="row pb-3">
+                <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                    Application Due Date
+                </div>
+                <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                    @Model.ApplicationDueDate
+                </div>
+            </div>
+        }
+        <div class="row pb-3">
+            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                Start Description
+            </div>
+            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                @Model.MovementFromDescription
+            </div>
+        </div>
+        <div class="row pb-3">
+            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                End Description
+            </div>
+            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                @Model.MovementToDescription
+            </div>
+        </div>
+        <div class="row pb-3">
+            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                Number of Movements
+            </div>
+            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                @if (Model.ApplicationRevId == 0) { }
+                else
+                {
+                    @Model.NumberOfMovements
+                }
+            </div>
+        </div>
+        <div class="row pb-3">
+            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                Maximum number of pieces<br>
+                being moved in any load
+            </div>
+            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                @if (Model.ApplicationRevId == 0)
+                {
+                    @Html.TextBoxFor(m => m.NumberofPieces, new { @maxlength = "200", @class = "text_my", @Value = "1" })
+                    @Html.ValidationMessageFor(m => m.NumberofPieces)
+                }
+                else
+                {
+                    @Model.NumberofPieces
+                }
+            </div>
+        </div>
+        <div class="row pb-3">
+            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                Movement Date From
+            </div>
+            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                @Model.MovementDateFrom
+            </div>
+        </div>
+        <div class="row pb-3">
+            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                Movement Date To
+            </div>
+            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                @Model.MovementDateTo
+            </div>
+        </div>
+        <div class="row pb-3">
+            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                Load Description
+            </div>
+            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                @Model.MovementLoadDescription
+            </div>
+        </div>
+        <div class="row pb-3">
+            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                Haulier Notes
+            </div>
+            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                @Model.ApplicationNotesFromHA
+            </div>
+        </div>
+        <div class="row pb-3">
+            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                Haulier Email Address
+            </div>
+            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                <a href="mailto:@Model.HaulierEmailId" class="text-decoration-link" style="cursor: pointer;">@Model.HaulierEmailId</a>
+            </div>
+        </div>
+        <div class="row pb-3">
+            <div class="col-sm-4 col-md-6 col-lg-3 text-normal">
+                Haulier Fax Number
+            </div>
+            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                @Model.HaulierFaxNo
+            </div>
+        </div>
+    </div>
+</div>
+
+@{
+    <input type="hidden" value="@ViewBag.Status" id="hf_Status" name="hf_Status" />
+    <input type="hidden" value="@ViewBag.Project_id" id="hf_Project_id" name="hf_Project_id" />
+    @Html.Hidden("hf_Mov_btn_show",(bool)ViewBag.Mov_btn_show)
+    <input type="hidden" value="@ViewBag.RevisionId" id="hf_RevisionId" name="hf_RevisionId" />
+ }
+    @*<script src="~/Scripts/SORTApplication/SORTApplicationSummary.js?V@(Session["ProjectVersion"])"></script>*@

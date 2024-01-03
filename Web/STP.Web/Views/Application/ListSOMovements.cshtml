@@ -1,0 +1,368 @@
+@using System.Web.Optimization
+@using STP.Domain
+@model STP.Domain.Applications.SOApplicationTabs
+@using STP.Web.Custom.Views
+@{
+    ViewBag.Title = "ListSOMovements";
+    string generateInstr = ViewBag.generatePrintFlag;
+}
+@Html.Hidden("hfRouteID", 0)
+@Html.Hidden("IsAgreedApp", "Y")
+@Html.Hidden("TextChangeFlagSO", false)
+@Html.Hidden("TextChangeFlagVR1", false)
+@Html.Hidden("IsSOvehicle", false)
+@Html.Hidden("IsSOroute", false)
+@Html.Hidden("IsVR1PreMovroute", false)
+@Html.Hidden("PrevMovESDALRefNum", "")
+@Html.Hidden("IsApplication", 0)
+
+@{
+    int IsHistory = ViewBag.IsHistory;
+    long versionId = ViewBag.versionId;
+    long revisionID = ViewBag.revisionId;
+    string hauliermnemonic = ViewBag.hauliermnemonic;
+    int esdalref = ViewBag.esdalref;
+    int revisionno = ViewBag.revisionno;
+    int versionno = ViewBag.versionno;
+    string vr1contentrefno = "";
+    int movementId = ViewBag.MovementId;
+    int isNotifyFlag = ViewBag.isNotifyFlag;
+    long S_WichPage = ViewBag.WichPage;
+    int SubmittedRoute = 0;
+
+    int versionStatus = ViewBag.Version_Status;
+    long apprevisionId = ViewBag.ApprevisionId;
+    bool isVR1Applciation = false;
+    if (ViewBag.VR1Applciation != null) { isVR1Applciation = ViewBag.VR1Applciation; }
+    bool Reduceddetailed = false;
+    if (ViewBag.reduceddetailed != null) { Reduceddetailed = ViewBag.reduceddetailed; }
+    bool soveh = ViewBag.soveh; //for other side by side
+    int analysisId = 0;
+    int isDistributed = ViewBag.IsDistributed;
+    int projid = ViewBag.projectId;
+    if (isVR1Applciation)
+    {
+        if (ViewBag.analysis_id != null)
+        {
+            analysisId = (int)ViewBag.analysis_id;
+        }
+    }
+    else
+    {
+        if (ViewBag.AnalysisID != null)
+        {
+            analysisId = (int)ViewBag.AnalysisID;
+        }
+    }
+    if (ViewBag.VR1ContentRefNo != null)
+    {
+        vr1contentrefno = ViewBag.VR1ContentRefNo;
+    }
+
+    string strVersionStatus = "";
+    switch (versionStatus)
+    {
+        case 305001:
+            strVersionStatus = "- Work in progress";
+            break;
+        case 305002:
+            strVersionStatus = "- Proposed";
+            break;
+        case 305003:
+            strVersionStatus = "- Reproposed";
+            break;
+        case 305004:
+            strVersionStatus = "- Agreed";
+            break;
+        case 305005:
+            strVersionStatus = "- Agreed revised";
+            break;
+        case 305006:
+            strVersionStatus = "- Agreed recleared";
+            break;
+        case 305007:
+            strVersionStatus = "- Withdrawn";
+            break;
+        case 305008:
+            strVersionStatus = "- Declined";
+            break;
+        case 305009:
+            strVersionStatus = "- Historical";
+            break;
+        case 305010:
+            strVersionStatus = "- Revised";
+            break;
+        case 305011:
+            strVersionStatus = "- Agreement work in progress";
+            break;
+        case 305012:
+            strVersionStatus = "- Agreement reclearance work in progress";
+            break;
+        case 305013:
+            strVersionStatus = "- Planned";
+            break;
+        case 305014:
+            strVersionStatus = "- Approved";
+            break;
+        case 0:
+            if (ViewBag.VR1Applciation == true)
+            {
+                strVersionStatus = " Apply for VR-1";
+            }
+            else
+            {
+                strVersionStatus = " Apply for SO ";
+            }
+
+            break;
+
+    }
+
+    if (ViewBag.ApplicationStatus == 308002)
+    {
+        strVersionStatus = "- Submitted";
+    }
+    else if (ViewBag.ApplicationStatus == 308003)
+    {
+        if (versionStatus == 305004)
+        {
+            strVersionStatus = "- Agreed";
+        }
+        else if (versionStatus == 305002)
+        {
+            strVersionStatus = "- Proposed";
+        }
+        else if (versionStatus == 305003)
+        {
+            strVersionStatus = "- Reproposed";
+        }
+        else if (versionStatus == 305005)
+        {
+            strVersionStatus = "- Agreed revised";
+        }
+        else if (versionStatus == 305006)
+        {
+            strVersionStatus = "- Agreed recleared";
+        }
+        else
+        {
+            strVersionStatus = "- Received by NH";
+        }
+    }
+    else if (ViewBag.ApplicationStatus == 308005)
+    {
+        strVersionStatus = "- Withdrawn";
+    }
+
+    @Html.Hidden("WichPage", S_WichPage)
+    @Html.Hidden("MoveId", movementId)
+    @Html.Hidden("VersionId", versionId)
+    @Html.Hidden("VersionStatus", versionStatus)
+    @Html.Hidden("hauliermnemonic", hauliermnemonic)
+    @Html.Hidden("esdalref", esdalref)
+    @Html.Hidden("revisionno", revisionno)
+    @Html.Hidden("versionno", versionno)
+    @Html.Hidden("vr1appln", isVR1Applciation)
+    @Html.Hidden("RoutePartId")
+    @Html.Hidden("sovehothersidebyside", soveh)
+    @Html.Hidden("hdnsovalidation", false)
+    @Html.Hidden("Reduceddetailed", Reduceddetailed)
+    @Html.Hidden("analysisId", analysisId)
+    @Html.Hidden("VR1ContentRefNo", vr1contentrefno)
+    @Html.Hidden("projid", projid)
+    @Html.Hidden("RouteIDApp", 0)
+    @Html.Hidden("hdnIsNotifyFlag", isNotifyFlag)
+    @Html.Hidden("submittedRoute", SubmittedRoute)
+    @Html.Hidden("IsEdit", false)
+    @Html.Hidden("IsEditVehicle", false)
+
+    @Html.Hidden("SORTApplication", false)
+    @Html.Hidden("Historical", IsHistory)
+}
+
+@{
+    long Pageflag = 0;
+    if (Session["RouteFlag"].ToString() == "2")
+    {
+        Pageflag = 2;
+    }
+    if (Session["RouteFlag"].ToString() == "1")
+    {
+        Pageflag = 1;
+    }
+}
+
+@Html.Hidden("Pageflag", Pageflag)
+@Html.Hidden("Appl_Status", Model.ApplicationStatus)
+@Html.Hidden("SOSubmit", 0)
+@Html.Hidden("hdnVRRouteTab", null, new { @id = "hdnVRRouteTab" })
+@{
+    string vHfRouteType = "planned";
+    @Html.Hidden("HfRouteType", vHfRouteType)
+}
+
+<div id="sort-flow">
+    <section id="banner">
+
+        <div class="container-fluid" id="banner-container">
+            <div id="vehicles">
+                <div id="sort-menu-list">
+                    <div class="tab-row">
+                        @Html.SOTabs(Model.ApplicationStatus, Model.VersionStatus, isVR1Applciation, Reduceddetailed, isDistributed)
+
+                    </div>
+                </div>
+
+                <div class="main-sort-content" style="background-color: white;">
+                    <div class="main-title mb-4">
+                        <span class="edit-normal"> @ViewBag.ESDAL_Reference <span class="edit-normal">@strVersionStatus</span> </span><br>
+                    </div>
+                    <div class="tab_content1" id="tab_1" style="display:none;">
+                        <div id="SOGeneralDetails">
+                        </div>
+                    </div>
+                    <div class="tab_content1" id="tab_2" style="display:none;">
+                        <br />
+                        <div id="SOHaulierApplDetails">
+
+                        </div>
+                    </div>
+                    <div class="tab_content1" id="tab_3" style="display:none;">
+
+                        <div id="vr1Route" style="display:none"></div>
+                        <div id="ApplicationParts" style="display:none"></div>
+                    </div>
+                    <div class="tab_content1" id="leftpanel"></div>
+                    <div class="tab_content" id="tab_4" style="display:none;">
+                        <div id="mapTitle"></div>
+                        <div id="RoutePart">
+                        </div>
+
+                        <div id="RouteDetails"></div>
+                        <table id="ShowDetail">
+                            <tr><th colspan="2" class="headgrad">Route Part Name</th></tr>
+                            <tr><td colspan="2"><span id="RouteName"></span></td></tr>
+                            <tr id="trHeaderDescription"><th colspan="2" class="headgrad">Route Description</th></tr>
+                            <tr id="trdesc"><td colspan="2"><span id="RouteDesc"></span></td></tr>
+                            <tr><th colspan="2" id="trRoute" class="headgrad">Route</th></tr>
+                            <tr id="trStarting"><td style="width:100px">Starting </td><td><span id="Starting"></span></td></tr>
+                            <tr id="trVia">
+                                <td style="vertical-align:top">via / Waypoint </td>
+                                <td>
+                                    <table id="Tabvia" class="table">
+                                    </table>
+                                </td>
+                            </tr>
+                            <tr id="trEnding"><td>Ending </td><td><span id="Ending"></span></td></tr>
+                            <tr>
+                                <td colspan="2">
+                                    <div id="RouteMap">
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" id="TDbtnBackToRouteList">
+                                    <button class="btn_reg_back next btngrad btnrds btnbdr" aria-hidden="true" data-icon="" type="button" id="btn-gotoRouteLibrary">Back</button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="tab_content" id="tab_5" style="display:none;">
+                        <div id="divRouteAssement"></div>
+                        <div id="div_StructureGeneralDetails"></div>
+                    </div>
+                    <div class="tab_content" id="tab_6" style="display:none;">
+
+                    </div>
+                    <div class="tab_content1" id="tab_7" style="display:none;">
+                    </div>
+                    <div class="tab_content1" id="tab_8" style="display:none;">
+                    </div>
+                    <div id="general_details">
+                    </div>
+
+                    <div id="route_vehicle_details">
+                    </div>
+                    <div id="route_assessment_details">
+
+                    </div>
+                    <div id="trans_status_details" style="display:none; text-align: center;">
+                        <span style="text-align: center; color: black; ">No Records found</span>
+                    </div>
+                    <div id="collaboration_details" style="display: none; text-align: center;">
+                        <span style="text-align: center; color: black; ">No Records found</span>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+</div>
+<style>
+
+    #banner-container {
+        background: linear-gradient(0deg, rgba(255, 255, 255, 1) 0%, rgba(201, 205, 229, 0.44) 100%);
+        color: white !important;
+        padding-top: 50px;
+        padding-bottom: 80px;
+    }
+
+    #vehicles {
+        padding: 0 !important;
+    }
+</style>
+
+@{
+    <input type="hidden" value="@(ViewBag.Helpdesk_redirect!=null?ViewBag.Helpdesk_redirect.ToString():"false")" id="hf_Helpdesk_redirect" name="hf_Helpdesk_redirect" />
+    <input type="hidden" value="@ViewBag.ApplicationRevId" id="hf_ApplicationRevId" name="hf_ApplicationRevId" />
+    <input type="hidden" value="@ViewBag.ApprevisionId" id="hf_ApprevisionId" name="hf_ApprevisionId" />
+    <input type="hidden" value="@ViewBag.versionId" id="hf_versionId" name="hf_versionId" />
+    <input type="hidden" value="@ViewBag.routeType1" id="hf_routeType1" name="hf_routeType1" />
+    <input type="hidden" value="@ViewBag.revisionId" id="hf_revisionId" name="hf_revisionId" />
+    <input type="hidden" value="@ViewBag.reduceddetailed" id="hf_reduceddetailed" name="hf_reduceddetailed" />
+    @Html.Hidden("hf_VR1Applciation", (bool)ViewBag.VR1Applciation)
+    @Html.Hidden("hf_ApplicationStatus", Model.ApplicationStatus)
+    <input type="hidden" value="@ViewBag.hauliermnemonic" id="hf_hauliermnemonic" name="hf_hauliermnemonic" />
+    <input type="hidden" value="@ViewBag.esdalref" id="hf_esdalref" name="hf_esdalref" />
+    <input type="hidden" value="@ViewBag.revisionno" id="hf_revisionno" name="hf_revisionno" />
+    <input type="hidden" value="@ViewBag.versionno" id="hf_versionno" name="hf_versionno" />
+    <input type="hidden" value="@ViewBag.VR1Notify" id="hf_VR1Notify" name="hf_VR1Notify" />
+    @Html.Hidden("hf_pageflag", Session["pageflag"])
+    @Html.Hidden("hf_RouteFlag", Session["RouteFlag"])
+    <input type="hidden" value="@ViewBag.routeID" id="hf_routeID" name="hf_routeID" />
+    <input type="hidden" value="@ViewBag.PageFlag" id="hf_viewPageFlag" name="hf_viewPageFlag" />
+}
+<script src="~/Scripts/Application/ListSOMovements.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Application/SOGeneralDetails.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Application/VR1GeneralDetails.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Application/ApplicationRouteList.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Application/ViewSupplimentaryInfo.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Routes/A2BPlanning.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Application/RouteAnalysisPanel.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Application/RouteVehicle.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Application/ContactedPartiesList.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/VehicleConfig/ViewConfigurationGeneral.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/GeneralVehicleComponent.js?V@(Session["ProjectVersion"])"></script>
+
+<script src="~/Scripts/RouteAssessment/ListConstraints.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/RouteAssessment/ListAnnotations.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/RouteAssessment/ListAffectedStructures.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/RouteAssessment/ListAffectedRoads.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/RouteAssessment/ListAffectedParties.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Constraint/ViewConstraint.js?V@(Session["ProjectVersion"])"></script>
+
+<script src="~/Scripts/XSLT/AffectedParties.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/XSLT/AffectedRoads.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/XSLT/AffectedStructures.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Structures/AffectedstructureSummaryPopup.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/XSLT/Annotations.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/XSLT/Constraints.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/XSLT/DrivingInstruction.js?V@(Session["ProjectVersion"])"></script>
+
+<script src="~/Scripts/Constraint/HaulierConstraintDetails.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Annotation/CreateAnnotation.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Structures/RoadContact.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Structures/StructureContact.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Structures/UnsuitableStructureSummary.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Movements/MovementCloneReviseRenotif.js?V@(Session["ProjectVersion"])"></script>

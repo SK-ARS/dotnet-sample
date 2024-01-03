@@ -1,0 +1,95 @@
+@model STP.Domain.Routes.AppRouteList
+@{
+    var RouteName = "";
+    if (Model.RouteName == null)
+    {
+        RouteName = "Create new route";
+    }
+    else
+    {
+        RouteName = Model.RouteName;
+    }
+}
+<input type="hidden" value="@ViewBag.CandVersionNo" id="hf_candversionno" name="hf_candversionno" />
+<input type="hidden" value="@ViewBag.CandName" id="hf_candname" name="hf_candname" />
+<style>
+    .Headcolour {
+        color: rgba(92, 92, 92, 1);
+    }
+</style>
+<div id="select_route_section">
+</div>
+<div style="background-color:white">
+    <div class="row mt-4">
+        @if (@Model != null && @Model.RouteName != "")
+        {
+            <div class="col-lg-12 col-md-12 col-sm-12 pt-5 Headcolour title">
+                @RouteName
+            </div>
+        }
+        else
+        {
+            <div class="col-lg-12 col-md-12 col-sm-12 pt-5 title">
+                Create New Route
+            </div>
+        }
+
+    </div>
+    <div class="row mt-2 main-entry">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div class="row mb-2">
+                <div class="col-sm-2 col-md-2 col-lg-2 pr-0">
+                    <label class="text-normal">Route start address</label>
+                </div>
+                <div class="d-flex col-sm-6 col-md-6 col-lg-3 options">
+                    <img src="~/Content/assets/Icons/map-startpoint.svg" width="15" alt="vehicle-2">
+                    <span>
+                        <input class="edit-normal mlinput" type="text" name="from"
+                               value="@Model.FromAddress" title="@Model.FromAddress" style="width: 180%;">
+                    </span>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="col-sm-2 col-md-2 col-lg-2 pr-0">
+                    <label class="text-normal">Route end address</label>
+                </div>
+                <div class="col-sm-6 col-md-6 col-lg-3 options" style="display: flex; width: 30%">
+                    <img src="~/Content/assets/Icons/map-endpoint.svg" width="15" alt="vehicle-2">
+                    <span>
+                        <input class="edit-normal mlinput" type="text" name="from"
+                               value="@Model.ToAddress" title="@Model.ToAddress" style="width: 180%;">
+                    </span>
+                    <!-- <hr> -->
+                </div>
+                <div class="d-flex col-sm-2 col-md-2 col-lg-1 pr-0 info-card" style="width: 50%">
+                    <span class="pr-3">
+                    </span>
+                    <span style="margin-top: -12px;">
+                        <div class="button main-button mr-0">
+                            @if (@Model != null && @Model.RouteID != 0)
+                            {
+                                <button class="btn outline-btn-primary btn-normal" role="button"
+                                        aria-pressed="true" id="btn-viewmap" data-RouteID="@Model.RouteID" data-RouteName="'@Model.RouteName'">
+                                    VIEW ROUTE
+                                </button>
+                                <button class="btn outline-btn-primary btn-normal" role="button"
+                                        aria-pressed="true" id="btn-importroute" data-RouteID="@Model.RouteID" data-RouteName="'@Model.RouteName'">
+                                    IMPORT
+                                </button>
+                            }
+                            else
+                            {
+                                <button class="btn outline-btn-primary btn-normal" role="button"
+                                        aria-pressed="true" id="create-sort">
+                                    PLAN ON MAP
+                                </button>
+                            }
+
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@*<script src="~/Scripts/SORTApplication/PartialView/_SortCandiRouteDetails.js?V@(Session["ProjectVersion"])"></script>*@

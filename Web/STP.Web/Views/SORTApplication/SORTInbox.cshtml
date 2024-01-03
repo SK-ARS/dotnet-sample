@@ -1,0 +1,1134 @@
+﻿@using System.Web.Optimization
+@using PagedList.Mvc
+@using STP.Domain.MovementsAndNotifications.Movements
+@using STP.Common.Enums
+@model PagedList.IPagedList<STP.Domain.MovementsAndNotifications.Movements.SORTMovementList>
+@{
+    SORTMovementFilter sortMovFilter = new SORTMovementFilter();
+    if (Session["SORTFilter"] != null)
+    {
+        sortMovFilter = (SORTMovementFilter)Session["SORTFilter"];
+    }
+    else
+    {
+        sortMovFilter.ShowMyProjects = false;
+    }
+
+    int x = 0;
+    if (x != 0)
+    {
+        x = ViewBag.geom;
+    }
+    //x =Convert.ToString(ViewBag.geom);
+
+
+    int listCount = 0;
+    listCount = (int)Session["sortinboxPageSize"];
+    int pageSize = 10;
+    if (ViewBag.pageSize != null)
+    {
+        pageSize = ViewBag.pageSize;
+    }
+    int? pageNum = ViewBag.page;
+    //int? page= ViewBag.page;
+    ViewBag.Title = "SORTInbox";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+    SortMapFilter objsortmap = null;
+
+    SORTMovementFilter objSORTMovementFilter = null;
+    if (ViewBag.SORTMovementFilter != null)
+    {
+        objSORTMovementFilter = ViewBag.SORTMovementFilter;
+    }
+    bool PrevMoveRoutePageSize = false;
+    if (ViewBag.IsPrevtMovementsVehicleRoute != null)
+    {
+        PrevMoveRoutePageSize = ViewBag.IsPrevtMovementsVehicleRoute;
+    }
+    bool PrevMoveVehPageSize = false;
+    if (ViewBag.IsPrevtMovementsVehicle != null)
+    {
+        PrevMoveVehPageSize = ViewBag.IsPrevtMovementsVehicle;
+    }
+    string trcolor = "rgba(229, 229, 232, 0.78)";
+    string showProjects = ViewBag.ShowMyProjects;
+}
+@{
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.MOVEMENTS;
+}
+<style>
+    #filters .sidenav-header span {
+        font-size: 30px;
+    }
+
+    #filters.sidenav {
+        padding-top: 10px;
+    }
+
+    .statusinline {
+        display: inline-flex;
+    }
+    
+    .statuslabel {
+        padding-left: 5px;
+        margin-top: 4px;
+    }
+
+    #filter_SORT ::placeholder {
+        font-style: italic !important;
+        font-family: lato_light, Arial !important;
+    }
+
+    .sortfilter .btn.btn-outline-primary:hover {
+        color: white;
+        background-color: rgba(39, 87, 149, 1);
+    }
+
+    .sortfilter .btn.btn-outline-primary:focus {
+        color: white;
+    }
+
+    .sorticon {
+        filter: invert(100%);
+    }
+
+    .movements td:nth-child(1) {
+        text-align: left;
+    }
+
+    .filter-table-icon {
+        position: absolute;
+        bottom: -13px;
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+        left: 50px;
+    }
+
+    .filter-table-icons {
+        position: absolute;
+        bottom: -13px;
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+        left: 19px;
+    }
+</style>
+
+<body style="overflow-y: auto;">
+    <div class="div_so_movementdata">
+        <section id="banner">
+            @{
+                Html.RenderAction("HotNews", "Information");
+            }
+            <div class="container-fluid" id="banner-container">
+                <div>
+                    <div class="header">
+                        @*@using (Ajax.BeginForm("SetSORTFilter", "SORTApplication", FormMethod.Post, new AjaxOptions { OnFailure = "OnFailure", OnBegin = "OnBegin" }, new { @id = "outsideFilterMoveInboxSORT" }))
+                            {*@
+
+                        <div id="outsideFilterMoveInboxSORT">
+                            <div class="row align-items-center">
+                                <div class="col-lg-1 col-md-1 col-sm-12"></div>
+                                <div class="col-lg-2 col-md-2 col-sm-6">
+                                    <div class="button mr-0">
+                                        <div class="pb-2">
+                                            <button class="validationmsg dropdwon_new" id="movements" role="button" data-bs-toggle="dropdown" aria-expanded="false">Select Action</button>
+                                            <ul class="dropdown-menu plan_mom_drop" aria-labelledby="movements" style="min-width:243px;">
+                                                <li><a class="edit-normal" id="btnRemoveFromFolder" href="#">Remove From Folder</a></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-5"></div>
+                                <div class="col-lg-3 col-md-3 col-sm-12">
+                                    <div id="table-head" class="align-items-center">
+                                        <span class="details mt-2 pl-2 pr-3">
+                                            ESDAL Reference No
+                                        </span>
+
+                                        <input class="text-highlight mr-r1" id="ESDALReference" type="text" name="ESDALReference" autocomplete="off">
+                                        <span>
+                                            <img src="~/Content/assets/images/search-icon.svg" width="20">
+                                        </span>
+                                    </div>
+                                </div>
+                                @Html.Hidden("hdnShowMyProjects", @showProjects)
+                                <div class="col-lg-2 col-md-2 col-sm-12">
+                                    <div style="display:flex;">
+                                        <span class="details mt-2 pl-2 mr-2">
+                                            Show my projects
+                                        </span>
+                                        @{ 
+                                            var isChecked = sortMovFilter!=null?sortMovFilter.ShowMyProjects:false;
+                                        }
+                                        <label class="switch">
+                                            <input type="checkbox" @(isChecked?"checked":"") id="ShowMyProjects" name="ShowMyProjects" value="true">
+                                            <div class="slider round">
+                                                <span class="on">YES</span>
+                                                <span class="off">NO</span>
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        @*}*@
+
+                    </div>
+
+                </div>
+                @{
+                    var movementFilter = (SORTMovementFilter)ViewBag.SORTMovementFilter;
+                    var movementsAdvancedFilter = (SortAdvancedMovementFilter)ViewBag.SORTAdvancedFilter;
+                    var historicdataincluded = "";
+                    if (movementFilter.InclHistoricMov == true)
+                    {
+                        historicdataincluded = "true";
+
+                    }
+                    var sortOrder = ViewBag.SortOrder != null ? (int)ViewBag.SortOrder : 4;//application date
+                    var sortType = ViewBag.SortType != null ? (int)ViewBag.SortType : 1;
+                    @Html.Hidden("PrevMoveRoutePageSize", PrevMoveRoutePageSize)
+                    @Html.Hidden("PrevMoveVehPageSize", PrevMoveVehPageSize)
+                }
+                <div class="movement-inbox">
+                    @Html.Partial("~/Views/Movements/_FolderManagement.cshtml")
+
+                    <div class="div_so_movement flex-fill" style="overflow:auto;">
+                        <div id="div_MoveList_advanceSearch">
+                            @Html.Hidden("TotalItemsCount", Model.Count)
+                            @Html.Hidden("pageSize", pageSize)
+                            @Html.Hidden("pageNumsort", pageNum)
+                            <div class="main-table movements overflow-hidden" id="sort-movement-table">
+                                <div class="table-responsive">
+
+                                    <table class="GridTable tblheaderfix esdal-table" id="tblSortInbox">
+                                        @{ var isMovementDateFilterEnabled = !string.IsNullOrWhiteSpace(movementFilter.MovFromDate);
+                                            var isMovementToDateFilterEnabled = !string.IsNullOrWhiteSpace(movementFilter.MovToDate);
+                                            var isSODateFilterEnabled = !string.IsNullOrWhiteSpace(movementFilter.SOSignFromDate);
+                                            var isSOSignToDateFilterEnabled = !string.IsNullOrWhiteSpace(movementFilter.SOSignToDate);
+                                            var ishaulierfilterenabled = !string.IsNullOrWhiteSpace(movementFilter.HaulierName)|| !string.IsNullOrWhiteSpace(movementsAdvancedFilter.HaulierName);
+                                            var isallocatedfilterenabled = !string.IsNullOrWhiteSpace(movementFilter.AllocateUser);
+                                            var ischeckingfilterenabled = !string.IsNullOrWhiteSpace(movementFilter.CheckingUser);
+                                            var isjobreferencefilterenabled = !string.IsNullOrWhiteSpace(movementsAdvancedFilter.JobReference);
+                                            var iskeywordfilterenabled = !string.IsNullOrWhiteSpace(movementsAdvancedFilter.Keywords);
+                                            var isloaddetailsenabled = !string.IsNullOrWhiteSpace(movementsAdvancedFilter.LoadDetails);
+                                            var isVRfilterenabled = !string.IsNullOrWhiteSpace(movementsAdvancedFilter.VRNum);
+                                            var isSOfilterenabled = !string.IsNullOrWhiteSpace(movementsAdvancedFilter.SONum);
+                                            var querystring = !string.IsNullOrWhiteSpace(movementsAdvancedFilter.QueryString);
+
+                                        }
+                                        <thead>
+                                            <tr>
+                                                @if (Model.Count > 0)
+                                                {
+                                                    if ((ViewBag.IsPrevtMovementsVehicleRoute == null || ViewBag.IsPrevtMovementsVehicleRoute == false) && (ViewBag.IsPrevtMovementsVehicle == null || ViewBag.IsPrevtMovementsVehicle == false))
+                                                    {
+                                                        <th style="text-align: center;" class="folder-drag-elem-select-all-container "><input type="checkbox" class="folder-drag-elem-select-all relatedmov" /></th>
+                                                    }
+                                                }
+                                                <th class="movement-sort">
+                                                    <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,2)" data-action="MovementSort" data-sortval="2">ESDAL Reference</span>
+
+                                                    @*<span><img src="~/Content/assets/sort.png" class="ssort sorticon" param="2" order="0" width="15"></span>*@
+                                                    @{ var isESDALFilterEnabled = !string.IsNullOrWhiteSpace(movementFilter.ESDALReference) ||
+!string.IsNullOrWhiteSpace(movementsAdvancedFilter.ESDALReferenceNumber);
+                                                    }
+                                                    @*<span><img src="~/Content/assets/images/down-chevlon.svg" class="ssort" param="2" order="1" width="15" height="6" style="display:none"></span>
+                                                        <span><img src="~/Content/assets/images/up-chevlon.svg" class="ssort" param="2" order="2" width="15" height="6" style="display:none"></span>*@
+                                                    <span class="filter-table-icons" @*style="cursor:context-menu;"*@><img id="filterimageERNSort" style="display:@(isESDALFilterEnabled ? "block" : "none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                                </th>
+                                                <th class="movement-sort">
+                                                    <!--<span>-->@*<img src="~/Content/assets/sort.png" class="ssort sorticon" param="3" order="0" width="15"></span>*@
+
+                                                    <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,3)" data-action="MovementSort" data-sortval="3"> Type</span>
+                                                    @{ bool isTypeFilterEnabled = movementsAdvancedFilter.ApplicationType == 1 || movementsAdvancedFilter.ApplicationType == 2;
+                                                    }
+                                                    <span class="filter-table-icons "><img id="filterimageTypeSort" style="display:@(isTypeFilterEnabled? "block" : "none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                                    @*<span><img src="~/Content/assets/images/down-chevlon.svg" class="ssort" param="3" order="1" width="15" height="6" style="display:none"></span>
+                                                        <span><img src="~/Content/assets/images/up-chevlon.svg" class="ssort" param="3" order="2" width="15" height="6" style="display:none"></span>*@
+                                                </th>
+                                                <th>
+                                                    Work Status<span class="filter-table-icons" @*style="cursor:context-menu;"*@><img id="filterimageERNSort" style="display:@(ischeckingfilterenabled ? "block" : "none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                                </th>
+                                                <th>
+                                                    Project Status
+                                                    @{ var isStatusFilterEnabled = movementFilter.Agreed || movementFilter.Unallocated || movementFilter.InProgress || movementFilter.Proposed ||
+movementFilter.ReProposed || movementFilter.AgreedRevised || movementFilter.Withdrawn || movementFilter.Declined
+|| movementFilter.Planned || movementFilter.Approved || movementFilter.AgreedRecleared || movementFilter.Revised || movementFilter.IsNotified;
+                                                    }
+                                                    <span class="filter-table-icons"><img id="filterimageprojectstatus" style="display:@(isStatusFilterEnabled ? "block" : "none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+
+                                                </th>
+                                                <th>
+                                                </th>
+                                                <th>
+                                                    <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,7)" data-action="MovementSort" data-sortval="7"> Owner</span>
+
+                                                    <span class="filter-table-icons"><img id="filterimageowner" style="display:@(isallocatedfilterenabled ||movementFilter.ShowMyProjects ? "block" : "none")" src="~/Content/assets/images/filter-table-icon.svg" /></span>
+                                                </th>
+
+                                                <th class="movement-sort">
+
+                                                    @{ var isApplnDateFilterEnabled = !string.IsNullOrWhiteSpace(movementFilter.ApplicationFromDate);
+                                                        //bool y= Convert.ToBoolean(isTypeFilterEnabled);
+                                                    }
+                                                    <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,4)" data-action="MovementSort" data-sortval="4">Application Date</span>
+                                                    @*<span><img src="~/Content/assets/sort.png" class="ssort sorticon" param="4" order="0" width="15"></span>*@
+                                                    @*<span><img src="~/Content/assets/images/down-chevlon.svg" class="ssort" param="4" order="1" width="15" height="6" style="display:none"></span>
+                                                        <span><img src="~/Content/assets/images/up-chevlon.svg" class="ssort" param="4" order="2" width="15" height="6" style="display:none"></span>*@
+                                                    <span class="filter-table-icons"><img id="filterimageAppln" style="display:@(isApplnDateFilterEnabled ? "block" : "none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                                </th>
+                                                <th class="movement-sort">
+
+                                                    @{ var isDueDateFilterEnabled = !string.IsNullOrWhiteSpace(movementFilter.WorkDueFromDate);
+                                                        //bool y= Convert.ToBoolean(isTypeFilterEnabled);
+                                                    }
+                                                    <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,5)" data-action="MovementSort" data-sortval="5">Due Date</span>@*<span><img src="~/Content/assets/sort.png" class="ssort sorticon" param="5" order="0" width="15"></span>*@
+                                                    <!--<-->@*span><img src="~/Content/assets/images/down-chevlon.svg" class="ssort" param="5" order="1" width="15" height="6" style="display:none"></span>
+                                                        <span><img src="~/Content/assets/images/up-chevlon.svg" class="ssort" param="5" order="2" width="15" height="6" style="display:none"></span>*@
+                                                    <span class="filter-table-icons"><img id="filterimageDue" style="display:@(isDueDateFilterEnabled ? "block" : "none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                                </th>
+                                                <th>
+                                                    Move From
+                                                    @{ var ismovefromFilterEnabled = !string.IsNullOrWhiteSpace(movementsAdvancedFilter.StartPoint);
+                                                        //bool y= Convert.ToBoolean(isTypeFilterEnabled);
+                                                    }
+                                                    <span class="filter-table-icons"><img id="filterimageMove" style="display:@(ismovefromFilterEnabled ? "block" : "none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                                </th>
+                                                <th>
+                                                    Move To
+
+                                                    @{ var ismovetoFilterEnabled = !string.IsNullOrWhiteSpace(movementsAdvancedFilter.EndPoint);
+                                                        //bool y= Convert.ToBoolean(isTypeFilterEnabled);
+                                                    }
+                                                    <span class="filter-table-icons"><img id="filterimageMoveTo" style="display:@(ismovetoFilterEnabled ? "block" : "none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                                </th>
+                                                <th>
+                                                </th>
+                                                <th class="table-filter-header">
+                                                    <img id="openFilter" src="~/Content/assets/images/filter-icon.svg" data-target="sortFilters" data-targetContainer=".sort-movement-filter" class="open-filter-icon-common" data-width="630" title="Open filter" width="38">
+                                                    <span class="filtered-icon-table"><img src="~/Content/assets/images/filtered-icon.svg" title="Clear filter" style="display:@(isESDALFilterEnabled||isStatusFilterEnabled||isESDALFilterEnabled||isApplnDateFilterEnabled||ismovefromFilterEnabled|| isDueDateFilterEnabled||ismovetoFilterEnabled||isTypeFilterEnabled||isMovementDateFilterEnabled||isSODateFilterEnabled||ishaulierfilterenabled||isjobreferencefilterenabled||isloaddetailsenabled||isVRfilterenabled||isSOfilterenabled||isallocatedfilterenabled||ischeckingfilterenabled||iskeywordfilterenabled||querystring|| movementFilter.ShowMyProjects?"block":"none")" id="filterimage"></span>
+                                                    @if (historicdataincluded == "true")
+                                                    {
+                                                        <span class="filtered-icon-table"><img src="~/Content/assets/images/filtered-icon.svg" title="Clear filter" style="display:block" )" id="filterimage"></span>
+                                                    }
+
+                                                    @if (ViewBag.geom != null)
+                                                    {
+                                                        <span class="filtered-icon-table"><img src="~/Content/assets/images/filtered-icon.svg" title="Clear filter" style="display:block" )" id="filterimage"></span>
+                                                    }
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (Model.Count > 0)
+                                            {
+                                                foreach (var item in Model)
+                                                {
+                                                    trcolor = "rgba(229, 229, 232, 0.78)";
+                                                    long status = item.AppStatus;
+                                                    string className = string.Empty;
+                                                    switch (status)
+                                                    {
+                                                        case 307002:
+                                                            className = "In progress";
+                                                            break;
+                                                        //case 307001:
+                                                        //    className = "Unallocated";
+                                                        //    break;
+                                                        case 307008:
+                                                            className = "withdrawn";
+                                                            break;
+                                                        //case "approved":
+                                                        //    className = "approved";
+                                                        //    break;
+                                                        //case "submitted":
+                                                        //    className = "submitted";
+                                                        //    break;
+                                                        default:
+                                                            className = "other";
+                                                            break;
+
+                                                    }
+                                                    string movementType = item.Type;
+                                                    if (!string.IsNullOrEmpty(movementType))
+                                                    {
+                                                        movementType = movementType.ToLower();
+                                                    }
+                                                    string moveTypeToDisplay = string.Empty;
+
+                                                    int movementId = 0;
+                                                    switch (movementType)
+                                                    {
+
+                                                        case "stgo ail cat 1":
+                                                            moveTypeToDisplay = "ALL STGO";
+                                                            movementId = 241003;
+                                                            break;
+                                                        case "stgo ail cat 2":
+                                                            moveTypeToDisplay = "ALL STGO";
+                                                            movementId = 241004;
+                                                            break;
+                                                        case "stgo ail cat 3":
+                                                            moveTypeToDisplay = "ALL STGO";
+                                                            movementId = 241005;  //241005
+                                                            break;
+                                                        case "special order":
+                                                            moveTypeToDisplay = "SO";
+                                                            movementId = 270006;
+                                                            break;
+                                                        default:
+                                                            // moveTypeToDisplay = movementType;
+                                                            // movementId = 270002;
+                                                            break;
+
+                                                    }
+                                                    string work_status_code = string.Empty;
+                                                    switch (item.WorkStatus)
+                                                    {
+                                                        case 301001:
+                                                            work_status_code = "Not Checking";
+                                                            break;
+                                                        case 301002:
+                                                            work_status_code = "Checking";
+                                                            break;
+                                                        case 301003:
+                                                            work_status_code = "Checked positively";
+                                                            break;
+                                                        case 301004:
+                                                            work_status_code = "Checked negatively";
+                                                            break;
+                                                        case 301005:
+                                                            work_status_code = "Checking final";
+                                                            break;
+                                                        case 301006:
+                                                            work_status_code = "Checked final positively";
+                                                            break;
+                                                        case 301007:
+                                                            work_status_code = "Checked final negatively";
+                                                            break;
+                                                        default:
+                                                            break;
+                                                    }
+
+                                                    if (!string.IsNullOrEmpty(moveTypeToDisplay))
+                                                    {
+                                                        moveTypeToDisplay = moveTypeToDisplay.ToUpper();
+                                                    }
+
+                                                    if (objSORTMovementFilter.UserID == item.PlannerID.ToString())
+                                                    {
+                                                        if (item.ProjectStatus == (int)ProjectStatus.planned)
+                                                        {
+                                                            trcolor = "white";
+                                                        }
+                                                        else if (item.ProjectStatus == (int)ProjectStatus.revised)
+                                                        {
+                                                            trcolor = "rgba(255, 145, 0, 0.9)";
+                                                        }
+                                                        else if (item.WorkStatus != (int)ProjectCheckingStatus.checking && item.WorkStatus != (int)ProjectCheckingStatus.checking_final)
+                                                        {
+                                                            if (item.ProjectStatus == (int)ProjectStatus.withdrawn || item.ProjectStatus == (int)ProjectStatus.declined)
+                                                            {
+                                                                trcolor = "white";
+                                                            }
+                                                            else
+                                                            {
+                                                                trcolor = "rgba(83, 226, 205, 0.73)";
+                                                            }
+                                                        }
+                                                    }
+                                                    else if (item.ProjectStatus == (int)ProjectStatus.withdrawn || item.ProjectStatus == (int)ProjectStatus.declined)
+                                                    {
+                                                        trcolor = "rgba(229, 229, 232, 0.78)";
+                                                    }
+                                                    else if (item.ProjectStatus == (int)ProjectStatus.revised)
+                                                    {
+                                                        trcolor = "rgba(255, 145, 0, 0.9)";
+                                                    }
+                                                    if (objSORTMovementFilter.UserID == item.CheckerID.ToString())
+                                                    {
+                                                        if (item.WorkStatus == (int)ProjectCheckingStatus.checking || item.WorkStatus == (int)ProjectCheckingStatus.checking_final || item.WorkStatus == (int)ProjectCheckingStatus.qa_checking)
+                                                        {
+                                                            trcolor = "rgb(249, 234, 88)";
+                                                        }
+                                                    }
+                                                    if (item.ProjectStatus == (int)ProjectStatus.approved)
+                                                    {
+                                                        trcolor = "white";
+                                                    }
+                                                    long MovementRevisionId = item.MovementRevisionID;
+                                                    long MovementVersionId = item.MovementVersionID;
+                                                    long ProjectId = item.ProjectID;
+                                                    int NotificationId = 0;
+                                                    var requiredstyle = "";
+                                                    if (item.ProjectStatus == (int)ProjectStatus.revised)
+                                                    {
+                                                        requiredstyle = "background-color: #F7F0E5;";
+                                                    }
+                                                    if (objSORTMovementFilter.UserID == item.PlannerID.ToString())
+                                                    {
+                                                        requiredstyle += "font-weight:bold;";
+                                                    }
+                                                <tr class="table_folder_item" style="@requiredstyle" draggable="true" data-revisionid="@MovementRevisionId" data-versionid="@MovementVersionId" data-notificationid="@NotificationId" data-movementtype="@movementType" data-projectid="@ProjectId">
+                                                    @if ((ViewBag.IsPrevtMovementsVehicleRoute == null || ViewBag.IsPrevtMovementsVehicleRoute == false) && (ViewBag.IsPrevtMovementsVehicle == null || ViewBag.IsPrevtMovementsVehicle == false))
+                                                    {
+                                                        <td class="folder-drag-elem-container "><input type="checkbox" class="folder-drag-elem relatedmov" /></td>
+                                                    }
+                                                    <td class="text-color2">
+                                                        @{ var ESDALRef = "";
+                                                            if (item.ProjectEsdalReference > 0)
+                                                            {
+                                                                ESDALRef = item.HaulierMnemonic + "/" + item.ProjectEsdalReference;
+                                                            }
+
+                                                            switch (item.VehicleClassification)
+                                                            {
+                                                                case 241002:
+                                                                    if (ViewBag.IsPrevtMovementsVehicle == true)
+                                                                    {
+                                                                        <a href="#" class="text-decoration-link selectmovement" arg1="@item.ProjectStatus" arg2="@item.HaulierMnemonic" arg3="@item.ProjectEsdalReference" arg4="@item.ProjectID" arg5="SO">@ESDALRef</a> }
+                                                                    else if (ViewBag.IsPrevtMovementsVehicleRoute == true)
+                                                                    {
+                                                                        <a href="#" class="text-decoration-link slctcrntmvmt" arg1="@item.ProjectStatus" arg2="@item.HaulierMnemonic" arg3="@item.ProjectEsdalReference" arg4="@item.ProjectID" arg5="SO">@ESDALRef</a> }
+                                                                    else if (ViewBag.StructureID != null)
+                                                                    {
+
+                                                                        @ESDALRef }
+                                                                    else
+                                                                    {
+                                                                        <a href="@Url.Action("SORTListMovemnets", "SORTApplication", new
+                                                                                {
+                                                    B7vy6imTleYsMr6Nlv7VQ =
+                                                    STP.Web.Helpers.EncryptionUtility.Encrypt("SORTStatus=ViewProj" +
+                                                    "&revisionId=" + item.MovementRevisionID +
+                                                    "&versionId=" + item.MovementVersionID +
+                                                    "&hauliermnemonic=" + item.HaulierMnemonic +
+                                                    "&esdalref=" + item.ProjectEsdalReference +
+                                                    "&revisionno=" + item.ApplicationRevisionNumber +
+                                                    "&versionno=" + item.MovementVersionNumber +
+                                                    "&OrganisationId=" + item.OrganisationID +
+                                                    "&projecid=" + item.ProjectID +
+                                                    "&movementId=" + movementId +
+                                                    "&Owner=" + item.Owner +
+                                                    "&WorkStatus=" + work_status_code +
+                                                    "&Checker=" + item.CheckerName +
+                                                    "&EnterBySORT=" + item.EnterBySORT +
+                                                    "&apprevid=" + item.AppRevID +
+                                                    "&pageflag=2"
+                                                    )
+                                                                                })" class="text-decoration-link">@ESDALRef</a> }
+                                                                            break;
+                                                                        case 241003:
+                                                                            if (ViewBag.IsPrevtMovementsVehicle == true)
+                                                                            {
+                                                                                <a href="#" class="text-decoration-link selectprevmovementvr1" arg1="@item.ProjectStatus" arg2="@item.HaulierMnemonic" arg3="@item.ProjectEsdalReference" arg4="@item.ProjectID" arg5="VR1">@ESDALRef</a> }
+                                                                            else if (ViewBag.IsPrevtMovementsVehicleRoute == true)
+                                                                            {
+                                                                                <a href="#" class="text-decoration-link selectcurrentmovementvr1" arg1="@item.ProjectStatus" arg2="@item.HaulierMnemonic" arg3="@item.ProjectEsdalReference" arg4="@item.ProjectID" arg5="VR1">@ESDALRef</a> }
+                                                                            else if (ViewBag.StructureID != null)
+                                                                            {
+                                                                                @ESDALRef }
+                                                                            else
+                                                                            {
+                                                                                <a href="@Url.Action("SORTListMovemnets", "SORTApplication", new
+                                                                                {
+	                                                                                B7vy6imTleYsMr6Nlv7VQ =
+	                                                                                STP.Web.Helpers.EncryptionUtility.Encrypt("SORTStatus=ViewProj" +
+	                                                                                "&revisionId=" + item.MovementRevisionID +
+	                                                                                "&versionId=" + item.MovementVersionID +
+	                                                                                "&hauliermnemonic=" + item.HaulierMnemonic +
+	                                                                                "&esdalref=" + item.ProjectEsdalReference +
+	                                                                                "&revisionno=" + item.ApplicationRevisionNumber +
+	                                                                                "&versionno=" + item.MovementVersionNumber +
+	                                                                                "&OrganisationId=" + item.OrganisationID +
+	                                                                                "&projecid=" + item.ProjectID +
+	                                                                                "&movementId=" + movementId +
+	                                                                                "&Owner=" + item.Owner +
+	                                                                                "&WorkStatus=" + work_status_code +
+	                                                                                "&Checker=" + item.CheckerName +
+	                                                                                "&EnterBySORT=" + item.EnterBySORT +
+	                                                                                "&apprevid=" + item.AppRevID +
+	                                                                                "&VR1Applciation=true" +
+	                                                                                "&pageflag=1"
+	                                                                                )
+                                                                                })" class="text-decoration-link">@ESDALRef</a> }
+                                                                            break;
+                                                                        case 241004:
+                                                                            //VR1
+                                                                            if (ViewBag.IsPrevtMovementsVehicle == true)
+                                                                            {
+                                                                                <a href="#" class="text-decoration-link selectprevmovementvr1" arg1="@item.ProjectStatus" arg2="@item.HaulierMnemonic" arg3="@item.ProjectEsdalReference" arg4="@item.ProjectID" arg5="VR1">@ESDALRef</a> }
+                                                                            else if (ViewBag.IsPrevtMovementsVehicleRoute == true)
+                                                                            {
+                                                                                <a href="#" class="text-decoration-link selectcurrentmovementvr1" arg1="@item.ProjectStatus" arg2="@item.HaulierMnemonic" arg3="@item.ProjectEsdalReference" arg4="@item.ProjectID" arg5="VR1">@ESDALRef</a> }
+                                                                            else if (ViewBag.StructureID != null)
+                                                                            {
+
+                                                                                @ESDALRef }
+                                                                            else
+                                                                            {
+                                                                                <a href="@Url.Action("SORTListMovemnets", "SORTApplication", new
+                                                                                {
+	                                                                                B7vy6imTleYsMr6Nlv7VQ =
+	                                                                                STP.Web.Helpers.EncryptionUtility.Encrypt("SORTStatus=ViewProj" +
+	                                                                                "&revisionId=" + item.MovementRevisionID +
+	                                                                                "&versionId=" + item.MovementVersionID +
+	                                                                                "&hauliermnemonic=" + item.HaulierMnemonic +
+	                                                                                "&esdalref=" + item.ProjectEsdalReference +
+	                                                                                "&revisionno=" + item.ApplicationRevisionNumber +
+	                                                                                "&versionno=" + item.MovementVersionNumber +
+	                                                                                "&OrganisationId=" + item.OrganisationID +
+	                                                                                "&projecid=" + item.ProjectID +
+	                                                                                "&movementId=" + movementId +
+	                                                                                "&Owner=" + item.Owner +
+	                                                                                "&WorkStatus=" + work_status_code +
+	                                                                                "&Checker=" + item.CheckerName +
+	                                                                                "&EnterBySORT=" + item.EnterBySORT +
+	                                                                                "&apprevid=" + item.AppRevID +
+	                                                                                "&VR1Applciation=true" +
+	                                                                                "&pageflag=1"
+	                                                                                )
+                                                                                })" class="text-decoration-link">@ESDALRef</a> }
+                                                                            break;
+                                                                        case 241005:
+                                                                            if (ViewBag.IsPrevtMovementsVehicle == true)
+                                                                            {
+                                                                                <a href="#" class="text-decoration-link selectprevmovementvr1" arg1="@item.ProjectStatus" arg2="@item.HaulierMnemonic" arg3="@item.ProjectEsdalReference" arg4="@item.ProjectID" arg5="VR1">@ESDALRef</a> }
+                                                                            else if (ViewBag.IsPrevtMovementsVehicleRoute == true)
+                                                                            {
+                                                                                <a href="#" class="text-decoration-link selectcurrentmovementvr1" arg1="@item.ProjectStatus" arg2="@item.HaulierMnemonic" arg3="@item.ProjectEsdalReference" arg4="@item.ProjectID" arg5="VR1">@ESDALRef</a> }
+                                                                            else if (ViewBag.StructureID != null)
+                                                                            {
+                                                                                @ESDALRef }
+                                                                            else
+                                                                            {
+                                                                                <a href="@Url.Action("SORTListMovemnets", "SORTApplication", new
+                                                                                {
+	                                                                                B7vy6imTleYsMr6Nlv7VQ =
+	                                                                                STP.Web.Helpers.EncryptionUtility.Encrypt("SORTStatus=ViewProj" +
+	                                                                                "&revisionId=" + item.MovementRevisionID +
+	                                                                                "&versionId=" + item.MovementVersionID +
+	                                                                                "&hauliermnemonic=" + item.HaulierMnemonic +
+	                                                                                "&esdalref=" + item.ProjectEsdalReference +
+	                                                                                "&revisionno=" + item.ApplicationRevisionNumber +
+	                                                                                "&versionno=" + item.MovementVersionNumber +
+	                                                                                "&OrganisationId=" + item.OrganisationID +
+	                                                                                "&projecid=" + item.ProjectID +
+	                                                                                "&movementId=" + movementId +
+	                                                                                "&Owner=" + item.Owner +
+	                                                                                "&WorkStatus=" + work_status_code +
+	                                                                                "&Checker=" + item.CheckerName +
+	                                                                                "&EnterBySORT=" + item.EnterBySORT +
+	                                                                                "&apprevid=" + item.AppRevID +
+	                                                                                "&VR1Applciation=true" +
+	                                                                                "&pageflag=1"
+	                                                                                )
+                                                                                })" class="text-decoration-link">@ESDALRef</a> }
+                                                                            break;
+                                                                        default:
+                                                                            break;
+                                                                    }
+                                                        }
+                                                    </td>
+                                                    <td class="text-color2">
+                                                        @{ switch (item.VehicleClassification)
+                                                            {
+                                                                case 241002:
+                                                                    if (ViewBag.IsPrevtMovementsVehicle == true)
+                                                                    {
+                                                                        <a href="#" class="text-decoration-link selectmovement" arg1="@item.ProjectStatus" arg2="@item.HaulierMnemonic" arg3="@item.ProjectEsdalReference" arg4="@item.ProjectID" arg5="SO">@Resources.Resource.SO</a> }
+                                                                    else if (ViewBag.IsPrevtMovementsVehicleRoute == true)
+                                                                    {
+                                                                        <a href="#" class="text-decoration-link slctcrntmvmt" arg1="@item.ProjectStatus" arg2="@item.HaulierMnemonic" arg3="@item.ProjectEsdalReference" arg4="@item.ProjectID" arg5="SO">@Resources.Resource.SO</a> }
+                                                                    else if (ViewBag.StructureID != null)
+                                                                    {
+
+                                                                        @Resources.Resource.SO }
+                                                                    else
+                                                                    {
+                                                                        <a href="@Url.Action("SORTListMovemnets", "SORTApplication", new
+                                                                                {
+	                                                                                B7vy6imTleYsMr6Nlv7VQ =
+	                                                                                STP.Web.Helpers.EncryptionUtility.Encrypt("SORTStatus=ViewProj" +
+	                                                                                "&revisionId=" + item.MovementRevisionID +
+	                                                                                "&versionId=" + item.MovementVersionID +
+	                                                                                "&hauliermnemonic=" + item.HaulierMnemonic +
+	                                                                                "&esdalref=" + item.ProjectEsdalReference +
+	                                                                                "&revisionno=" + item.ApplicationRevisionNumber +
+	                                                                                "&versionno=" + item.MovementVersionNumber +
+	                                                                                "&OrganisationId=" + item.OrganisationID +
+	                                                                                "&projecid=" + item.ProjectID +
+	                                                                                "&movementId=" + movementId +
+	                                                                                "&Owner=" + item.Owner +
+	                                                                                "&WorkStatus=" + work_status_code +
+	                                                                                "&Checker=" + item.CheckerName +
+	                                                                                "&EnterBySORT=" + item.EnterBySORT +
+	                                                                                "&apprevid=" + item.AppRevID +
+	                                                                                "&pageflag=2"
+	                                                                                )
+                                                                                })" class="text-decoration-link">
+
+                                                                            @Resources.Resource.SO
+
+                                                                        </a> }
+                                                                    break;
+                                                                case 241003:
+                                                                    if (ViewBag.IsPrevtMovementsVehicle == true)
+                                                                    {
+                                                                        <a href="#" class="text-decoration-link selectprevmovementvr1" arg1="@item.ProjectStatus" arg2="@item.HaulierMnemonic" arg3="@item.ProjectEsdalReference" arg4="@item.ProjectID" arg5="VR1">@Resources.Resource.VROne</a> }
+                                                                    else if (ViewBag.IsPrevtMovementsVehicleRoute == true)
+                                                                    {
+                                                                        <a href="#" class="text-decoration-link selectcurrentmovementvr1" arg1="@item.ProjectStatus" arg2="@item.HaulierMnemonic" arg3="@item.ProjectEsdalReference" arg4="@item.ProjectID" arg5="VR1">@Resources.Resource.VROne</a> }
+                                                                    else if (ViewBag.StructureID != null)
+                                                                    {
+
+                                                                        @Resources.Resource.VROne }
+                                                                    else
+                                                                    {
+                                                                        <a href="@Url.Action("SORTListMovemnets", "SORTApplication", new
+                                                                                {
+	                                                                                B7vy6imTleYsMr6Nlv7VQ =
+	                                                                                STP.Web.Helpers.EncryptionUtility.Encrypt("SORTStatus=ViewProj" +
+	                                                                                "&revisionId=" + item.MovementRevisionID +
+	                                                                                "&versionId=" + item.MovementVersionID +
+	                                                                                "&hauliermnemonic=" + item.HaulierMnemonic +
+	                                                                                "&esdalref=" + item.ProjectEsdalReference +
+	                                                                                "&revisionno=" + item.ApplicationRevisionNumber +
+	                                                                                "&versionno=" + item.MovementVersionNumber +
+	                                                                                "&OrganisationId=" + item.OrganisationID +
+	                                                                                "&projecid=" + item.ProjectID +
+	                                                                                "&movementId=" + movementId +
+	                                                                                "&Owner=" + item.Owner +
+	                                                                                "&WorkStatus=" + work_status_code +
+	                                                                                "&Checker=" + item.CheckerName +
+	                                                                                "&EnterBySORT=" + item.EnterBySORT +
+	                                                                                "&apprevid=" + item.AppRevID +
+	                                                                                "&VR1Applciation=true" +
+	                                                                                "&pageflag=1"
+	                                                                                )
+                                                                                })" class="text-decoration-link">
+
+                                                                            @Resources.Resource.VROne
+
+                                                                        </a> }
+                                                                    break;
+                                                                case 241004:
+                                                                    if (ViewBag.IsPrevtMovementsVehicle == true)
+                                                                    {
+                                                                        <a href="#" class="text-decoration-link selectprevmovementvr1 " arg1="@item.ProjectStatus" arg2="@item.HaulierMnemonic" arg3="@item.ProjectEsdalReference" arg4="@item.ProjectID" arg5="VR1">@Resources.Resource.VROne</a> }
+                                                                    else if (ViewBag.IsPrevtMovementsVehicleRoute == true)
+                                                                    {
+                                                                        <a href="#" class="text-decoration-link selectcurrentmovementvr1" arg1="@item.ProjectStatus" arg2="@item.HaulierMnemonic" arg3="@item.ProjectEsdalReference" arg4="@item.ProjectID" arg5="VR1">@Resources.Resource.VROne</a> }
+                                                                    else if (ViewBag.StructureID != null)
+                                                                    {
+                                                                        @Resources.Resource.VROne }
+                                                                    else
+                                                                    {
+                                                                        <a href="@Url.Action("SORTListMovemnets", "SORTApplication", new
+                                                                                {
+	                                                                                B7vy6imTleYsMr6Nlv7VQ =
+	                                                                                STP.Web.Helpers.EncryptionUtility.Encrypt("SORTStatus=ViewProj" +
+	                                                                                "&revisionId=" + item.MovementRevisionID +
+	                                                                                "&versionId=" + item.MovementVersionID +
+	                                                                                "&hauliermnemonic=" + item.HaulierMnemonic +
+	                                                                                "&esdalref=" + item.ProjectEsdalReference +
+	                                                                                "&revisionno=" + item.ApplicationRevisionNumber +
+	                                                                                "&versionno=" + item.MovementVersionNumber +
+	                                                                                "&OrganisationId=" + item.OrganisationID +
+	                                                                                "&projecid=" + item.ProjectID +
+	                                                                                "&movementId=" + movementId +
+	                                                                                "&Owner=" + item.Owner +
+	                                                                                "&WorkStatus=" + work_status_code +
+	                                                                                "&Checker=" + item.CheckerName +
+	                                                                                "&EnterBySORT=" + item.EnterBySORT +
+	                                                                                "&apprevid=" + item.AppRevID +
+	                                                                                "&VR1Applciation=true" +
+	                                                                                "&pageflag=1"
+	                                                                                )
+                                                                                })" class="text-decoration-link">
+
+                                                                            @Resources.Resource.VROne
+
+                                                                        </a> }
+                                                                    break;
+                                                                case 241005:
+                                                                    if (ViewBag.IsPrevtMovementsVehicle == true)
+                                                                    {
+                                                                        <a href="#" class="text-decoration-link selectprevmovementvr1" arg1="@item.ProjectStatus" arg2="@item.HaulierMnemonic" arg3="@item.ProjectEsdalReference" arg4="@item.ProjectID" arg5="VR1">@Resources.Resource.VROne</a> }
+                                                                    else if (ViewBag.IsPrevtMovementsVehicleRoute == true)
+                                                                    {
+                                                                        <a href="#" class="text-decoration-link selectcurrentmovementvr1" arg1="@item.ProjectStatus" arg2="@item.HaulierMnemonic" arg3="@item.ProjectEsdalReference" arg4="@item.ProjectID" arg5="VR1">@Resources.Resource.VROne</a> }
+                                                                    else if (ViewBag.StructureID != null)
+                                                                    {
+
+                                                                        @Resources.Resource.VROne }
+                                                                    else
+                                                                    {
+                                                                        <a href="@Url.Action("SORTListMovemnets", "SORTApplication", new
+                                                                                {
+	                                                                                B7vy6imTleYsMr6Nlv7VQ =
+	                                                                                STP.Web.Helpers.EncryptionUtility.Encrypt("SORTStatus=ViewProj" +
+	                                                                                "&revisionId=" + item.MovementRevisionID +
+	                                                                                "&versionId=" + item.MovementVersionID +
+	                                                                                "&hauliermnemonic=" + item.HaulierMnemonic +
+	                                                                                "&esdalref=" + item.ProjectEsdalReference +
+	                                                                                "&revisionno=" + item.ApplicationRevisionNumber +
+	                                                                                "&versionno=" + item.MovementVersionNumber +
+	                                                                                "&OrganisationId=" + item.OrganisationID +
+	                                                                                "&projecid=" + item.ProjectID +
+	                                                                                "&movementId=" + movementId +
+	                                                                                "&Owner=" + item.Owner +
+	                                                                                "&WorkStatus=" + work_status_code +
+	                                                                                "&Checker=" + item.CheckerName +
+	                                                                                "&EnterBySORT=" + item.EnterBySORT +
+	                                                                                "&apprevid=" + item.AppRevID +
+	                                                                                "&VR1Applciation=true" +
+	                                                                                "&pageflag=1"
+	                                                                                )
+                                                                                })" class="text-decoration-link">
+
+                                                                            @Resources.Resource.VROne
+
+                                                                        </a> }
+                                                                    break;
+                                                                default:
+                                                                    break;
+                                                            }
+                                                        }
+                                                    </td>
+                                                    <td class="text-color1">
+                                                        @{ switch (item.WorkStatus)
+                                                            {
+                                                                case 301001:
+                                                                    <span> Not checking</span> break;
+                                                                case 301002:
+                                                                    if (item.CheckerName != null && item.CheckerName != "")
+                                                                    {
+                                                                        <span> Checking (@item.CheckerName) </span> }
+                                                                    else
+                                                                    {
+                                                                        <span>
+                                                                            Checking
+                                                                        </span> }
+                                                                    break;
+                                                                case 301003:
+                                                                    <span> Checked+ </span> break;
+                                                                case 301004:
+                                                                    <span> Checked-</span> break;
+                                                                case 301005:
+                                                                    if (item.CheckerName != null && item.CheckerName != "")
+                                                                    {
+                                                                        <span> Checking final (@item.CheckerName)</span> }
+                                                                    else
+                                                                    {
+                                                                        <span> Checking final</span> }
+                                                                    break;
+                                                                case 301006:
+                                                                    <span> Checked final+</span> break;
+                                                                case 301007:
+                                                                    <span> Checked final-</span> break;
+                                                                case 301008:
+                                                                    if (item.CheckerName != null && item.CheckerName != "")
+                                                                    {
+                                                                        <span> QA Checking (@item.CheckerName)</span> }
+                                                                    else
+                                                                    {
+                                                                        <span> QA Checking</span> }
+                                                                    break;
+                                                                case 301009:
+                                                                    <span> QA Checked+ </span> break;
+                                                                case 301010:
+                                                                    <span> QA Checked-</span> break;
+                                                                case 0:
+
+                                                                    break;
+                                                                default:
+                                                                    break;
+
+                                                            }
+                                                        }
+                                                    </td>
+                                                    <td class="text-color1 statusinline">
+                                                        @{ @*if (item.IsWithdrawn == 1 || objSORTMovementFilter.Withdrawn)
+                        {
+                            <img src="~/Content/assets/images/withdrawn.svg" title="Withdrawn" width="25"><label class="statuslabel">Withdrawn</label>
+                        }*@ if ((item.IsDeclined == 1 && item.ProjectStatus == 307009) || objSORTMovementFilter.Declined)
+                                                        {
+                                                            <img src="~/Content/assets/images/declined.svg"  title="Declined" width="25"><label class="statuslabel">Declined</label> }
+                                                        else
+                                                        {
+                                                            switch (item.ProjectStatus)
+                                                            {
+                                                                case 307001:
+                                                                    @*<span class="icon_status icon_status_unallocated " title="Unallocated" style="font-size: 20px; color: red; font-weight: 700;">U</span><label class="statuslabel">Unallocated</label>*@
+                                                                    <img src="~/Content/assets/Icons/unallocated.svg"  title="Unallocated" width="15"><label class="statuslabel">Unallocated</label> break;
+                                                                case 307002:
+                                                                    <img src="~/Content/assets/images/WIP-icon.svg"  title="In progress" width="25"><label class="statuslabel">In progress</label> break;
+                                                                case 307003:
+                                                                    <img src="~/Content/assets/Icons/proposed.svg"  title="Proposed" width="25"><label class="statuslabel">Proposed</label> break;
+                                                                case 307004:
+                                                                    <img src="~/Content/assets/Icons/re-proposed.svg"  title="Re-proposed" width="33"><label class="statuslabel">Re-proposed</label> break;
+                                                                case 307005:
+                                                                    <img src="~/Content/assets/Icons/agreed.svg"  title="Agreed" width="25"><label class="statuslabel">Agreed</label> break;
+                                                                case 307006:
+                                                                    <img src="~/Content/assets/Icons/agreed-reproposed.svg"  title="Agreed re-proposed" width="32"><label class="statuslabel">Agreed re-proposed</label> break;
+                                                                case 307007:
+                                                                    <img src="~/Content/assets/Icons/agreed-recleared.svg"  title="Agreed recleared" width="35"><label class="statuslabel">Agreed recleared</label> break;
+                                                                case 307008:
+                                                                    <img src="~/Content/assets/images/withdrawn.svg"  title="Withdrawn" width="25"><label class="statuslabel">Withdrawn</label> break;
+                                                                case 307009:
+                                                                    <img src="~/Content/assets/images/declined.svg"  title="Declined" width="25"><label class="statuslabel">Declined</label> break;
+                                                                case 307010:
+                                                                    <img src="~/Content/assets/images/view-icon.svg"  title="Historic" width="25"><label class="statuslabel">Historic</label> break;
+                                                                case 307011:
+                                                                    <img src="~/Content/assets/Icons/revised.svg"  title="Revised" width="15"><label class="statuslabel">Revised</label> break;
+                                                                case 307012:
+                                                                    <img src="~/Content/assets/images/WIP-icon.svg"  title="Agreement work in progress" width="25"><label class="statuslabel">In progress</label> break;
+                                                                case 307014:
+                                                                    <img src="~/Content/assets/Icons/new-planned.svg"  title="Planned" width="16"><label class="statuslabel">Planned</label> break;
+                                                                case 307016:
+                                                                    <img src="~/Content/assets/images/completed.svg"  title="Approved" width="25"><label class="statuslabel">Approved</label> break;
+                                                            }
+                                                        }
+                                                        }
+                                                    </td>
+                                                    <td class="text-color1">
+                                                        @{ if (item.IsNotified == 1 && (item.ProjectStatus == 307016 || item.ProjectStatus == 307003 || item.ProjectStatus == 307014 || item.ProjectStatus == 307007 || item.ProjectStatus == 307004 || item.ProjectStatus == 307005 || item.ProjectStatus == 307007 || item.ProjectStatus == 307006))
+                                                            {
+                                                                <img src="~/Content/assets/Icons/notified.svg"  title="N-notified" width="20" style="margin-top: -11px;"> }
+                                                        }
+                                                    </td>
+
+                                                    <td class="text-color1">
+
+                                                        @item.Owner
+
+                                                    </td>
+                                                    <td class="text-color1">
+
+                                                        @item.ApplicationDate
+
+                                                    </td>
+                                                    <td class="text-color1">
+                                                        @if (item.Days > 0 && item.Days <= 14 && (item.VehicleClassification == 241001 || item.VehicleClassification == 241002) && item.ProjectStatus != 307014)
+                                                        {
+                                                            if (item.DueDate != "01/01/0001")
+                                                            {
+                                                                <span class="badge bg-danger">
+                                                                    @item.DueDate
+                                                                </span> }
+                                                        }
+                                                        else
+                                                        {
+                                                            if (item.DueDate != "01/01/0001")
+                                                            {
+
+                                                                @item.DueDate}
+                                                        }
+                                                    </td>
+                                                    <td class="text-color1">
+
+                                                        @item.MoveFrom
+
+                                                    </td>
+                                                    <td class="text-color1">
+                                                        @item.MoveTo
+                                                    </td>
+                                                    <td class="text-color1 relatedmov" colspan="2">
+                                                        @if (ViewBag.PlanMovement != true && ViewBag.IsPrevtMovementsVehicle != true && ViewBag.IsCreCandidateOrCreAppl != true)
+                                                        {
+
+                                                            if ((item.AppStatus == 308001 || item.AppStatus == 308002) && item.ProjectStatus != 307011 && item.ProjectStatus != 307014 && (item.AppStatus != 308005) && item.VehicleClassification == 241002 && item.IsWithdrawn != 1 && item.IsDeclined != 1)
+                                                            {
+                                                                <span class="col-lg-2 col-md-2 col-sm-1">
+                                                                    <img src="~/Content/assets/images/withdraw.svg"  title="Withdraw" width="20" class="ml-1 withdrawsoapplcn" data-arg1="@item.ProjectID" data-arg2="@item.EnterBySORT" data-arg3="@item.ESDALReference" data-arg4="@item.AppRevID" data-arg5="@movementType">
+                                                                </span> }
+                                                            else if (item.IsWithdrawn != 1 && item.VehicleClassification != 241002 && item.ProjectStatus != 307014)
+                                                            {
+                                                                <span class="col-lg-2 col-md-2 col-sm-1">
+                                                                    <img src="~/Content/assets/images/withdraw.svg"  title="Withdraw" width="20" class="ml-1 sortwithdrawn" data-arg1="@item.EnterBySORT" data-arg2="@item.HaulierMnemonic" data-arg3="@item.ProjectEsdalReference" data-arg4="@item.ProjectID">
+                                                                </span>}
+                                                        }
+                                                    </td>
+
+                                                </tr>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td style="text-align:center" colspan="12">
+                                                    <span style="color:red">No records found</span>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                @if (Model.Count > 0)
+                                {
+                                    <div class="row pagination-container-new" id="sortInboxTotalCount">
+                                        <div class="col-lg-3">
+                                            @if (Model.TotalItemCount > 0)
+                                            {
+                                                <div class="text-color2 total-records-number">
+                                                    Total number of records : @Model.TotalItemCount
+                                                </div>
+                                                @Html.Hidden("TotalPages", Model.PageCount)}
+                                        </div>
+                                        @if (1 < Model.PageCount)
+                                        {
+                                            <div class="col-lg-6 text-center" id="SortInboxPagination">
+                                                <div class="table-pagination sortpagination">
+                                                    @Html.PagedListPager(Model, page => Url.Action("SORTInbox",
+                                                                new
+                                                                {
+                                                                    page,
+                                                                    B7vy6imTleYsMr6Nlv7VQ =
+                                                                      STP.Web.Helpers.EncryptionUtility.Encrypt("pageSize=" + pageSize + "IsPrevtMovementsVehicle=" + ViewBag.IsPrevtMovementsVehicle +
+                                                                      "&sortOrder=" + ViewBag.sortOrder +
+                                                                      "&sortType=" + ViewBag.SortType)
+                                                                }),
+                                                                new PagedListRenderOptions
+                                                                {
+                                                                    DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                                                                    DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                                                                    LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                                                                    LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                                                                    DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                                                                    DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                                                                    MaximumPageNumbersToDisplay = 3,
+                                                                    DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                                                                    EllipsesFormat = "...",
+                                                                    LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+                                                                    LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+                                                                })
+                                                </div>
+                                            </div> }
+                                        else
+                                        {
+                                            <div class="col-lg-6 text-center" id="SortInboxPagination">
+                                                <div class="table-pagination sortpagination">
+                                                </div>
+                                            </div>}
+                                        @if (Model.TotalItemCount > 10)
+                                        {
+                                            <div class="col-lg-3 col-md-3 col-sm-12 text-normal pr-0 absolute SORTInbox-Pag">
+                                                Number of items to display per page
+                                                <select class="form-select mb-3 " style="width:inherit !important;"  aria-label=".form-select-lg example" id="pageSizeSelect">
+                                                    <option val="10" @(pageSize == 10 ? "selected" : "")>10</option>
+                                                    <option val="20" @(pageSize == 20 ? "selected" : "")>20</option>
+                                                    <option val="50" @(pageSize == 50 ? "selected" : "")>50</option>
+                                                    <option val="100" @(pageSize == 100 ? "selected" : "")>100</option>
+                                                </select>
+                                                @if (ViewBag.IsPrevtMovementsVehicle == true && !ViewBag.PlanMovement)
+                                                {
+                                                    <button class="btn outline-btn-primary SOAButtonHelper mr-2 mb-2 showcandidatevehicle">
+                                                        BACK
+                                                    </button>}
+                                            </div>}
+                                    </div>}
+                            </div>
+                        </div>
+                        <div id="div_MoveList_MapSearch" style="display: none;">
+                            <div id="Mapfilterdiv"><img src="~/Content/assets/images/filter-icon.svg" data-target="sortFilters" class="open-filter-icon-common" data-width="630" title="Open filter" width="38" style="color: black; cursor: pointer; float:right !important"></div>
+                            <div style="clear:both"></div>
+                            <div id="map" style="height: 590px; position: relative;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <!-- filter settings -->
+    <div id="sortFilters" class="sidenav filter-sidenav sort-movement-filter">
+        <div class="row sidenav-header mt-3">
+            <div class="col-10 text-center">
+                <div class="text-normal-hyperlink mt-3" style="font-size: x-large;">
+                    FILTER
+                </div>
+            </div>
+            <div class="col-2 col-md-2 col-sm-2 pl-0" style="position: none;">
+                <a href="#" id="aclosefilter" class="close-filter-icon-common">&times;</a>
+            </div>
+        </div>
+        <hr style="margin-top: 0;">
+        <div class="sort-portal">
+            @*OnSuccess = "FilterSuccessdata",*@
+            <div class="filter-list" id="filter_SORT">
+                @using (Ajax.BeginForm("SetSORTFilter", "SORTApplication", FormMethod.Post, new AjaxOptions { OnFailure = "OnFailure", OnBegin = "OnBegin" }, new { @id = "FilterMoveInboxSORT" }))
+                {
+                    <input type="hidden" name="SortOrderValue" id="SortOrderValue" value="@sortOrder" />
+                    <input type="hidden" name="SortTypeValue" id="SortTypeValue" value="@sortType" />
+                    Html.RenderAction("SORTInboxFilter");
+
+                    Html.RenderAction("SORTInboxAdvancedFilter", new { IsPrevtMovementsVehicleRoute = ViewBag.IsPrevtMovementsVehicleRoute, IsPrevtMovementsVehicle = ViewBag.IsPrevtMovementsVehicle, planMovement = ViewBag.PlanMovement });
+
+                    Html.RenderAction("MapFilter");
+                    <div class="mt-4 mb-4 filter-entry sortfilter" id="">
+                        <div class="row ml-5">
+
+                            <div class="col-lg-8 col-md-8 col-sm-12">
+                                <div class="button mr-0 mb-2">
+                                    @*searchclear()*@
+                                    <button class="btn btn-outline-primary btn-normal" id="btnfiltersuccessdata" role="button" aria-pressed="true" type="button"
+                                            style="width:100%">
+                                        SEARCH
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-12">
+                                @*class="col-lg-4 col-md-5 col-sm-12 pl-0"*@
+                                <div class="button mr-0 mb-2">
+                                    <button class="btn btn-outline-primary btn-normal clrsortdata" role="button" aria-pressed="true" type="button"
+                                            style="width: 100%">
+                                        CLEAR
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+
+            </div>
+        </div>
+    </div>
+    <input type="hidden" value="true" id="hf_SORTMovement" name="hf_SORTMovement" />
+    <!-- end of filter settings -->
+
+
+    @{
+        string GetSortDefaultClass(int sortTypeVal, int sortOrderVal, int valToCheck)
+        {
+            var sortClass = ""; // 1-desc , 0-asc
+            if (sortOrderVal == valToCheck)
+            {
+                sortClass = sortTypeVal == 1 ? "sorting_desc" : "sorting_asc";
+            }
+            return sortClass;
+        }
+
+        string ShowFilterIcon(int filterVal, int valToCheck)
+        {
+            return filterVal == valToCheck ? "block" : "none";
+        }
+    }
+
+
+
+
+</body>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/SORTApplication/SORTInboxFilter.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/SORTApplication/SORTInboxAdvancedFilter.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/SORTApplication/PartialView/_SortRouteDetails.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Movements/planMovement.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Movements/jQuery.hauliertfilter.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/SORTApplication/SORTInbox.js?V@(Session["ProjectVersion"])"></script>

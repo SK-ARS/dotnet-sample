@@ -1,0 +1,456 @@
+@using PagedList.Mvc
+@model PagedList.IPagedList<STP.Domain.HelpdeskTools.DistributionAlerts>
+@using STP.Domain.HelpdeskTools;
+@{
+    int listCount = 0;
+    listCount = (int)Session["PageSize"];
+    int count = 0;
+    int userTypeID = 0;
+    long Organisation_ID = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        userTypeID = sessionValues.UserTypeId;
+        Organisation_ID = sessionValues.OrganisationId;
+    }
+    string showalert = "";
+    if (ViewBag.showalert != "" && ViewBag.showalert != null)
+    {
+        showalert = ViewBag.showalert;
+    }
+    int pageSize = 1;
+    if (ViewBag.pageSize != null)
+    {
+        pageSize = ViewBag.pageSize;
+    }
+    int? pageNum = ViewBag.page;
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.DISTRIBUTION;
+}
+<script src="~/Scripts/jquery.unobtrusive-ajax.js?V@(Session["ProjectVersion"])"></script>
+@{
+    var sortOrder = ViewBag.SortOrder != null ? (int)ViewBag.SortOrder : 1;//date
+    var sortType = ViewBag.SortType != null ? (int)ViewBag.SortType : 1;//desc
+    var distributionAlert = (DistributionAlerts)ViewBag.DistributionAlert;
+    var isDateFilterEnabled = distributionAlert.StartDate != null && distributionAlert.EndDate != null;
+    var isEsdalFilterEnabled = !string.IsNullOrEmpty(distributionAlert.ESDALReference);
+    var isAllFilterEnabled = isDateFilterEnabled || isEsdalFilterEnabled;
+}
+<style>
+    .absolute {
+        
+        position: absolute;
+        right: -51px;
+    }
+</style>
+<!-- banner -->
+<section id="banner">
+    <div class="container-fluid" id="banner-container">
+        <div id="banner-scetion-2">
+            <div class="col-lg-12 col-md-12 col-sm-12 header">
+                <div class="title" style="text-align: center;">
+                    DISTRIBUTION STATUS
+                </div>
+            </div>
+            <div class="main-table" id="distribution-status">
+                <table class="distribution-table esdal-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType, sortOrder, 1)" data-action="SortDistributionStatus" data-sortval="1">Date</span>
+                                <span class="filter-table-icon">
+                                    <img id="filterimages" style="display:@(isDateFilterEnabled ? "block" : "none")" src="~/Content/assets/images/filter-table-icon.svg">
+                                </span>
+                            </th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>Alert Type</th>
+                            <th>
+                                <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType, sortOrder, 2)" data-action="SortDistributionStatus" data-sortval="2">ESDAL Reference</span>
+                                
+                                <span class="filter-table-icons">
+                                    <img id="filterimages" style="display:@(isEsdalFilterEnabled ? "block" : "none")" src="~/Content/assets/images/filter-table-icon.svg">
+                                </span>
+                            </th>
+                            <th>Details</th>
+                            <th></th>
+                            @if (userTypeID == 696006)
+                            {
+                                <th></th>
+                                <th></th>
+                            }
+                            <th></th>
+                            <th></th>
+                            <th></th>
+                            <th class="table-filter-header">
+                                <img src="~/Content/assets/images/filter-icon.svg" id="open-filter" class="open-filter-icon-common" title="Open filter" width="38">
+                                <span class="filtered-icon-table "><img id="filterimage" style="display:@(isAllFilterEnabled ? "block" : "none")" src="~/Content/assets/images/filtered-icon.svg" title="Clear filter"></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Count == 0)
+                        {
+                            if (ViewBag.Filter_start_Date == null && ViewBag.Filter_start_Date == null)
+                            {
+                                <tr>
+                                    <td colspan="13" style="text-align: center; color: red;">
+                                        No transactions in last 24 hours
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="13" style="text-align: center; color: red;">
+                                        No records found
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            foreach (var item in Model)
+                            {
+
+                                <tr>
+                                    <td class="text-color1">@item.InboxCreationTime.ToString("dd/MM/yyyy")<br>@item.InboxCreationTime.ToString("HH:mm:ss")</td>
+                                    <td class="text-color1">@item.FromOrganisationName</td>
+                                    <td class="text-color1">@item.ToOrganisationName<br><span>@item.ToContactName</span></td>
+                                    <td class="text-color1">@item.AlertType</td>
+                                    <td class="text-color2">@item.ESDALReference</td>
+                                    <td class="text-color1">@item.Details</td>
+                                    @*<td></td>*@
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>
+                                        @*@using (Ajax.BeginForm("Retransmit", new { transmissionId = item.TransmissionId, distflag = true }, new AjaxOptions { OnBegin = "startAnimation", OnComplete = "stopAnimationRetransmit", OnSuccess = "OpenRetransmissionPopup", HttpMethod = "GET" }))
+                                            {*@
+                                        <a class="RetransmitClick" transmissionId=@item.TransmissionId distflag="true">
+                                            <img src="~/Content/assets/images/message-icon.svg" style="cursor:pointer" title="Retransmit" width="30">
+                                        </a>
+
+                                        @*}*@
+                                    </td>
+                                    <td>
+                                        <a class="PrintDocuments" data-esdalreference="@item.ESDALReference" data-organisationid="@item.OrganisationId" data-contactid="@item.ContactId" data-transmissionid="@item.TransmissionId" data-orgtype="@item.OrganisationTypeName" data-Is_manually_added="@item.IsManullyAdded" data-fromOrgName="@item.FromOrganisationName">
+                                            <img src="~/Content/assets/images/file-edit-icon.svg" title="View Document" width="30">
+                                        </a>
+                                    </td>
+                                    @if (userTypeID == 696006)
+                                    {
+                                        <td>
+                                            @if (item.OrganisationTypeName == "SOA")
+                                            {
+                                                var contactId = (long)item.ContactId;
+                                                var checkAs = "SOA";
+                                                <a href="#" id="check-soa" class="CheckAsSOAClick" data-ESDALReference="@item.ESDALReference" data-OrganisationId="@item.OrganisationId" data-contactId="@contactId" data-TransmissionId="@item.TransmissionId" data-checkAs="@checkAs">
+                                                    <img src="~/Content/assets/images/vehicle2-user-icon.svg" style="cursor:pointer" title="Check as SOA" width="30">
+                                                </a>
+                                            }
+                                            @if (item.OrganisationTypeName == "Police")
+                                            {
+                                                var contactId = (long)item.ContactId;
+                                                var checkAs = "Police";
+                                                <a href="#" id="check-police" data-ESDALReference="@item.ESDALReference" data-OrganisationId="@item.OrganisationId" data-contactId="@contactId" data-TransmissionId="@item.TransmissionId" data-checkAs="@checkAs">
+                                                    <img src="~/Content/assets/images/helpdesk-police-icon.svg" style="cursor:pointer" title="Check as Police" width="30">
+                                                </a>
+                                            }
+                                        </td>
+                                    }
+                                    <td colspan="2">
+                                        <a href="#" id="check-haulier" data-ESDALReference="@item.ESDALReference" data-TransmissionId="@item.TransmissionId">
+                                            <img src="~/Content/assets/images/vehicle-user-icon.svg" style="cursor:pointer" title="Check as Haulier" width="30">
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+
+                <!-- end of table -->
+                @*@if (listCount < Model.TotalItemCount && Model.Count > 0)
+                    {*@
+                @if (Model.Count > 0)
+                {
+                   
+            <div class="row pagination-container-new ViewDistributionStatusPagination">
+                <div class="col-lg-4">
+                    @if (Model.TotalItemCount > 0)
+                    {
+
+                        <div class="text-color2 total-records-number">
+                            Total number of records : @Model.TotalItemCount
+                        </div>
+                    }
+                </div>
+                @if (Model.TotalItemCount > 10)
+                {
+                    <div class="col-lg-3 col-md-3 col-sm-12 text-normal pr-0 absolute">
+                        Number of items to display per page
+                        <select class="form-select mb-3" style="width:100px;" aria-label=".form-select-lg example" id="pageSizeSelect">
+                            <option val="10" @(pageSize == 10 ? "selected" : "")>10</option>
+                            <option val="20" @(pageSize == 20 ? "selected" : "")>20</option>
+                            <option val="50" @(pageSize == 50 ? "selected" : "")>50</option>
+                            <option val="100" @(pageSize == 100 ? "selected" : "")>100</option>
+                        </select>
+                    </div>
+                }
+            <div class="col-lg-8 text-center">
+                @if (listCount < Model.TotalItemCount)
+                {
+                    <div class="table-pagination">
+                        @Html.PagedListPager(Model, page => Url.Action("ViewDistributionStatus",
+ new
+ {
+     B7vy6imTleYsMr6Nlv7VQ =
+                      STP.Web.Helpers.EncryptionUtility.Encrypt(
+                      "page=" + page +
+                      "&sortOrder=" + sortOrder +
+                      "&sortType=" + sortType)
+ }), new PagedListRenderOptions
+ {
+     DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+     DisplayLinkToNextPage = PagedListDisplayMode.Always,
+     LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+     LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+     DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+     DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+     MaximumPageNumbersToDisplay = 3,
+     DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+     EllipsesFormat = "...",
+     LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+     LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+ });
+                    </div>
+                }
+                </div>
+                <div class="col-lg-3"></div>
+            </div>
+                    }
+                
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- filter settings -->
+<div id="filters" class="sidenav filter-sidenav">
+    <span><a href="#" class="closebtn" id="close-filter close-filter-icon-common">&times;</a></span>
+    <div class="filter-header pt-3" style="margin-top:0px;">
+        <span class="pl-5">FILTER</span>
+    </div>
+    <hr style="margin-top: 0;">
+    @using (Ajax.BeginForm("SetDistribFilter", "DistributionStatus", new { }, new AjaxOptions { OnBegin = "startAnimation", OnComplete = "stopAnimation", OnSuccess = "LoadPageGrid" }))
+    {
+        <div class="filter-entry">
+            <div class="row mb-4 pl-5 pr-6">
+                <div class="col-lg-2 col-sm-2 col-md-2">
+                    @Html.CheckBox("showalert", new { @class = "checkbox checkall", @name = "showalert", @id = "showalert" })
+                </div>
+                <div class="col-lg-10 col-sm-10 col-md-10 pr-0">
+                    <span>Show Alerts</span>
+                </div>
+            </div>
+        </div>
+        <div class="filter-entry">
+            <div class="row mb-4 pl-5 pr-6">
+                <div class="col-lg-12 col-mb-12 col-sm-12">
+                    <input class="text-normal" type="text" id="esdalData" name="esdalData" value="@ViewBag.esdalData" placeholder="ESDAL Reference">
+                </div>
+            </div>
+        </div>
+        <div class="filter-entry">
+            <div class="row mb-4 pl-5 pr-6">
+                <div class="col-lg-12 col-mb-12 col-sm-12">
+                    <input class="text-normal" type="text" id="Org_To" name="Org_To" value="@ViewBag.OrgTo" placeholder="Organisation">
+                </div>
+            </div>
+        </div>
+        <div class="filter-list">
+            <div>
+                <div class="row mb-4">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <select id="movementData" name="movementData" class="form-select mb-3 distribution-filter-drop">
+                            @if (userTypeID != 696008)
+                            {
+                                <option value="0" selected="selected">Select movement type</option>
+                                <option value="1">Notification</option>
+                            }
+                            <option value="2">SO application</option>
+
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="filter-entry">
+            <div class="row mb-4 pl-5 pr-6">
+                <div class="col-lg-2 col-sm-2 col-md-2">
+                    @{
+                        var isChekced = isDateFilterEnabled ? "checked='checked'" : "";
+                        var Filter_start_Date_enabled = !isDateFilterEnabled ? "disabled='disabled' readonly='readonly'" : "";
+                        var Filter_end_Date_enabled = !isDateFilterEnabled ? "disabled='disabled' readonly='readonly'" : "";
+                    }
+                    <input type="checkbox" @isChekced class="checkbox checkall" name="chk_creation_date" id="chk_creation_date" />
+                </div>
+                <div class="col-lg-10 col-sm-10 col-md-10 pr-0">
+                    <span>Creation Date</span>
+                </div>
+            </div>
+        </div>
+        <div class="filter-entry">
+            <div class="row mb-4 pl-5 pr-6">
+                <div class="col-lg-12 col-mb-12 col-sm-12">
+                    <input class="text-normal datepicker" type="text" id="txt_start_time" name="txt_start_time" value="@ViewBag.Filter_start_Date" @Filter_start_Date_enabled placeholder="From">
+                </div>
+            </div>
+        </div>
+        <div class="filter-entry">
+            <div class="row mb-4 pl-5 pr-6">
+                <div class="col-lg-12 col-mb-12 col-sm-12">
+                    <input class="text-normal datepicker" type="text" id="txt_end_time" name="txt_end_time" value="@ViewBag.Filter_end_Date" @Filter_end_Date_enabled placeholder="To">
+                </div>
+            </div>
+        </div>
+        <div class="filter-list">
+            <div class="mt-4" id="second-header">
+                <div class="row ml-5">
+
+                    <div class="col-lg-5 col-md-5 col-sm-12">
+                        <div class="button mr-0">
+                            <input type="hidden" name="sortOrder" id="SortOrderValue" value="@sortOrder" />
+                            <input type="hidden" name="sortType" id="SortTypeValue" value="@sortType" />
+                            @Html.Hidden("pageSizeVal", pageSize)
+                            @Html.Hidden("pageNum", pageNum)
+                            <button class="btn outline-btn-primary btn-normal" id="btn_search" role="button" aria-pressed="true" style="width:8rem">
+                                SEARCH
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-lg-7 col-md-7 col-sm-12">
+                        <div class="button mr-0">
+                            <button class="btn outline-btn-primary btn-normal" id="btn_clr" role="button" aria-pressed="true"
+                                    style="width:8rem">
+                                CLEAR
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@{
+    string GetSortDefaultClass(int sortTypeVal, int sortOrderVal, int valToCheck)
+    {
+        var sortClass = ""; // 1-desc , 0-asc
+        if (sortOrderVal == valToCheck)
+        {
+            sortClass = sortTypeVal == 1 ? "sorting_desc" : "sorting_asc";
+        }
+        return sortClass;
+    }
+}
+<style>
+    #second-header .outline-btn-primary:hover {
+        background-color: #275795 !important;
+        color: white !important;
+    }
+
+    #btn_search.outline-btn-primary {
+        padding: 8px !important;
+    }
+
+    #btn_clr.outline-btn-primary {
+        padding: 8px !important;
+    }
+
+    input::placeholder {
+        color: rgb(0, 0, 0);
+        -webkit-text-stroke: 1.00px rgba(0, 0, 0, 0);
+        font-size: 15.00px;
+        font-weight: 500;
+        font-style: italic;
+        font-family: lato_light, Arial;
+    }
+</style>
+<style>
+    .sorticon {
+        filter: invert(100%);
+    }
+
+
+
+    .filtered-icon {
+        background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 90% #2b5795;
+        background-size: 1rem;
+    }
+
+    .esdal-filter-icon {
+        background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 0 #2b5795;
+        background-size: 1rem;
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        position: absolute;
+        margin-left: 3px;
+    }
+
+    .filter-table-icon {
+        position: absolute;
+        bottom: -13px;
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+        left: 50px;
+    }
+
+    .filter-table-icons {
+        position: absolute;
+        bottom: -13px;
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+        left: 19px;
+    }
+
+    .movements td:nth-child(1) {
+        text-align: left;
+        padding-left: 1%;
+        cursor: pointer;
+    }
+
+    .movements th:last-child {
+        background-color: white;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .text-normal input::placeholder {
+        color: rgb(0, 0, 0);
+        -webkit-text-stroke: 1.00px rgba(0, 0, 0, 0);
+        font-size: 15.00px;
+        font-weight: 500;
+        font-style: italic;
+        font-family: lato_light, Arial;
+    }
+</style>
+
+@*-----------------Script from ESDAL3--------------------------------*@
+@{
+    <input type="hidden" value="@ViewBag.showalert" id="hf_showalert" name="hf_showalert" />
+    <input type="hidden" value="@ViewBag.movementData" id="hf_movementData" name="hf_movementData" />
+    <input type="hidden" value="@ViewBag.DateFilter" id="hf_DateFilter" name="hf_DateFilter" />
+    @Html.Hidden("hf_userTypeID", userTypeID)
+    @Html.Hidden("hf_DateTime", DateTime.Now.ToString("dd-MMM-yyyy"))
+    @Html.Hidden("IsViewDistirbutionPage", true)
+    <input type="hidden" value="@ViewBag.NonESDALUSER" id="hf_NonESDALUSER" name="hf_NonESDALUSER" />
+}
+
+<script src="~/Scripts/DistributionStatus/ViewDistributionStatus.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/DistributionStatus/Retransmit.js?V@(Session["ProjectVersion"])"></script>
+@*<script src="~/Scripts/Notification/DisplayNotificationCsp.js?V@(Session["ProjectVersion"])"></script>*@
+@*<script src="~/Scripts/Notification/DisplayNotification.js?V@(Session["ProjectVersion"])"></script>*@
+@*<script src="~/Scripts/Application/JQuery.SORTMovements-1.0.2.js?V@(Session["ProjectVersion"])"></script>*@

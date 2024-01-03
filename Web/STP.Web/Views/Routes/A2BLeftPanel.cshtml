@@ -1,0 +1,22 @@
+@using System.Web.Optimization
+
+
+@{
+    long routeId = 0;
+    if (ViewBag.routeID != null)
+    {
+        routeId = ViewBag.routeID;
+    }
+}
+
+@Html.Hidden("RouteID", routeId)
+@Html.Hidden("hf_ShowReturnLegFlag", (bool)ViewBag.ShowReturnLegFlag)
+@Html.Hidden("hf_IsAffectedStructure", (bool)ViewBag.IsAffectedStructure)
+@Html.Hidden("hf_IsLibrary", (bool)ViewBag.IsLibrary)
+@Html.Hidden("hf_RouteFlag", Session["RouteFlag"])
+
+@if (ViewBag.isReplan)
+{@Html.Hidden("hf_IsReplan", "1") }
+
+
+@*<script src="~/Scripts/Routes/A2BLeftPanel.js?V@(Session["ProjectVersion"])"></script>*@

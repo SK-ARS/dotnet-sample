@@ -1,0 +1,131 @@
+@using PagedList.Mvc
+@model STP.Domain.LoggingAndReporting.ReportPerUserModel
+@using STP.Common.Constants
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.REPORTS;
+}
+@{
+    var MonthList = new List<STP.Domain.LoggingAndReporting.ReportPerUserModel>
+{
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {NumericMonth=1,Month  = "January"},
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {NumericMonth=2,Month = "February"},
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {NumericMonth=3,Month = "March"},
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {NumericMonth=4,Month = "April"},
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {NumericMonth=5,Month = "May"},
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {NumericMonth=6,Month = "June"},
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {NumericMonth=7,Month = "July"},
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {NumericMonth=8,Month = "August"},
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {NumericMonth=9,Month = "September"},
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {NumericMonth=10,Month = "October"},
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {NumericMonth=11,Month = "November"},
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {NumericMonth=12,Month = "December"}
+                    };
+
+    var YearList = new List<STP.Domain.LoggingAndReporting.ReportPerUserModel>
+{
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {Year=DateTime.Now.Year},
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {Year=DateTime.Now.Year-1},
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {Year=DateTime.Now.Year-2},
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {Year=DateTime.Now.Year-3},
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {Year=DateTime.Now.Year-4},
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {Year=DateTime.Now.Year-5},
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {Year=DateTime.Now.Year-6},
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {Year=DateTime.Now.Year-7},
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {Year=DateTime.Now.Year-8}
+                    };
+
+    var UserTypeList = new List<STP.Domain.LoggingAndReporting.ReportPerUserModel>
+{
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {UserType=@Resources.Resource.Haulier, NumericUserType = 696001 },
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {UserType=@Resources.Resource.SOA, NumericUserType = 696007 },
+                        new STP.Domain.LoggingAndReporting.ReportPerUserModel {UserType=@Resources.Resource.Police, NumericUserType = 696002 }
+                    };
+
+}
+<style>
+    .redcolor {
+        color: red;
+        margin-top: 1rem !important;
+    }
+
+    .aligncenter {
+        text-align: center;
+    }
+    #reports-Section {
+        background-color: white;
+    }
+</style>
+<div id="helpdesk">
+    <!--main content -->
+    <section id="banner">
+        <div class="container-fluid" id="banner-container">
+            
+            <div id="register">
+                <div id="reports-Section">
+
+                    <div class="row pt-2 pb-2 pr-3 vehicle-setting">
+
+                        <div class="col-lg-12 col-md-12 col-sm-12 pr-4 pl-4">
+                            <div class="row">
+                                <div class="col-lg-7 col-md-7 col-sm-12 text-normal title" style="margin-top:5px;">
+                                    Report Per User
+                                </div>
+                                <div class="col-lg-5 col-md-5 col-sm-12 text-normal" style="margin-top:10px;">
+                                    <div class="row">
+
+                                        <div class="col-lg-2 col-md-2 col-sm-12 text-normal" style="margin-top:5px;">
+                                            @Resources.Resource.UserType
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-sm-12">
+                                            @Html.DropDownListFor(m => m.Month, new SelectList(@UserTypeList, "NumericUserType", "UserType"), new
+                                            {
+                                                @id = "DDUserType",
+                                           @class = "form-select mb-3 mr-0 mb-0",
+                                           @style = "overflow: scroll;width: 100%;color: rgba(39, 87, 149, 1);"
+                                       })
+                                        </div>
+                                        <div class="col-lg-1 col-md-1 col-sm-12 text-normal" style="margin-top:5px;">
+                                            @Resources.Resource.Period
+                                        </div>
+                                        <div class="col-lg-3 col-md-3 col-sm-12">
+                                            @Html.DropDownListFor(m => m.Month, new SelectList(@MonthList, "NumericMonth", "Month"), new
+                                       {
+                                           @id = "DDStartMonth",
+                                           @class = "form-select mb-3 mr-0 mb-0",
+                                           @style = "overflow: scroll;width: 100%;color: rgba(39, 87, 149, 1);"
+                                       })
+                                        </div>
+                                        <div class="col-lg-2 col-md-2 col-sm-12">
+                                            @Html.DropDownListFor(m => m.Year, new SelectList(@YearList, "Year", "Year"), new
+                                       {
+                                           @id = "DDStartYear",
+                                           @class = "form-select mb-3 mr-0 mb-0",
+                                           @style = "overflow: scroll;width: 100%;color: rgba(39, 87, 149, 1);"
+                                       })
+                                        </div>
+                                        <div class="col-lg-1 col-md-1 col-sm-12">
+                                            <div class="flexer justify-content-center">
+                                                <span>
+                                                    <img src="/Content/assets/images/search-icon.svg" width="20" id="btnSearch" style="cursor:pointer;">
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+                        </div>
+                    </div>
+                    <div id="ReportPerUserHTML" style="margin: 1% 1% 1% 1% !important ">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+</div>
+
+<script src="~/Scripts/Report/ReportPerUser.js?V@(Session["ProjectVersion"])"></script>

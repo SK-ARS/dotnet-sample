@@ -1,0 +1,337 @@
+@model STP.Domain.MovementsAndNotifications.Movements.MovementModel
+@using System.Web.Optimization
+@using STP.Domain
+@using STP.Common.EncryptDecrypt
+
+@{
+    string eMail = Model.EmailAddress;
+    bool isAdmin = false;
+    int portalType = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var user = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        portalType = user.UserTypeId;
+        if (portalType == 696006 || user.IsAdmin == 1)
+        {
+            isAdmin = true;
+        }
+    }
+
+    long Assigned_user = 0;
+    if (ViewBag.User_id != null && ViewBag.User_id != 0)
+    {
+        Assigned_user = ViewBag.User_id;
+    }
+    @Html.Hidden("eMail", eMail)
+
+}
+
+<style>
+    #exampleModalCenter2 .modal-body #collab-details div {
+        text-align: start;
+    }
+
+    #DescriptionExternal {
+        width: 100%;
+    }
+
+    .error {
+        color: red;
+    }
+</style>
+
+@Html.Hidden("hdnAssignUser", Assigned_user)
+<div class="modal fade" id="viewCollabModal" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document"
+         style="max-width: 46rem; margin-right: 10rem; margin-left: 384px;">
+        <div class="modal-content" style="width: 46rem;height: auto;">
+            <div id="divmodalclose" class="modal-header pt-2 view-collab-modal-close" style="justify-content: end; cursor: pointer;">
+                <span aria-hidden="true" class="close" data-dismiss="modal"
+                      aria-label="Close">&times;</span>
+            </div>
+            @*@using (Html.BeginForm("   ", "Application"))
+                {*@
+
+            @Html.HiddenFor(model => model.Status, new { id = "Statushidden" })
+            @Html.HiddenFor(model => model.Status, new { id = "COL_STATUS" })
+            @Html.HiddenFor(model => model.DocumentId, new { id = "DOCUMENT_ID" })
+            @Html.HiddenFor(model => model.InboxId, new { id = "INBOX_ID" })
+            @Html.HiddenFor(model => model.ContactId, new { id = "CONTACT_ID" })
+            @Html.HiddenFor(model => model.ESDALReference, new { id = "ESDAL_REF_NUMBER" })
+            @Html.HiddenFor(model => model.HaulierName, new { id = "HAULIER_NAME" })
+
+            <div class="modal-body pt-0">
+                <div class="row mb-1 pb-3">
+                    <span class="text-normal pr-2 text-align-center"
+                          style="font-family: lato_light; font-size: 25px; margin-top: -2rem; width: 91%;">
+                        Collaboration
+                    </span>
+                </div>
+                @if (@ViewBag.route != "neagreednotification" && @ViewBag.route != "nenotification" && @ViewBag.route != "nerenotification"
+                    && @ViewBag.route != "nenotificationapi" && @ViewBag.route == "nerenotificationapi")
+                {
+                    if (Model.ESDALReference != null && Model.ESDALReference.IndexOf("#") != -1)
+                    {
+                        <div class="pl-4 pr-4">
+                            <p class="noteCollp">
+                                Note: The collaboration notes entered below will be visible to the haulier in their ESDAL inbox. The acceptance status will NOT be displayed to them and it is for your internal use.
+                            </p>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="pl-4 pr-4">
+
+                            <p class="noteCollp">
+                                Note: The notes entered and the status will be forwarded to the NH team only, not the haulier.
+                            </p>
+                        </div>
+                    }
+                }
+                else if (@ViewBag.route == "neagreednotification" || @ViewBag.route == "nenotification" || @ViewBag.route == "nerenotification"
+                    || @ViewBag.route == "nenotificationapi" || @ViewBag.route == "nerenotificationapi")
+                {
+                    <div class="pl-4 pr-4">
+                        <p class="noteCollp">
+                            @if (ViewBag.WipNENCollab == 1 && ViewBag.NEN_ID > 0)
+                            {
+                                <span>Note: Accepted and Rejected notes entered below can be forwarded to the notifying Non ESDAL haulier by clicking on the mail option.</span>
+                            }
+                            else
+                            {
+                                <span>Note: The collaboration notes entered below can be forwarded to the notifying Non ESDAL haulier by clicking on the mail option.</span>
+                                <span>To collaborate with another user in your organisation click <i>Under assessment</i> radio button.</span>
+                            }
+                        </p>
+                    </div>
+                }
+
+                <div id="collab-details" class="pl-4 pr-4" style="text-align: start;">
+                    <div class="row pb-2">
+                        <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                            Status
+                        </div>
+                        <div class="col-sm-4 col-md-5 col-lg-8 pt-0 pl-0">
+                            <div id="table-head">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio"
+                                           name="statusradiogroup" id="Radio1" value="327001">
+                                    <label class="form-check-label edit-normal pl-0 pr-0 pt-0 pb-0"
+                                           for="Radio1">
+                                        Accepted
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio"
+                                           name="statusradiogroup" id="Radio2" value="327002">
+                                    <label class="form-check-label edit-normal pl-0 pr-0 pt-0 pb-0"
+                                           for="Radio2">
+                                        Rejected
+                                    </label>
+                                </div>
+                                @if (ViewBag.WipNENCollab == 0)
+                                {
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="radio"
+                                               name="statusradiogroup" id="Radio3" value="327003">
+                                        <label class="form-check-label edit-normal pl-0 pr-0 pt-0 pb-0"
+                                               for="Radio3">
+                                            Under Assessment
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+
+
+                            <div class="flexer justify-content-center pb-4" style="margin-left: auto;margin-right: auto;">                                
+                                @if (portalType == 696007 && ViewBag.WipNENCollab == 0)
+                                    {
+                                        <button id="btn_importfromassessment" type="submit" class="btn outline-btn-primary btn-normal btn-layout mr-r1 mb-2" style="width: 195px !important;" role="button"
+                                                aria-pressed="true" data-analysisid="@Model.AnalysisId">
+                                            Import From Assessment
+                                        </button>
+                                    }
+
+                                <button id="btnImportfrmLibrary" class="btn outline-btn-primary btn-normal btn-layout mr-r1 mb-2" style="width: 175px !important;" type="button"
+                                        aria-pressed="true" data-doc_id="@Model.DocumentId">
+                                    Import From Library
+                                </button>
+                                @if (ViewBag.WipNENCollab != 0)
+                                {
+                                <button id="SendMailBy" class="btn outline-btn-primary btn-normal btn-layout mr-r1 mb-2 SendMailBy" aria-pressed="true" type="button">Mail collaboration note to haulier</button>
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="row pb-2">
+                        <div class="col-sm-4 col-md-6 col-lg-4 pr-0">
+                            <div class="col-sm-11 col-md-12 col-lg-11 pr-0 text-normal">
+                                Collaboration Notes
+                            </div>
+
+                        </div>
+                        <div class="col-sm-4 col-md-5 col-lg-8 pl-0 pt-0">
+                            @Html.TextAreaFor(model => model.Notes, new { id = "DescriptionExternal", @rows = "7", @class = "form-control" })
+                            <div class="modal-body pt-0 pl-0 mb-0">
+                                <div id="assessmentWarning" class="pl-0 error invalid-feedback" style="display: block !important;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row pb-2">
+                        <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+
+                        </div>
+                        <div class="col-sm-4 col-md-5 col-lg-8 pt-0 pl-0">
+                            <div id="table-head" style="width: 370px;">
+                                @if (@ViewBag.route == "notification" || @ViewBag.route == "nenotificationapi" || @ViewBag.route == "nerenotificationapi"
+                                    || @ViewBag.route == "renotification" || @ViewBag.route == "neagreednotification" || @ViewBag.route == "nenotification"
+                                    || @ViewBag.route == "nerenotification")
+                                {
+                                    if (Model.DocumentId > 0)
+                                    {
+                                        if (!string.IsNullOrEmpty(Model.EmailAddress))
+                                        {
+                                            <div class="form-check">
+                                                <input class="checkbox" data-val="true" data-val-required="The SO field is required."
+                                                       id="MailHaulier" name="SO" type="checkbox" value="true">
+                                                <label class="form-check-label edit-normal pl-0 pr-0 pt-0 pb-0">
+                                                    Mail to Haulier
+                                                </label>
+                                            </div>
+                                        }
+                                    }
+                                }
+
+                                @if (Model.DocumentId > 0)
+                                {
+                                    if (!string.IsNullOrEmpty(Model.EmailAddress))
+                                    {
+                                        <div class="form-check">
+                                            <input class="checkbox" data-val="true" data-val-required="The SO field is required."
+                                                   id="NoteToLibrary" name="SO" type="checkbox" value="true">
+                                            <label class="form-check-label edit-normal pl-0 pr-0 pt-0 pb-0">
+                                                Add Notes to Library
+                                            </label>
+                                        </div>
+
+                                    }
+                                    if (@ViewBag.route == "agreement" || @ViewBag.route == "proposal" || @ViewBag.route == "reproposal" || @ViewBag.route == "amendmenttoagreement")
+                                    {
+                                        <div class="form-check">
+                                            <input class="checkbox" data-val="true" data-val-required="The SO field is required."
+                                                   id="NoteToLibrary" name="SO" type="checkbox" value="true">
+                                            <label class="form-check-label edit-normal pl-0 pr-0 pt-0 pb-0">
+                                                Add Notes to Library
+                                            </label>
+                                        </div>
+                                    }
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (ViewBag.WipNENCollab == 0)
+                    {
+                        <div class="row pb-2" id="tr_showscrutiny" style="display:none;">
+                            <div class="col-sm-4 col-md-6 col-lg-4 pr-0 text-normal">
+                                Assign To Another User
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-8 pt-0 pl-0">
+                                @Html.DropDownList("dropNEN", ViewBag.UserListInfo as SelectList, "--Select user--", new { @class = "form-control" })<br />
+                            </div>
+                        </div>
+                    }
+
+
+                </div>
+            </div>
+            <div class="modal-body pt-0">
+                <span class="error" id="updateExternalNote">@Resources.Resource.NoChangesMadeForCollaborationNotesAndStatus</span>
+                <span class="error" id="ValidAgreement">@Resources.Resource.AgreementValidation</span>
+                <span class="error" id="ValidLatest">@Resources.Resource.LatestVersionValidation</span>
+                <span class="error" id="ValidStatus">@Resources.Resource.StatusValidation</span>
+                <span class="error" id="CollabValidStatus">@Resources.Resource.CollabNotesValidation</span>
+                <span class="error" id="ValidLibraryNotes"></span>
+            </div>
+
+            <div class="flexer justify-content-center pb-4"
+                 style="margin-left: auto;margin-right: auto;">
+                <button id="btnSaveCollaboration" class="btn outline-btn-primary btn-normal mr-2 view-collab-modal-save">
+                    SAVE
+                </button>
+                <button id="btncancel" class="btn outline-btn-primary btn-normal view-collab-modal-cancel">
+                    CANCEL
+                </button>
+            </div>
+            @*}*@
+            @if (Model.CollaborationNotes != null && Model.CollaborationNotes.Count > 0)
+            {
+                <div class="row pt-3 pb-3" style="padding-left: 2rem; padding-right: 2rem;">
+                    <div class="" style="padding: 0px;">
+                        Previous  collaboration notes:
+                    </div>
+                    <ul class="list-group">
+
+                        @foreach (var item in Model.CollaborationNotes)
+                        {
+                            string mailText = "";
+                            if (item.Acknowledged == 2 || item.Acknowledged == 3) { mailText = "(mailed collaboration notes)"; }
+
+
+
+                            <li class="list-group-item">
+                                @if (!string.IsNullOrEmpty(mailText))
+                                {
+                                    @mailText
+                                    <br />
+                                }
+                                <span>@Html.Raw(item.Notes.Replace("PLEASE NOTE", "<br /><br />PLEASE NOTE"))</span>
+                                @if ((item.Acknowledged == 1 || item.Acknowledged == 2) && item.AcknowledgedWhen != null)
+                                {
+                                    <br /><span class="NotesWidthInner"><i>Read by haulier @item.AcknowledgedWhen </i></span>
+                                }
+                                <span class="badge" style="color: #717171; float: right; background-color: #eaeaea; ">@Html.Raw(item.When)</span>
+                            </li>
+                        }
+                    </ul>
+                    @*<div class="" style=" padding-left: 1rem; border-style: groove;">
+                            @foreach (var item in Model.CollaborationNotes)
+                            {
+                                string mailText = "";
+                                if (item.Acknowledged == 2 || item.Acknowledged == 3) { mailText = "(mailed collaboration notes)"; }
+                                @Html.Raw(item.When); @mailText
+                                <br />
+                                @Html.Raw(item.Notes.Replace("PLEASE NOTE", "<br /><br />PLEASE NOTE"))
+                                <br /><br />
+                                if ((item.Acknowledged == 1 || item.Acknowledged == 2) && item.AcknowledgedWhen != null)
+                                {
+                                    <div class="NotesWidthInner"><i>Read by haulier @item.AcknowledgedWhen </i></div>
+                                }
+                            }
+                        </div>*@
+                </div>
+            }
+        </div>
+    </div>
+    @{
+        <input type="hidden" value="@ViewBag.User_id" id="hf_User_id" name="hf_User_id" />
+        <input type="hidden" value="@ViewBag.WipNENCollab" id="hf_WipNENCollab" name="hf_WipNENCollab" />
+        <input type="hidden" value="@ViewBag.Subject" id="hf_Subject" name="hf_Subject" />
+
+    }
+    <input type="hidden" value="@ViewBag.latestversion" id="hf_LatestVersion" name="hf_LatestVersion" />
+    <input type="hidden" value="@ViewBag.Notificationid" id="hf_Notificationid" name="hf_Notificationid" />
+    @Html.Hidden("hf_encryptNotiId", TempData["EncryptNotiId"])
+    @Html.Hidden("hf_encryptRoute", TempData["EncryptRoute"])
+    @Html.Hidden("hf_EncryptEsdalRef", TempData["EncryptEsdalRef"])
+    @Html.Hidden("hf_InBoxId", TempData["InBoxId"])
+    @Html.Hidden("hf_eMail", eMail)
+</div>
+
+
+
+@*<script src="~/Scripts/Movements/ViewCollaborationStatusAndNotes.js?V@(Session["ProjectVersion"])"></script>*@

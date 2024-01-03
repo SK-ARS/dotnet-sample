@@ -1,0 +1,415 @@
+@using System.Web.Optimization
+@model STP.Domain.VehicleAndFleets.Component.VehicleComponent
+@using STP.Domain.VehiclesAndFleets.Component
+@{
+    int rowCount = Model != null ? Model.VehicleParamList.Count : 0;
+    int firstRowSet = 0;
+    int axleCount = 0;
+    int secondSet = 0;
+    int itemCount = rowCount / 3;
+    int reminder = rowCount % 3;
+    if (reminder == 2)
+    {
+        firstRowSet = itemCount + 1;
+        secondSet = firstRowSet + itemCount + 1;
+    }
+    else if (reminder == 1)
+    {
+        firstRowSet = itemCount + 1;
+        secondSet = firstRowSet + itemCount;
+    }
+    else
+    {
+        firstRowSet = itemCount;
+        secondSet = firstRowSet + itemCount;
+    }
+}
+@if (Model != null)
+{
+
+    List<Axle>
+    listAxle = null;
+    if (ViewBag.AxleList != null)
+    {
+        listAxle = new List<Axle>();
+        listAxle = (List<Axle>)ViewBag.AxleList;
+        if (listAxle.Count == 0)
+        {
+            listAxle = null;
+        }
+        axleCount = listAxle != null ? listAxle.Count : 0;
+    }
+    var maxNoOfWheelsGlobal = listAxle != null ? listAxle.Max(x => x.NoOfWheels) : 0;
+
+    string internalName = (from s in Model.VehicleParamList
+                           where s.ParamModel == "Internal Name"
+                           select s.ParamValue).FirstOrDefault();
+
+    var ImageName = "~/Content/images/Common/MasterPage/componet_icons/" + Model.vehicleComponentSubType.ImageName + ".png";
+
+    int? unitValue = 1;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        unitValue = sessionValues.VehicleUnits;
+    }
+    bool tyreEmpty = ViewBag.tyreEmpty;
+    @Html.Hidden("tyreEmpty", tyreEmpty)
+    @Html.Hidden("UnitValue", unitValue)
+
+    <style>
+
+        #vehicle-component th:last-child {
+            background-color: rgba(39, 87, 149, 0.1) !important;
+        }
+
+        #vehicle-component th {
+            /*text-align: center !important;*/
+        }
+
+        #vehicle-table td {
+            padding: 20px 5px 5px 20px;
+        }
+    </style>
+
+    <div class="row">
+        <div class="col-lg-12 col-md-2 col-sm-4 col-xs-12 pr-0" style="display:inline-flex;">
+            @*<div class="title" style="font-family: lato_bold; margin-top:20px;">
+                    @internalName
+                </div>*@
+            <div>
+                <img src="@Url.Content(ImageName)" alt="vehicle-1"
+                     style="mix-blend-mode: darken;">
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-lg-4 col-md-12 col-sm-12 vehicle-text">
+            @for (int i = 0; i < firstRowSet; i++)
+            {
+                // if (Model.VehicleParamList[i].ParamModel != "Internal Name")
+                // {
+                if (@Model.VehicleParamList[i].ParamModel == "Notes")
+                {
+                    <div class="row">
+                        <div class="col-lg-6 vehicle-view-width colum1">
+                            <label class="text-normal">@Html.Raw(Model.VehicleParamList[i].DisplayString)</label>
+                        </div>
+                        <div class="col-lg-6 vehicle-view-width colum2">
+                            @if (String.IsNullOrEmpty(Model.VehicleParamList[i].ParamValue))
+                            {
+                                <div class="col-lg-6 vehicle-view-width colum2">
+                                    -
+                                </div>
+                            }
+                            else
+                            {
+                                @Model.VehicleParamList[i].ParamValue
+                            }
+                        </div>
+                    </div>
+                }
+                else if (@Model.VehicleParamList[i].ParamModel == "Internal Name")
+                {
+                    <div class="row">
+                        <div class="col-lg-6 vehicle-view-width colum1">
+                            <label class="text-normal">@Html.Raw(Model.VehicleParamList[i].DisplayString)</label>
+                        </div>
+                        <div class="col-lg-6 vehicle-view-width colum2">
+                            @if (String.IsNullOrEmpty(Model.VehicleParamList[i].ParamValue))
+                            {
+                                <div class="col-lg-6 vehicle-view-width colum2">
+                                    -
+                                </div>
+                            }
+                            else
+                            {
+                                @Model.VehicleParamList[i].ParamValue
+                            }
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="row">
+                        <div class="col-lg-6 vehicle-view-width colum1">
+                            <label class="text-normal"> @Html.Raw(Model.VehicleParamList[i].DisplayString)</label>
+                        </div>
+                        <div class="col-lg-6 vehicle-view-width colum2">
+                            @if (String.IsNullOrEmpty(Model.VehicleParamList[i].ParamValue))
+                            {
+                                <div class="col-lg-6 vehicle-view-width colum2">
+                                    -
+                                </div>
+                            }
+                            else if (Model.VehicleParamList[i].ParamModel == "Component Type")
+                            {
+                                @Model.vehicleComponentSubType.SubCompName
+                            }
+                            else
+                            {
+                                <input class="edit-normal Noborder" type="text" name="from" value="@Model.VehicleParamList[i].ParamValue" range="@Model.VehicleParamList[i].StrRange" disabled>
+
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.VehicleParamList[i].ParamValue))
+                            {
+
+                                if (Model.VehicleParamList[i].DropDownList.Count > 0)
+                                {
+                                    if (unitValue == 692001)
+                                    {
+                                        <label class="lblUnit">m</label>
+                                    }
+                                    else if (unitValue == 692002)
+                                    {
+                                        <label class="lblUnit">ft</label>
+                                    }
+
+                                }
+                                if (@Model.VehicleParamList[i].ParamModel == "Weight")
+                                {
+                                    <label class="lblUnit">kg</label>
+                                }
+                            }
+                        </div>
+                    </div>
+                }
+                //}
+            }
+        </div>
+        <div class="col-lg-4 col-md-12 col-sm-12 vehicle-text">
+            @for (int i = firstRowSet; i < secondSet; i++)
+            {
+                if (Model.VehicleParamList[i].ParamModel != "Internal Name")
+                {
+                    <div class="row">
+                        <div class="colum1 vehicle-view-width col-lg-6">
+                            <label class="text-normal">
+                                @Html.Raw(Model.VehicleParamList[i].DisplayString)
+                            </label>
+                        </div>
+                        <div class="colum2 vehicle-view-width col-lg-6">
+
+                            @if (String.IsNullOrEmpty(Model.VehicleParamList[i].ParamValue))
+                            {
+                                <div class="col-lg-6 vehicle-view-width colum2">
+                                    -
+                                </div>
+                            }
+                            else if (Model.VehicleParamList[i].ParamModel == "Component Type")
+                            {
+                                @Model.vehicleComponentSubType.SubCompName
+                            }
+                            else
+                            {
+                                <input class="edit-normal Noborder" type="text" name="from" value="@Model.VehicleParamList[i].ParamValue" range="@Model.VehicleParamList[i].StrRange" disabled>
+
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.VehicleParamList[i].ParamValue))
+                            {
+
+                                if (Model.VehicleParamList[i].DropDownList.Count > 0)
+                                {
+                                    if (unitValue == 692001)
+                                    {
+                                        <label class="lblUnit">m</label>
+                                    }
+                                    else if (unitValue == 692002)
+                                    {
+                                        <label class="lblUnit">ft</label>
+                                    }
+                                }
+                                if (@Model.VehicleParamList[i].ParamModel == "Weight")
+                                {
+                                    <label class="lblUnit">kg</label>
+                                }
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+        <div class="col-lg-4 col-md-12 col-sm-12 vehicle-text">
+            @for (int i = secondSet; i < rowCount; i++)
+            {
+                if (Model.VehicleParamList[i].ParamModel != "Internal Name")
+                {
+                    <div class="row">
+                        <div class="col-lg-6 vehicle-view-width colum1">
+                            <label class="text-normal">
+                                @Html.Raw(Model.VehicleParamList[i].DisplayString)
+                            </label>
+                        </div>
+                        <div class="col-lg-6 vehicle-view-width colum2">
+
+                            @if (String.IsNullOrEmpty(Model.VehicleParamList[i].ParamValue))
+                            {
+                                <div class="col-lg-6 vehicle-view-width colum2">
+                                    -
+                                </div>
+                            }
+                            else if (Model.VehicleParamList[i].ParamModel == "Component Type")
+                            {
+                                @Model.vehicleComponentSubType.SubCompName
+                            }
+                            else
+                            {
+                                <input class="edit-normal Noborder" type="text" name="from" value="@Model.VehicleParamList[i].ParamValue" range="@Model.VehicleParamList[i].StrRange" disabled>
+
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.VehicleParamList[i].ParamValue))
+                            {
+
+                                if (Model.VehicleParamList[i].DropDownList.Count > 0)
+                                {
+                                    if (unitValue == 692001)
+                                    {
+                                        <label class="lblUnit">m</label>
+                                    }
+                                    else if (unitValue == 692002)
+                                    {
+                                        <label class="lblUnit">ft</label>
+                                    }
+                                }
+                                if (@Model.VehicleParamList[i].ParamModel == "Weight")
+                                {
+                                    <label class="lblUnit">kg</label>
+                                }
+                            }
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+
+    <div class="row mt-2">
+        <div class="col-lg-6 col-md-12 col-sm-12 vehicle-text">
+            @{
+                Html.RenderAction("ViewComponentRegistration", "Vehicle", new { compId = ViewBag.componentId, isTractor = true, isApplication = false, isVR1 = false, isBtnFlage = true, isNotif = ViewBag.isNotif });
+            }
+        </div>
+        <div class="col-lg-6 col-md-12 col-sm-12  vehicle-text">
+            <!-- table-hard-coded -->
+            <div class="main-table tblAxle" id="vehicle-table">
+                @if (listAxle != null)
+                {
+                    <table id="vehicle-component">
+                        <thead>
+                            <tr>
+                                <th class="colum1" style="width: 5%;" rowspan="2">Axle</th>
+                                <th class="colum1" rowspan="2">No. of <br /> wheels</th>
+                                <th class="colum1" rowspan="2">Axle <br />weight <br />(in kg)</th>
+                                @if (unitValue == 692002)
+                                {
+                                    <th class="colum1" rowspan="2" style="white-space: nowrap;">Distance <br />to next <br />axle (in ft)</th>
+                                }
+                                else
+                                {
+                                    <th class="colum1" rowspan="2" style="white-space: nowrap;">Distance <br />to next <br />axle (in m)</th>
+                                }
+                                @if (Model.IsConfigTyreCentreSpacing)
+                                {
+                                    <th class="headgrad_tyreSize" rowspan="2" style="width: 100%;">Tyre sizes</th>
+                                    <th class="headgrad2" colspan="@maxNoOfWheelsGlobal" style="text-align: center;">Tyre centre spacing<br><hr></th>
+                                }
+                            </tr>
+                            <tr class="sub sub1 tyreSpaceCnt">
+                                @if (Model != null && Model.IsConfigTyreCentreSpacing && !tyreEmpty)
+                                {
+                                    for (int i = 0; i < maxNoOfWheelsGlobal - 1; i++)
+                                    {
+                                        <th class="headgrad1" style="padding: 0; text-align: center; width: auto; padding-left: 0px !important; ">@(i + 1)</th>
+                                    }
+                                }
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (listAxle != null)
+                            {
+                                foreach (var item in listAxle)
+                                {
+                                    int count = 0;
+                                    int nullCheck = listAxle.Where(a => a.TyreCenters != "").Count();
+                                    int MaxCount = nullCheck != 0 ? listAxle.Max(a => a.TyreCenters.Split(',').Length) : 0;
+                                    <tr>
+                                        <td class="colum2">
+                                            @item.AxleNumId
+
+                                        </td>
+                                        <td class="colum2">
+                                            @item.NoOfWheels
+
+                                        </td>
+                                        <td class="colum2">
+                                            @item.AxleWeight
+
+                                        </td>
+                                        <td class="colum2">
+                                            @*@if (item.AxleNumId != listAxle.Count)
+                                            {*@
+                                                @if (item.DistanceToNextAxle > 0)
+                                                {
+                                                    <label class="text-normal disttonext">@item.DistanceToNextAxle</label>
+                                                }
+                                                else
+                                                {
+                                                    <div>
+                                                        -
+                                                    </div>
+                                                }
+                                            @*}
+                                            else
+                                            {
+                                                <div>
+                                                    -
+                                                </div>
+                                            }*@
+                                        </td>
+                                        @if (!string.IsNullOrEmpty(item.TyreSize))
+                                        {
+                                            <td class="tyre_size">
+                                                @item.TyreSize
+                                            </td>
+                                        }
+                                        @{
+                                            string[] wheelSpace = new string[] { };
+                                            if (!string.IsNullOrEmpty(item.TyreCenters))
+                                            {
+                                                wheelSpace = item.TyreCenters.Split(',');
+                                                count = item.TyreCenters.Split(',').Count();
+                                            }
+                                        }
+                                        @foreach (var whlSpace in wheelSpace)
+                                        {
+                                            <td class="wheel_space">
+                                                <label class="text-normal cstable">@whlSpace</label>
+                                            </td>
+                                        }
+                                        @if (MaxCount != count)
+                                        {
+                                            for (int i = 0; i < MaxCount - count; i++)
+                                            {
+                                                <td class="wheel_space">
+                                                    <br />
+                                                    <hr />
+                                                </td>
+                                            }
+                                        }
+
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                }
+
+            </div>
+        </div>
+    </div>
+}
+@*<script src="~/Scripts/Vehicle/VehicleComponentDetails.js?V@(Session["ProjectVersion"])"></script>*@

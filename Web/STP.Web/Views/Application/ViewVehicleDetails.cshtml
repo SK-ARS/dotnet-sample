@@ -1,0 +1,159 @@
+@using System.Web.Optimization
+@using STP.Domain
+@model STP.Domain.Applications.VehicleDetail
+
+@{
+    bool isAdmin = false;
+    int portalType = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var user = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        portalType = user.UserTypeId;
+        if (portalType == 696006 || user.IsAdmin == 1)
+        {
+            isAdmin = true;
+        }
+    }
+
+}
+@{ 
+    Layout = null;
+}
+<style>
+    .detailsPopup {
+        flex-direction: column;
+        width: 100%;
+        pointer-events: auto;
+    }
+</style>
+<div class="modal fade" id="vehicleDetails" tabindex="-1" role="dialog" style="cursor: pointer"
+     aria-hidden="false">
+    <div class="modal-dialog detailsPopup">
+
+        <body style="overflow-y: auto;" id="soa-structure-detail">
+
+            <!--main content -->
+            <section id="banner" class="map-icons">
+
+                <div id="CloseViewCons" class="row">
+                    <div class="card" style="width: 35rem; height: auto; padding-bottom: 2rem;">
+                        <div id="check-caution" style="margin-top:15px;margin-right:15px;">
+
+                            <div class="row mt-1 main-entry">
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <div class="row mb-1" id="table-head">
+
+                                        <span class="text-normal pr-2" style="font-family: lato_light;font-size:25px;">
+                                            View vehicle summary
+                                            <span id="closevehicle" class="text-normal pr-1"
+                                                  style="color:rgba(39, 87, 149, 1);font-size:50px;float:right;margin-top: -23px;font-family: lato_light;">
+                                                &times;
+                                            </span>
+
+                                        </span>
+                                    </div>
+                                    @using (Html.BeginForm("ViewVehicleDetails", "Application"))
+                                    {
+                                        <div class="row mb-1">
+                                            <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                <label class="text-normal" style="font-family: lato_light; font-size: 20px;">Summary details</label>
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                <label class="text-normal">Summary</label>
+                                            </div>
+                                            <div class="col-sm-4 col-md-4 col-lg-4 input-field text-normal">
+                                                @Html.Raw(@ViewBag.savename)
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                <label class="text-normal">Reg plates</label>
+                                            </div>
+                                            <div class="col-sm-4 col-md-4 col-lg-4 input-field text-normal">
+                                                @ViewBag.Registration
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                <label class="text-normal">Overall length</label>
+                                            </div>
+                                            <div class="col-sm-4 col-md-4 col-lg-4 input-field text-normal">
+                                                @Model.Length m
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                <label class="text-normal">Overall width</label>
+                                            </div>
+                                            <div class="col-sm-4 col-md-4 col-lg-4 input-field text-normal">
+                                                @Model.Width m
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                <label class="text-normal">Overall height</label>
+                                            </div>
+                                            <div class="col-sm-4 col-md-4 col-lg-4 input-field text-normal">
+                                                @Model.Height m
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                <label class="text-normal">Reducible height</label>
+                                            </div>
+                                            <div class="col-sm-4 col-md-4 col-lg-4 input-field text-normal">
+                                                @Model.Reducible_Height m
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                <label class="text-normal">Rigid length</label>
+                                            </div>
+                                            <div class="col-sm-4 col-md-4 col-lg-4 input-field text-normal">
+                                                @Model.Rigid_Length m
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                <label class="text-normal">Gross weight</label>
+                                            </div>
+                                            <div class="col-sm-4 col-md-4 col-lg-4 input-field text-normal">
+                                                @ViewBag.GrossWeight
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                <label class="text-normal">Max axle weight</label>
+                                            </div>
+                                            <div class="col-sm-4 col-md-4 col-lg-4 input-field text-normal">
+                                                @ViewBag.MaxAcelWeight
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                <label class="text-normal">Rear overhang</label>
+                                            </div>
+                                            <div class="col-sm-4 col-md-4 col-lg-4 input-field text-normal">
+                                                @Model.Rear_Overhang m
+                                            </div>
+                                        </div>
+
+                                    }
+                                    @{ Html.RenderAction("ApplicationComponentList", "Application", new { RoutePartId = @Model.Rpart_Id });}
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+                    <!-- end of check-caution -->
+                </div>
+
+            </section>
+
+        </body>
+    </div>
+</div>
+@*<script src="~/Scripts/Application/ViewVehicleDetails.js?V@(Session["ProjectVersion"])"></script>*@

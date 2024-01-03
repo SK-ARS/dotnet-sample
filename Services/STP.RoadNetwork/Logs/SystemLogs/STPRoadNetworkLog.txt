@@ -1,0 +1,32 @@
+0005 21-03-23 14:19:46 Logger Started
+0005 21-03-23 14:19:46 Development InstanceConstraint/GetConstraintDetails, Exception: 
+0006 21-03-23 15:18:35 Logger Started
+0006 21-03-23 15:18:35 Development InstanceConstraint/GetConstraintDetails, Exception: 
+0008 21-03-23 15:22:07 Development InstanceConstraint/GetConstraintDetails, Exception: 
+0008 21-03-23 15:22:19 Development InstanceConstraint/GetConstraintDetails, Exception: 
+0008 21-03-23 15:27:24 Development InstanceConstraint/GetConstraintDetails, Exception: 
+0008 21-03-23 15:28:26 Development InstanceConstraint/GetConstraintDetails, Exception: 
+0008 21-03-23 15:28:54 Development InstanceConstraint/GetConstraintDetails, Exception: 
+0011 21-03-23 15:30:42 Development InstanceConstraint/GetConstraintDetails, Exception: 
+0042 21-03-23 15:34:39 Development InstanceConstraint/GetConstraintDetails, Exception: 
+0009 21-03-23 15:40:59 Development InstanceConstraint/GetConstraintDetails, Exception: 
+0009 30-11-23 18:31:08 Logger Started
+0009 30-11-23 18:31:08 Development Instance - RoadDelegationDAO/EditRoadDelegation,Info : Bexley London Borough council 25710
+0019 30-11-23 18:40:08 Logger Started
+0019 30-11-23 18:40:08 Routes/SaveRoute, Exception:System.NullReferenceException: Object reference not set to an instance of an object.
+   at STP.RoadNetwork.Persistance.RoadDelegationDAO.EditRoadDelegation(RoadDelegationData roadDelegationObject) in D:\esdal_4_1\esdal4\Services\STP.RoadNetwork\Persistance\RoadDelegationDAO.cs:line 654
+   at STP.RoadNetwork.Providers.RoadDelegation.EditRoadDelegation(RoadDelegationData roadDelegationObj) in D:\esdal_4_1\esdal4\Services\STP.RoadNetwork\Providers\RoadDelegation.cs:line 95
+   at STP.RoadNetwork.Controllers.RoadDelegationController.EditRoadDelegation(RoadDelegationDataMapperInput inputModel) in D:\esdal_4_1\esdal4\Services\STP.RoadNetwork\Controllers\RoadDelegationController.cs:line 213
+0007 30-11-23 18:40:54 Routes/SaveRoute, Exception:System.NullReferenceException: Object reference not set to an instance of an object.
+   at STP.RoadNetwork.Persistance.RoadDelegationDAO.EditRoadDelegation(RoadDelegationData roadDelegationObject) in D:\esdal_4_1\esdal4\Services\STP.RoadNetwork\Persistance\RoadDelegationDAO.cs:line 654
+   at STP.RoadNetwork.Providers.RoadDelegation.EditRoadDelegation(RoadDelegationData roadDelegationObj) in D:\esdal_4_1\esdal4\Services\STP.RoadNetwork\Providers\RoadDelegation.cs:line 95
+   at STP.RoadNetwork.Controllers.RoadDelegationController.EditRoadDelegation(RoadDelegationDataMapperInput inputModel) in D:\esdal_4_1\esdal4\Services\STP.RoadNetwork\Controllers\RoadDelegationController.cs:line 213
+0019 30-11-23 18:43:30 Routes/SaveRoute, Exception:System.NullReferenceException: Object reference not set to an instance of an object.
+   at STP.RoadNetwork.Persistance.RoadDelegationDAO.EditRoadDelegation(RoadDelegationData roadDelegationObject) in D:\esdal_4_1\esdal4\Services\STP.RoadNetwork\Persistance\RoadDelegationDAO.cs:line 654
+   at STP.RoadNetwork.Providers.RoadDelegation.EditRoadDelegation(RoadDelegationData roadDelegationObj) in D:\esdal_4_1\esdal4\Services\STP.RoadNetwork\Providers\RoadDelegation.cs:line 95
+   at STP.RoadNetwork.Controllers.RoadDelegationController.EditRoadDelegation(RoadDelegationDataMapperInput inputModel) in D:\esdal_4_1\esdal4\Services\STP.RoadNetwork\Controllers\RoadDelegationController.cs:line 213
+0019 30-11-23 18:45:22 Routes/SaveRoute, Exception:System.NullReferenceException: Object reference not set to an instance of an object.
+   at STP.RoadNetwork.Persistance.RoadDelegationDAO.EditRoadDelegation(RoadDelegationData roadDelegationObject) in D:\esdal_4_1\esdal4\Services\STP.RoadNetwork\Persistance\RoadDelegationDAO.cs:line 654
+   at STP.RoadNetwork.Providers.RoadDelegation.EditRoadDelegation(RoadDelegationData roadDelegationObj) in D:\esdal_4_1\esdal4\Services\STP.RoadNetwork\Providers\RoadDelegation.cs:line 95
+   at STP.RoadNetwork.Controllers.RoadDelegationController.EditRoadDelegation(RoadDelegationDataMapperInput inputModel) in D:\esdal_4_1\esdal4\Services\STP.RoadNetwork\Controllers\RoadDelegationController.cs:line 213
+0049 30-11-23 18:46:17 Development Instance - RoadDelegationDAO/EditRoadDelegation,Info : Bexley London Borough council 25710

@@ -1,0 +1,151 @@
+﻿@using STP.Domain.VehiclesAndFleets.Component
+@{
+
+    List<Axle> listAxle = null;
+    if (ViewBag.AxleList != null)
+    {
+        listAxle = new List<Axle>();
+        listAxle = (List<Axle>)ViewBag.AxleList;
+        if (listAxle.Count == 0)
+        {
+            listAxle = null;
+        }
+    }
+    int? unitValue = 1;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        unitValue = sessionValues.VehicleUnits;
+    }
+    var maxNoOfWheelsGlobal = listAxle != null ? listAxle.Max(x => x.NoOfWheels) : 0;
+}
+<style>
+    .tblAxle td {
+        text-align: center !important;
+    }
+
+    .tblAxle th {
+        text-align: center !important;
+    }
+</style>
+<div id="viewCompDetail">
+    <div id="veh_component_details_@ViewBag.ComponentId">
+        <div class="pt-5" id="viewdescription1">
+            <div class="row">
+                <div class="col-lg-12 col-sm-12 col-md-7">
+                    <div class="main-table tblAxle" id="vehicle-table">
+                        @if (listAxle != null)
+                        {
+
+
+                            <table id="vehicle-component">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2" style="width: 5%;">Axle</th>
+                                        <th rowspan="2">
+                                            No. of <br> wheels
+                                        </th>
+                                        <th rowspan="2">Axle <br> weight <br> (kg)</th>
+                                        @if (unitValue == 692002)
+                                        {
+                                            <th rowspan="2">Distance <br> to next <br>axle (ft)</th>
+                                        }
+                                        else
+                                        {
+                                            <th rowspan="2">Distance <br> to next <br>axle (m)</th>
+                                        }
+                                        @if (ViewBag.IsConfigTyreCentreSpacing)
+                                        {
+                                            <th class="headgrad_tyreSize" rowspan="2">Tyre sizes</th>
+                                            <th class="headgrad2" colspan="@maxNoOfWheelsGlobal" style=" text-align: center;">Tyre centre spacing</th>
+                                        }
+                                    </tr>
+                                    <tr class="sub sub1 tyreSpaceCnt">
+                                        @if (ViewBag.IsConfigTyreCentreSpacing)
+                                        {
+                                            for (int i = 0; i < maxNoOfWheelsGlobal - 1; i++)
+                                            {
+                                                <th class="headgrad1" style="padding: 0; text-align: center; width: auto; padding-left: 0px !important; ">@(i + 1)</th>
+                                            }
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (listAxle != null)
+                                    {
+                                        foreach (var item in listAxle)
+                                        {
+                                            int count = 0;
+                                            int nullCheck = listAxle.Where(a => a.TyreCenters != "").Count();
+                                            int MaxCount = nullCheck != 0 ? listAxle.Max(a => a.TyreCenters.Split(',').Length) : 0;
+                                            <tr>
+                                                <td>
+                                                    @item.AxleNumId
+                                                    
+                                                </td>
+                                                <td>
+                                                    @item.NoOfWheels
+                                                    
+                                                </td>
+                                                <td>
+                                                    @item.AxleWeight
+                                                    
+                                                </td>
+                                                <td>
+                                                    @if (item.AxleNumId != listAxle.Count)
+                                                    {
+                                                        <label class="text-normal disttonext">@item.DistanceToNextAxle</label>
+                                                        
+                                                    }
+                                                </td>
+                                                @if (!string.IsNullOrEmpty(item.TyreSize))
+                                                {
+                                                    <td class="tyre_size">
+                                                        @item.TyreSize
+                                                       
+                                                    </td>
+                                                }
+                                                @{
+                                                    string[] wheelSpace = new string[] { };
+                                                    if (!string.IsNullOrEmpty(item.TyreCenters))
+                                                    {
+                                                        wheelSpace = item.TyreCenters.Split(',');
+                                                        count = item.TyreCenters.Split(',').Count();
+                                                    }
+                                                }
+                                                @foreach (var whlSpace in wheelSpace)
+                                                {
+                                                    <td class="wheel_space">
+                                                        <label class="text-normal cstable">@whlSpace</label>
+                                                        
+                                                    </td>
+                                                }
+                                                @if (MaxCount != count)
+                                                {
+                                                    for (int i = 0; i < MaxCount - count; i++)
+                                                    {
+                                                        <td class="wheel_space">
+                                                           
+                                                        </td>
+                                                    }
+                                                }
+
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<input type="hidden" value="@ViewBag.mode" id="hf_mode" name="hf_mode" />
+<input type="hidden" value="@ViewBag.ComponentId" id="hf_ComponentId" name="hf_ComponentId" />
+@if (ViewBag.mode != null && ViewBag.mode != "")
+{
+    <script src="~/Scripts/VehicleConfig/ViewConfiguration.js?V@(Session["ProjectVersion"])"></script>
+}

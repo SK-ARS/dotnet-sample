@@ -1,0 +1,254 @@
+@model STP.Domain.Structures.StructureModel
+
+@{
+    bool isAdmin = false;
+    int portalType = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var user = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        portalType = user.UserTypeId;
+        if (portalType == 696006 || user.IsAdmin == 1)
+        {
+            isAdmin = true;
+        }
+    }
+
+}
+@{
+    Layout = null;
+}
+<style>
+    .detailsPopup {
+        flex-direction: column;
+        width: 100%;
+        pointer-events: auto;
+    }
+</style>
+<div class="modal fade" id="cautionDetails" tabindex="-1" role="dialog" style="cursor: pointer"
+     aria-hidden="false">
+    <div class="modal-dialog detailsPopup">
+        <body style="overflow-y: auto;" id="soa-structure-detail">
+            <section id="banner" class="map-icons">
+
+                <div id="CloseViewCons" class="row">
+                    <div class="card" style="width: 30rem; height: auto; padding-bottom: 2rem;">
+                        <div id="check-caution" style="margin-top:15px;margin-right:15px;">
+                            @using (Html.BeginForm())
+                            {
+                                <div class="row mt-1 main-entry">
+                                    <div class="col-lg-12 col-md-12 col-sm-12">
+                                        @Html.HiddenFor(model => model.StructureId, new { Id = "STRUCTURE_ID" })
+                                        <div class="row mb-1" id="table-head">
+
+                                            <span class="text-normal pr-2" style="font-family: lato_light;font-size:25px;">
+                                                View caution
+                                                <span class="text-normal pr-1 closeViewCaution"
+                                                      style="color:rgba(39, 87, 149, 1);font-size:50px;float:right;margin-top: -23px;font-family: lato_light;" >
+                                                    &times;
+                                                </span>
+
+                                            </span>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                <label class="text-normal">Owner</label>
+                                            </div>
+                                            <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                                @Model.OrganizationName
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                <label class="text-normal">Name</label>
+                                            </div>
+                                            <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                                @Model.CautionName
+                                            </div>
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                <label class="text-normal">Action</label>
+                                            </div>
+                                            <div class="col-sm-4 col-md-5 col-lg-7 input-field text-normal">
+                                                @if (Model.SpecificActionB == false)
+                                                {
+                                                    <span>Specific action</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>Standard caution</span>
+                                                }
+                                                @if (!string.IsNullOrEmpty(Model.SpecificAction))
+                                                {
+                                                    <br />
+                                                    @Html.Raw(Model.SpecificAction)
+                                                }
+                                            </div>
+                                        </div>
+                                        @if (ViewBag.UOM == 692001)
+                                        {
+                                            <div class="row mb-1">
+                                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                    <label class="text-normal">Height</label>
+                                                </div>
+                                                @if (Model.MaxHeightMetres != 0)
+                                                {
+                                                    <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                                        @Model.MaxHeightMetres metres
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="row mb-1">
+                                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                    <label class="text-normal">Width</label>
+                                                </div>
+                                                @if (Model.MaxWidthMetres != 0)
+                                                {
+                                                    <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                                        @Model.MaxWidthMetres metres
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="row mb-1">
+                                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                    <label class="text-normal">Length</label>
+                                                </div>
+                                                @if (Model.MaxLengthInMetres != 0)
+                                                {
+                                                    <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                                        @Model.MaxLengthInMetres metres
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                        @if (ViewBag.UOM == 692002)
+                                        {
+                                            <div class="row mb-1">
+                                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                    <label class="text-normal">Height</label>
+                                                </div>
+                                                @if (Model.MaxHeightFeet != 0)
+                                                {
+                                                    int FeetH = (int)Model.MaxHeightFeet;
+                                                    int Height = 0;
+                                                    float InchH = Model.MaxHeightFeet - FeetH;
+                                                    InchH = InchH * 12;
+                                                    Height = (int)InchH;
+                                                    <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                                        @FeetH feet @Height inch
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="row mb-1">
+                                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                    <label class="text-normal">Width</label>
+                                                </div>
+                                                @if (Model.MaxWidthFeet != 0)
+                                                {
+                                                    int FeetW = (int)Model.MaxWidthFeet;
+                                                    float InchW = Model.MaxWidthFeet - FeetW;
+                                                    int Width = 0;
+                                                    InchW = InchW * 12;
+                                                    Width = (int)InchW;
+                                                    <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                                        @FeetW feet @Width inch
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="row mb-1">
+                                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                    <label class="text-normal">Length</label>
+                                                </div>
+                                                @if (Model.MaxLengthFeet != 0)
+                                                {
+                                                    int FeetL = (int)Model.MaxLengthFeet;
+                                                    float InchL = Model.MaxLengthFeet - FeetL;
+                                                    int Length = 0;
+                                                    InchL = InchL * 12;
+                                                    Length = (int)InchL;
+                                                    <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                                        @FeetL feet @Length inch
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                        <div class="row mb-1">
+                                            <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                <label class="text-normal">Gross weight</label>
+                                            </div>
+                                            @if (Model.GrossWeight != 0)
+                                            {
+                                        <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                            @Model.GrossWeight <span class="text-color1 ml-2">@("t")</span>
+                                        </div>
+                                            }
+                                        </div>
+                                        <div class="row mb-1">
+                                            <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                <label class="text-normal">Axle weight</label>
+                                            </div>
+                                            @if (Model.AxleWeight != 0)
+                                            {
+                                                <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                                    @Model.AxleWeight <span class="text-color1 ml-2">@("t")</span>
+                                                </div>
+                                            }
+                                        </div>
+                                        @if (ViewBag.UOM == 692001)
+                                        {
+                                            <div class="row mb-1">
+                                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                    <label class="text-normal">Speed</label>
+                                                </div>
+                                                @if (Model.MinSpeedKmph != 0)
+                                                {
+                                                    <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                                        @Model.MinSpeedKmph kph
+                                                    </div>
+                                                }
+                                            </div>
+
+                                        }
+                                        else
+                                        {
+                                            <div class="row mb-1">
+                                                <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                    <label class="text-normal">Speed</label>
+                                                </div>
+                                                @if (Model.MinSpeed != 0)
+                                                {
+                                                    <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                                        @Model.MinSpeed mph
+                                                    </div>
+                                                }
+                                            </div>
+                                        }
+                                        <div class="row mb-1">
+                                            <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                                <label class="text-normal">Creator is contact</label>
+                                            </div>
+                                            @if (Model.OwnerIsContactFlag)
+                                            {
+                                                <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                                    Yes
+                                                </div>
+                                            }
+                                            else { 
+                                                <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                                    No
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                           
+                        </div>
+                    </div>
+                </div>
+
+            </section>            
+        </body>
+    </div>
+</div>
+@*<script src="~/Scripts/Structures/ViewCaution.js?V@(Session["ProjectVersion"])"></script>*@

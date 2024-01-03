@@ -1,0 +1,135 @@
+@model STP.Domain.Structures.ConfigBandModel
+
+@if (Model == null)
+{
+    <h4><span style="color: red">@Resources.Resource.WrongStructureMsg</span></h4>
+}
+else
+{
+
+    bool savedSuccess = false;
+    if (ViewBag.Saved != null && ViewBag.Saved)
+    {
+        savedSuccess = true;
+    }
+
+    int OrganisationId = ViewBag.organisationId;
+    string structName = ViewBag.structName;
+    string ESRN = ViewBag.ESRN;
+
+    @Html.Hidden("Done", savedSuccess)
+    @Html.Hidden("OrgId", OrganisationId)
+    @Html.Hidden("StructureName", structName)
+    @Html.Hidden("StructCode", ESRN)
+    @Html.ValidationSummary(true)
+
+
+
+    <span id='configureDefaultBandingFactorsId' style="display: none;">
+
+        <div class="row">
+            <div class="col-9 c9p40Helper c9H1" style="margin: 1rem"></div>
+            <div class="cardSOA1" style="margin: 0">
+                <h6 class="text-color3 stHeading1 m-0">@Resources.Resource.WeightScreen</h6>
+            </div>
+            <div class="col-3 c3p40Helper c3H1" style="white-space: nowrap;">
+                <label for="dlfId" class="mt-4 label2">@Resources.Resource.DefaultLimit</label>
+            </div>
+            <div class="col-9 c9p40Helper c9H1">
+                <div id="dlfId" class="flexer radioSOA mt-4">
+                    <div class="form-check">
+
+                        <label class="form-check-label label2" for="flexRadioDefault11">
+                            @Html.RadioButtonFor(model => model.IsDefaultWeight, true, new { @id = "ESDALDefaultWeight", @class = "form-check-input" }) Use ESDAL Default : @Model.DefaultMinWeight - @Model.DefaultMaxWeight
+                        </label>
+                    </div>
+                    <div class="form-check mt-3">
+
+                        <label class="form-check-label label2" for="flexRadioDefault22">
+                            @Html.RadioButton("IsDefaultWeight", false, new { @id = "OrgDefaultWeight", @class = "form-check-input" }) @Resources.Resource.UseOrgDefault : @Html.TextBoxFor(m => m.OrgMinWeight, new { @id = "OrgMinWeight", @class = "wp41-1 text-color3", @onkeypress = "return isNonAlphaNum(event)" }) - @Html.TextBox("OrgMaxWeight", null, new { @id = "OrgMaxWeight", @class = "wp41-1 text-color3", @onkeypress = "return isNonAlphaNum(event)" })
+                            @*@Html.ValidationMessageFor(m => m.OrgMinWeight)@Html.ValidationMessageFor(m => m.OrgMaxWeight)*@
+
+                        </label>
+
+
+                    </div>
+                    <div class="flexer lbHelper">
+                        <span class="error invalid-feedback" style="display:none; white-space:nowrap;" id="errordate">*Default Weight is required</span>
+                    </div>
+                    <div>
+                        <span class="error invalid-feedback" style="display:none; white-space:nowrap;" id="errdesc">Only numbers and . are allowed</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="cardSOA1" style="margin:0">
+                <h6 class="text-color3 stHeading1 m-0">@Resources.Resource.SVScreen</h6>
+            </div>
+            <div class="col-3 c3p40Helper c3H1" style="white-space: nowrap;">
+                <label for="dlfId" class="mt-4 label2">@Resources.Resource.DefaultLimit</label>
+            </div>
+            <div class="col-9 c9p40Helper c9H1">
+                <div id="dlfId" class="flexer radioSOA mt-4">
+                    <div class="form-check">
+
+                        <label class="form-check-label label2" for="flexRadioDefault11">
+                            @Html.RadioButtonFor(model => model.IsDefaultSV, true, new { @id = "ESDALDefaultSV", @class = "form-check-input" }) Use ESDAL Default : @Model.DefaultMinSV - @Model.DefaultMaxSV
+                        </label>
+                    </div>
+                    <div class="form-check mt-3">
+
+                        <label class="form-check-label label2" for="flexRadioDefault22">
+                            @Html.RadioButtonFor(model => model.IsDefaultSV, false, new { @id = "OrgDefaultSV", @class = "form-check-input" }) @Resources.Resource.UseOrgDefault : @Html.TextBox("OrgMinSV", null, new { @id = "OrgMinSV", @class = "wp41-1 text-color3", @onkeypress = "return isNonAlphaNumber(event) " }) - @Html.TextBox("OrgMaxSV", null, new { @id = "OrgMaxSV", @class = "wp41-1 text-color3", @onkeypress = "return isNonAlphaNumber(event) " })
+                        </label>
+                    </div>
+                    <div class="flexer lbHelper">
+                        <span class="error invalid-feedback" style="display: none; white-space: nowrap;" id="errordate1">*Default SV is required</span>
+                    </div>
+                    <div>
+                        <span class="error invalid-feedback" style="display: none; white-space: nowrap;" id="errordesc">Only numbers and . are allowed</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flexer justify-content-center mt8" style="margin: 4rem; left: 150px;">
+            @if (ViewBag.Helpdest_redirect != "true")
+            {
+                <button class="btn outline-btn-primary SOAButtonHelper" id="bndngsavebtn">SAVE</button>
+            }
+            <button class="btn outline-btn-primary SOAButtonHelper ml2 cancelbtnbndng">CANCEL</button>
+
+
+        </div>
+        <div class="modal fade" id="cautionPopup" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header pt-2">
+                        @*<span aria-hidden="true" class="close" data-dismiss="modal"
+                            aria-label="Close">&times;</span>*@
+                    </div>
+                    <div class="modal-body">
+                        <img src="/content/assets/images/completed.svg" width="30">
+                        <div class="edit-normal"> Default bandings data saved succesfully</div>
+                    </div>
+                    <div class="modal-footer pt-4">
+                        <button type="button" class="btn btn-secondary cancelbtnbndng" data-dismiss="modal">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </span>
+
+}
+@{
+<input type="hidden" value="@ViewBag.Helpdest_redirect" id="hf_Helpdest_redirect" name="hf_Helpdest_redirect" />
+<input type="hidden" value="@ViewBag.msg" id="hf_msg" name="hf_msg" />
+}
+@Html.Hidden("hf_OrgMinWeight", Model.OrgMinWeight)
+@Html.Hidden("hf_OrgMaxWeight", Model.OrgMaxWeight)
+@Html.Hidden("hf_OrgMinSV", Model.OrgMinSV)
+@Html.Hidden("hf_OrgMaxSV", Model.OrgMaxSV)
+<input type="hidden" value="@ViewBag.StructureId" id="hf_structureid" name="hf_structureid" />
+
+@*<script src="~/Scripts/Structures/ConfigureBandings.js?V@(Session["ProjectVersion"])"></script>*@

@@ -1,0 +1,137 @@
+@{ 
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.ROADS;
+}
+<div id="helpdesk">
+    <!-- banner -->
+    <section id="banner" class="map-icons">
+        <!-- google-map-setting-start -->
+        <div id="map" style="height: 99vh" class="google-map"></div>
+        <button id="DrgDiv" draggable="false" aria-label="Toggle fullscreen view"  type="button"
+                style="background: none rgb(255, 255, 255); border: 0px; margin: 10px; padding: 0px; text-transform: none; appearance: none; position: absolute; cursor: pointer; user-select: none; border-radius: 2px; height: 39px; width: 41px; box-shadow: rgba(0, 0, 0, 0.3) 0px 1px 4px -1px; overflow: hidden; top: 14px; right: 2px;">
+            <img id="Minimzeicon" src="~/Content/assets/Icons/maximize-map.svg" alt="" style="height: 123px; width: 152px; margin-top: -42px; margin-left: -56px; margin-right: -19px; margin-bottom: -6px;" title="Toggle full screen view">
+            <img id="MaxmizeIocn" src="~/Content/assets/Icons/minimise-map.svg" alt="" style="height: 123px; width: 152px; margin-top: -43px; margin-left: -56px; margin-right: -4px; margin-bottom: -4px;" title="Toggle normal screen view">
+        </button>        <!-- google-map-setting-end -->
+        <div style="height: 20px;">
+        </div>
+        <div class="filter-icon" id="FilterRoadBtn" style="width: 40px;left: -3px";>
+            <img src="~/Content/assets/images/filter-icon2.svg" title="Open filter" width="35" style="color:black;">
+        </div>
+    </section>
+
+    <!-- filter settings -->
+    <div id="filters" class="sidenav filter-sidenav">
+        <div class="row sidenav-header">
+            <div class="col-10 col-md-10 col-sm-10" style="text-align: center;margin-top: 5px;">
+                <span>
+                    FILTER
+                </span>
+            </div>
+            <div class="col-2 col-md-2 col-sm-2 pl-0" style="position: none;">
+                <a href="#" id="CloseFilter" >&times;</a>
+            </div>
+        </div>
+        <hr style="margin-top: 0;">
+        <div class="filter-list">
+            <div class="filters">
+                <div class="row" id="ViewOrgDiv">
+                    <div class="col-10 col-md-10 col-sm-10">
+                        <span>
+                            Search organisation
+                        </span>
+                    </div>
+                    <div class="col-2 col-md-2 col-sm-2">
+                        <img id="chevlon-up-icon" src="~/Content/assets/images/up-chevlon-filter.svg" width="20" style="display: none;">
+                        <img id="chevlon-down-icon" src="~/Content/assets/images/down-chevlon-filter.svg" width="20" style="display: block">
+                    </div>
+                </div>
+            </div>
+            <div class="ms-2 mt-4 mb-0" id="vieworganisation" style="display: none; width:95%">
+                <input id="txtOrgSearch" class="edit-normal ms-3 pl-4" type="text" name="search" placeholder="Search organisation">
+                <input id="hdnOrgId" name="hdnOrgId" type="hidden" value="">
+            </div>
+            <div class="header mt-2">
+                <div class="button mr-0">
+                    <button class="btn btn-outline-primary site-button btn-normal" role="button" aria-pressed="true" id="clearOrgData"  style="display:none">
+                        CLEAR ORGANISATION ROADS
+                    </button>
+                </div>
+            </div>
+            <div class="mb-4 filters">
+                <div id="ViewRodDiv" class="row">
+                    <div class="col-10 col-md-10 col-sm-10">
+                        <span>
+                            Search roads &nbsp &nbsp &nbsp &nbsp &nbsp
+                        </span>
+                    </div>
+                    <div class="col-2 col-md-2 col-sm-2">
+                        <img id="chevlon-up-icon1" src="~/Content/assets/images/up-chevlon-filter.svg" width="20" style="display: none;">
+                        <img id="chevlon-down-icon1" src="~/Content/assets/images/down-chevlon-filter.svg" width="20" style="display: block">
+                    </div>
+                </div>
+
+            </div>
+
+            <div id="viewroads" style="display: none;" >
+                <div class="ms-2 mt-4 mb-0 input-field" style="width:95%;">
+                    <input class="edit-normal ms-3 pl-4" type="text" id="txtLinkSearch" name="search" placeholder="Search road segment by ID" title="Link ID of the location. Press ENTER after entering the Link ID" >
+                </div>
+                <div class="row mt-4">
+                    <div class="col-lg-2 col-sm-2 col-md-2">
+                        <input type="checkbox" class="checkbox pl-4" name="bulldozer" value="bulldozer" id="unassigned"
+                               width="28">
+                    </div>
+
+                    <div class="col-lg-10 col-sm-10 col-md-10">
+                        <span>Show unassigned roads</span>
+                    </div>
+                </div>
+                <div class="row mt-4" id="showowned" style="display: none">
+                    <div class="col-lg-2 col-sm-2 col-md-2">
+                        <input type="checkbox" class="checkbox" name="bulldozer" value="bulldozer" id="owned" 
+                               width="28">
+                    </div>
+
+                    <div class="col-lg-10 col-sm-10 col-md-10">
+                        <span>Select all owned roads</span>
+                    </div>
+                </div>
+            </div>
+            <div class="header mt-4">
+                <div class="button mr-0">
+                    <button class="btn btn-outline-primary btn-normal site-button ms-5" role="button" aria-pressed="true" id="searchID" style="display:none">
+                        SEARCH
+                    </button>
+                </div>
+            </div>
+            <div class="header mt-4">
+                <div class="button mr-0">
+                    <button class="btn btn-outline-primary btn-normal site-button ms-5" role="button" aria-pressed="true" style="display:none" id="clearsearchsegments">
+                        CLEAR
+                    </button>
+                </div>
+            </div>
+            <div class="header mt-4">
+                <div class="button mr-0">
+                    <button id="assignroads"  class="btn btn-outline-primary btn-normal site-button ms-5" role="button" aria-pressed="true" style="display:none">
+                        SET ROAD OWNERSHIP
+                    </button>
+                </div>
+            </div>
+            <div class="header mt-4">
+                <div class="button mr-0">
+                    <button id="clearSelectedRoads"  class="btn btn-outline-primary btn-normal site-button ms-5" role="button" aria-pressed="true" style="display:none">
+                        CLEAR SELECTED ROADS
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- end of fikter settings -->
+</div>
+<script src="~/Scripts/RoadOwnership/CreateRoadOwnership.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Routes/A2BPlanning.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/RoadOwnership/RoadOwnershipMap.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/RoadOwnership/RoadOwnerReport.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/RoadOwnership/RoadOwnersContact.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/RoadOwnership/jQuery.report.js?V@(Session["ProjectVersion"])"></script>

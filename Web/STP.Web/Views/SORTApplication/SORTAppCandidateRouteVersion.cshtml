@@ -1,0 +1,166 @@
+
+@using System.Web.Optimization
+@using STP.Domain
+@using System.Globalization
+@model List<STP.Domain.Routes.CandidateRT>
+
+
+@{
+    ViewBag.Title = "SORTAppCandidateRouteVersion";
+    if (ViewBag.hauliermnemonic != "" || ViewBag.esdalref != 0)
+    {
+        ViewBag.Concate = ViewBag.hauliermnemonic + '/' + ViewBag.esdalref + '/' + 'S';
+    }
+    long CandidateRouteId = 0;
+    if (ViewBag.LastCandRouteId != null)
+    {
+        CandidateRouteId = ViewBag.LastCandRouteId;
+    }
+    int LastVersion = 0;
+    if (ViewBag.LastVersion != null)
+    {
+        LastVersion = ViewBag.LastVersion;
+    }
+    long LastRevisionId = 0;
+    if (ViewBag.LastRevision != null)
+    {
+        LastRevisionId = ViewBag.LastRevision;
+    }
+    int edNumber = ViewBag.esdalref;
+
+}
+
+<style type="text/css">
+    ol {
+        counter-reset: item;
+        list-style-type: none;
+    }
+
+    .headcc {
+        background-color: #E9EEF4;
+    }
+
+    .routeAlign {
+        overflow: hidden;
+        max-width: 17ch;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+<div class="main-table1" id="tableSOA" style="max-width: 100%; overflow-x: hidden;">
+    <div id="App_Candidate_Ver">
+
+        @if (Model.Count > 0)
+        {
+            <table class="mt-5 table-white-bg">
+                <thead class="table-soa">
+                    <tr>
+                        <th class="table-soa1 text-normal m-0 headcc">
+                            Candidate routes
+                        </th>
+                        <th class="table-soa1 text-normal m-0 headcc"></th>
+                        <th class="table-soa1 text-normal m-0 headcc">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="table-soa text-color2" style="vertical-align: initial;">
+                            @{long CnRouteID = 0;}
+                            <div class="tree" style="margin-top:-12px;">
+                                <ol>
+                                    @foreach (var candrts in Model)
+                                    {
+                                        <li style="margin-top: 6px; margin-left: -39px; text-align: inherit;" class="routeAlign">
+                                            <a class="text-decoration-link" title="@candrts.Name">@candrts.Name</a>
+                                            @{ CnRouteID = candrts.RouteId;}
+                                            <ol>
+                                                @foreach (var versions in candrts.Versions)
+                                                {
+                                                    string candname = candrts.Name.Replace("'", "\\'");
+                                                    <li style="margin-top:6px;margin-left: -47px;margin-bottom:auto;">
+                                                        @if (ViewBag.IsVehicleCurrentMovenet == true || ViewBag.IsVehicleCurrentMovenet == true)
+                                                        {
+                                                            <a class="text-decoration-link" id="ahrefCurreMovemenVehicleList"
+                                                               data-ReviosionId="@versions.ReviosionId"
+                                                               data-SecondParameter="C">Version @versions.RevisionNo</a>
+                                                        }
+                                                        else if (ViewBag.IsCurrentMovenet == false)
+                                                        {
+                                                            <a class="text-decoration-link" id="ahrefShowCandidateRoutes" 
+                                                               data-ReviosionId="@versions.ReviosionId"
+                                                               data-candname="@candname"
+                                                               data-RevisionNo="@versions.RevisionNo"
+                                                               data-RouteId="@candrts.RouteId"
+                                                               data-AnalysisId="@candrts.AnalysisId">Version @versions.RevisionNo</a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a class="text-decoration-link" id="ahrefVersinRevision" data-VersinRevisionId="@versions.ReviosionId" data-VersinVrListType="C">Version @versions.RevisionNo</a>
+                                                        }
+                                                    </li>
+                                                }
+                                            </ol>
+                                        </li>
+                                    }
+                                </ol>
+                            </div>
+
+                        </td>
+                        <td class="align-top">
+                            @if (ViewBag.IsCurrentMovenet == false && ViewBag.IsVehicleCurrentMovenet == false)
+                            {
+                                <a class="text-decoration-link" style="cursor:pointer;" data-CnRouteId="@CnRouteID" id="li_edit_cndRt">
+                                    <img src="~/Content/assets/images/edit-icon.svg" width="20" title="Edit">
+                                </a>
+                            }
+                        </td>
+                        <td class="table-soa text-color3" style="vertical-align: initial;color:black">@Model[0].CandidateDate</td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+        else if (ViewBag.HProject_Status != "Agreed")
+        {
+            <table class="mt-5 table-white-bg">
+                <thead class="table-soa">
+                    <tr>
+                        <th class="table-soa1 text-normal m-0">
+                            Candidate routes
+                        </th>
+                        <th class="table-soa1 text-normal m-0 headcc">Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="2" class="table-soa text-color2">
+                            <span style="color: red; padding-left: 0px !important;">No candidate routes for this application.</span>
+                            @if (ViewBag.IsCandEditPermision == true)
+                            {
+                                <br />
+                                if (ViewBag.IsVehicleCurrentMovenet == false && ViewBag.IsCurrentMovenet == false)
+                                {
+                                    <a class="text-decoration-link" id="ahrefSortCreateCandidateRoute" href="#"><b>Create candidate route version</b></a>
+                                }
+                            }
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+@Html.Hidden("esdalReferenceNumberHiddenValue", edNumber)
+
+
+
+@{
+    @Html.Hidden("hf_IsCurrentMovenet1", (bool)ViewBag.IsCurrentMovenet)
+    @Html.Hidden("hf_IsVehicleCurrentMovenet", (bool)ViewBag.IsVehicleCurrentMovenet)
+}
+@Html.Hidden("hf_CandidateRouteId", CandidateRouteId)
+@Html.Hidden("hf_LastVersion", LastVersion)
+@Html.Hidden("hf_LastRevisionId", LastRevisionId)
+<input type="hidden" value="@ViewBag.LatestRevisionId" id="hf_ViewLastRevisionId" name="hf_ViewLastRevisionId" />
+
+
+@*<script src="~/Scripts/SORTApplication/SORTAppCandidateRouteVersion.js?V@(Session["ProjectVersion"])"></script>*@

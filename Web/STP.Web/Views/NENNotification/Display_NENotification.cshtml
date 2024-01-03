@@ -1,0 +1,313 @@
+﻿@using System.Web.Optimization
+@using STP.Domain
+@model STP.Domain.MovementsAndNotifications.Notification.NENGeneralDetails
+@using STP.Web.Custom.Views
+@using STP.Domain.SecurityAndUsers
+@{
+    ViewBag.Title = "Display_NENotification";
+    bool isAdmin = false;
+    int portalType = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var user = (UserInfo)Session["UserInfo"];
+        portalType = user.UserTypeId;
+        if (portalType == 696006 || user.IsAdmin == 1)
+        {
+            isAdmin = true;
+        }
+    }
+}
+
+<div id="GeneralDetails">
+    <div class="pl-6 pr-3" style="padding-left: unset !important">
+        <div class="row">
+            <div class="wd60">
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-4  text-normal">
+                        ESDAL Reference
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.ESDALReference
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                        Contact Name
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.HaulierContactName
+                    </div>
+                </div>
+                @if (portalType == 696007 && 
+                Model.IndemnityConfirmation == 0 &&
+                !string.IsNullOrEmpty(Model.OnBehalf))
+                {
+                    <div class="row pb-3">
+                        <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                            On Behalf of
+                        </div>
+                        <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                            @Model.OnBehalf
+                        </div>
+                    </div>
+                }
+                @if (!string.IsNullOrEmpty(Model.MyReference))
+                {
+                    if (Model.MyReference != "")
+                    {
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                                Haulier Reference
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.MyReference
+                            </div>
+                        </div>
+                    }
+                }
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                        Haulier Name
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.ClientName
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                        Haulier Address
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+
+                        @Model.HaulierAddress1<br />
+                        @Model.HaulierAddress2<br />
+                        @Model.HaulierAddress3<br />
+                        @Model.HaulierAddress4<br />
+                        @Model.HaulierAddress5
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.OtherContactDetails))
+                {
+                    if (Model.OtherContactDetails != "")
+                    {
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                                Other Contact Details
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.OtherContactDetails
+                            </div>
+                        </div>
+                    }
+                }
+
+                @if (!string.IsNullOrEmpty(Model.VR1Number))
+                {
+                    if (Model.VR1Number != "")
+                    {
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                                VR-1 Number
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.VR1Number
+                            </div>
+                        </div>
+                    }
+                }
+                @if (!string.IsNullOrEmpty(Model.SONumbers))
+                {
+                    if (Model.SONumbers != "")
+                    {
+                        <div class="row pb-3">
+                            <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                                SO Number
+                            </div>
+                            <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                @Model.SONumbers
+                            </div>
+                        </div>
+                    }
+                }
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                        Load
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.LoadDescription
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                        Movement Start Date/Time
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @{
+                            var fdt = Model.FromDateTime;
+                            if (fdt != "")
+                            {
+                                @Model.FromDateTime
+                            }
+                            else
+                            {
+                                <span class="spantd">-</span>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                        Movement End Date/Time
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @{
+                            var tdt = Model.ToDateTime;
+                            if (tdt != "")
+                            {
+                                @Model.ToDateTime
+                            }
+                            else
+                            {
+                                <span class="spantd">-</span>
+                            }
+                        }
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                        From
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.FromAddress
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                        To
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.ToAddress
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                        Route Description
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.GRouteDescription
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.DescriptionReturnLeg))
+                {
+                    <div class="row pb-3">
+                        <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                            Return Leg Description
+                        </div>
+                        <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                            @Model.DescriptionReturnLeg
+                        </div>
+                    </div>
+                }
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                    </div>
+                    <div class="col-sm-2 col-md-3 col-lg-4 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        <div class="button main-button mr-0">
+                            <button id="verifyRoute" class="btn btn-outline-primary btn-normal pl-6 pr-6" type="button">
+                                VERIFY ROUTE
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                        Vehicle Classification
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.Classification
+                    </div>
+                </div>
+            </div>
+            <div class="wd40">
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                        Email Address
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.Email
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                        Telephone No
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.Telephone
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-4 text-normal" style="white-space:nowrap;">
+                        Operator Licence No.
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.HaulierOprLicence
+                    </div>
+                </div>
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                        No. of Movements
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.NoOfMovements
+                    </div>
+                </div>
+                @if (portalType == 696007)
+                {
+
+                    <div class="row pb-3">
+                        <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                            @Resources.Resource.IndemnityConfirmation
+                        </div>
+                        <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                           
+                           @Model.Indemnity
+                        </div>
+                    </div>
+                }
+
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                        Received On
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.ReceivedOn
+                    </div>
+                </div>
+                @if (!string.IsNullOrEmpty(Model.OnBehalf))
+                {
+                    <div class="row pb-3">
+                        <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                            On Behalf Of
+                        </div>
+                        <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                            @Model.OnBehalf
+                        </div>
+                    </div>
+                }
+                <div class="row pb-3">
+                    <div class="col-sm-4 col-md-6 col-lg-4 text-normal">
+                        Notes
+                    </div>
+                    <div class="col-sm-4 col-md-5 col-lg-6 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                        @Model.Notes
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<input type="hidden" value="@ViewBag.HauliEmail" id="hf_HauliEmail" name="hf_HauliEmail" />
+@*<script src="~/Scripts/NENNotification/Display_NENotification.js?V@(Session["ProjectVersion"])"></script>*@

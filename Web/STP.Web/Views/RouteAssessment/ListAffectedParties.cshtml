@@ -1,0 +1,44 @@
+@*<link href="~/Content/Style/Common/alertbox.css" rel="stylesheet" />
+<link href="~/Content/Style/Common/style.css" rel="stylesheet" />*@
+@*<link href="~/Content/Style/Common/grid_css.css" rel="stylesheet" />*@
+
+<div id="AffectedParties">
+    <div>
+        @{
+            if (ViewBag.AffectedParties == null || ViewBag.AffectedParties == "")
+            {
+                <div class="cardSOA1 mt-0" style="text-align:center;">
+                    <h6 class="text-color3 stHeading1 m-0">No affected parties</h6>
+                </div>
+            }
+            else
+            {
+                
+                    <div class="error-message" style="padding-bottom: 1%;">
+                        <div class="card ml-0" style="width: 100%;">
+                            <div class="row pt-2 pb-2" style="flex-wrap: unset; background-color: #ffe6e6;">
+                                <div class="err-msg">
+                                    <img src="~/Content/assets/images/warning-icon2.svg" alt="vehicle-2"
+                                         class="mr-2" width="20" style="text-align: initial;">
+                                    <span class="edit-normal pr-2" style="font-size:small">
+                                        ESDAL does not check the height of the load in relation to overhead
+                                        cables belonging to power and telecommunication companies.<br> Please confirm the suitability of a route with these parties
+                                        directly if you are moving a high load.
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                
+                <div>@Html.Raw(ViewBag.AffectedParties) </div>
+            }
+        }
+    </div>
+</div>
+
+@{
+<input type="hidden" value="@ViewBag.AnalysisId" id="hf_AnalysisId" name="hf_AnalysisId" />
+<input type="hidden" value="@ViewBag.NotifId" id="hf_NotifId" name="hf_NotifId" />
+<input type="hidden" value="@ViewBag.SortSideCall" id="hf_SortSideCall" name="hf_SortSideCall" />
+}
+<script src="~/Scripts/CspJs/RouteAssessment/ListAffectedParties.js?V@(Session["ProjectVersion"])"></script>

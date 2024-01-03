@@ -1,0 +1,54 @@
+@{
+    int userTypeID = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        userTypeID = sessionValues.UserTypeId;
+    }
+}
+
+
+<div id="progressBar" class="row">
+    <div class="col-lg-4 col-md-12 col-sm-12 pt-5 title">
+        <span id="plan_movement_hdng">PLAN MOVEMENT</span><br>
+        <div class="title" id="current_step">Select Vehicle</div>
+    </div>
+    <div class="col-sm-12 col-md-12 col-xs-12
+                    col-lg-8 pt-3">
+        <div>
+            <form id="form">
+                <ul id="progressbar">
+                    @if (userTypeID == 696008)
+                    {
+                        <li class="active" data-step="1" id="step1">
+                            <p>Haulier Details</p>
+                        </li>
+                        <li  data-step="2" id="step2">
+                            <p>Select Vehicle</p>
+                        </li>
+                        <li  data-step="3" id="step3"><p>Vehicle Details</p></li>
+                        <li  data-step="4" id="step4"><p>Movement Type</p></li>
+                        <li  data-step="5" id="step5"><p>Route</p></li>
+
+                        <li  data-step="6" id="step6"><p>Supplementary Information</p></li>
+                        <li  data-step="7" id="step7"><p>Overview</p></li>
+                    }
+                    else
+                    {
+                        <li class="active"  data-step="1" id="step1">
+                            <p>Select Vehicle</p>
+                        </li>
+                        <li  data-step="2" id="step2"><p>Vehicle Details</p></li>
+                        <li  data-step="3" id="step3"><p>Movement Type</p></li>
+                        <li  data-step="4" id="step4"><p>Route</p></li>
+                        <li  data-step="5" id="step5"><p>Supplementary Information</p></li>
+                        <li  data-step="6" id="step6"><p>Overview</p></li>
+                    }
+
+                </ul>
+            </form>
+        </div>
+    </div>
+</div>
+
+@Html.Hidden("hf_UserTypeID", userTypeID)

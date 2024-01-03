@@ -1,0 +1,286 @@
+@model STP.Domain.SecurityAndUsers.HaulierContactModel
+@using System.Web.Optimization
+@using STP.Domain
+@{
+    var haulierContactID = Request.QueryString["HaulierContactId"];
+    string mode = string.Empty;
+    bool nonesdalcontact = ViewBag.NonEsdalContact;
+    if (!string.IsNullOrEmpty(Convert.ToString(Request.QueryString["mode"])))
+    {
+        mode = Request.QueryString["mode"];
+    }
+    bool isAdmin = false;
+    int portalType = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var user = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        portalType = user.UserTypeId;
+        if (portalType == 696006 || user.IsAdmin == 1)
+        {
+            isAdmin = true;
+        }
+    }
+}
+@{
+    Layout = null;
+}
+@*@{
+  string hidden = ViewBag.AnalysisId;
+}*@
+
+@Html.Hidden("hf_NonEsdalContact", nonesdalcontact)
+@*@Html.Hidden("hidden_and",hidden)*@
+@*<input type="hidden" value="@ViewBag.AnalysisId" id="hidden_and" name="hidden_and" />*@
+<style>
+    #Fax {
+        display: none;
+    }
+
+    .hideValidationMsg {
+        display: none;
+    }
+
+    .showValidationMsg {
+        display: inline;
+        color: #dc3545;
+        font-weight: 100;
+        float: left;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: .875em;
+    }
+
+    .field-validation-error {
+        color: #dc3545;
+        font-weight: 100;
+        float: left;
+        width: 100%;
+        margin-top: 0.25rem;
+        font-size: .875em;
+    }
+
+    .field-validation-valid {
+        display: none;
+    }
+</style>
+
+@using (Html.BeginForm())
+{
+
+    if (mode != "Create")
+    {
+        <td class="pt-6 pb-6" colspan="4" style="background-color: white !important;">
+            @Html.HiddenFor(model => model.HaulierContactId, new { Id = "HAULIER_CONTACT_ID" })
+            <div id="desc-entry" style="width: 100%;">
+                <div class="pb-3 wd-align">
+                    <div class="text-normal wd20">
+                        Contact Name *
+                    </div>
+                    <div class="wd20">
+                        @Html.EditorFor(model => model.Name, "NAME")
+                        @Html.ValidationMessageFor(model => model.Name)
+                        <span id="nameValidate" class="hideValidationMsg">Name is required</span>
+                    </div>
+                </div>
+                <div class="pb-3 wd-align">
+                    <div class="text-normal wd20">
+                        Organisation Name*
+                    </div>
+                    <div class="wd20">
+                        @Html.HiddenFor(model => model.OrganisationId, new { Id = "ORGANISATION_ID" })
+
+                        @Html.EditorFor(model => model.OrganisationName, "ORGANISATION_NAME")
+                        @Html.ValidationMessageFor(model => model.OrganisationName)
+                        <span id="orgNameValidate" class="hideValidationMsg">Organisation is required</span>
+                    </div>
+
+                </div>
+                @*<div class="pb-3 wd-align">
+                    <div class="text-normal wd20">
+                        Notification method*
+                    </div>
+                    <div class="wd20" id="table-head">
+                        <div class="form-check ml-2">
+                            <span>
+                                <input type="hidden" id="CommunicationMethod" value="@Model.CommunicationMethod" />
+
+                                <input type="hidden" id="CommunicationMethodName" value="@Model.CommunicationMethodName" />
+
+                                <input type="hidden" id="CommunicationMethodType" value="@Model.CommunicationMethodType" />
+                                <input class="form-check-input" type="radio" name="CommunicationMethod" value="fax" id="MethodByFax">
+                                <label class="form-check-label label1 text-color3" for="flexRadioDefault1">
+                                    By Fax
+                                </label>
+                            </span>
+                        </div>
+                        <div class="form-check ml-2">
+                            <span>
+                                <input class="form-check-input" type="radio" name="CommunicationMethod" value="email html" id="MethodByEmail" checked>
+                                <label class="form-check-label label1 text-color3" for="flexRadioDefault1">
+                                    By Email
+                                </label>
+                            </span>
+                        </div>
+                    </div>
+                </div>*@
+                <div class="pb-3 wd-align">
+                    <div class="text-normal wd20">
+                         Email*
+                    </div>
+                    <div class="wd20">
+                        @Html.HiddenFor(model => model.Fax, new { Id = "hdnFax" })
+                        @Html.HiddenFor(model => model.Email, new { Id = "hdnEmail" })
+
+                        @Html.EditorFor(model => model.Fax, "Fax")
+                        @Html.EditorFor(model => model.Email, "Email")
+                        <span id="emailFaxValidate" class="error invalid-feedback" style="display:none"></span>
+                    </div>
+
+                </div>
+                @if (ViewBag.NonEsdalContact)
+                {
+                    <div class="row pb-2">
+
+                        <div class="col-sm-4 col-md-6 col-lg-4  text-normal text-align-start">
+                            Add to haulier address book
+                        </div>
+                        <div class="col-7 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                            <input type="checkbox" id="chk_add_to_haul" name="addToHaulier" value="false" />
+                        </div>
+                    </div>
+                }
+                <div class="pb-3 wd-align">
+                    <div class="text-normal wd20">
+                        <!-- Is valid -->
+                    </div>
+                    <div class="wd20">
+
+                        <button id="manage-address" class="btn outline-btn-primary SOAButtonHelper ml-2" type="button">SAVE</button>
+                    </div>
+                    
+                </div>
+                <input type="hidden" id="ValidationHideFlag" value="" />
+            </div>
+        </td>
+
+    }
+    else
+    {
+        <table>
+            <tr class="bgColor1">
+                <td class="pt-6 pb-6" colspan="4" style="background-color: white !important;">
+                    @Html.HiddenFor(model => model.HaulierContactId, new { Id = "HAULIER_CONTACT_ID" })
+                    <div id="desc-entry" style="width: 100%;">
+                        <div class="pb-3 wd-align">
+                            <div class="text-normal wd20">
+                                Contact Name *
+                            </div>
+                            <div class="wd20">
+                                @Html.EditorFor(model => model.Name, "NAME")
+                                @Html.ValidationMessageFor(model => model.Name)
+                                <span id="nameValidate" class="hideValidationMsg">Name is required</span>
+                            </div>
+                        </div>
+                        <div class="pb-3 wd-align">
+                            <div class="text-normal wd20">
+                                Organisation Name*
+                            </div>
+                            <div class="wd20" >
+                                @Html.HiddenFor(model => model.OrganisationId, new { Id = "ORGANISATION_ID" })
+                                @Html.EditorFor(model => model.OrganisationName, "ORGANISATION_NAME")
+                                @Html.ValidationMessageFor(model => model.OrganisationName)
+                                <span id="orgNameValidate" class="hideValidationMsg">Organisation is required</span>
+                            </div>
+
+                        </div>
+                        @*<div class="pb-3 wd-align">
+                            <div class="text-normal wd20">
+                                Notification Method*
+                            </div>
+                            <div class="wd20" id="table-head">
+                                <div class="form-check ml-2">
+                                    <span>
+                                        <input type="hidden" id="CommunicationMethod" value="@Model.CommunicationMethod" />
+
+                                        <input type="hidden" id="CommunicationMethodName" value="@Model.CommunicationMethodName" />
+
+                                        <input type="hidden" id="CommunicationMethodType" value="@Model.CommunicationMethodType" />
+                                        <input class="form-check-input" type="radio" name="CommunicationMethod" value="fax" id="MethodByFax">
+                                        <label class="form-check-label label1 text-color3" for="flexRadioDefault1">
+                                            By Fax
+                                        </label>
+                                    </span>
+                                </div>
+                                <div class="form-check ml-2">
+                                    <span>
+                                        <input class="form-check-input" type="radio" name="CommunicationMethod" value="email html" id="MethodByEmail" checked>
+                                        <label class="form-check-label label1 text-color3" for="flexRadioDefault1">
+                                            By Email
+                                        </label>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>*@
+                        <div class="pb-3 wd-align">
+                            <div class="text-normal wd20">
+                               Email*
+                            </div>
+                            <div class="wd20">
+                                @Html.HiddenFor(model => model.Fax, new { Id = "hdnFax" })
+                                @Html.HiddenFor(model => model.Email, new { Id = "hdnEmail" })
+                                @Html.EditorFor(model => model.Fax, "Fax")
+                                @Html.EditorFor(model => model.Email, "Email")
+                               
+                        
+                                <span id="emailFaxValidate" class="error invalid-feedback" style="display:none"></span>
+                            </div>
+
+                        </div>
+                        @if (ViewBag.NonEsdalContact)
+                        {
+                            <div class="row pb-2">
+
+                                <div class="col-sm-4 col-md-6 col-lg-4  text-normal text-align-start">
+                                    Add to haulier address book
+                                </div>
+                                <div class="col-7 input-field edit-normal pt-0  pb-0 pl-0 pr-0">
+                                    <input type="checkbox" id="chk_add_to_haul" name="addToHaulier" value="false" />
+                                </div>
+                            </div>
+                        }
+                        <div class="pb-3 wd-align">
+                            <div class="text-normal wd20">
+                                <!-- Is valid -->
+                            </div>
+                            <div class="wd20">
+
+                                <button class="btn outline-btn-primary SOAButtonHelper" id="manage-address" type="button">SAVE</button>
+                            </div>
+                            <div class="wd20">
+                                <button class="btn outline-btn-primary SOAButtonHelper ml2" id="back-address" type="button">BACK</button>
+                            </div>
+                        </div>
+                        <!-- <div class="flexer justify-content-center mt-5"
+                            style="margin-left: auto;margin-right: auto;">
+                            <button class="btn outline-btn-primary SOAButtonHelper mr-2">RESET</button>
+
+                        </div> -->
+                    </div>
+
+                </td>
+                @if (mode != "Create")
+                {
+                    <td style="background-color: white !important; vertical-align: baseline; cursor: pointer" id="description1" data-HaulierContactId="@Model.HaulierContactId">
+
+                        <img src="~/Content/assets/images/up-chevlon-filter.svg" width="20">
+                    </td>
+                }
+                <input type="hidden" id="ValidationHideFlag" value="" />
+            </tr>
+        </table>
+    }
+}
+
+@*<input type="hidden" value="@ViewBag.NonEsdalContact" id="hf_NonEsdalContact" name="hf_NonEsdalContact" />*@
+<input type="hidden" value="@ViewBag.mode" id="hf_mode" name="hf_mode" />
+

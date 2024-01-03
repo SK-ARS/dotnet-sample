@@ -1,0 +1,31 @@
+﻿@using STP.Common.Enums
+@using STP.Common.Constants
+@{
+    var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+    var userName = string.Empty;
+    var portalType = 0;
+
+
+    if (portalType == UserType.Admin)
+    {
+    }
+    else if (portalType == UserType.Haulier)
+    {
+    }
+    else if (portalType == UserType.PoliceALO)
+    {
+    }
+    else if (portalType == UserType.SOA)
+    {
+    }
+    else if (portalType == UserType.Sort)
+    {
+    }
+}
+@{
+    bool CheckCUrrentPage(params int[] MenuItemVal)
+    {
+        var currentPage = ViewBag.PageMenuName != null ? Convert.ToInt32(ViewBag.PageMenuName) : 0;
+        return MenuItemVal != null && MenuItemVal.Any() && MenuItemVal.Any(x => x == currentPage);
+    }
+}

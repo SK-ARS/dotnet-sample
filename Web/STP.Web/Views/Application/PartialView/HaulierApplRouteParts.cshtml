@@ -1,0 +1,300 @@
+@using System.Web.Optimization
+@using STP.Domain
+@model List<STP.Domain.Applications.AffectedStructures>
+
+@{
+    ViewBag.Title = "HaulierApplRouteParts";
+}
+@{
+    int RevisionId = 0;
+
+    if (ViewBag.RevisionId != null)
+    {
+        RevisionId = ViewBag.RevisionId;
+    }
+    int VersionID = 0;
+    if (ViewBag.VersionId != null)
+    {
+        VersionID = ViewBag.VersionId;
+    }
+
+}
+
+@Html.Hidden("RevisionID", RevisionId)
+@Html.Hidden("VersionID", VersionID)
+
+
+
+@*<link href="~/Content/Style/Common/alertbox.css" rel="stylesheet" />
+    <link href="~/Content/Style/Common/grid_css.css" rel="stylesheet" />*@
+<style>
+    .main-sort-content #vehicle-table {
+        margin-top: 0;
+        margin-bottom: 0;
+    }
+</style>
+<div class="row" id="AffectedStructures">
+    @if (ViewBag.approute == true)
+    {
+        <h4>Shown below is a summary of the route you previously selected. Click Import to use this route in your current application.</h4>
+    }
+    <div class="row" id="RoutePart">
+        <div class="col-lg-8 col-sm-md-8 col-sm-12">
+            <div class="main-table mt-0 pt-0">
+                <table>
+                    <tr>
+                        @if (ViewBag.approute == true)
+                        {
+                            <th>Route parts</th>
+                        }
+                        else
+                        {
+                            <th>
+                                Route parts (submitted by Haulier)<span>
+                                     <img src="~/Content/assets/images/down-chevlon.svg" width="15" height="6">
+                                </span>
+                            </th>
+                        }
+                        <th>Route Part Name</th>
+                        <th>Route type</th>
+                        <th></th>
+                    </tr>
+                    @{
+                        var i = 0;
+                        if (Model.Count != 0)
+                        {
+                            foreach (var item in Model)
+                            {
+                                if (item.RouteType != "")
+                                {
+                                    i++;
+                                    <tr class="bgColor3">
+                                        <td class="text-color1">Route part @item.PartNo (@item.PartName)</td>
+                                        <td class="text-color1">@item.PartName</td>
+                                        <td class="text-color1">@item.RouteType</td>
+
+                                        <td class="text-color1">
+                                            <label id="partDe" style="display:none">@item.PartNarrative</label>
+                                            @{
+                                                if (ViewBag.soapp == true)
+                                                {
+                                                    if (Model.Count == 1)
+                                                    {
+                                                        <input type="radio" name="chk" class="form-check-input getsoapp" value="@item.PartId" id="radio_chk" arg1="@item.PartId" arg2="@item.RouteType"/>
+                                                        ViewBag.PartId = @item.PartId;
+                                                    }
+                                                    else
+                                                    {
+                                                        <input type="radio" name="chk" class="form-check-input getsoapp" value="@item.PartId" id="check_@i" arg1="@item.PartId" arg2="@item.RouteType" />
+                                                    }
+                                                }
+
+                                                else if (ViewBag.approute == true)
+                                                {
+                                                    if (Model.Count == 1)
+                                                    {
+                                                        <span data-name="@item.PartName" id="btnrouteimport_@item.PartId"></span>
+                                                        <input type="radio" id="radio_chk" class="form-check-input displaysoroute" name="chk" value="@item.PartId" data-type="@item.RouteType" arg1="@item.PartId" arg2="@item.RouteType"/>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span data-name="@item.PartName" id="btnrouteimport_@item.PartId"></span>
+                                                        <input type="radio" name="chk" class="form-check-input  displaysoroute" value="@item.PartId" id="check_@i" arg1="@item.PartId" arg2="@item.RouteType" />
+                                                    }
+                                                }
+                                                else if (ViewBag.VrOneRoute != null && ViewBag.VrOneRoute == true)
+                                                {
+                                                    if (Model.Count == 1)
+                                                    {
+                                                        <input type="radio" class="form-check-input getvr1routes" name="chk" value="@item.PartId" arg1="@item.PartId" id="radio_@item.PartId" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <input type="radio" name="chk" class="form-check-input getvr1route" value="@item.PartId" arg1="@item.PartId" id="radio_@item.PartId" />
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (ViewBag.SORTVehRoute == true)
+                                                    {
+                                                        if (Model.Count == 1)
+                                                        {
+                                                            <input type="radio" id="radio_@item.PartId" name="chk" class="form-check-input getsortroute" value="@item.PartId" data-type="@item.RouteType" arg1="@item.PartId" arg2="@item.RouteType" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="radio" name="chk" class="form-check-input getsortroute" value="@item.PartId" id="radio_@item.PartId" data-type="@item.RouteType" arg1="@item.PartId" arg2="@item.RouteType" />
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        if (Model.Count == 1)
+                                                        {
+                                                            <input type="radio" id="radio_@item.PartId" class="form-check-input getting" name="chk" value="@item.PartId" arg1="@item.PartId" arg2="@item.RouteType" data-type="@item.RouteType" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="radio" class="form-check-input" name="chk" value="@item.PartId" id="radio_@item.PartId" data-type="@item.RouteType" />
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <tr class="bgColor3">
+                                <td class="text-color1"> Route part for this vehicle configuration is not available </td>
+                                <td class="text-color1"></td>
+                                <td class="text-color1"></td>
+                                <td class="text-color1"></td>
+                            </tr>
+                        }
+                    }
+                </table>
+            </div>
+        </div>
+        <div class="col-lg-4 col-sm-md-4 col-sm-12" id="ShowDetail1" style="display:none">
+            <div class="bgColor3 pl-6 pr-6 pt-2 pb-2">
+                <div class="details2 pb-1">
+                    Route
+                </div>
+                <div class="row pb-1">
+                    <div class="col-lg-4 col-sm-12 col-md-6 text-normal">
+                        Starting
+                    </div>
+                    <div class="col-lg-8 col-sm-12 col-md-6 edit-normal">
+                        <span id="Starting1"></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-sm-12 col-md-6 text-normal">
+                        Via Waypoint
+                    </div>
+                    <div class="col-lg-8 col-sm-12 col-md-6 edit-normal">
+                        <table id="Tabvia1" class="table"></table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-4 col-sm-12 col-md-6 text-normal">
+                        Ending
+                    </div>
+                    <div class="col-lg-8 col-sm-12 col-md-6 edit-normal">
+                        <span id="Ending1"></span>
+                    </div>
+                </div>
+
+
+                <div class="row" id="TRbtnBackToRouteList1">
+                    <div class="col-lg-4 col-sm-12 col-md-6 text-normal">
+                        <div id="TDbtnBackToRouteList1"></div>
+                    </div>
+                    <div class="col-lg-5 col-sm-12 col-md-6 edit-normal">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (ViewBag.VrOneRoute != null && ViewBag.VrOneRoute == true)
+        {
+            <button class="btn_reg_back next btngrad btnrds btnbdr" id="btn_cancel" aria-hidden="true" data-icon="" type="button">Back</button>
+        }
+    </div>
+    <div class="row">
+        <div class="button main-button mr-1 ml-3 " style="width:25%;padding-bottom:2px">
+            <button class="btn btn-outline-primary btn-normal" role="button" aria-pressed="true" id="btnmovsaveannotation" style="display:none">
+                Save Annotation
+            </button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-12 col-sm-12 col-md-6 text-normal">
+            <div id="map" style="height: 590px;" class=""></div>
+        </div>
+        <div class="col-lg-5 col-sm-12 col-md-6 edit-normal">
+        </div>
+    </div>
+    <div class="row" id="trVehicle_sort">
+        <div class="col-lg-12 col-sm-12 col-md-6 text-normal">
+            <div id="Vehicle_sort" style="display:none"></div>
+        </div>
+    </div>
+    <div id="StruRelatedMov"></div>
+    <div id="Suggestedroute1" style="display:none">
+        <table class="margin0px">
+            <tr>
+                <th class="headgrad">Suggested route</th>
+                <th class="headgrad"></th>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    No description entered
+                </td>
+            </tr>
+        </table>
+
+    </div><br />
+    <div id="PartDetail1"></div>
+</div>
+
+@if (ViewBag.VersionStatus == 305002 || ViewBag.VersionStatus == 305003 || ViewBag.VersionStatus == 305004 || ViewBag.VersionStatus == 305005 || ViewBag.VersionStatus == 305006)
+{
+    <div>
+        <table class="margin0px">
+            <tr>
+
+                <th class="headgrad">Route parts (Submitted by SORT)</th>
+                <th class="headgrad">Route type</th>
+                <th class="headgrad"></th>
+            </tr>
+            @{
+                if (Model.Count != 0)
+                {
+                    foreach (var item in Model)
+                    {
+                        if (item.RouteType == "")
+                        {
+                            <tr>
+                                <td>Route part @item.PartNo (@item.PartName)</td>
+
+                                <td>@item.RouteType</td>
+                                <td><input type="radio" class="getsoapp" id="radio-@item.PartId" arg1="@item.PartId" arg2="@item.RouteType" name="chk" value="@item.PartId" /></td>
+                            </tr>
+                        }
+                    }
+                }
+            }
+        </table>
+    </div>
+}
+<br />
+<br />
+<div id="routelist"></div>
+<div id="ApplicationPartsForSORT" style="display:none;"></div>
+<div id="div_vr_route_form" style="display:none">
+@using (Ajax.BeginForm("VROneApplicationImport", "Application", new { }, new AjaxOptions { OnBegin = "startAnimation", OnComplete = "stopAnimation", OnSuccess = "LoadOtherMovements" }, new { id = "form_vrone_route_parts" }))
+{
+    @Html.Hidden("partId", null, new { id = "part_Id" })
+}
+</div>
+
+<link href="~/Content/Style/Common/alertbox.css" rel="stylesheet" />
+
+@{
+    <input type="hidden" value="@ViewBag.soap" id="hf_soap" name="hf_soap" />
+    <input type="hidden" value="@ViewBag.soapp" id="hf_soapp" name="hf_soapp" />
+    <input type="hidden" value="@ViewBag.VrOneRout" id="hf_VrOneRout" name="hf_VrOneRout" />
+    <input type="hidden" value="@ViewBag.approute" id="hf_approute" name="hf_approute" />
+    <input type="hidden" value="@ViewBag.SORTVehRoute" id="hf_SORTVehRoute" name="hf_SORTVehRoute" />
+    <input type="hidden" value="@ViewBag.NotifShowVe" id="hf_NotifShowVe" name="hf_NotifShowVe" />
+    <input type="hidden" value="@ViewBag.RoutePartId" id="hf_Single_Route_id" name="hf_NotifShowVe" />
+    @Html.Hidden("hf_ModelCount", Model.Count)
+    @Html.Hidden("hf_routeType", Model[0].RouteType)
+    @Html.Hidden("hf_sessionRouteFlag", Session["RouteFlag"])
+}
+@*<script src="~/Scripts/Application/HaulierApplRouteParts.js?V@(Session["ProjectVersion"])"></script>*@
+

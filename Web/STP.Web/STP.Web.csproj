@@ -1,0 +1,2100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\Solution\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\..\Solution\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A6E21194-8464-44DF-B189-E9FD2B8B5009}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>STP.Web</RootNamespace>
+    <AssemblyName>STP.Web</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <MvcBuildViews>false</MvcBuildViews>
+    <UseIISExpress>true</UseIISExpress>
+    <Use64BitIISExpress />
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <WebGreaseLibPath>..\..\Solution\packages\WebGrease.1.5.2\lib</WebGreaseLibPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto, Version=1.8.9.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
+      <HintPath>..\..\Solution\packages\BouncyCastle.1.8.9\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetOpenAuth.AspNet">
+      <HintPath>..\..\Solution\packages\DotNetOpenAuth.AspNet.4.3.3.13295\lib\net45-full\DotNetOpenAuth.AspNet.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.3, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\iTextSharp.5.5.13.3\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xmlworker, Version=5.5.13.3, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\itextsharp.xmlworker.5.5.13.3\lib\itextsharp.xmlworker.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.4.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.SignalR.Core.2.4.1\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.SystemWeb, Version=2.4.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.SignalR.SystemWeb.2.4.1\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
+      <HintPath>..\..\Solution\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Owin, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.Owin.4.2.2\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Diagnostics, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.Owin.Diagnostics.2.1.0\lib\net40\Microsoft.Owin.Diagnostics.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.HttpListener, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.Owin.Host.HttpListener.2.1.0\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.SystemWeb, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.Owin.Host.SystemWeb.4.2.2\lib\net45\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Hosting, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.Owin.Hosting.2.1.0\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.Owin.Security.2.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList.Mvc, Version=4.5.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\PagedList.Mvc.4.5.0.0\lib\net40\PagedList.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="Rotativa, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Rotativa.1.7.3\lib\net461\Rotativa.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http">
+      <HintPath>..\..\Solution\packages\Microsoft.Net.Http.2.0.20710.0\lib\net40\System.Net.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Net.Http.WebRequest">
+      <HintPath>..\..\Solution\packages\Microsoft.Net.Http.2.0.20710.0\lib\net40\System.Net.Http.WebRequest.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Helpers, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.WebApi.Core.5.2.7\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\..\Solution\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_GlobalResources\Resource.designer.cs">
+      <DependentUpon>Resource.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+    </Compile>
+    <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\FilterConfig.cs" />
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="App_Start\URIHandler.cs" />
+    <Compile Include="Content\UIHelpers\Movements\MovementInbox.cs" />
+    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AddressBookController.cs" />
+    <Compile Include="Controllers\AnnotationController.cs" />
+    <Compile Include="Controllers\ApplicationController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\BrokenRoutesReplannerController.cs" />
+    <Compile Include="Controllers\ConstraintController.cs" />
+    <Compile Include="Controllers\ContactController.cs" />
+    <Compile Include="Controllers\ContentsController.cs" />
+    <Compile Include="Controllers\DispensationController.cs" />
+    <Compile Include="Controllers\DistributionStatusController.cs" />
+    <Compile Include="Controllers\DocumentController.cs" />
+    <Compile Include="Controllers\ErrorController.cs" />
+    <Compile Include="Controllers\FeedbackController.cs" />
+    <Compile Include="Controllers\GenericController.cs" />
+    <Compile Include="Controllers\HealthCheckController.cs" />
+    <Compile Include="Controllers\HelpdeskController.cs" />
+    <Compile Include="Controllers\HolidaysController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\InformationController.cs" />
+    <Compile Include="Controllers\LoggingController.cs" />
+    <Compile Include="Controllers\MovementsController.cs" />
+    <Compile Include="Controllers\NENNotificationController.cs" />
+    <Compile Include="Controllers\NotificationController.cs" />
+    <Compile Include="Controllers\OrganisationController.cs" />
+    <Compile Include="Controllers\QASController.cs" />
+    <Compile Include="Controllers\ReportController.cs" />
+    <Compile Include="Controllers\ReportDocumentController.cs" />
+    <Compile Include="Controllers\RoadDelegationController.cs" />
+    <Compile Include="Controllers\RoadOwnershipController.cs" />
+    <Compile Include="Controllers\RouteAssessmentController.cs" />
+    <Compile Include="Controllers\RoutePlannerInterfaceController.cs" />
+    <Compile Include="Controllers\RoutesController.cs" />
+    <Compile Include="Controllers\SORTApplicationController.cs" />
+    <Compile Include="Controllers\StructuresController.cs" />
+    <Compile Include="Controllers\UsersController.cs" />
+    <Compile Include="Controllers\VehicleConfigController.cs" />
+    <Compile Include="Controllers\VehicleController.cs" />
+    <Compile Include="Controllers\WorkflowController.cs" />
+    <Compile Include="Document\GenerateXML.cs" />
+    <Compile Include="Document\MimeType.cs" />
+    <Compile Include="Filters\AntiForgeryCookie.cs" />
+    <Compile Include="Filters\AntiForgeryTokenValidate.cs" />
+    <Compile Include="Filters\AuthorizeUser.cs" />
+    <Compile Include="Filters\ContentClearing.cs" />
+    <Compile Include="Filters\ContentSecurityPolicy.cs" />
+    <Compile Include="Filters\SessionValidate.cs" />
+    <Compile Include="Filters\UrlValidate.cs" />
+    <Compile Include="General\AES.cs" />
+    <Compile Include="General\ApplicationGroupingFunction.cs" />
+    <Compile Include="General\AuditLog.cs" />
+    <Compile Include="General\RazorViewToString.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\EncryptionUtility.cs" />
+    <Compile Include="Helpers\NonceHelper.cs" />
+    <Compile Include="Helpers\PasswordGenerator.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Startup.cs" />
+    <Compile Include="Views\Custom\CustomControls.cs" />
+    <Compile Include="WorkflowProvider\ApplicationNotificationManagement.cs" />
+    <Compile Include="WorkflowProvider\FleetManagement.cs" />
+    <Compile Include="WorkflowProvider\GlobalSessionValidate.cs" />
+    <Compile Include="WorkflowProvider\SessionData.cs" />
+    <Compile Include="WorkflowProvider\SOAPoliceNotificationManagement.cs" />
+    <Compile Include="WorkflowProvider\SORTVR1ApplicationManagement.cs" />
+    <Compile Include="WorkflowProvider\SORTSOApplicationManagement.cs" />
+    <Compile Include="WorkflowProvider\WorkflowTaskFinder.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="App_GlobalResources\Resource.resx">
+      <Generator>GlobalResourceProxyGenerator</Generator>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Content\assets\esdal-logo.png" />
+    <Content Include="Content\assets\favicon-16x16.png" />
+    <Content Include="Content\assets\favicon-32x32.png" />
+    <Content Include="Content\assets\favicon.ico" />
+    <Content Include="Content\assets\Group 448.svg" />
+    <Content Include="Content\assets\Icons\!.svg" />
+    <Content Include="Content\assets\Icons\accepted.svg" />
+    <Content Include="Content\assets\Icons\Active favourite.svg" />
+    <Content Include="Content\assets\Icons\active-favourite.svg" />
+    <Content Include="Content\assets\Icons\Add annotation.svg" />
+    <Content Include="Content\assets\Icons\Add stopping point.svg" />
+    <Content Include="Content\assets\Icons\Add waypoint.svg" />
+    <Content Include="Content\assets\Icons\add-annotation.svg" />
+    <Content Include="Content\assets\Icons\add-stopping-point.svg" />
+    <Content Include="Content\assets\Icons\add-waypoint.svg" />
+    <Content Include="Content\assets\Icons\agree.svg" />
+    <Content Include="Content\assets\Icons\Agreed re-proposed.svg" />
+    <Content Include="Content\assets\Icons\agreed-recleared.svg" />
+    <Content Include="Content\assets\Icons\agreed-reproposed.svg" />
+    <Content Include="Content\assets\Icons\agreed.svg" />
+    <Content Include="Content\assets\Icons\allocate.svg" />
+    <Content Include="Content\assets\Icons\alternate-middle-point.svg" />
+    <Content Include="Content\assets\Icons\Alternative endpoint.svg" />
+    <Content Include="Content\assets\Icons\Alternative startpoint.svg" />
+    <Content Include="Content\assets\Icons\alternative-endpoint.svg" />
+    <Content Include="Content\assets\Icons\alternative-startpoint.svg" />
+    <Content Include="Content\assets\Icons\Application declined.svg" />
+    <Content Include="Content\assets\Icons\Application Proposed Route.svg" />
+    <Content Include="Content\assets\Icons\Application received by NH.svg" />
+    <Content Include="Content\assets\Icons\Application Submitted.svg" />
+    <Content Include="Content\assets\Icons\Application Withdrawn.svg" />
+    <Content Include="Content\assets\Icons\application-declined.svg" />
+    <Content Include="Content\assets\Icons\application-proposed-route.svg" />
+    <Content Include="Content\assets\Icons\application-received-by-NH.svg" />
+    <Content Include="Content\assets\Icons\application-submitted.svg" />
+    <Content Include="Content\assets\Icons\application-withdrawn.svg" />
+    <Content Include="Content\assets\Icons\aproved.svg" />
+    <Content Include="Content\assets\Icons\assign-organisation.svg" />
+    <Content Include="Content\assets\Icons\breaking-rule-road.svg" />
+    <Content Include="Content\assets\Icons\Center here.svg" />
+    <Content Include="Content\assets\Icons\center-here.svg" />
+    <Content Include="Content\assets\Icons\Change Password.svg" />
+    <Content Include="Content\assets\Icons\change-password.svg" />
+    <Content Include="Content\assets\Icons\check-as-haulier.svg" />
+    <Content Include="Content\assets\Icons\check-as-police.svg" />
+    <Content Include="Content\assets\Icons\check-as-SOA.svg" />
+    <Content Include="Content\assets\Icons\clone.svg" />
+    <Content Include="Content\assets\Icons\constraint-marginal-suitability.svg" />
+    <Content Include="Content\assets\Icons\constraint-not-suitable.svg" />
+    <Content Include="Content\assets\Icons\constraint-suitable.svg" />
+    <Content Include="Content\assets\Icons\constraint.svg" />
+    <Content Include="Content\assets\Icons\Create area constraint.svg" />
+    <Content Include="Content\assets\Icons\create linear constraint.svg" />
+    <Content Include="Content\assets\Icons\create point constraint.svg" />
+    <Content Include="Content\assets\Icons\create-area-constraint.svg" />
+    <Content Include="Content\assets\Icons\create-linear-constraint.svg" />
+    <Content Include="Content\assets\Icons\create-point-constraint.svg" />
+    <Content Include="Content\assets\Icons\cut-route.svg" />
+    <Content Include="Content\assets\Icons\declined.svg" />
+    <Content Include="Content\assets\Icons\delete-map.svg" />
+    <Content Include="Content\assets\Icons\delete.svg" />
+    <Content Include="Content\assets\Icons\deselect-road-links-by-planning.svg" />
+    <Content Include="Content\assets\Icons\deselect-road-links-by-polygon.svg" />
+    <Content Include="Content\assets\Icons\deselect-road-links-randomly.svg" />
+    <Content Include="Content\assets\Icons\disable user.svg" />
+    <Content Include="Content\assets\Icons\disable-user.svg" />
+    <Content Include="Content\assets\Icons\diverge from.svg" />
+    <Content Include="Content\assets\Icons\drag-route.svg" />
+    <Content Include="Content\assets\Icons\edit.svg" />
+    <Content Include="Content\assets\Icons\Enable user.svg" />
+    <Content Include="Content\assets\Icons\enable-user.svg" />
+    <Content Include="Content\assets\Icons\filter.svg" />
+    <Content Include="Content\assets\Icons\filtered.svg" />
+    <Content Include="Content\assets\Icons\Group 443.svg" />
+    <Content Include="Content\assets\Icons\help.svg" />
+    <Content Include="Content\assets\Icons\Image 32.png" />
+    <Content Include="Content\assets\Icons\Imminent movement.svg" />
+    <Content Include="Content\assets\Icons\imminent-movement.svg" />
+    <Content Include="Content\assets\Icons\import-icon.svg" />
+    <Content Include="Content\assets\Icons\Make Favourite.svg" />
+    <Content Include="Content\assets\Icons\make-favourite.svg" />
+    <Content Include="Content\assets\Icons\Map endpoint.svg" />
+    <Content Include="Content\assets\Icons\Map startpoint.svg" />
+    <Content Include="Content\assets\Icons\map-endpoint-alt.svg" />
+    <Content Include="Content\assets\Icons\map-endpoint.svg" />
+    <Content Include="Content\assets\Icons\map-startpoint-alt.svg" />
+    <Content Include="Content\assets\Icons\map-startpoint-icon.svg" />
+    <Content Include="Content\assets\Icons\map-startpoint.svg" />
+    <Content Include="Content\assets\Icons\map-zoom-in.svg" />
+    <Content Include="Content\assets\Icons\map-zoom-out.svg" />
+    <Content Include="Content\assets\Icons\Marginal suitability.svg" />
+    <Content Include="Content\assets\Icons\marginal-suitability.svg" />
+    <Content Include="Content\assets\Icons\Maximize map.svg" />
+    <Content Include="Content\assets\Icons\maximize-map.svg" />
+    <Content Include="Content\assets\Icons\Merge to.svg" />
+    <Content Include="Content\assets\Icons\Minimise map.svg" />
+    <Content Include="Content\assets\Icons\minimise-map.svg" />
+    <Content Include="Content\assets\Icons\Needs your Attention.svg" />
+    <Content Include="Content\assets\Icons\needs-your-attention.svg" />
+    <Content Include="Content\assets\Icons\new-planned.svg" />
+    <Content Include="Content\assets\Icons\news-announce.svg" />
+    <Content Include="Content\assets\Icons\news-box-icon.svg" />
+    <Content Include="Content\assets\Icons\Not suitable.svg" />
+    <Content Include="Content\assets\Icons\not-suitable.svg" />
+    <Content Include="Content\assets\Icons\Notification Submitted.svg" />
+    <Content Include="Content\assets\Icons\notification-submitted.svg" />
+    <Content Include="Content\assets\Icons\notified.svg" />
+    <Content Include="Content\assets\Icons\notify.svg" />
+    <Content Include="Content\assets\Icons\off-road-route.svg" />
+    <Content Include="Content\assets\Icons\opened.svg" />
+    <Content Include="Content\assets\Icons\overbridge.svg" />
+    <Content Include="Content\assets\Icons\phone-icone.svg" />
+    <Content Include="Content\assets\Icons\phone.svg" />
+    <Content Include="Content\assets\Icons\preferences.svg" />
+    <Content Include="Content\assets\Icons\proposed.svg" />
+    <Content Include="Content\assets\Icons\question-box.svg" />
+    <Content Include="Content\assets\Icons\re-proposed.svg" />
+    <Content Include="Content\assets\Icons\Rectangle 97.svg" />
+    <Content Include="Content\assets\Icons\rejected.svg" />
+    <Content Include="Content\assets\Icons\reNotify.svg" />
+    <Content Include="Content\assets\Icons\reverse-manoeuvre.svg" />
+    <Content Include="Content\assets\Icons\revise.svg" />
+    <Content Include="Content\assets\Icons\revised.svg" />
+    <Content Include="Content\assets\Icons\road-owner-details.svg" />
+    <Content Include="Content\assets\Icons\select-road-links-planning.svg" />
+    <Content Include="Content\assets\Icons\select-road-links-polygon.svg" />
+    <Content Include="Content\assets\Icons\select-road-links-randomly.svg" />
+    <Content Include="Content\assets\Icons\show Road contacts.svg" />
+    <Content Include="Content\assets\Icons\Show structure contacts.svg" />
+    <Content Include="Content\assets\Icons\show-Road-contacts.svg" />
+    <Content Include="Content\assets\Icons\show-structure-contacts.svg" />
+    <Content Include="Content\assets\Icons\So agreed.svg" />
+    <Content Include="Content\assets\Icons\so-agreed.svg" />
+    <Content Include="Content\assets\Icons\Stopping point on map.svg" />
+    <Content Include="Content\assets\Icons\stopping-point-on-map.svg" />
+    <Content Include="Content\assets\Icons\structure-marginal-suitability.svg" />
+    <Content Include="Content\assets\Icons\structure-not-suitable.svg" />
+    <Content Include="Content\assets\Icons\structure-suitable.svg" />
+    <Content Include="Content\assets\Icons\structure-unspecified-caution.svg" />
+    <Content Include="Content\assets\Icons\structure.svg" />
+    <Content Include="Content\assets\Icons\sub delegation.svg" />
+    <Content Include="Content\assets\Icons\suitable.svg" />
+    <Content Include="Content\assets\Icons\transit-box.svg" />
+    <Content Include="Content\assets\Icons\u-turn-manoeuvre.svg" />
+    <Content Include="Content\assets\Icons\unagree.svg" />
+    <Content Include="Content\assets\Icons\unallocated.svg" />
+    <Content Include="Content\assets\Icons\under assesment.svg" />
+    <Content Include="Content\assets\Icons\under-assesment.svg" />
+    <Content Include="Content\assets\Icons\underbridge.svg" />
+    <Content Include="Content\assets\Icons\undo.svg" />
+    <Content Include="Content\assets\Icons\unopened.svg" />
+    <Content Include="Content\assets\Icons\user.svg" />
+    <Content Include="Content\assets\Icons\view-document.svg" />
+    <Content Include="Content\assets\Icons\VR1 Approved.svg" />
+    <Content Include="Content\assets\Icons\VR1-Approved.svg" />
+    <Content Include="Content\assets\Icons\warning-icon3.svg" />
+    <Content Include="Content\assets\Icons\Waypoint on map.svg" />
+    <Content Include="Content\assets\Icons\waypoint-on-map.svg" />
+    <Content Include="Content\assets\Icons\Work in Progress.svg" />
+    <Content Include="Content\assets\Icons\work-in-Progress.svg" />
+    <Content Include="Content\assets\Icons\Zoom in.svg" />
+    <Content Include="Content\assets\Icons\Zoom out.svg" />
+    <Content Include="Content\assets\Icons\zoom-in.svg" />
+    <Content Include="Content\assets\Icons\zoom-out.svg" />
+    <Content Include="Content\assets\images\+.svg" />
+    <Content Include="Content\assets\images\add-icon.svg" />
+    <Content Include="Content\assets\images\agree.svg" />
+    <Content Include="Content\assets\images\amendment.png" />
+    <Content Include="Content\assets\images\anchorpointW.svg" />
+    <Content Include="Content\assets\images\approve-VR1.svg" />
+    <Content Include="Content\assets\images\cancelled.svg" />
+    <Content Include="Content\assets\images\card-swipe-off.svg" />
+    <Content Include="Content\assets\images\card-swipe-on.svg" />
+    <Content Include="Content\assets\images\card-swipe.png" />
+    <Content Include="Content\assets\images\change-password.png" />
+    <Content Include="Content\assets\images\check-box.svg" />
+    <Content Include="Content\assets\images\chevlon-down.svg" />
+    <Content Include="Content\assets\images\chevlon-right.svg" />
+    <Content Include="Content\assets\images\chevlon-up.svg" />
+    <Content Include="Content\assets\images\circular-add-icon.svg" />
+    <Content Include="Content\assets\images\circular-add-icon-whitebackground.svg" />
+    <Content Include="Content\assets\images\circular-cancel-icon.svg" />
+    <Content Include="Content\assets\images\closebtn.png" />
+    <Content Include="Content\assets\images\collab-icon.svg" />
+    <Content Include="Content\assets\images\collapse-arrow.svg" />
+    <Content Include="Content\assets\images\completed.svg" />
+    <Content Include="Content\assets\images\decline.svg" />
+    <Content Include="Content\assets\images\declined.svg" />
+    <Content Include="Content\assets\images\delete-icon.svg" />
+    <Content Include="Content\assets\images\destination-icon.svg" />
+    <Content Include="Content\assets\images\disable-user.svg" />
+    <Content Include="Content\assets\images\dotted.svg" />
+    <Content Include="Content\assets\images\down-chevlon-filter.svg" />
+    <Content Include="Content\assets\images\down-chevlon.svg" />
+    <Content Include="Content\assets\images\edit-icon.svg" />
+    <Content Include="Content\assets\images\enable-user.svg" />
+    <Content Include="Content\assets\images\ESDAL_LogoNH_org1.png" />
+    <Content Include="Content\assets\images\exclamation.svg" />
+    <Content Include="Content\assets\images\file-edit-icon.svg" />
+    <Content Include="Content\assets\images\filter-icon.svg" />
+    <Content Include="Content\assets\images\filter-icon2.svg" />
+    <Content Include="Content\assets\images\filter-table-icon.svg" />
+    <Content Include="Content\assets\images\filtered-icon.svg" />
+    <Content Include="Content\assets\images\folder.svg" />
+    <Content Include="Content\assets\images\generate-VR1.svg" />
+    <Content Include="Content\assets\images\green_messagebox.jpg" />
+    <Content Include="Content\assets\images\Group 1016.svg" />
+    <Content Include="Content\assets\images\Group 1065.svg" />
+    <Content Include="Content\assets\images\Group 1067.svg" />
+    <Content Include="Content\assets\images\Group 1077.svg" />
+    <Content Include="Content\assets\images\Group 1107.svg" />
+    <Content Include="Content\assets\images\Group 1172.svg" />
+    <Content Include="Content\assets\images\Group 1183.svg" />
+    <Content Include="Content\assets\images\Group 1266.svg" />
+    <Content Include="Content\assets\images\Group 1267.svg" />
+    <Content Include="Content\assets\images\Group 1269.svg" />
+    <Content Include="Content\assets\images\Group 1270.svg" />
+    <Content Include="Content\assets\images\Group 1323.svg" />
+    <Content Include="Content\assets\images\Group 133.svg" />
+    <Content Include="Content\assets\images\Group 1355.svg" />
+    <Content Include="Content\assets\images\Group 1360-new.svg" />
+    <Content Include="Content\assets\images\Group 1360.svg" />
+    <Content Include="Content\assets\images\Group 1444.svg" />
+    <Content Include="Content\assets\images\Group 1453.svg" />
+    <Content Include="Content\assets\images\Group 1463.svg" />
+    <Content Include="Content\assets\images\Group 1527.svg" />
+    <Content Include="Content\assets\images\Group 1528.svg" />
+    <Content Include="Content\assets\images\Group 1589.svg" />
+    <Content Include="Content\assets\images\Group 1590.svg" />
+    <Content Include="Content\assets\images\Group 16.svg" />
+    <Content Include="Content\assets\images\Group 1716.svg" />
+    <Content Include="Content\assets\images\Group 1719.svg" />
+    <Content Include="Content\assets\images\Group 1801.svg" />
+    <Content Include="Content\assets\images\Group 1806.svg" />
+    <Content Include="Content\assets\images\Group 1848.svg" />
+    <Content Include="Content\assets\images\Group 264.svg" />
+    <Content Include="Content\assets\images\Group 270.svg" />
+    <Content Include="Content\assets\images\Group 277.svg" />
+    <Content Include="Content\assets\images\Group 279.svg" />
+    <Content Include="Content\assets\images\Group 280.svg" />
+    <Content Include="Content\assets\images\Group 282.svg" />
+    <Content Include="Content\assets\images\Group 284.svg" />
+    <Content Include="Content\assets\images\Group 294.svg" />
+    <Content Include="Content\assets\images\Group 304.svg" />
+    <Content Include="Content\assets\images\Group 4.jpg" />
+    <Content Include="Content\assets\images\Group 467.svg" />
+    <Content Include="Content\assets\images\Group 468.svg" />
+    <Content Include="Content\assets\images\Group 469.svg" />
+    <Content Include="Content\assets\images\Group 52%402x.jpg" />
+    <Content Include="Content\assets\images\Group 52.jpg" />
+    <Content Include="Content\assets\images\Group 52.svg" />
+    <Content Include="Content\assets\images\Group 539.svg" />
+    <Content Include="Content\assets\images\Group 540.svg" />
+    <Content Include="Content\assets\images\Group 580.svg" />
+    <Content Include="Content\assets\images\Group 581.svg" />
+    <Content Include="Content\assets\images\Group 585.svg" />
+    <Content Include="Content\assets\images\Group 586.svg" />
+    <Content Include="Content\assets\images\Group 587.svg" />
+    <Content Include="Content\assets\images\Group 610.svg" />
+    <Content Include="Content\assets\images\Group 625.svg" />
+    <Content Include="Content\assets\images\Group 692.svg" />
+    <Content Include="Content\assets\images\Group 709.svg" />
+    <Content Include="Content\assets\images\Group 806.svg" />
+    <Content Include="Content\assets\images\Group 999.svg" />
+    <Content Include="Content\assets\images\Group-.png" />
+    <Content Include="Content\assets\images\Group.jpg" />
+    <Content Include="Content\assets\images\haulier-portal.jpg" />
+    <Content Include="Content\assets\images\helpdesk-police-icon.svg" />
+    <Content Include="Content\assets\images\hide-icon.svg" />
+    <Content Include="Content\assets\images\Image 23.svg" />
+    <Content Include="Content\assets\images\Image 25.svg" />
+    <Content Include="Content\assets\images\image 3.1.png" />
+    <Content Include="Content\assets\images\Image 3.svg" />
+    <Content Include="Content\assets\images\imge-50.jpg" />
+    <Content Include="Content\assets\images\laag19.png" />
+    <Content Include="Content\assets\images\laag199f47eb3a.png" />
+    <Content Include="Content\assets\images\laag5.png" />
+    <Content Include="Content\assets\images\laag6.png" />
+    <Content Include="Content\assets\images\laag64b7570a4.png" />
+    <Content Include="Content\assets\images\laag6Kopieren.png" />
+    <Content Include="Content\assets\images\laag6Kopierend319b455.png" />
+    <Content Include="Content\assets\images\left-chevlon.svg" />
+    <Content Include="Content\assets\images\level-crossing.svg" />
+    <Content Include="Content\assets\images\light-user.svg" />
+    <Content Include="Content\assets\images\location-icon.svg" />
+    <Content Include="Content\assets\images\loginimg.jpg" />
+    <Content Include="Content\assets\images\logo.png" />
+    <Content Include="Content\assets\images\logout.png" />
+    <Content Include="Content\assets\images\main-chevlon.svg" />
+    <Content Include="Content\assets\images\map-cancel-route.svg" />
+    <Content Include="Content\assets\images\map-fullscreen-in.svg.jpg" />
+    <Content Include="Content\assets\images\map-fullscreen-out.svg.jpg" />
+    <Content Include="Content\assets\images\message-icon.svg" />
+    <Content Include="Content\assets\images\modal-close-icon.svg" />
+    <Content Include="Content\assets\images\National Highways Logo.svg" />
+    <Content Include="Content\assets\images\new-image.jpg" />
+    <Content Include="Content\assets\images\news-announce.svg" />
+    <Content Include="Content\assets\images\no-icon.svg" />
+    <Content Include="Content\assets\images\password-eye.jpg" />
+    <Content Include="Content\assets\images\password-eye2.jpg" />
+    <Content Include="Content\assets\images\Path 333-route.svg" />
+    <Content Include="Content\assets\images\Path 333.svg" />
+    <Content Include="Content\assets\images\Path 348.svg" />
+    <Content Include="Content\assets\images\Path 380.svg" />
+    <Content Include="Content\assets\images\Path 607.svg" />
+    <Content Include="Content\assets\images\Path 842-new.svg" />
+    <Content Include="Content\assets\images\Path 842.svg" />
+    <Content Include="Content\assets\images\Path 959.svg" />
+    <Content Include="Content\assets\images\Path 960.svg" />
+    <Content Include="Content\assets\images\Path-down-chevlon.svg" />
+    <Content Include="Content\assets\images\pending.svg" />
+    <Content Include="Content\assets\images\phone-icone.svg" />
+    <Content Include="Content\assets\images\preference.png" />
+    <Content Include="Content\assets\images\Rectangle 11.jpg" />
+    <Content Include="Content\assets\images\Rectangle 20.jpg" />
+    <Content Include="Content\assets\images\Rectangle 224.svg" />
+    <Content Include="Content\assets\images\Rectangle 3.jpg" />
+    <Content Include="Content\assets\images\Rectangle 305.svg" />
+    <Content Include="Content\assets\images\Rectangle 454.svg" />
+    <Content Include="Content\assets\images\rectangle12.png" />
+    <Content Include="Content\assets\images\rectangle3.png" />
+    <Content Include="Content\assets\images\right-chevlon.svg" />
+    <Content Include="Content\assets\images\route-start-icon.svg" />
+    <Content Include="Content\assets\images\save-to-library.svg" />
+    <Content Include="Content\assets\images\search-icon.svg" />
+    <Content Include="Content\assets\images\select-dropdown.svg" />
+    <Content Include="Content\assets\images\solid-user.svg" />
+    <Content Include="Content\assets\images\star-disabled.svg" />
+    <Content Include="Content\assets\images\star-enabled.svg" />
+    <Content Include="Content\assets\images\timer.svg" />
+    <Content Include="Content\assets\images\under-assement-by-me-01.svg" />
+    <Content Include="Content\assets\images\UnsuitableConstraint.png" />
+    <Content Include="Content\assets\images\up-arrow.svg" />
+    <Content Include="Content\assets\images\up-chevlon-filter.svg" />
+    <Content Include="Content\assets\images\up-chevlon.svg" />
+    <Content Include="Content\assets\images\user-arrow.svg" />
+    <Content Include="Content\assets\images\user-setting.svg" />
+    <Content Include="Content\assets\images\vehicle-1.svg" />
+    <Content Include="Content\assets\images\vehicle-2.svg" />
+    <Content Include="Content\assets\images\vehicle-user-icon.svg" />
+    <Content Include="Content\assets\images\vehicle2-user-icon.svg" />
+    <Content Include="Content\assets\images\view-icon.svg" />
+    <Content Include="Content\assets\images\warning-icon2.svg" />
+    <Content Include="Content\assets\images\warning.svg" />
+    <Content Include="Content\assets\images\WIP-icon.svg" />
+    <Content Include="Content\assets\images\withdraw.svg" />
+    <Content Include="Content\assets\images\withdrawn.svg" />
+    <Content Include="Content\assets\images\yes-icon.svg" />
+    <Content Include="Content\assets\laag19.png" />
+    <Content Include="Content\assets\laag199f47eb3a.png" />
+    <Content Include="Content\assets\laag5.png" />
+    <Content Include="Content\assets\laag6.png" />
+    <Content Include="Content\assets\laag64b7570a4.png" />
+    <Content Include="Content\assets\laag6Kopieren.png" />
+    <Content Include="Content\assets\laag6Kopierend319b455.png" />
+    <Content Include="Content\assets\logo.png" />
+    <Content Include="Content\assets\logocc6f9284.png" />
+    <Content Include="Content\assets\p-icon.png" />
+    <Content Include="Content\assets\rectangle12.png" />
+    <Content Include="Content\assets\rectangle3.png" />
+    <Content Include="Content\assets\sort.png" />
+    <Content Include="Content\bootstrap-theme.css" />
+    <Content Include="Content\bootstrap-theme.min.css" />
+    <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\bootstrap.min_4.6.1.css" />
+    <Content Include="Content\Calender\css\bootsrap-calender.css" />
+    <Content Include="Content\Calender\css\bootstrap.min.css" />
+    <Content Include="Content\Calender\css\bootstrap\mixins\_border-radius.css" />
+    <Content Include="Content\Calender\css\bootstrap\mixins\_grid-framework.css" />
+    <Content Include="Content\Calender\css\bootstrap\mixins\_screen-reader.css" />
+    <Content Include="Content\Calender\css\bootstrap\mixins\_visibility.css" />
+    <Content Include="Content\Calender\css\bootstrap\utilities\_stretched-link.css" />
+    <Content Include="Content\Calender\css\bootstrap\_media.css" />
+    <Content Include="Content\Calender\css\calender.css" />
+    <Content Include="Content\Calender\js\bdtscript.js" />
+    <Content Include="Content\Calender\js\bootstrap.min.js" />
+    <Content Include="Content\Calender\js\jquery.min.js" />
+    <Content Include="Content\Calender\js\calendar.main.js" />
+    <Content Include="Content\Calender\js\main.js" />
+    <Content Include="Content\Calender\js\popper.js" />
+    <Content Include="Content\Configuration.xml" />
+    <Content Include="Content\fonts.css" />
+    <Content Include="Content\Images\Accepted.png" />
+    <Content Include="Content\Images\adv_edit_30x30.png" />
+    <Content Include="Content\Images\alternateend.png" />
+    <Content Include="Content\Images\alternateend.svg" />
+    <Content Include="Content\Images\alternatestart.png" />
+    <Content Include="Content\Images\alternatestart.svg" />
+    <Content Include="Content\Images\altmiddle.png" />
+    <Content Include="Content\Images\altmiddle.svg" />
+    <Content Include="Content\Images\alt_endtmarker.png" />
+    <Content Include="Content\Images\alt_endtmarker.svg" />
+    <Content Include="Content\Images\alt_startmarker.png" />
+    <Content Include="Content\Images\alt_startmarker.svg" />
+    <Content Include="Content\Images\anchorpoint.png" />
+    <Content Include="Content\Images\anchorpoint.svg" />
+    <Content Include="Content\Images\anchorpointicon.png" />
+    <Content Include="Content\Images\anchorpointW.png" />
+    <Content Include="Content\Images\animated-overlay.gif" />
+    <Content Include="Content\Images\annotation.png" />
+    <Content Include="Content\Images\annotIndicator.png" />
+    <Content Include="Content\Images\annotindicator.svg" />
+    <Content Include="Content\Images\area.svg" />
+    <Content Include="Content\Images\arrow-down.gif" />
+    <Content Include="Content\Images\arrow-up.gif" />
+    <Content Include="Content\Images\autocomplete-loading.gif" />
+    <Content Include="Content\Images\bridge top.jpg" />
+    <Content Include="Content\Images\bridge-hori.jpg" />
+    <Content Include="Content\Images\centrehere.png" />
+    <Content Include="Content\Images\Common\agreed.gif" />
+    <Content Include="Content\Images\Common\agreed_revised2.gif" />
+    <Content Include="Content\Images\Common\ALSAT-note.png" />
+    <Content Include="Content\Images\Common\attention_icon3.gif" />
+    <Content Include="Content\Images\Common\bluespeechbubble.png" />
+    <Content Include="Content\Images\Common\content_loader.gif" />
+    <Content Include="Content\Images\Common\Declined.jpg" />
+    <Content Include="Content\Images\Common\endmarker.png" />
+    <Content Include="Content\Images\Common\gallery-dark-loading.gif" />
+    <Content Include="Content\Images\Common\header.png" />
+    <Content Include="Content\Images\Common\hourglass.gif" />
+    <Content Include="Content\Images\Common\icon-status-green.png" />
+    <Content Include="Content\Images\Common\info-icon.svg" />
+    <Content Include="Content\Images\Common\login-bg.jpg" />
+    <Content Include="Content\Images\Common\login.jpg" />
+    <Content Include="Content\Images\Common\login1.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\application_icons.png" />
+    <Content Include="Content\Images\Common\MasterPage\approved.png" />
+    <Content Include="Content\Images\Common\MasterPage\arrow.png" />
+    <Content Include="Content\Images\Common\MasterPage\arrows.gif" />
+    <Content Include="Content\Images\Common\MasterPage\bg.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\bg1.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\bg2.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\body-bg.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\bottumnav_navigation_lower_bg.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\bottumnav_navigation_upper_bg.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\BtnSave.png" />
+    <Content Include="Content\Images\Common\MasterPage\BtnSaveOver.png" />
+    <Content Include="Content\Images\Common\MasterPage\buttons.gif" />
+    <Content Include="Content\Images\Common\MasterPage\closebtn.png" />
+    <Content Include="Content\Images\Common\MasterPage\Collaboration_status.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\crane.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\crane.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\crane_medium.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\crane_small.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\drawbartractor.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\drawbartractor.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\drawbartractor_medium.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\drawbartractor_small.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\drawbartrailer.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\drawbartrailer.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\drawbartrailer_medium.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\drawbartrailer_small.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\engineeringplant.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\engineeringplant.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\engineeringplant_medium.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\engineeringplant_small.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\recoveredvehicle.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\recoveredvehicle.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\recoveredvehicle_medium.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\recoveredvehicle_small.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\recoveryvehicle.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\recoveryvehicle.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\recoveryvehicle_medium.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\recoveryvehicle_small.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\rigidvehicle.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\rigidvehicle.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\rigidvehicle_medium.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\rigidvehicle_small.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\semitractor.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\semitractor.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\semitractor_medium.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\semitractor_small.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\semitrailer.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\semitrailer.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\semitrailer_medium.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\semitrailer_small.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\spmt.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\spmt.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\spmt_medium.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\spmt_small.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\tracked.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\tracked.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\tracked_medium.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\tracked_small.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\wheeledvehicle.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\wheeledvehicle.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\wheeledvehicle_medium.png" />
+    <Content Include="Content\Images\Common\MasterPage\componet_icons\wheeledvehicle_small.png" />
+    <Content Include="Content\Images\Common\MasterPage\constraints_icons.png" />
+    <Content Include="Content\Images\Common\MasterPage\datatable-head.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\design_ASDAL_v02_07.gif" />
+    <Content Include="Content\Images\Common\MasterPage\Dft_bg.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\downarrow.png" />
+    <Content Include="Content\Images\Common\MasterPage\error.png" />
+    <Content Include="Content\Images\Common\MasterPage\footer-logo.gif" />
+    <Content Include="Content\Images\Common\MasterPage\footer_logo1.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\Hauliers_portal_bg.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\header-shadow.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\header-shadow.png" />
+    <Content Include="Content\Images\Common\MasterPage\header-shadow1.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\helpbuilder_icon.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\highways-logo.png" />
+    <Content Include="Content\Images\Common\MasterPage\highways-logo1.png" />
+    <Content Include="Content\Images\Common\MasterPage\icons_vehicle.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\icon_constraints.png" />
+    <Content Include="Content\Images\Common\MasterPage\info.png" />
+    <Content Include="Content\Images\Common\MasterPage\LevelCrossing-Blue_BlueBack.png" />
+    <Content Include="Content\Images\Common\MasterPage\login_screen.PNG" />
+    <Content Include="Content\Images\Common\MasterPage\logo.png" />
+    <Content Include="Content\Images\Common\MasterPage\movement_status_icons.png" />
+    <Content Include="Content\Images\Common\MasterPage\newlogo.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\news_head.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\Notification_status.png" />
+    <Content Include="Content\Images\Common\MasterPage\Overbridge-Blue_BlueBack.png" />
+    <Content Include="Content\Images\Common\MasterPage\page_back.png" />
+    <Content Include="Content\Images\Common\MasterPage\preset_advance_bg.jpg" />
+    <Content Include="Content\Images\Common\MasterPage\read_unread.png" />
+    <Content Include="Content\Images\Common\MasterPage\shadow.png" />
+    <Content Include="Content\Images\Common\MasterPage\strucures_icon.png" />
+    <Content Include="Content\Images\Common\MasterPage\strucures_icon1.png" />
+    <Content Include="Content\Images\Common\MasterPage\sutability.png" />
+    <Content Include="Content\Images\Common\MasterPage\swapicon.png" />
+    <Content Include="Content\Images\Common\MasterPage\tab_centre.png" />
+    <Content Include="Content\Images\Common\MasterPage\tab_centre1.png" />
+    <Content Include="Content\Images\Common\MasterPage\tab_left.png" />
+    <Content Include="Content\Images\Common\MasterPage\tab_left1.png" />
+    <Content Include="Content\Images\Common\MasterPage\tab_left11.png" />
+    <Content Include="Content\Images\Common\MasterPage\tab_leftt.png" />
+    <Content Include="Content\Images\Common\MasterPage\tab_right.png" />
+    <Content Include="Content\Images\Common\MasterPage\tab_right1.png" />
+    <Content Include="Content\Images\Common\MasterPage\Underbridge-Blue_BlueBack.png" />
+    <Content Include="Content\Images\Common\MasterPage\work-area-shadow.png" />
+    <Content Include="Content\Images\Common\notified.gif" />
+    <Content Include="Content\Images\Common\opened_by_ha_icon.gif" />
+    <Content Include="Content\Images\Common\page-not-found.jpg" />
+    <Content Include="Content\Images\Common\proposed.gif" />
+    <Content Include="Content\Images\Common\renotified.gif" />
+    <Content Include="Content\Images\Common\sorry.jpg" />
+    <Content Include="Content\Images\Common\startmarker.png" />
+    <Content Include="Content\Images\Common\status_loading.gif" />
+    <Content Include="Content\Images\Common\SubmittedToHA.jpg" />
+    <Content Include="Content\Images\Common\Warning.png" />
+    <Content Include="Content\Images\Common\WIP.jpg" />
+    <Content Include="Content\Images\Common\withdrawn_ripped_icon2.gif" />
+    <Content Include="Content\Images\Common\yellowspeechbubble.png" />
+    <Content Include="Content\Images\confirmedmnvr.png" />
+    <Content Include="Content\Images\confirmedmnvr.svg" />
+    <Content Include="Content\Images\constraint_icons\constraint_adjacentretainingwall.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_bollards.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_cantiliver.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_catenary.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_electriccable.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_gantry.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_generic.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_generic.svg" />
+    <Content Include="Content\Images\constraint_icons\constraint_height.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_incline.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_length.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_manmadevoid.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_naturalvoid.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_oneway.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_overheadbuilding.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_overheadpipes.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_pipes&amp;ducts.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_powercable.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_removablebollards.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_retainingwall.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_riskofgrouding.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_roadworks.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_specialevent.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_telecommscable.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_tightbends.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_trafficcalming.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_tram.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_tunnel.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_tunnelvoid.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_unmade.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_weight.png" />
+    <Content Include="Content\Images\constraint_icons\constraint_width.png" />
+    <Content Include="Content\Images\constraint_icons\Group 1077.svg" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_adjacentretainingwall.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_bollards.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_cantiliver.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_catenary.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_electriccable.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_gantry.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_generic.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_height.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_incline.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_length.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_manmadevoid.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_naturalvoid.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_oneway.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_overheadbuilding.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_overheadpipes.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_pipes&amp;ducts.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_powercable.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_removablebollards.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_retainingwall.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_riskofgrouding.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_roadworks.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_specialevent.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_telecommscable.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_tightbends.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_trafficcalming.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_tram.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_tunnel.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_tunnelvoid.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_unmade.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_weight.png" />
+    <Content Include="Content\Images\constraint_icons\unsuitable_constraint_width.png" />
+    <Content Include="Content\Images\contacts.png" />
+    <Content Include="Content\Images\delegationend.gif" />
+    <Content Include="Content\Images\delegationend.png" />
+    <Content Include="Content\Images\delegationstart.gif" />
+    <Content Include="Content\Images\delegationstart.png" />
+    <Content Include="Content\Images\delete.png" />
+    <Content Include="Content\Images\delete.svg" />
+    <Content Include="Content\Images\deligation.png" />
+    <Content Include="Content\Images\deselect.png" />
+    <Content Include="Content\Images\deselect.svg" />
+    <Content Include="Content\Images\destination-icon.svg" />
+    <Content Include="Content\Images\details.png" />
+    <Content Include="Content\Images\details.svg" />
+    <Content Include="Content\Images\diverge-off.png" />
+    <Content Include="Content\Images\diverge.png" />
+    <Content Include="Content\Images\edit.png" />
+    <Content Include="Content\Images\editA.png" />
+    <Content Include="Content\Images\editB.png" />
+    <Content Include="Content\Images\endmarker.png" />
+    <Content Include="Content\Images\endmarkersmall.png" />
+    <Content Include="Content\Images\ESDAL 2 Logo_org.png" />
+    <Content Include="Content\Images\ESDAL 2 Logo_org_He_Branding.png" />
+    <Content Include="Content\Images\file_search.png" />
+    <Content Include="Content\Images\filtered-icon.svg" />
+    <Content Include="Content\Images\geo.svg" />
+    <Content Include="Content\Images\Group 539.svg" />
+    <Content Include="Content\Images\HaulierUserv2.gif" />
+    <Content Include="Content\Images\knife.png" />
+    <Content Include="Content\Images\leftarrow.png" />
+    <Content Include="Content\Images\line.png" />
+    <Content Include="Content\Images\linear.svg" />
+    <Content Include="Content\Images\loading.gif" />
+    <Content Include="Content\Images\location.png" />
+    <Content Include="Content\Images\logo.png" />
+    <Content Include="Content\Images\merge-off.png" />
+    <Content Include="Content\Images\merge.png" />
+    <Content Include="Content\Images\NENAssignedicon.jpg" />
+    <Content Include="Content\Images\off-road.png" />
+    <Content Include="Content\Images\offroad.png" />
+    <Content Include="Content\Images\offroad.svg" />
+    <Content Include="Content\Images\ownercontact.png" />
+    <Content Include="Content\Images\pdf new.gif" />
+    <Content Include="Content\Images\pin.png" />
+    <Content Include="Content\Images\plan.png" />
+    <Content Include="Content\Images\plan.svg" />
+    <Content Include="Content\Images\point.png" />
+    <Content Include="Content\Images\pointer.svg" />
+    <Content Include="Content\Images\Police.gif" />
+    <Content Include="Content\Images\polygon.png" />
+    <Content Include="Content\Images\polygondeselect.png" />
+    <Content Include="Content\Images\polygondeselect.svg" />
+    <Content Include="Content\Images\polygonselect.png" />
+    <Content Include="Content\Images\polygonselect.svg" />
+    <Content Include="Content\Images\printicon.png" />
+    <Content Include="Content\Images\question.png" />
+    <Content Include="Content\Images\Rejected.png" />
+    <Content Include="Content\Images\reversemnvr.png" />
+    <Content Include="Content\Images\reversemnvr.svg" />
+    <Content Include="Content\Images\rightarrow.png" />
+    <Content Include="Content\Images\route-start-icon.svg" />
+    <Content Include="Content\Images\scissor.png" />
+    <Content Include="Content\Images\scissor.svg" />
+    <Content Include="Content\Images\search.png" />
+    <Content Include="Content\Images\select.png" />
+    <Content Include="Content\Images\select.svg" />
+    <Content Include="Content\Images\SOA.gif" />
+    <Content Include="Content\Images\spy-glass.svg" />
+    <Content Include="Content\Images\startmarker.png" />
+    <Content Include="Content\Images\startmarkersmall.png" />
+    <Content Include="Content\Images\structure.png" />
+    <Content Include="Content\Images\structure.svg" />
+    <Content Include="Content\Images\structure_red.png" />
+    <Content Include="Content\Images\structure_yellow.png" />
+    <Content Include="Content\Images\trimpoint.png" />
+    <Content Include="Content\Images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\Images\ui-bg_flat_75_ffffff_40x100.png" />
+    <Content Include="Content\Images\ui-bg_glass_55_fbf9ee_1x400.png" />
+    <Content Include="Content\Images\ui-bg_glass_65_ffffff_1x400.png" />
+    <Content Include="Content\Images\ui-bg_glass_75_dadada_1x400.png" />
+    <Content Include="Content\Images\ui-bg_glass_75_e6e6e6_1x400.png" />
+    <Content Include="Content\Images\ui-bg_glass_95_fef1ec_1x400.png" />
+    <Content Include="Content\Images\ui-bg_highlight-soft_75_cccccc_1x100.png" />
+    <Content Include="Content\Images\ui-icons_222222_256x240.png" />
+    <Content Include="Content\Images\ui-icons_2e83ff_256x240.png" />
+    <Content Include="Content\Images\ui-icons_454545_256x240.png" />
+    <Content Include="Content\Images\ui-icons_888888_256x240.png" />
+    <Content Include="Content\Images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\Images\undo.png" />
+    <Content Include="Content\Images\undo.svg" />
+    <Content Include="Content\Images\Unspecified.png" />
+    <Content Include="Content\Images\uturnmnvr.png" />
+    <Content Include="Content\Images\uturnmnvr.svg" />
+    <Content Include="Content\Images\viamarker.png" />
+    <Content Include="Content\Images\viamarkerW.png" />
+    <Content Include="Content\Images\videoIcon.png" />
+    <Content Include="Content\Images\waymarker.png" />
+    <Content Include="Content\Images\waymarker.svg" />
+    <Content Include="Content\Images\waypointicon.png" />
+    <Content Include="Content\Images\WordIcon.png" />
+    <Content Include="Content\Images\zoomin.png" />
+    <Content Include="Content\Images\zoomout.png" />
+    <Content Include="Content\NwCalendar\css\gijgo.min.css" />
+    <Content Include="Content\NwCalendar\css\images\left.png" />
+    <Content Include="Content\NwCalendar\css\images\ui-icons_444444_256x240.png" />
+    <Content Include="Content\NwCalendar\css\images\ui-icons_555555_256x240.png" />
+    <Content Include="Content\NwCalendar\css\images\ui-icons_cd0a0a_256x240.png" />
+    <Content Include="Content\NwCalendar\css\jquery-ui.css" />
+    <Content Include="Content\NwCalendar\js\gijgo.min.js" />
+    <Content Include="Content\NwCalendar\js\jquery-ui.js" />
+    <Content Include="Content\style.css" />
+    <Content Include="Content\Style\Common\alertbox.css" />
+    <Content Include="Content\Style\Common\Datetimepicker\jquery.timepicker-1.13.18.css" />
+    <Content Include="Content\Style\Common\dropdownlist.css" />
+    <Content Include="Content\Style\Common\FolderManagement\folder-management.css" />
+    <Content Include="Content\Style\Common\fonts\nidhin.dev.svg" />
+    <Content Include="Content\Style\Common\fonts\nidhin.svg" />
+    <Content Include="Content\Style\Common\googleFont.css" />
+    <Content Include="Content\Style\Common\grid_css.css" />
+    <Content Include="Content\Style\Common\Help_css.css" />
+    <Content Include="Content\Style\Common\jquery-ui-timepicker-addon.css" />
+    <Content Include="Content\Style\Common\map.css" />
+    <Content Include="Content\Style\Common\masterpage.css" />
+    <Content Include="Content\Style\Common\PagedList.css" />
+    <Content Include="Content\Style\Common\progressbar_css.css" />
+    <Content Include="Content\Style\Common\redactor.css" />
+    <Content Include="Content\Style\Common\SOAReports.css" />
+    <Content Include="Content\Style\Common\style.css" />
+    <Content Include="Content\Style\Common\style_htmlbuilder.css" />
+    <Content Include="Content\Style\Common\tab_css.css" />
+    <Content Include="Content\Style\Login\login-style.css" />
+    <Content Include="Content\Vehicle.xml" />
+    <Content Include="Content\VehicleComponents.xml" />
+    <Content Include="Content\Web\bootstrap.min.css" />
+    <Content Include="Content\XSLT\AffectedParties.xslt" />
+    <Content Include="Content\XSLT\AffectedRoadsImperial.xslt" />
+    <Content Include="Content\XSLT\AffectedRoadsMetric.xslt" />
+    <Content Include="Content\XSLT\AffectedStructuresMetric.xslt">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Content\XSLT\Annotation.xslt" />
+    <Content Include="Content\XSLT\CautionsMetric.xslt">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Content\XSLT\Constraints.xslt">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Content\XSLT\DistributionNotes.xslt" />
+    <Content Include="Content\XSLT\DrivingInstructionsImperial.xslt" />
+    <Content Include="Content\XSLT\DrivingInstructionsImperialPdf.xslt" />
+    <Content Include="Content\XSLT\DrivingInstructionsMetric.xslt" />
+    <Content Include="Content\XSLT\DrivingInstructionsMetricPdf.xslt" />
+    <Content Include="Content\XSLT\HAContactDetails.xslt" />
+    <Content Include="Content\XSLT\HAContactName.xslt">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Content\XSLT\HAViewContactDetails.xslt" />
+    <Content Include="Content\XSLT\LevelCrossingStruct.xslt" />
+    <Content Include="Content\XSLT\MyAffectedRoadsImperial.xslt" />
+    <Content Include="Content\XSLT\MyAffectedRoadsMetric.xslt" />
+    <Content Include="Content\XSLT\MyAffectedStructures.xslt" />
+    <Content Include="Content\XSLT\MyAffectedStructuresByOrg.xslt" />
+    <Content Include="Content\XSLT\MyLevelCrossingStruct.xslt" />
+    <Content Include="Content\XSLT\MyOverBridgeStruct.xslt" />
+    <Content Include="Content\XSLT\MyUnderBridgeStruct.xslt" />
+    <Content Include="Content\XSLT\NotificationAffectedStructures.xslt" />
+    <Content Include="Content\XSLT\OverBridgeStruct.xslt" />
+    <Content Include="Content\XSLT\RouteDescription.xslt" />
+    <Content Include="Content\XSLT\RouteDescriptionImperial.xslt" />
+    <Content Include="Content\XSLT\SOGeneral.xslt" />
+    <Content Include="Content\XSLT\UnderBridgeStruct.xslt" />
+    <Content Include="favicon.ico" />
+    <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="Global.asax" />
+    <Content Include="Content\Site.css" />
+    <Content Include="ReadMe\ESDAL4Web_ReadMe.txt" />
+    <Content Include="Rotativa\help-wkhtmltoimage.txt" />
+    <Content Include="Rotativa\help-wkhtmltopdf.txt" />
+    <Content Include="Rotativa\wkhtmltoimage.exe" />
+    <Content Include="Rotativa\wkhtmltopdf.exe" />
+    <Content Include="Scripts\Account\AutoResponse.js" />
+    <Content Include="Scripts\Account\ChangePassword.js" />
+    <Content Include="Scripts\Account\ForgetPassword.js" />
+    <Content Include="Scripts\Account\ForgetUserName.js" />
+    <Content Include="Scripts\AddressBook\AddressList.js" />
+    <Content Include="Scripts\AddressBook\ManageAddressBook.js" />
+    <Content Include="Scripts\AddressBook\PartialView\_ManageAddressBookDetails.js" />
+    <Content Include="Scripts\Annotation\CreateAnnotation.js" />
+    <Content Include="Scripts\Annotation\ListAnnotationLibrary.js" />
+    <Content Include="Scripts\Annotation\PartialView\_DisplayAnnotationListPopUp.js" />
+    <Content Include="Scripts\Application\AgreedRoutes.js" />
+    <Content Include="Scripts\Application\ApplicationRouteList.js" />
+    <Content Include="Scripts\Application\ApplicationVehicle.js" />
+    <Content Include="Scripts\Application\ContactedPartiesList.js" />
+    <Content Include="Scripts\Application\HaulierApplRouteParts.js" />
+    <Content Include="Scripts\Application\HaulierApplVehicleParts.js" />
+    <Content Include="Scripts\Application\JQuery.SORTMovements-1.0.2.js" />
+    <Content Include="Scripts\Application\ListImportedRouteFromLibrary.js" />
+    <Content Include="Scripts\Application\ListImportedVehicleConfiguration.js" />
+    <Content Include="Scripts\Application\RouteVehicle.js" />
+    <Content Include="Scripts\Application\SOGeneralDetails.js" />
+    <Content Include="Scripts\Application\ViewApplication.js" />
+    <Content Include="Scripts\Application\ViewContactDetails.js" />
+    <Content Include="Scripts\Application\ViewSupplimentaryInfo.js" />
+    <Content Include="Scripts\Application\ViewVehicleDetails.js" />
+    <Content Include="Scripts\Application\VR1GeneralDetails.js" />
+    <Content Include="Scripts\Application\_ApplicationOverview.js" />
+    <Content Include="Scripts\Application\ListSOMovements.js" />
+    <Content Include="Scripts\Application\_ApplicationSupplimentaryInfo.js" />
+    <Content Include="Scripts\Application\RouteAnalysisNotification.js" />
+    <Content Include="Scripts\Application\RouteAnalysisPanel.js" />
+    <Content Include="Scripts\Application\_ViewSupplementary.js" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Content\assets\Lato-Bold.ttf" />
+    <Content Include="Content\assets\Lato-Light.ttf" />
+    <Content Include="Content\assets\Lato-Medium.ttf" />
+    <Content Include="Content\assets\Lato-Regular.ttf" />
+    <Content Include="Content\assets\Lato-Semibold.ttf" />
+    <Content Include="Content\Style\Common\fonts\nidhin.eot" />
+    <Content Include="Content\Style\Common\fonts\nidhin.ttf" />
+    <Content Include="Content\Style\Common\fonts\nidhin.woff" />
+    <Content Include="Content\Calender\css\.DS_Store" />
+    <Content Include="Content\Calender\css\bootstrap\.DS_Store" />
+    <Content Include="Content\Calender\css\bootstrap\mixins\.DS_Store" />
+    <Content Include="Content\Calender\js\.DS_Store" />
+    <Content Include="Scripts\Common\bootstrap-5.0.0-beta2.bundle.min.js" />
+    <Content Include="Scripts\Common\bootstrap-5.1.3.bundle.min.js" />
+    <Content Include="Scripts\Common\DateTimepicker\jquery.timepicker-1.13.18.js" />
+    <Content Include="Scripts\Common\html2canvas-0.4.1.js" />
+    <Content Include="Scripts\Common\jquery-3.4.1.min.js" />
+    <Content Include="Scripts\Common\jspdf-1.3.5.min.js" />
+    <Content Include="Scripts\Common\jspdf-1.5.3.min.js" />
+    <Content Include="Scripts\Common\moment.min.js" />
+    <Content Include="Scripts\Common\Util\aes.js" />
+    <Content Include="Scripts\Common\Util\pako-2.1.0.min.js" />
+    <Content Include="Scripts\Common\Util\util.js" />
+    <Content Include="Scripts\Common\Workflow\WorkflowRouting.js" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\closeIcon.png" />
+    <Content Include="Scripts\Constraint\CautionAddReport.js" />
+    <Content Include="Scripts\Constraint\ConstraintHistory.js" />
+    <Content Include="Scripts\Constraint\ConstraintList.js" />
+    <Content Include="Scripts\Constraint\CreateCaution.js" />
+    <Content Include="Scripts\Constraint\CreateConstraint.js" />
+    <Content Include="Scripts\Constraint\EditConstraint.js" />
+    <Content Include="Scripts\Constraint\HaulierConstraintDetails.js" />
+    <Content Include="Scripts\Constraint\ManageConstraintContact.js" />
+    <Content Include="Scripts\Constraint\ReviewCautionsList.js" />
+    <Content Include="Scripts\Constraint\ReviewContactsList.js" />
+    <Content Include="Scripts\Constraint\ViewCaution.js" />
+    <Content Include="Scripts\Constraint\ViewConstraint.js" />
+    <Content Include="Scripts\Contact\ContactList.js" />
+    <Content Include="Scripts\Contact\ContactView.js" />
+    <Content Include="Scripts\CreateVehicle\createVehicle.js" />
+    <Content Include="Scripts\CreateVehicle\VehicleAutoFill.js" />
+    <Content Include="Scripts\CreateVehicle\VehicleConfiguration.js" />
+    <Content Include="Scripts\Dispensation\ManageDispensation.js" />
+    <Content Include="Scripts\Dispensation\PartialView\EditDispensationRestriction.js" />
+    <Content Include="Scripts\DistributionStatus\DistributionStatusDashboard.js" />
+    <Content Include="Scripts\DistributionStatus\Retransmit.js" />
+    <Content Include="Scripts\DistributionStatus\ViewDistributionStatus.js" />
+    <Content Include="Scripts\Dispensation\CreateDispensation.js" />
+    <Content Include="Scripts\Document\SortAgreeRevised.js" />
+    <Content Include="Scripts\Feedback\ListFeedback.js" />
+    <Content Include="Scripts\Feedback\MostRecentFeedbacks.js" />
+    <Content Include="Scripts\Generic\FirstTimeUser.js" />
+    <Content Include="Scripts\Generic\HelpBuilder.js" />
+    <Content Include="Scripts\Helpdesk\Index.js" />
+    <Content Include="Scripts\Holidays\HolidayCalender.js" />
+    <Content Include="Scripts\Holidays\showCalendar.js" />
+    <Content Include="Scripts\Home\Feedback.js" />
+    <Content Include="Scripts\Home\Hauliers.js" />
+    <Content Include="Scripts\Home\Police.js" />
+    <Content Include="Scripts\Home\SOA.js" />
+    <Content Include="Scripts\Generic\Index.js" />
+    <Content Include="Scripts\Home\SORT.js" />
+    <Content Include="Scripts\IFX_Route\ifx.stpmap.config-1.0.1.js" />
+    <Content Include="Scripts\Information\CreateDownload.js" />
+    <Content Include="Scripts\Information\CreateInformation.js" />
+    <Content Include="Scripts\Information\ViewDocumentList.js" />
+    <Content Include="Scripts\Information\ViewInformation.js" />
+    <Content Include="Scripts\Information\ViewInformationList.js" />
+    <Content Include="Scripts\Information\ViewLinkList.js" />
+    <Content Include="Scripts\jquery.signalR-2.4.1.js" />
+    <Content Include="Scripts\jquery.signalR-2.4.1.min.js" />
+    <Content Include="Scripts\Logging\ListNENAuditPerNotification.js" />
+    <Content Include="Scripts\Movements\LibraryNotesList.js" />
+    <Content Include="Scripts\Movements\MoveInboxAdvancedSearch.js" />
+    <Content Include="Scripts\Movements\MovementCloneReviseRenotif.js" />
+    <Content Include="Scripts\Movements\PlanMovementUnsavedData.js" />
+    <Content Include="Scripts\Movements\PoliceMovementInbox.js" />
+    <Content Include="Scripts\Movements\SOMovementList.js" />
+    <Content Include="Scripts\Movements\_MovementRouteVehicle.js" />
+    <Content Include="Scripts\Movements\_MovementSelectVehicleFrmSimilarCombinations.js" />
+    <Content Include="Scripts\Movements\_SimilarVehicleCombinations.js" />
+    <Content Include="Scripts\Movements\_VehicleDetails.js" />
+    <Content Include="Scripts\Movements\_MovementSelectVehicleByImport.js" />
+    <Content Include="Scripts\NENNotification\NENAuditLog.js" />
+    <Content Include="Scripts\NENNotification\NEN_HelpdeskReport.js" />
+    <Content Include="Scripts\NENNotification\NEN_SOAReport.js" />
+    <Content Include="Scripts\NENNotification\_NEN_SOAReportHistory.js" />
+    <Content Include="Scripts\Notification\CollaborationStatusList.js" />
+    <Content Include="Scripts\Information\CreateLink.js" />
+    <Content Include="Scripts\Information\CreateNews.js" />
+    <Content Include="Scripts\Information\ManageNews.js" />
+    <Content Include="Scripts\Information\PartialView\_NewsDetails.js" />
+    <Content Include="Scripts\jquery.contextmenu.js" />
+    <Content Include="Scripts\jquery.nen.routePlaning.js" />
+    <Content Include="Scripts\jQueryPopUpWarningNew.js" />
+    <Content Include="Scripts\Layout\Layout.js" />
+    <Content Include="Scripts\Logging\NENAuditLogPopup.js" />
+    <Content Include="Scripts\Movements\AuthorizeMovementGeneral.js" />
+    <Content Include="Scripts\Movements\folderManagement.js" />
+    <Content Include="Scripts\Movements\jQuery.Dispensations.js" />
+    <Content Include="Scripts\Movements\jQuery.movements.list.js" />
+    <Content Include="Scripts\Movements\MovementInboxList.js" />
+    <Content Include="Scripts\Movements\MovementList.js" />
+    <Content Include="Scripts\Movements\planCandidate.js" />
+    <Content Include="Scripts\Movements\PlanMovementNav.js" />
+    <Content Include="Scripts\Movements\routeAssessment.js" />
+    <Content Include="Scripts\Movements\SOAPoliceSearch.js" />
+    <Content Include="Scripts\Movements\SOAdvancedSearch.js" />
+    <Content Include="Scripts\Movements\ViewCollaborationStatusAndNotes.js" />
+    <Content Include="Scripts\Movements\_MovementAssessmentDetails.js" />
+    <Content Include="Scripts\Movements\_MovementMap.js" />
+    <Content Include="Scripts\Movements\_MovementRouteVehicleAssignment.js" />
+    <Content Include="Scripts\Movements\_MovementSelectedVehicles.js" />
+    <Content Include="Scripts\Movements\_MovementTypeConfirmation.js" />
+    <Content Include="Scripts\Movements\_MovementSelectVehicle.js" />
+    <Content Include="Scripts\Movements\_MovementWorkflowProgress.js" />
+    <Content Include="Scripts\NENNotification\CreateNeuser.js" />
+    <Content Include="Scripts\NENNotification\Display_NENotification.js" />
+    <Content Include="Scripts\NENNotification\NENotificationAssignPopUp.js" />
+    <Content Include="Scripts\NENNotification\NE_Notification.js" />
+    <Content Include="Scripts\NENNotification\SearchNeHaulierPanel.js" />
+    <Content Include="Scripts\Notification\CollabHistoryPopList.js" />
+    <Content Include="Scripts\Notification\CreateInternalCollaboration.js" />
+    <Content Include="Scripts\Notification\DisplayCollaborationHistoryList.js" />
+    <Content Include="Scripts\Notification\DisplayNotification.js" />
+    <Content Include="Scripts\Notification\DisplayNotificationCsp.js" />
+    <Content Include="Scripts\Notification\DisplayNotifiedparties.js" />
+    <Content Include="Scripts\Notification\ManualAddedParties.js" />
+    <Content Include="Scripts\Notification\NotificationDispensationPopUp.js" />
+    <Content Include="Scripts\Notification\NotificationDispensationPopUpCsp.js" />
+    <Content Include="Scripts\Notification\PopUpAddressBookCsp.js" />
+    <Content Include="Scripts\Notification\SearchTransmissionStatusPanel.js" />
+    <Content Include="Scripts\Notification\TransmissionStatusList.js" />
+    <Content Include="Scripts\Notification\ViewUnacknowledgedCollaboration.js" />
+    <Content Include="Scripts\NENNotification\ListNEHaulier.js" />
+    <Content Include="Scripts\Notification\_DisplayNotificationGeneralDetails.js" />
+    <Content Include="Scripts\Notification\_NotificationGeneralDetails.js" />
+    <Content Include="Scripts\Notification\_NotificationRouteAssessment.js" />
+    <Content Include="Scripts\Notification\_NotifAffectedParties.js" />
+    <Content Include="Scripts\Notification\_DisplayNotificationRouteVehicle.js" />
+    <Content Include="Scripts\Organisation\jQuery.Organisation.js" />
+    <Content Include="Scripts\Organisation\ManageOrganisation.js" />
+    <Content Include="Scripts\Organisation\_CreateOrganisation.js" />
+    <Content Include="Scripts\Organisation\_OrganisationList.js" />
+    <Content Include="Scripts\Organisation\_ViewExistingOrganisation.js" />
+    <Content Include="Scripts\Report\CommunicationReport.js" />
+    <Content Include="Scripts\Report\IndustryLiaisonReport.js" />
+    <Content Include="Scripts\Report\ReportPerUser.js" />
+    <Content Include="Scripts\Report\SessionLengthReport.js" />
+    <Content Include="Scripts\Report\_SessionLengthHistoryTypeWise.js" />
+    <Content Include="Scripts\RoadDelegation\CreateRoadDelegation.js" />
+    <Content Include="Scripts\RoadDelegation\RoadDelegationList.js" />
+    <Content Include="Scripts\RoadOwnership\CreateRoadOwnership.js" />
+    <Content Include="Scripts\RoadOwnership\ListRoadContactList.js" />
+    <Content Include="Scripts\RoadOwnership\ListRoadOwnerOrg.js" />
+    <Content Include="Scripts\RoadOwnership\RoadOwnerReport.js" />
+    <Content Include="Scripts\RoadOwnership\RoadOwnersContact.js" />
+    <Content Include="Scripts\RoadOwnership\RoadOwnershipMap.js" />
+    <Content Include="Scripts\RouteAssessment\ListAffectedParties.js" />
+    <Content Include="Scripts\RouteAssessment\ListAffectedRoads.js" />
+    <Content Include="Scripts\RouteAssessment\ListAffectedStructures.js" />
+    <Content Include="Scripts\RouteAssessment\ListAnnotations.js" />
+    <Content Include="Scripts\RouteAssessment\ListCautions.js" />
+    <Content Include="Scripts\RouteAssessment\ListConstraints.js" />
+    <Content Include="Scripts\RouteAssessment\ViewAssessmentResult.js" />
+    <Content Include="Scripts\Routes\A2BPlanning.js" />
+    <Content Include="Scripts\Routes\enterRouteDetail.js" />
+    <Content Include="Scripts\Routes\MovementRoute.js" />
+    <Content Include="Scripts\Routes\OutlineRouteDetails.js" />
+    <Content Include="Scripts\Routes\A2BLeftPanel.js" />
+    <Content Include="Scripts\Routes\LibraryRoutePartDetails.js" />
+    <Content Include="Scripts\Routes\MovementRoutePlan.js" />
+    <Content Include="Scripts\Routes\RoutePartLibrary.js" />
+    <Content Include="Scripts\Routes\_RouteDetails.js" />
+    <Content Include="Scripts\Routes\_SelectRouteByImport.js" />
+    <Content Include="Scripts\SOApplication\jQuery.SOApplication.js" />
+    <Content Include="Scripts\SOApplication\jQuery.SortSoApplication.js" />
+    <Content Include="Scripts\SORTApplication\CandidateCheckerAllocation.js" />
+    <Content Include="Scripts\SORTApplication\CandiVersionRoutesList.js" />
+    <Content Include="Scripts\SORTApplication\CandiVersionVehicleList.js" />
+    <Content Include="Scripts\SORTApplication\CreateCandidateRoute.js" />
+    <Content Include="Scripts\SORTApplication\CreateCandidateRouteVersion.js" />
+    <Content Include="Scripts\SORTApplication\CreateSpecialOrder.js" />
+    <Content Include="Scripts\SORTApplication\DistributionCommentsPopUp.js" />
+    <Content Include="Scripts\SORTApplication\HaulierNotes.js" />
+    <Content Include="Scripts\SORTApplication\MapFilter.js" />
+    <Content Include="Scripts\SORTApplication\MoveSummaryLeftPanel.js" />
+    <Content Include="Scripts\SORTApplication\SORTAppEditCandiRouteName.js" />
+    <Content Include="Scripts\SORTApplication\SORTInbox.js" />
+    <Content Include="Scripts\SORTApplication\ApplSummaryLeftPanel.js" />
+    <Content Include="Scripts\SORTApplication\PartialView\_SortRouteDetails.js" />
+    <Content Include="Scripts\SORTApplication\ProjectOverviewLeftPanel.js" />
+    <Content Include="Scripts\SORTApplication\ShowSpecialOrder.js" />
+    <Content Include="Scripts\SORTApplication\SORTAllocateUser.js" />
+    <Content Include="Scripts\SORTApplication\PartialView\_SortCandiRouteDetails.js" />
+    <Content Include="Scripts\SORTApplication\SORTAppCandidateRouteVersion.js" />
+    <Content Include="Scripts\SORTApplication\SORTApplicationSummary.js" />
+    <Content Include="Scripts\SORTApplication\SORTInboxAdvancedFilter.js" />
+    <Content Include="Scripts\SORTApplication\SORTLeftPanel.js" />
+    <Content Include="Scripts\SORTApplication\SORTAppMovementVersion.js" />
+    <Content Include="Scripts\SORTApplication\SORTListMovemnets.js" />
+    <Content Include="Scripts\SORTApplication\SORTMovementHistory.js" />
+    <Content Include="Scripts\SORTApplication\SORTProjectOverview.js" />
+    <Content Include="Scripts\SORTApplication\AffectedParties.js" />
+    <Content Include="Scripts\SORTApplication\MapFilterDetail.js" />
+    <Content Include="Scripts\SORTApplication\SORTSpecialOrderView.js" />
+    <Content Include="Scripts\SORTApplication\UpdateCheckingStatusPopup.js" />
+    <Content Include="Scripts\SORTApplication\_MovementImportVersions.js" />
+    <Content Include="Scripts\SORTApplication\_SORTHaulierDetails.js" />
+    <Content Include="Scripts\SORTApplication\_SORTSelectRouteByImport.js" />
+    <Content Include="Scripts\Structures\AffectedstructureSummaryPopup.js" />
+    <Content Include="Scripts\Structures\CautionAddReport.js" />
+    <Content Include="Scripts\SORTApplication\SORTApplRevisions.js" />
+    <Content Include="Scripts\Structures\CreateCaution.js" />
+    <Content Include="Scripts\Structures\CreateDelegation.js" />
+    <Content Include="Scripts\SORTApplication\SORTInboxFilter.js" />
+    <Content Include="Scripts\Structures\ConfigureBandings.js" />
+    <Content Include="Scripts\Structures\GeneralStructure.js" />
+    <Content Include="Scripts\Structures\HBToSVConversion.js" />
+    <Content Include="Scripts\Structures\ICAVehicle.js" />
+    <Content Include="Scripts\Structures\ManageICAUsage.js" />
+    <Content Include="Scripts\Structures\ManageStructureContact.js" />
+    <Content Include="Scripts\Structures\MyDelegationArrangement.js" />
+    <Content Include="Scripts\Structures\MyStructures.js" />
+    <Content Include="Scripts\Structures\ReviewCautionsList.js" />
+    <Content Include="Scripts\Structures\ReviewStructureSectionImposedConstraints.js" />
+    <Content Include="Scripts\Structures\ReviewSummary.js" />
+    <Content Include="Scripts\Structures\ReviewSummaryPopup.js" />
+    <Content Include="Scripts\Structures\RoadContact.js" />
+    <Content Include="Scripts\Structures\RoadDelegationListSOA.js" />
+    <Content Include="Scripts\Structures\SearchMostOnerousVehiclePanel.js" />
+    <Content Include="Scripts\Structures\StructSummaryFilter.js" />
+    <Content Include="Scripts\Structures\StructureCautionHistory.js" />
+    <Content Include="Scripts\Structures\StructureContact.js" />
+    <Content Include="Scripts\Structures\StructureDimensions.js" />
+    <Content Include="Scripts\Structures\StructureHistory.js" />
+    <Content Include="Scripts\Structures\StructureImposedContraint.js" />
+    <Content Include="Scripts\Structures\StructureList.js" />
+    <Content Include="Scripts\Structures\StructureMostOnerousVehicleList.js" />
+    <Content Include="Scripts\Structures\StructureReviewSummaryLeftPanel.js" />
+    <Content Include="Scripts\Structures\StructuresInDelegation.js" />
+    <Content Include="Scripts\Structures\UnsuitableStructureSummary.js" />
+    <Content Include="Scripts\Structures\StructureSectionSpan.js" />
+    <Content Include="Scripts\Structures\StructuresNotInDelegation.js" />
+    <Content Include="Scripts\Structures\SVData.js" />
+    <Content Include="Scripts\Structures\ViewStructureContactsList.js" />
+    <Content Include="Scripts\Users\ChangePassword.js" />
+    <Content Include="Scripts\Users\jQuery.ManageUser.js" />
+    <Content Include="Scripts\Users\login.js" />
+    <Content Include="Scripts\Users\Register.js" />
+    <Content Include="Scripts\VehicleComponent\jQuery.Comp.FleetComponentList.js" />
+    <Content Include="Scripts\VehicleConfiguration\CreateComponent.js" />
+    <Content Include="Scripts\VehicleConfiguration\CreateVehicle.js" />
+    <Content Include="Scripts\VehicleConfiguration\_Assessment.js" />
+    <Content Include="Scripts\VehicleConfiguration\_ComponentSelection.js" />
+    <Content Include="Scripts\VehicleConfiguration\_ConfigRegistration.js" />
+    <Content Include="Scripts\VehicleConfiguration\_VehicleConfiguration.js" />
+    <Content Include="Scripts\VehicleConfig\CreateConfiguration.js" />
+    <Content Include="Scripts\VehicleConfig\jQuery.Cofig.VehicleConfigList.js" />
+    <Content Include="Scripts\VehicleConfig\SelectVehicleComponent.js" />
+    <Content Include="Scripts\VehicleConfig\VehicleComponentDetails.js" />
+    <Content Include="Scripts\VehicleConfig\VehicleComponentEdit.js" />
+    <Content Include="Scripts\VehicleConfig\ViewConfigDetails.js" />
+    <Content Include="Scripts\VehicleConfig\ViewConfiguration.js" />
+    <Content Include="Scripts\VehicleConfig\ViewConfigurationGeneral.js" />
+    <Content Include="Scripts\VehicleConfig\ViewNENConfiguration.js" />
+    <Content Include="Scripts\Vehicle\AxleComponent.js" />
+    <Content Include="Scripts\Vehicle\ComponentButton.js" />
+    <Content Include="Scripts\Vehicle\ComponentGeneralPage.js" />
+    <Content Include="Scripts\Vehicle\CreateComponent.js" />
+    <Content Include="Scripts\Vehicle\FleetComponent.js" />
+    <Content Include="Scripts\Vehicle\GeneralComponent.js" />
+    <Content Include="Scripts\Vehicle\GeneralVehicleComponent.js" />
+    <Content Include="Scripts\Vehicle\RegistrationComponent.js" />
+    <Content Include="Scripts\Vehicle\UpdateComponent.js" />
+    <Content Include="Scripts\Vehicle\VehicleComponentDetails.js" />
+    <Content Include="Scripts\Web\jquery-3.6.2.min.js" />
+    <Content Include="Scripts\XSLT\AffectedParties.js" />
+    <Content Include="Scripts\XSLT\AffectedRoads.js" />
+    <Content Include="Scripts\XSLT\AffectedStructures.js" />
+    <Content Include="Scripts\XSLT\Annotations.js" />
+    <Content Include="Scripts\XSLT\Constraints.js" />
+    <Content Include="Scripts\XSLT\DrivingInstruction.js" />
+    <Content Include="Views\Movements\LibraryNotesList.cshtml" />
+    <Content Include="XSLT\IndemnityConfirmation.xslt" />
+    <Content Include="XSLT\NEN_Movement_Police.xslt" />
+    <Content Include="XSLT\NEN_Movement_SOA.xsl" />
+    <Content Include="XSLT\NEN_STGOReducedNotificationPolice.xslt" />
+    <Content Include="XSLT\NEN_STGOReducedNotificationSOA.xslt" />
+    <Content Include="XSLT\NotificationForSpecialOrder.xslt" />
+    <Content Include="XSLT\NotificationForSpecialOrderPolice.xslt" />
+    <Content Include="XSLT\Notification_Movement_Police.xslt" />
+    <Content Include="XSLT\Notification_Movement_SOA.xsl">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="XSLT\PoliceNotificationReducedCandU.xslt" />
+    <Content Include="XSLT\ProposalFaxPolice.xslt">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="XSLT\ProposalFaxSOA.xslt" />
+    <Content Include="XSLT\ProposalForPolice.xslt" />
+    <Content Include="XSLT\Re-Proposal_FAX_SOA.xsl" />
+    <Content Include="XSLT\ReClearedAgreementFaxPolice.xslt" />
+    <Content Include="XSLT\ReNotification.xslt" />
+    <Content Include="XSLT\ReProposalNoLongerFAXPolice.xslt" />
+    <Content Include="XSLT\ReProposalStillAffectedFax.xslt">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="XSLT\ReProposalstillaffected_Fax_Police.xslt" />
+    <Content Include="XSLT\RevisedAgreement.xslt" />
+    <Content Include="XSLT\RevisedAgreementFaxPolice.xslt" />
+    <Content Include="XSLT\Re_ClearedAgreementFax_SOA.xslt" />
+    <Content Include="XSLT\Re_Notification_Fax_Police.xslt" />
+    <Content Include="XSLT\Re_Proposal_No_Longer_FAX_SOA.xsl" />
+    <Content Include="XSLT\RouteDetails.xslt" />
+    <Content Include="XSLT\SpecialOrderAgreedRoute.xslt" />
+    <Content Include="XSLT\STGOReducedNotificationPolice.xslt" />
+    <Content Include="XSLT\STGOReducedNotificationSOA.xslt" />
+    <Content Include="XSLT\Notification_FAX_SOA_PDF.xsl" />
+    <Content Include="XSLT\Notification_Fax_Police.xslt" />
+    <Content Include="App_Browsers\qt.browser" />
+    <Content Include="Content\Document\Preview\SO\SO2D8.pdf" />
+    <Content Include="Content\Document\Preview\SO\SO2D1.pdf" />
+    <Content Include="Content\Document\Preview\SO\SO2D4.pdf" />
+    <Content Include="Content\Document\Preview\SO\SO2D4a.pdf" />
+    <Content Include="Content\Document\Preview\SO\SO2D4b.pdf" />
+    <Content Include="Content\Document\Preview\SO\SO2D5.pdf" />
+    <Content Include="Content\Document\Preview\SO\SO2D7.pdf" />
+    <Content Include="Content\Document\Preview\SO\SO2D7a.pdf" />
+    <Content Include="Content\Document\Preview\SO\SO2D9.pdf" />
+    <Content Include="Content\NwCalendar\fonts\gijgo-material.ttf" />
+    <Content Include="Content\NwCalendar\fonts\gijgo-material.woff" />
+    <None Include="Scripts\jquery-3.4.1.intellisense.js" />
+    <Content Include="Scripts\Common\bootstrap.min.js" />
+    <Content Include="Scripts\Common\DateTimepicker\datetimepicker.js" />
+    <Content Include="Scripts\Common\DateTimepicker\ifx.datetimepicker-1.0.1.js" />
+    <Content Include="Scripts\Common\DateTimepicker\jquery-ui-sliderAccess-1.0.1.js" />
+    <Content Include="Scripts\Common\DateTimepicker\jquery-ui-sliderAccess.js" />
+    <Content Include="Scripts\Common\DateTimepicker\jquery-ui-timepicker-addon-1.0.1.js" />
+    <Content Include="Scripts\Common\DateTimepicker\jquery-ui-timepicker-addon.js" />
+    <Content Include="Scripts\Common\DateTimepicker\jquery-ui.min.js" />
+    <Content Include="Scripts\Common\jquery.easyui.min.js" />
+    <Content Include="Scripts\Common\jquery.footer.js" />
+    <Content Include="Scripts\Common\jquery.left-pane.js" />
+    <Content Include="Scripts\Common\jquery.nestedAccordion.js" />
+    <Content Include="Scripts\Common\jQuery.prevent.back.js" />
+    <Content Include="Scripts\Common\jquery.right-pane.js" />
+    <Content Include="Scripts\Common\jquery.Search.left-pane.js" />
+    <Content Include="Scripts\Common\jQuery.STP.General.js" />
+    <Content Include="Scripts\Common\jQuery.ValidateDate.js" />
+    <Content Include="Scripts\Common\jQueryPageList.list.js" />
+    <Content Include="Scripts\Common\jQueryPaging.js" />
+    <Content Include="Scripts\Common\Layout\ifx.AutocompleteControl.js" />
+    <Content Include="Scripts\Common\Layout\jquery-ui.min.js" />
+    <Content Include="Scripts\Common\Layout\jquery.contextMenu.js" />
+    <Content Include="Scripts\Common\Layout\jquery.fill.roadarea.js" />
+    <Content Include="Scripts\Common\Layout\jquery.menu.navigate.js" />
+    <Content Include="Scripts\Common\Layout\jquery.min.js" />
+    <Content Include="Scripts\Common\Layout\jquery.panel.minimise.js" />
+    <Content Include="Scripts\Common\Layout\jquery.routeplan.js" />
+    <Content Include="Scripts\Common\Layout\jquery.Search.left-pane.js" />
+    <Content Include="Scripts\Common\Layout\jquery.table.head.fit.js" />
+    <Content Include="Scripts\Common\Layout\Jquery.table.js" />
+    <Content Include="Scripts\Common\Layout\Screen_fit.js" />
+    <Content Include="Scripts\Common\Layout\tab.js" />
+    <Content Include="Scripts\Common\MasterPage\existingMovement.js" />
+    <Content Include="Scripts\Common\MasterPage\FleetConfig.js" />
+    <Content Include="Scripts\Common\MasterPage\jquery.accordian.js" />
+    <Content Include="Scripts\Common\MasterPage\jQuery.filter.validate.js" />
+    <Content Include="Scripts\Common\MasterPage\jQuery.master.maincontents.js" />
+    <Content Include="Scripts\Common\MasterPage\jQuery.masterpage.js" />
+    <Content Include="Scripts\Common\MasterPage\jquery.menubounce.js" />
+    <Content Include="Scripts\Common\MasterPage\jquery.NotificationUIControls.js" />
+    <Content Include="Scripts\Common\MasterPage\Jquery.Placeholder.plugin.js" />
+    <Content Include="Scripts\Common\MasterPage\jquery.setpreferences.js" />
+    <Content Include="Scripts\Common\MasterPage\jquery.uiControls.js" />
+    <Content Include="Scripts\Common\MasterPage\vertical-accordion.js" />
+    <Content Include="Scripts\Common\Openlayers\ifx.OpenLayers_fix-1.0.1.js" />
+    <Content Include="Scripts\Common\Openlayers\img\blank.gif" />
+    <Content Include="Scripts\Common\Openlayers\img\cloud-popup-relative.png" />
+    <Content Include="Scripts\Common\Openlayers\img\drag-rectangle-off.png" />
+    <Content Include="Scripts\Common\Openlayers\img\drag-rectangle-on.png" />
+    <Content Include="Scripts\Common\Openlayers\img\east-mini.png" />
+    <Content Include="Scripts\Common\Openlayers\img\layer-switcher-maximize.png" />
+    <Content Include="Scripts\Common\Openlayers\img\layer-switcher-minimize.png" />
+    <Content Include="Scripts\Common\Openlayers\img\marker-blue.png" />
+    <Content Include="Scripts\Common\Openlayers\img\marker-gold.png" />
+    <Content Include="Scripts\Common\Openlayers\img\marker-green.png" />
+    <Content Include="Scripts\Common\Openlayers\img\marker.png" />
+    <Content Include="Scripts\Common\Openlayers\img\measuring-stick-off.png" />
+    <Content Include="Scripts\Common\Openlayers\img\measuring-stick-on.png" />
+    <Content Include="Scripts\Common\Openlayers\img\north-mini.png" />
+    <Content Include="Scripts\Common\Openlayers\img\panning-hand-off.png" />
+    <Content Include="Scripts\Common\Openlayers\img\panning-hand-on.png" />
+    <Content Include="Scripts\Common\Openlayers\img\slider.png" />
+    <Content Include="Scripts\Common\Openlayers\img\south-mini.png" />
+    <Content Include="Scripts\Common\Openlayers\img\west-mini.png" />
+    <Content Include="Scripts\Common\Openlayers\img\zoom-minus-mini.png" />
+    <Content Include="Scripts\Common\Openlayers\img\zoom-plus-mini.png" />
+    <Content Include="Scripts\Common\Openlayers\img\zoom-world-mini.png" />
+    <Content Include="Scripts\Common\Openlayers\img\zoombar.png" />
+    <Content Include="Scripts\Common\Openlayers\OpenLayers-1.0.1.js" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\google.css" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\google.tidy.css" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\ie6-style.css" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\ie6-style.tidy.css" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\add_point_off.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\add_point_on.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\blank.gif" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\close.gif" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\drag-rectangle-off.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\drag-rectangle-on.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\draw_line_off.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\draw_line_on.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\draw_point_off.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\draw_point_on.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\draw_polygon_off.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\draw_polygon_on.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\editing_tool_bar.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\move_feature_off.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\move_feature_on.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\navigation_history.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\overview_replacement.gif" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\pan-panel-NOALPHA.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\pan-panel.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\panning-hand-off.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\panning-hand-on.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\pan_off.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\pan_on.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\remove_point_off.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\remove_point_on.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\ruler.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\save_features_off.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\save_features_on.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\view_next_off.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\view_next_on.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\view_previous_off.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\view_previous_on.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\zoom-panel-NOALPHA.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\img\zoom-panel.png" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\style.css" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\style.mobile.css" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\style.mobile.tidy.css" />
+    <Content Include="Scripts\Common\Openlayers\theme\default\style.tidy.css" />
+    <Content Include="Scripts\IFX_Route\ifx.jquery.contextMenu-1.0.1.js" />
+    <Content Include="Scripts\IFX_Route\ifx.RouteLibrary-1.0.1.js" />
+    <Content Include="Scripts\IFX_Route\ifx.stpmap.common-1.0.1.js" />
+    <Content Include="Scripts\IFX_Route\ifx.stpmap.contextmenu-1.0.1.js" />
+    <Content Include="Scripts\IFX_Route\ifx.stpmap.forelayers-1.0.1.js" />
+    <Content Include="Scripts\IFX_Route\ifx.stpmap.importroute-1.0.1.js" />
+    <Content Include="Scripts\IFX_Route\ifx.stpmap.interface-1.0.1.js" />
+    <Content Include="Scripts\IFX_Route\ifx.stpmap.lrsutil-1.0.1.js" />
+    <Content Include="Scripts\IFX_Route\ifx.stpmap.main-1.0.1.js" />
+    <Content Include="Scripts\IFX_Route\ifx.stpmap.roaddelegation-1.0.1.js" />
+    <Content Include="Scripts\IFX_Route\ifx.stpmap.roadownership-1.0.1.js" />
+    <Content Include="Scripts\IFX_Route\ifx.stpmap.routemanager-1.0.1.js" />
+    <Content Include="Scripts\IFX_Route\ifx.stpmap.slidingpanel-1.0.1.js" />
+    <Content Include="Scripts\IFX_Route\ifx.stpmap.structures-1.0.1.js" />
+    <Content Include="Scripts\IFX_Route\ifx.stpmap.waypoint-1.0.1.js" />
+    <Content Include="Scripts\IFX_Route\OpenLayers.Control.ZoomStatus.js" />
+    <Content Include="Scripts\IFX_Route\ScaleBar-1.0.1.js" />
+    <Content Include="Scripts\jquery-3.4.1.js" />
+    <Content Include="Scripts\jquery-3.4.1.min.js" />
+    <Content Include="Scripts\jquery-3.4.1.slim.js" />
+    <Content Include="Scripts\jquery-3.4.1.slim.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
+    <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
+    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\JQuery\V103\jquery-1.10.min.js" />
+    <Content Include="Scripts\JQuery\V103\jquery-1.9.1.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery-ui-1.10.3.custom.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery-ui.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ajax_upload.0.6.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.alphanumeric.pack.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.blockUI-1.33.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.blockUI.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.browser.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.columnfilters.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.dataTables.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.easyTooltip.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.humanMsg.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.idletimeout.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.idletimer.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.Jcrop.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.MultiFile.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.pagination.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.progressbar.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.treeview.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.accordion.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.autocomplete.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.button.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.core.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.datepicker.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.dialog.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.draggable.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.droppable.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.effect-blind.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.effect-bounce.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.effect-clip.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.effect-drop.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.effect-explode.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.effect-fade.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.effect-fold.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.effect-highlight.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.effect-pulsate.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.effect-scale.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.effect-shake.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.effect-slide.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.effect-transfer.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.effect.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.menu.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.mouse.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.position.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.progressbar.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.resizable.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.selectable.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.slider.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.sortable.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.spinner.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.tabs.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.tooltip.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.ui.widget.min.js" />
+    <Content Include="Scripts\JQuery\V103\Pluggins\jquery.validate.min.js" />
+    <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\Movements\jQuery.policesoafilter.js" />
+    <Content Include="Scripts\Movements\planMovement.js" />
+    <Content Include="Scripts\RoadOwnership\jQuery.report.js" />
+    <Content Include="Scripts\RoadOwnership\jQuery.roadOwnershipOrglist.js" />
+    <Content Include="Scripts\VehicleComponent\jQuery.Comp.Axle.js" />
+    <Content Include="Scripts\VehicleComponent\jQuery.Comp.Create.js" />
+    <Content Include="Scripts\VehicleComponent\jQuery.Comp.Fleet.js" />
+    <Content Include="Scripts\VehicleComponent\jQuery.Comp.Register.js" />
+    <Content Include="Scripts\VehicleComponent\jQuery.Comp.UpdateComp.js" />
+    <Content Include="Scripts\VehicleComponent\jQuery.Comp.ViewComp.js" />
+    <Content Include="Scripts\VehicleComponent\jQuesry.Comp.General.js" />
+    <Content Include="Scripts\Vehicle\jQuery.vehicleConfig.List.js" />
+    <Content Include="Scripts\Vehicle\unitConversion.js" />
+    <Content Include="Scripts\Vehicle\vehicleConfig.Create.js" />
+    <Content Include="Scripts\Vehicle\vehicleConfig.FleetGrid.js" />
+    <Content Include="Scripts\Vehicle\vehicleConfig.GeneralPage.js" />
+    <Content Include="Scripts\Vehicle\VehicleConfig.Registration.js" />
+    <Content Include="Scripts\Vehicle\vehicleConfig.Summarise.js" />
+    <Content Include="Scripts\Web\bootstrap.bundle.min.js" />
+    <Content Include="Scripts\Web\bootstrap.min.js" />
+    <Content Include="Scripts\Web\jquery-3.3.1.min.js" />
+    <Content Include="Scripts\Web\js.js" />
+    <Content Include="Scripts\Web\popper.min.js" />
+    <Content Include="Scripts\Web\redactor.js" />
+    <Content Include="Scripts\Web\redactor.min.js" />
+    <Content Include="Views\Application\ApplicationComponentList.cshtml" />
+    <Content Include="Web.config" />
+    <Content Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </Content>
+    <Content Include="Views\Web.config" />
+    <Content Include="Views\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\Error.cshtml" />
+    <Content Include="Views\Shared\_Layout.cshtml" />
+    <Content Include="Views\Home\Hauliers.cshtml" />
+    <Content Include="Views\Home\Contact.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Users\login.cshtml" />
+    <Content Include="Views\Helpdesk\Index.cshtml" />
+    <Content Include="Views\Feedback\MostRecentFeedbacks.cshtml" />
+    <Content Include="Views\DistributionStatus\ViewDistributionStatus.cshtml" />
+    <Content Include="Views\Vehicle\FleetComponent.cshtml" />
+    <Content Include="Views\Routes\RoutePartLibrary.cshtml" />
+    <Content Include="Views\Structures\MyStructures.cshtml" />
+    <Content Include="Views\RoadDelegation\RoadDelegationList.cshtml" />
+    <Content Include="Views\Home\Police.cshtml" />
+    <Content Include="Views\Movements\MoveInboxAdvancedSearch.cshtml" />
+    <Content Include="Views\Movements\MovementInboxList.cshtml" />
+    <Content Include="Views\Movements\MovementList.cshtml" />
+    <Content Include="Views\Movements\PoliceMovementInbox.cshtml" />
+    <Content Include="Views\Movements\SOAdvancedSearch.cshtml" />
+    <Content Include="Views\Movements\SOMovementList.cshtml" />
+    <Content Include="Views\Contact\ContactView.cshtml" />
+    <Content Include="Views\DistributionStatus\DistributionStatusDashboard.cshtml" />
+    <Content Include="Views\Home\SOA.cshtml" />
+    <Content Include="Views\Home\SORT.cshtml" />
+    <Content Include="Views\VehicleConfig\VehicleConfigList.cshtml" />
+    <Content Include="Views\RoadOwnership\CreateRoadOwnership.cshtml" />
+    <Content Include="Views\RoadOwnership\ListRoadContactList.cshtml" />
+    <Content Include="Views\RoadOwnership\ListRoadOwnerOrg.cshtml" />
+    <Content Include="Views\RoadOwnership\RoadOwnerReport.cshtml" />
+    <Content Include="Views\RoadOwnership\RoadOwnersContact.cshtml" />
+    <Content Include="Views\RoadOwnership\SearchRoadOwnershipOrg.cshtml" />
+    <Content Include="Views\RoadOwnership\RoadOwnershipMap.cshtml" />
+    <Content Include="Views\VehicleConfig\CreateConfiguration.cshtml" />
+    <Content Include="Views\VehicleConfig\GeneralPage.cshtml" />
+    <Content Include="Views\Routes\A2BPlanning.cshtml" />
+    <Content Include="Views\Constraint\ConstraintHistory.cshtml" />
+    <Content Include="Views\Constraint\CautionAddReport.cshtml" />
+    <Content Include="Views\Constraint\CreateCaution.cshtml" />
+    <Content Include="Views\Constraint\CreateConstraint.cshtml" />
+    <Content Include="Views\Constraint\ViewConstraint.cshtml" />
+    <Content Include="Views\Constraint\EditConstraint.cshtml" />
+    <Content Include="Views\Structures\ReviewSummary.cshtml" />
+    <Content Include="Views\Vehicle\GeneralComponent.cshtml" />
+    <Content Include="Views\Vehicle\GeneralVehicleComponent.cshtml" />
+    <Content Include="Views\VehicleConfig\ViewConfiguration.cshtml" />
+    <Content Include="Views\Structures\ReviewStructureSectionSummary.cshtml" />
+    <Content Include="Views\Structures\StructureReviewSummaryLeftPanel.cshtml" />
+    <Content Include="Views\Structures\StructureHistory.cshtml" />
+    <Content Include="Views\Vehicle\RegistrationComponent.cshtml" />
+    <Content Include="Views\Vehicle\AxleComponent.cshtml" />
+    <Content Include="Views\Holidays\HolidayCalender.cshtml" />
+    <Content Include="Views\Constraint\ReviewCautionsList.cshtml" />
+    <Content Include="Views\Constraint\ReviewContactsList.cshtml" />
+    <Content Include="Views\Routes\LibraryRoutePartDetails.cshtml" />
+    <Content Include="Views\Structures\StructureList.cshtml" />
+    <Content Include="Views\Movements\SOMovementFilter.cshtml" />
+    <Content Include="Views\SORTApplication\SORTInbox.cshtml" />
+    <Content Include="Views\Vehicle\ComponentGeneralPage.cshtml" />
+    <Content Include="Views\Vehicle\CreateComponent.cshtml" />
+    <Content Include="Views\Vehicle\UpdateComponent.cshtml" />
+    <Content Include="Views\Structures\StructSummaryFilter.cshtml" />
+    <Content Include="Views\Constraint\ManageConstraintContact.cshtml" />
+    <Content Include="Views\Constraint\ViewCaution.cshtml" />
+    <Content Include="Views\Structures\ReviewCautionsList.cshtml" />
+    <Content Include="Views\VehicleConfig\ConfigurationGeneralPage.cshtml" />
+    <Content Include="Views\SORTApplication\SORTInboxFilter.cshtml" />
+    <Content Include="Views\SORTApplication\SORTInboxAdvancedFilter.cshtml" />
+    <Content Include="Views\Structures\StructureCautionHistory.cshtml" />
+    <Content Include="Views\VehicleConfig\EditConfiguration.cshtml" />
+    <Content Include="Views\VehicleConfig\RegistrationConfiguration.cshtml" />
+    <Content Include="Views\Routes\A2BLeftPanel.cshtml" />
+    <Content Include="Views\Routes\enterRouteDetail.cshtml" />
+    <Content Include="Views\Structures\CautionAddReport.cshtml" />
+    <Content Include="Views\Structures\CreateCaution.cshtml" />
+    <Content Include="Views\VehicleConfig\GeneralPageEdit.cshtml" />
+    <Content Include="Views\Structures\ConfigureBandings.cshtml" />
+    <Content Include="Views\Structures\ICAVehicle.cshtml" />
+    <Content Include="Views\Structures\ManageICAUsage.cshtml" />
+    <Content Include="Views\Application\PartialView\_TermsAndConditions.cshtml" />
+    <Content Include="Views\Organisation\PartialView\_CreateOrganisation.cshtml" />
+    <Content Include="Views\SORTApplication\PartialView\_SORTHaulierDetails.cshtml" />
+    <Content Include="Scripts\SORTSOApplication\jQuery.Oragnisation.js" />
+    <Content Include="Views\Organisation\PartialView\_OrganisationList.cshtml" />
+    <Content Include="Views\Movements\PlanMovement.cshtml" />
+    <Content Include="Views\Movements\_MovementSelectVehicle.cshtml" />
+    <Content Include="Views\Movements\_MovementSelectVehicleByImport.cshtml" />
+    <Content Include="Views\Movements\_MovementSelectVehicleFrmSimilarCombinations.cshtml" />
+    <Content Include="Views\Movements\_SimilarVehicleCombinations.cshtml" />
+    <Content Include="Views\Movements\_MovementSelectedVehicles.cshtml" />
+    <Content Include="Views\Movements\_MovementWorkflowProgress.cshtml" />
+    <Content Include="Views\Vehicle\ViewRegistrationComponent.cshtml" />
+    <Content Include="Views\Application\ViewContactDetails.cshtml" />
+    <Content Include="Views\Structures\StructureDimensions.cshtml" />
+    <Content Include="Views\Structures\StructureSectionSpan.cshtml" />
+    <Content Include="Views\Structures\StructureMostOnerousVehicleList.cshtml" />
+    <Content Include="Views\VehicleConfig\ViewConfigurationGeneral.cshtml" />
+    <Content Include="Views\Application\ViewVehicleDetails.cshtml" />
+    <Content Include="Views\Structures\SearchMostOnerousVehiclePanel.cshtml" />
+    <Content Include="Scripts\Movements\jQuery.hauliertfilter.js" />
+    <Content Include="Views\Organisation\PartialView\_ViewExistingOrganisation.cshtml" />
+    <Content Include="Views\VehicleConfig\AddedVehicleList.cshtml" />
+    <Content Include="Views\VehicleConfig\SelectVehicleComponent.cshtml" />
+    <Content Include="Views\VehicleConfig\VehicleComponentDetails.cshtml" />
+    <Content Include="Views\Structures\StructureImposedContraint.cshtml" />
+    <Content Include="Views\Structures\GeneralStructure.cshtml" />
+    <Content Include="Views\Routes\MovementRoute.cshtml" />
+    <Content Include="Views\Routes\MovementRoutePlan.cshtml" />
+    <Content Include="Views\Movements\_VehicleDetails.cshtml" />
+    <Content Include="Views\Application\PartialView\_ApplicationSupplimentaryInfo.cshtml" />
+    <Content Include="Views\Movements\_MovementAssessmentDetails.cshtml" />
+    <Content Include="Views\Structures\ManageStructureContact.cshtml" />
+    <Content Include="Views\Structures\ViewStructureContactsList.cshtml" />
+    <Content Include="Views\Movements\_MovementRouteVehicle.cshtml" />
+    <Content Include="Views\Structures\ViewCaution.cshtml" />
+    <Content Include="Views\Structures\SVData.cshtml" />
+    <Content Include="Views\Annotation\CreateAnnotation.cshtml" />
+    <Content Include="Views\Movements\_MovementTypeConfirmation.cshtml" />
+    <Content Include="Views\Routes\_RouteDetails.cshtml" />
+    <Content Include="Views\Routes\_SelectRouteByImport.cshtml" />
+    <Content Include="Views\Structures\HBToSVConversion.cshtml" />
+    <Content Include="Views\Structures\RoadContact.cshtml" />
+    <Content Include="Views\RoadDelegation\CreateRoadDelegation.cshtml" />
+    <Content Include="Views\Application\PartialView\_ApplicationOverview.cshtml" />
+    <Content Include="Views\Application\PartialView\_ApplicationRoutes.cshtml" />
+    <Content Include="Views\VehicleConfig\_ApplicationVehicles.cshtml" />
+    <Content Include="Views\Movements\_MovementRouteVehicleAssignment.cshtml" />
+    <Content Include="Views\Application\PartialView\_ViewApplicationSupplimentary.cshtml" />
+    <Content Include="Views\RoadDelegation\CreateRoadDelegation.cshtml" />
+    <Content Include="Views\Vehicle\ComponentButton.cshtml" />
+    <Content Include="Views\Movements\AuthorizeMovementGeneral.cshtml" />
+    <Content Include="Views\Structures\ReviewDelegation.cshtml" />
+    <Content Include="Views\Structures\StructuresInDelegation.cshtml" />
+    <Content Include="Views\Vehicle\VehicleComponentDetails.cshtml" />
+    <Content Include="Views\Vehicle\ViewComponentRegistration.cshtml" />
+    <Content Include="Views\VehicleConfig\ViewConfigDetails.cshtml" />
+    <Content Include="Views\VehicleConfig\ViewVehicleConfiguration.cshtml" />
+    <Content Include="Views\Movements\SOAPoliceSearch.cshtml" />
+    <Content Include="Views\SORTApplication\SORTApplicationSummary.cshtml" />
+    <Content Include="Views\SORTApplication\SORTListMovemnets.cshtml" />
+    <Content Include="Views\SORTApplication\SORTApplRevisions.cshtml" />
+    <Content Include="Views\SORTApplication\SORTAppCandidateRouteVersion.cshtml" />
+    <Content Include="Views\SORTApplication\SORTAppMovementVersion.cshtml" />
+    <Content Include="Views\SORTApplication\SORTSpecialOrderView.cshtml" />
+    <Content Include="Views\SORTApplication\SORTProjectOverview.cshtml" />
+    <Content Include="Views\SORTApplication\MapFilter.cshtml" />
+    <Content Include="Views\SORTApplication\MapFilterDetail.cshtml" />
+    <Content Include="Views\Notification\TransmissionStatusList.cshtml" />
+    <Content Include="Views\SORTApplication\PartialView\SORTMovementHistory.cshtml" />
+    <Content Include="Views\SORTApplication\PartialView\HaulierNotes.cshtml" />
+    <Content Include="Views\Constraint\HaulierConstraintDetails.cshtml" />
+    <Content Include="Views\Structures\ReviewStructureSectionImposedConstraints.cshtml" />
+    <Content Include="Views\Structures\ReviewSummaryPopup.cshtml" />
+    <Content Include="Views\Structures\StructureContact.cshtml" />
+    <Content Include="Views\Application\PartialView\_ViewIndemnityConfirmation.cshtml" />
+    <Content Include="Views\SORTApplication\ApplSummaryLeftPanel.cshtml" />
+    <Content Include="Views\SORTApplication\ProjectOverviewLeftPanel.cshtml" />
+    <Content Include="Views\SORTApplication\SORTLeftPanel.cshtml" />
+    <Content Include="Views\SORTApplication\SORTAllocateUser.cshtml" />
+    <Content Include="Views\Contact\AuthoriseMovementShowContactList.cshtml" />
+    <Content Include="Views\Movements\ViewCollaborationStatusAndNotes.cshtml" />
+    <Content Include="Views\Application\RouteAnalysisPanel.cshtml" />
+    <Content Include="Views\RouteAssessment\ListAffectedStructures.cshtml" />
+    <Content Include="Views\Application\PartialView\_ViewSupplementary.cshtml" />
+    <Content Include="Views\RouteAssessment\ListAnnotations.cshtml" />
+    <Content Include="Views\Feedback\ListFeedback.cshtml" />
+    <Content Include="Views\RouteAssessment\ListRouteDescription.cshtml" />
+    <Content Include="Views\SORTApplication\CreateCandidateRoute.cshtml" />
+    <Content Include="Views\SORTApplication\CreateCandidateRouteVersion.cshtml" />
+    <Content Include="Views\SORTApplication\SORTAppEditCandiRouteName.cshtml" />
+    <Content Include="Views\Application\SOHaulierApplicationDetails.cshtml" />
+    <Content Include="Views\Application\ApplicationRouteVehicle.cshtml" />
+    <Content Include="Views\Application\ApplicationDetails.cshtml" />
+    <Content Include="Views\Application\ViewSupplimentaryInfo.cshtml" />
+    <Content Include="Views\Application\NotificationHistory.cshtml" />
+    <Content Include="Views\RouteAssessment\ListAffectedParties.cshtml" />
+    <Content Include="Views\RouteAssessment\ListAffectedRoads.cshtml" />
+    <Content Include="Views\DistributionStatus\Retransmit.cshtml" />
+    <Content Include="Views\Feedback\ViewFeedbackPopup.cshtml" />
+    <Content Include="Views\Organisation\ManageOrganisation.cshtml" />
+    <Content Include="Views\Application\ListImportedVehicleConfiguration.cshtml" />
+    <Content Include="Views\Dispensation\ManageDispensation.cshtml" />
+    <Content Include="Views\Dispensation\PartialView\_ListDispensation.cshtml" />
+    <Content Include="Views\Application\PartialView\HaulierApplRouteParts.cshtml" />
+    <Content Include="Views\Application\PartialView\ApplicationVehicle.cshtml" />
+    <Content Include="Views\Dispensation\CreateDispensation.cshtml" />
+    <Content Include="Views\Application\ViewApplication.cshtml" />
+    <Content Include="Views\SORTApplication\PartialView\MoveSummaryLeftPanel.cshtml" />
+    <Content Include="Views\Notification\SearchTransmissionStatusPanel.cshtml" />
+    <Content Include="Views\SORTApplication\SOLeftPanel.cshtml" />
+    <Content Include="Views\SORTApplication\_SORTSelectRouteByImport.cshtml" />
+    <Content Include="Views\SORTApplication\AffectedParties.cshtml" />
+    <Content Include="Views\SORTApplication\CandidateCheckerAllocation.cshtml" />
+    <Content Include="Views\SORTApplication\CreateSpecialOrder.cshtml" />
+    <Content Include="Views\SORTApplication\DistributionCommentsPopUp.cshtml" />
+    <Content Include="Views\SORTApplication\ShowSpecialOrder.cshtml" />
+    <Content Include="Views\SORTApplication\SortGenerelDetails.cshtml" />
+    <Content Include="Views\SORTApplication\UpdateCheckingStatusPopup.cshtml" />
+    <Content Include="Views\SORTApplication\PartialView\_SortRouteDetails.cshtml" />
+    <Content Include="Views\Logging\ListNENAuditPerNotification.cshtml" />
+    <Content Include="Views\Logging\NENAuditLogPopup.cshtml" />
+    <Content Include="Views\Account\AutoResponse.cshtml" />
+    <Content Include="Views\Notification\_NotificationGeneralDetails.cshtml" />
+    <Content Include="Views\Dispensation\PartialView\_VehicleRestricationDetails.cshtml" />
+    <Content Include="Views\Home\Feedback.cshtml" />
+    <Content Include="Views\Notification\_ViewNotificationGeneralDetails.cshtml" />
+    <Content Include="Views\Notification\_NotificationRouteAssessment.cshtml" />
+    <Content Include="Views\SORTApplication\CandiVersionRoutesList.cshtml" />
+    <Content Include="Views\Movements\_MovementMap.cshtml" />
+    <Content Include="Views\Notification\_NotificationTermsAndConditions.cshtml" />
+    <Content Include="Views\Structures\RoadDelegationListSOA.cshtml" />
+    <Content Include="Views\Structures\StructuresNotInDelegation.cshtml" />
+    <Content Include="Views\SORTApplication\CandiVersionVehicleList.cshtml" />
+    <Content Include="Views\Account\ForgetPassword.cshtml" />
+    <Content Include="Views\Users\Register.cshtml" />
+    <Content Include="Views\Account\ForgetUserName.cshtml" />
+    <Content Include="Views\Users\ChangePassword.cshtml" />
+    <Content Include="Views\Account\ManageUsers.cshtml" />
+    <Content Include="Views\Information\ManageNews.cshtml" />
+    <Content Include="Views\Information\NewsOverview.cshtml" />
+    <Content Include="Views\SORTApplication\PartialView\_SortCandiRouteDetails.cshtml" />
+    <Content Include="Views\Application\PartialView\AgreedRoutes.cshtml" />
+    <Content Include="Views\Notification\DisplayNotification.cshtml" />
+    <Content Include="Views\Notification\_DisplayNotificationGeneralDetails.cshtml" />
+    <Content Include="Views\Notification\_DisplayNotificationRouteVehicle.cshtml" />
+    <Content Include="Views\Notification\ManualAddedParties.cshtml" />
+    <Content Include="Views\Notification\PopUpAddressBook.cshtml" />
+    <Content Include="Views\Contact\ContactList.cshtml" />
+    <Content Include="Views\Notification\CollabHistoryPopList.cshtml" />
+    <Content Include="Views\Notification\CollaborationStatusList.cshtml" />
+    <Content Include="Views\Notification\CreateInternalCollaboration.cshtml" />
+    <Content Include="Views\Notification\DisplayCollaborationHistoryList.cshtml" />
+    <Content Include="Views\AddressBook\ManageAddressBook.cshtml" />
+    <Content Include="Views\Structures\AffectedstructureSummaryPopup.cshtml" />
+    <Content Include="Views\NENNotification\NENAuditLog.cshtml" />
+    <Content Include="Views\Application\PartialView\HaulierApplVehicleParts.cshtml" />
+    <Content Include="Views\Application\ListSOMovements.cshtml" />
+    <Content Include="Views\Application\SOGeneralDetails.cshtml" />
+    <Content Include="Views\Notification\_DisplayNotificationHistory.cshtml" />
+    <Content Include="Views\Notification\_DisplayCollaborationList.cshtml" />
+    <Content Include="Views\Application\PartialView\RouteVehicle.cshtml" />
+    <Content Include="Views\Application\PartialView\_ViewContactDetails.cshtml" />
+    <Content Include="Views\Application\PartialView\ContactedPartiesList.cshtml" />
+    <Content Include="Views\RouteAssessment\ListCautions.cshtml" />
+    <Content Include="Views\RouteAssessment\ListConstraints.cshtml" />
+    <Content Include="Views\RouteAssessment\ListDrivingInstructions.cshtml" />
+    <Content Include="Views\RouteAssessment\ViewAssessmentResult.cshtml" />
+    <Content Include="Views\Application\ViewNotificationHistory.cshtml" />
+    <Content Include="Views\AddressBook\AddressDetail.cshtml" />
+    <Content Include="Views\AddressBook\AddressList.cshtml" />
+    <Content Include="Views\SORTApplication\PartialView\_MovementImportVersions.cshtml" />
+    <Content Include="Views\SORTApplication\PartialView\_MovementRouteVehicle.cshtml" />
+    <Content Include="Views\Dispensation\PartialView\_ViewDispensationDetails.cshtml" />
+    <Content Include="Views\NENNotification\ListNEHaulier.cshtml" />
+    <Content Include="Views\NENNotification\SearchNeHaulierPanel.cshtml" />
+    <Content Include="Views\NENNotification\CreateNeuser.cshtml" />
+    <Content Include="Views\Notification\_NotifAffectedParties.cshtml" />
+    <Content Include="Views\NENNotification\NE_Notification.cshtml" />
+    <Content Include="Views\NENNotification\Display_NENotification.cshtml" />
+    <Content Include="Views\NENNotification\NENotificationAssignPopUp.cshtml" />
+    <Content Include="Views\Application\ListImportedRouteFromLibrary.cshtml" />
+    <Content Include="Views\Structures\CreateDelegation.cshtml" />
+    <Content Include="Views\Structures\MyDelegationArrangement.cshtml" />
+    <Content Include="Views\Information\ViewInformation.cshtml" />
+    <Content Include="Views\Information\ViewInformationList.cshtml" />
+    <Content Include="Views\Information\ViewLinkList.cshtml" />
+    <Content Include="Views\Information\PartialView\_NewsDetails.cshtml" />
+    <Content Include="Views\Information\CreateNews.cshtml" />
+    <Content Include="Views\NENNotification\hualierRouteInfo.cshtml" />
+    <Content Include="Views\Information\ViewDocumentList.cshtml" />
+    <Content Include="Views\Home\_HaulierNews.cshtml" />
+    <Content Include="Views\Home\_News.cshtml" />
+    <Content Include="Views\Notification\AgreedRouteV.cshtml" />
+    <Content Include="Views\Document\AgreedRouteV.cshtml" />
+    <Content Include="Views\Information\CreateInformation.cshtml" />
+    <Content Include="Views\Information\CreateDownload.cshtml" />
+    <Content Include="Views\Information\CreateLink.cshtml" />
+    <Content Include="Views\Application\VR1GeneralDetails.cshtml" />
+    <Content Include="Views\Application\VR1SupplementaryDetails.cshtml" />
+    <Content Include="Views\VehicleConfig\VehicleComponentEdit.cshtml" />
+    <Content Include="Views\Vehicle\GetVehicleComponentImage.cshtml" />
+    <Content Include="Views\Account\PartialView\_Cookies.cshtml" />
+    <Content Include="Views\Account\PartialView\_ChangePassword.cshtml" />
+    <Content Include="Views\Movements\AgreedRouteV.cshtml" />
+    <Content Include="Views\Application\ApplicationRouteList.cshtml" />
+    <Content Include="Views\Structures\UnsuitableStructureSummary.cshtml" />
+    <Content Include="Views\Generic\FirstTimeUser.cshtml" />
+    <Content Include="Views\Holidays\showCalendar.cshtml" />
+    <Content Include="Views\VehicleConfig\ViewNENConfiguration.cshtml" />
+    <Content Include="Views\Notification\NotificationDispensationPopUp.cshtml" />
+    <Content Include="Views\Dispensation\PartialView\EditDispensationRestriction.cshtml" />
+    <Content Include="Views\Account\RedirectOnLogin.cshtml" />
+    <Content Include="Views\Document\ProposalSOA.cshtml" />
+    <Content Include="Views\Account\PartialView\_TermsAndConditions.cshtml" />
+    <Content Include="Views\Document\ReProposalSOA.cshtml" />
+    <Content Include="Views\Document\SortAgreeRoute.cshtml" />
+    <Content Include="Views\Document\SortSingleAgreeRoute.cshtml" />
+    <Content Include="Views\Movements\PrintDetailedReport.cshtml" />
+    <Content Include="Views\Notification\ViewUnacknowledgedCollaboration.cshtml" />
+    <Content Include="Views\Home\_HotNews.cshtml" />
+    <Content Include="Views\Application\RouteAnalysisNotification.cshtml" />
+    <Content Include="Views\Generic\HelpBuilder.cshtml" />
+    <Content Include="Views\Generic\Index.cshtml" />
+    <Content Include="Views\Notification\DisplayNotifiedparties.cshtml" />
+    <Content Include="Views\Report\SessionLengthReport.cshtml" />
+    <Content Include="Views\Report\PartialView\_SessionLengthHistory.cshtml" />
+    <Content Include="Views\Report\PartialView\_SessionLengthHistoryTypeWise.cshtml" />
+    <Content Include="Views\Report\PartialView\_PeriodicSessionLengthDetails.cshtml" />
+    <Content Include="Views\Report\CommunicationReport.cshtml" />
+    <Content Include="Views\Report\PartialView\_CommunicationHistory.cshtml" />
+    <Content Include="Views\Report\IndustryLiaisonReport.cshtml" />
+    <Content Include="Views\Report\PartialView\_IndustryLiaisonHistory.cshtml" />
+    <Content Include="Views\Home\Error.cshtml" />
+    <Content Include="Views\Users\Error.cshtml" />
+    <Content Include="Views\Error\BadRequest.cshtml" />
+    <Content Include="Views\Account\PartialView\_AntiForgeryToken.cshtml" />
+    <Content Include="Views\Error\UnauthorizedAccess.cshtml" />
+    <Content Include="Views\Report\ReportPerUser.cshtml" />
+    <Content Include="Views\Report\PartialView\__ReportPerUserHistory.cshtml" />
+    <Content Include="Views\NENNotification\NEN_HelpdeskReport.cshtml" />
+    <Content Include="Views\NENNotification\PartialView\_NEN_HelpdeskReportHistory.cshtml" />
+    <Content Include="Views\NENNotification\NEN_SOAReport.cshtml" />
+    <Content Include="Views\NENNotification\PartialView\_NEN_SOAReportHistory.cshtml" />
+    <Content Include="Views\Movements\PrintIndemnityConfirmation.cshtml" />
+    <Content Include="Views\VehicleConfiguration\CreateComponent.cshtml" />
+    <Content Include="Views\VehicleConfiguration\CreateVehicle.cshtml" />
+    <Content Include="Views\VehicleConfiguration\EditVehicleConfig.cshtml" />
+    <Content Include="Views\VehicleConfiguration\_Assessment.cshtml" />
+    <Content Include="Views\VehicleConfiguration\_ComponentDetails.cshtml" />
+    <Content Include="Views\VehicleConfiguration\_ComponentSelection.cshtml" />
+    <Content Include="Views\VehicleConfiguration\_ComponentShadow.cshtml" />
+    <Content Include="Views\VehicleConfiguration\_ConfigRegistration.cshtml" />
+    <Content Include="Views\VehicleConfiguration\_CreateComponent.cshtml" />
+    <Content Include="Views\VehicleConfiguration\_VehicleConfigDetail.cshtml" />
+    <Content Include="Views\VehicleConfiguration\_VehicleConfiguration.cshtml" />
+    <Content Include="Views\VehicleConfiguration\_VehicleOverview.cshtml" />
+    <Content Include="Views\VehicleConfiguration\_VehicleShadow.cshtml" />
+    <Content Include="Views\Error\NotFound.cshtml" />
+    <Content Include="Views\Constraint\ConstraintList.cshtml" />
+    <Content Include="Views\Constraint\ConstraintSummaryFilter.cshtml" />
+    <Content Include="Views\Movements\_FolderManagement.cshtml" />
+    <Content Include="Views\VehicleConfiguration\_ComponentDetailsSub.cshtml" />
+    <Content Include="Views\VehicleConfiguration\_ComponentShadowSub.cshtml" />
+    <Content Include="Views\Annotation\ListAnnotationLibrary.cshtml" />
+    <Content Include="Views\Annotation\PartialView\_DisplayAnnotationListPopUp.cshtml" />
+    <Content Include="Views\AddressBook\PartialView\_ManageAddressBookDetails.cshtml" />
+    <Content Include="Views\Routes\OutlineRouteDetails.cshtml" />
+    <Content Include="Views\Document\SortAgreeRevised.cshtml" />
+    <Content Include="Views\DistributionStatus\EmailTransmissionView.cshtml" />
+    <Content Include="Views\RouteAssessment\Partial\_AffectedStructuresMetric.cshtml" />
+    <Content Include="Views\RouteAssessment\Partial\Constraints.cshtml" />
+    <Content Include="Views\VehicleConfiguration\_SingleComponent.cshtml" />
+    <Content Include="Views\Vehicle\_SingleComponentAxle.cshtml" />
+    <Content Include="Views\Shared\_HeaderNav.cshtml" />
+    <Content Include="Views\Account\PartialView\_RedirectToLogin.cshtml" />
+    <Content Include="Views\VehicleConfiguration\_AxlePopUp.cshtml" />
+    <Content Include="Views\Constraint\ConstraintHistoryPopUp.cshtml" />
+    <Content Include="Views\VehicleConfiguration\AllAxleDetailsPopUp.cshtml" />
+    <Content Include="Views\VehicleConfiguration\ViewAxleDetails.cshtml" />
+    <Content Include="Views\Information\HotNewsprompticon.cshtml" />
+    <Content Include="Views\Routes\_ListInputRouteDescription.cshtml" />
+    <Content Include="Views\Account\ViewResponseMailPdf.cshtml" />
+    <Content Include="Views\Account\ViewResponsePdfDoc.cshtml" />
+    <Content Include="Views\Shared\_ValidateUserType.cshtml" />
+    <Content Include="Views\BrokenRoutesReplanner\ShowBrokenRoutes.cshtml" />
+    <Content Include="Views\Information\ShowVideo.cshtml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+    <Folder Include="Interface\" />
+    <Folder Include="Models\" />
+    <Folder Include="Provider\" />
+    <Folder Include="Views\Workflow\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\bootstrap.min.css.map" />
+    <Content Include="Content\bootstrap.css.map" />
+    <Content Include="Content\bootstrap-theme.min.css.map" />
+    <Content Include="Content\bootstrap-theme.css.map" />
+    <None Include="packages.config" />
+    <Content Include="Scripts\jquery-3.4.1.slim.min.map" />
+    <Content Include="Scripts\jquery-3.4.1.min.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Libraries\STP.Common\STP.Common.csproj">
+      <Project>{001eb1f6-da74-4342-841a-9d7856a1ed94}</Project>
+      <Name>STP.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\STP.DataAccess\STP.DataAccess.csproj">
+      <Project>{f6d6e464-ae18-47ed-bbd8-817636d829dd}</Project>
+      <Name>STP.DataAccess</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\STP.Domain\STP.Domain.csproj">
+      <Project>{7084ece6-a17f-41b1-9a8a-c199c98e48c8}</Project>
+      <Name>STP.Domain</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Libraries\STP.ServiceAccess\STP.ServiceAccess.csproj">
+      <Project>{1c96f0ff-3e7a-494e-811a-dd3d8731889d}</Project>
+      <Name>STP.ServiceAccess</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <Target Name="MvcBuildViews" AfterTargets="AfterBuild" Condition="'$(MvcBuildViews)'=='true'">
+    <AspNetCompiler VirtualPath="temp" PhysicalPath="$(WebProjectOutputDir)" />
+  </Target>
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>True</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>65378</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:65378/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>False</UseCustomServer>
+          <CustomServerUrl>
+          </CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\Solution\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\Solution\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target> -->
+</Project>

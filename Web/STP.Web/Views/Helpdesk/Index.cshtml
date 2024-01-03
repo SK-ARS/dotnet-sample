@@ -1,0 +1,89 @@
+@{
+
+    bool createSuccess = false;
+    bool setpreference = false;
+    if (ViewBag.saveMsg != null && ViewBag.saveMsg == "1")
+    {
+        createSuccess = true;
+    }
+
+    if (ViewBag.SetPreferenceMessage != null && ViewBag.SetPreferenceMessage == "1")
+    {
+        setpreference = true;
+    }
+
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.HOME;
+}
+@Html.Hidden("CreateAlert", createSuccess)
+@Html.Hidden("SetPreferenceMessage", setpreference)
+@Html.Hidden("Logged_In", Session["Logged_In"])
+@Html.Hidden("userTypeId", Session["userTypeId"])
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+
+</head>
+
+
+<body style="overflow-y: auto;" id="helpdesk">
+    <!-- banner -->
+    <section id="banner">
+        <div class="container-fluid" id="banner-container">
+            <div id="main">
+                <div class="row mr-0 pb-4" id="banner-section-1">
+                    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12 pl-0 pr-0 mr-0 ml-0 column-2"
+                         style="background-image: url(../Content/assets/images/laag6.png);opacity: 1;">
+                        <div class="pr-0 pl-0 ml-0 mr-0"
+                             style="background-image: url(../Content/assets/images/laag6Kopieren.png);opacity: 1;">
+                            <div class="row pr-0 pl-0 ml-0 mr-0">
+                                <div class="thumbnail">
+                                    @{
+                                        Html.RenderAction("MostRecentFeedbacks", "Feedback", new { page = 1, pageSize = 4 });
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="banner-scetion-2">
+                <div class="col-lg-12 col-md-12 col-sm-12 header">
+                    <div class="title" style="text-align: center;">
+                        DISTRIBUTION STATUS
+                    </div>
+                </div>
+                <div class="distribution">
+                    @{
+                        Html.RenderAction("DistributionStatusDashboard", "DistributionStatus", new { page = 1, pageSize = 5 });
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div id="mySidenav" class="sidenav">
+            <a href="#" id="closeNav" class="closebtn">&times;</a>
+            <a href="#" class="header-user mt-5">
+                <img src="~/Content/assets/p-icon.png"  class="mr-4" width="35">John Doe
+            </a>
+            <hr>
+            <a href="#" class="mt-3 mb-3">
+                <img src="~/Content/assets/images/preference.png"   class="mr-4" width="35">Preferences
+            </a>
+            <a href="#" class="mt-3 mb-3">
+                <img src="~/Content/assets/images/change-password.png"   class="mr-4" width="35">Change password
+            </a>
+            <a href="#" class="mt-3 mb-3">
+                <img src="~/Content/assets/images/logout.png"   class="mr-4" width="35">Logout
+            </a>
+        </div>
+    </section>
+
+</body>
+
+</html>
+
+<script src="~/Scripts/Helpdesk/Index.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Feedback/MostRecentFeedbacks.js?V@(Session["ProjectVersion"])"></script>

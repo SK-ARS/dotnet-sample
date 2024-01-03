@@ -1,0 +1,271 @@
+@model STP.Domain.Routes.RouteModel.RouteAnnotation
+
+@{
+    Layout = null;
+    bool isAdmin = false;
+    int portalType = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var user = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        portalType = user.UserTypeId;
+        if (portalType == 696006 || user.IsAdmin == 1)
+        {
+            isAdmin = true;
+        }
+    }
+}
+@using System.Web.Optimization
+
+@using System.Web.Mvc
+
+<link href="~/Content/Style/Common/grid_css.css" rel="stylesheet" />
+@*<script src="~/Scripts/Common/MasterPage/jquery.uiControls.js?V@(Session["ProjectVersion"])"></script>*@
+
+<style>
+    .TableAlignFloat {
+        float: left !important;
+        width: 420px !important;
+        margin-left: 15px;
+        margin-right: 15px;
+        margin-bottom: 0px;
+    }
+
+    TableAlignFloat1 {
+        float: left !important;
+        width: 420px !important;
+        margin-left: 15px;
+        margin-right: 15px;
+        margin-bottom: 10px;
+    }
+
+    .noborder1 {
+        width: 400px;
+        border-bottom: none !important;
+    }
+
+
+    .txtmultiwidth {
+        width: 254px !important;
+    }
+
+    table #annot_contact_table {
+        empty-cells: show;
+    }
+
+    .annottd {
+        padding: 3px;
+        text-align: center;
+        background-color: #006699;
+        width: 50%;
+    }
+
+    .error {
+        color: #e80c4d;
+        border-color: #e80c4d !important;
+        font-size: 12px !important;
+        width: 100px;
+        margin: 3px 0px 3px 0px;
+        display: none;
+        padding: 0px;
+    }
+
+    .delcontact {
+        border-bottom: none;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        background-color: #f7f7f7;
+    }
+    .Chebox {
+        width: 70% !important;
+        border-radius: 10px;
+    }
+    #annottaiondiv {
+        width: 580px;
+        max-width:650px;
+        height:auto;
+        margin:0;
+    }
+    #blnkdiv {
+        background-color: white;
+    }
+
+    #dynatitle {
+        color: rgba(39, 87, 149, 1);
+        font-weight: 600 !important;
+        padding-left: 7px !important;
+        padding-bottom: 10px;
+    }
+    
+</style>
+
+<div class="modal-dialog modal-dialog-centered" id="annottaiondiv">
+    <div class="modal-content sopmodal-content modal-annot-content" style="background-color:white">
+
+        <div class="modal-header pt-4" id="annothead">
+            <div class="details sopdetails pl-3" id="dynatitle">Insert Annotation</div>
+            <span aria-hidden="true" class="close sopclose" id="span-close" data-dismiss="modal" aria-label="Close" style="cursor:pointer;">×</span>
+        </div>
+        <div class="modal-body sopmodal-body pt-2" id="annotbody">
+            <span class="PopupHelpName" id="CreateAnnotation"></span>
+            <span class="row ml-0 pl-4 soptext-normal text-normal">The annotation is shared with all parties involved (not private)</span>
+            <div id="form_InsertAnnotation">
+
+                <div class="row ml-0 pt-2">
+
+
+                    <div class="form-check">
+                        <button class="btn outline-btn-primary btn-normal btn-layout mr-r1 mb-2" id="btnImportAnnotation" style="width: 175px !important;" type="button"
+                                aria-pressed="true">
+                            Import From Library
+                        </button>
+                        <input class="checkbox" data-val="true" data-val-required="The SO field is required."
+                               id="NoteToLibrary" name="SO" type="checkbox" value="true">
+                        <label for="NoteToLibrary" class="form-check-label edit-normal pl-2 pr-0 pt-0 pb-0">
+                            Add Notes to Library
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="row ml-0 pt-2">
+                        <div class="col-lg-3 col-md-4 col-sm-4 pl-3 text-normal soptext-normal">
+                            Annotation text
+                        </div>
+                        <div class="col-lg-8 col-md-12 col-sm-12">
+                            @Html.TextAreaFor(model => model.AnnotText, new { @id = "annotText", @maxlength = "500", @class = "form-control sopform-control", @tabindex = 1, @rows = 4 })
+                            <span class="error" id="AT_validatn"></span>
+                        </div>
+                    </div>
+                    <div class="row ml-0 pt-2">
+                        <div class="col-lg-3 col-md-4 col-sm-4 text-normal soptext-normal">
+                            Annotation type
+                        </div>
+                        <div class="col-lg-8 col-md-12 col-sm-12">
+                            <div class="">
+                                @Html.DropDownListFor(m => m.AnnotType, ViewBag.Annottype as List<SelectListItem>, new { @id = "annotType", @tabindex = 2, @class = "form-select sopform-select select1 sopselect1 text-normal-hyperlink" })
+                            </div>
+                        </div>
+                    </div>
+                    <table id="annot_contact_table" style="text-align:left;display:none; background-color:white;width:405px;border-collapse:collapse;margin-left:15px;margin-bottom:0px;padding-right:15px;">
+                        <caption style="text-align:left;" class="pl-3">Associated Contacts</caption>
+                        <thead>
+                            <tr class="noborder1">
+                                <th class="annottd tblbdrleft">Organisation Name</th>
+                                <th class="annottd tblbdrright">Contact Number</th>
+                                <td class="delcontact"><div class='blank'></div></td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="noborder1">
+                                <td class="tblbdrleft tblbdrright tblbdrbottum" style="padding:3px;">&nbsp;</td>
+                                <td class=" tblbdrright tblbdrbottum" style="padding:3px;">&nbsp;</td>
+                                <td class="delcontact"><div class='deletecontact' style="float:right;"></div></td>
+                            </tr>
+                            <tr class="noborder1">
+                                <td class="tblbdrleft tblbdrright tblbdrbottum" style="padding:3px;">&nbsp;</td>
+                                <td class=" tblbdrright tblbdrbottum" style="padding:3px;">&nbsp;</td>
+                                <td class="delcontact"><div class='deletecontact' style="float:right;"></div></td>
+                            </tr>
+                            <tr class="noborder1">
+                                <td class="tblbdrleft tblbdrright tblbdrbottum" style="padding:3px;">&nbsp;</td>
+                                <td class=" tblbdrright tblbdrbottum" style="padding:3px;">&nbsp;</td>
+                                <td class="delcontact"><div class='deletecontact' style="float:right;"></div></td>
+                            </tr>
+                            <tr class="noborder1">
+                                <td class="tblbdrleft tblbdrright tblbdrbottum" style="padding:3px;">&nbsp;</td>
+                                <td class=" tblbdrright tblbdrbottum" style="padding:3px;">&nbsp;</td>
+                                <td class="delcontact"><div class='deletecontact' style="float:right;"></div></td>
+                            </tr>
+                            <tr class="noborder1">
+                                <td class="tblbdrleft tblbdrright tblbdrbottum " style="padding:3px;">&nbsp;</td>
+                                <td class="tblbdrbottum tblbdrright" style="padding:3px;">&nbsp;</td>
+                                <td class="delcontact"><div class='deletecontact' style="float:right;"></div></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br />
+                    <div class="row ml-0 pt-2">
+                        <div class="col-lg-4 col-md-4 col-sm-4 text-normal soptext-normal">
+                            Associated contacts
+                        </div>
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="main-table" id="tableSOA">
+                                <table id="tableAnnotContact">
+                                    <thead class="table-soa soptable-soa">
+                                        <tr>
+                                            <th class="table-soa soptable-soa text-color3 stHeading1 m-0">
+                                                Organisation Name
+                                            </th>
+                                            <th class="table-soa soptable-soa text-color3 stHeading1 m-0">Contact Number</th>
+                                            <th id="blnkdiv"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="table-soa soptable-soa stHeading1 text1" style="padding: 9px 8px 9px 2rem;"><input class="edit-normal sopedit-normal" style="padding: 0rem 0rem" type="text" name="from"></td>
+                                            <td class="table-soa soptable-soa stHeading1 text1" style="padding: 9px 8px 9px 2rem;"><input class="edit-normal sopedit-normal" style="padding: 0rem 0rem" type="text" name="from"></td>
+                                            <td><img src="~/Content/assets/images/delete-icon.svg" width="15" class='deletecontact'></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="table-soa soptable-soa stHeading1 text1" style="padding: 9px 8px 9px 2rem;"><input class="edit-normal sopedit-normal" style="padding: 0rem 0rem" type="text" name="from"></td>
+                                            <td class="table-soa soptable-soa stHeading1 text1" style="padding: 9px 8px 9px 2rem;"><input class="edit-normal sopedit-normal" style="padding: 0rem 0rem" type="text" name="from"></td>
+                                            <td><img src="~/Content/assets/images/delete-icon.svg" width="15" class='deletecontact'></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="table-soa soptable-soa stHeading1 text1" style="padding: 9px 8px 9px 2rem;"><input class="edit-normal sopedit-normal" style="padding: 0rem 0rem" type="text" name="from"></td>
+                                            <td class="table-soa soptable-soa stHeading1 text1" style="padding: 9px 8px 9px 2rem;"><input class="edit-normal sopedit-normal" style="padding: 0rem 0rem" type="text" name="from"></td>
+                                            <td><img src="~/Content/assets/images/delete-icon.svg" width="15" class='deletecontact'></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="table-soa soptable-soa stHeading1 text1" style="padding: 9px 8px 9px 2rem;"><input class="edit-normal sopedit-normal" style="padding: 0rem 0rem" type="text" name="from"></td>
+                                            <td class="table-soa  soptable-soa stHeading1 text1" style="padding: 9px 8px 9px 2rem;"><input class="edit-normal sopedit-normal" style="padding: 0rem 0rem" type="text" name="from"></td>
+                                            <td><img src="~/Content/assets/images/delete-icon.svg" width="15" class='deletecontact'></td>
+                                        </tr>
+                                        <tr>
+                                            <td class="table-soa soptable-soa stHeading1 text1" style="padding: 9px 8px 9px 2rem;"><input class="edit-normal sopedit-normal" style="padding: 0rem 0rem" type="text" name="from"></td>
+                                            <td class="table-soa  soptable-soa stHeading1 text1" style="padding: 9px 8px 9px 2rem;"><input class="edit-normal sopedit-normal" style="padding: 0rem 0rem" type="text" name="from"></td>
+                                            <td><img src="~/Content/assets/images/delete-icon.svg" width="15" class='deletecontact'></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row ml-0 pt-2">
+                        <div class="col-lg-12 col-md-12 col-sm-12 text-normal soptext-normal" style="text-align: initial;">
+                            <button class="btn outline-btn-primary pl-2 pr-2 pt-1 pb-1" id="addcontact">
+                                + ADD
+                                CONTACT
+                            </button>
+                        </div>
+                    </div>
+                    <div class="row ml-0 pt-2">
+                        <div class="col-lg-11 col-md-12 col-sm-12 text-normal soptext-normal" style="text-align: end;">
+                            <button id="InsertAnnot" class="btn outline-btn-primary btn-normal pl-11 pr-11" role="button" aria-pressed="true">
+                                OK
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+        <div id="contactpopup"></div>
+        <div id="caution"></div>
+    </div>
+</div>
+<div id="annotationtextpopup"></div>
+
+@{
+<input type="hidden" value="@ViewBag.editmode" id="hf_editmode" name="hf_editmode" />
+@*<input type="hidden" value="@ViewBag.Annottype" id="hf_Annottype" name="hf_Annottype" />
+<input type="hidden" value="@ViewBag.editmode" id="hf_editmode" name="hf_editmode" />*@
+}
+@*<script src="~/Scripts/CspJs/Annotation/CreateAnnotation.js?V@(Session["ProjectVersion"])"></script>*@
+@*<script src="~/Scripts/Annotation/CreateAnnotation.js?V@(Session["ProjectVersion"])"></script>*@

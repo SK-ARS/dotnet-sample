@@ -1,0 +1,115 @@
+
+@model STP.Domain.VehicleAndFleets.Component.VehicleConfiguration
+@using STP.Domain.VehiclesAndFleets.Configuration
+@using STP.Domain.VehiclesAndFleets
+@{
+    List<VehicleConfigList> vehicleConfigList = ViewBag.ComponentList;
+}
+
+@{
+    int rowCount = Model.VehicleConfigParamList.Count;
+    int secondSet = rowCount / 2;
+    int firstRowSet = rowCount - secondSet;
+
+    string internalName = (from s in Model.VehicleConfigParamList
+                           where s.ParamModel == "Internal Name"
+                           select s.ParamValue).FirstOrDefault();
+    string formalName = (from s in Model.VehicleConfigParamList
+                         where s.ParamModel == "Formal Name"
+                         select s.ParamValue).FirstOrDefault();
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.VEHICLES;
+
+    var VehicleComponentList = ViewBag.VehicleComponentList != null ? (List<STP.Domain.VehicleAndFleets.Component.VehicleComponent>)ViewBag.VehicleComponentList : new List<STP.Domain.VehicleAndFleets.Component.VehicleComponent>();
+    var isEnggPlant = VehicleComponentList!=null? VehicleComponentList.Any(x => x.vehicleCompType != null && (x.vehicleCompType.ComponentTypeId == (int)VehicleEnums.ComponentType.EngineeringPlant ||
+                    x.vehicleCompType.ComponentTypeId == (int)VehicleEnums.ComponentType.EngineeringPlantSemiTrailer ||
+                    x.vehicleCompType.ComponentTypeId == (int)VehicleEnums.ComponentType.EngineeringPlantDrawbarTrailer)) :false;
+}
+@{
+    int? unitValue = 1;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        unitValue = sessionValues.VehicleUnits;
+    }
+    @Html.Hidden("UnitValue", unitValue)
+}
+
+<div id="vehicleconfig" class="vehicle-setting">
+    <div id="movement-vehicle">
+        <div class="row">
+            <div class="col-lg-12 col-md-2 col-sm-4 col-xs-12 title pr-0" style="font-family: lato_bold;">
+                @internalName
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+
+                @for (int i = 0; i < vehicleConfigList.Count; i++)
+                {
+                    for (int j = 0; j < Model.vehicleConfigType.LstVehcCompTypes.Count; j++)
+                    {
+                        if (Model.vehicleConfigType.LstVehcCompTypes[j].ComponentTypeId == vehicleConfigList[i].ComponentTypeId)
+                        {
+                            var ImageName = "~/Content/images/Common/MasterPage/componet_icons/" + Model.vehicleConfigType.LstVehcCompTypes[j].ImageName + ".png";
+                            if (isEnggPlant)
+                            {
+                                var v = VehicleComponentList.FirstOrDefault(x => x.vehicleCompType != null && x.vehicleCompType.ComponentTypeId == vehicleConfigList[i].ComponentTypeId);
+                                if (v != null && v.vehicleComponentSubType != null)
+                                {
+                                    ImageName = "~/Content/images/Common/MasterPage/componet_icons/" + v.vehicleComponentSubType.ImageName + ".png";
+                                }
+
+                            }
+                            <img src="@Url.Content(ImageName)" alt="vehicle-1" style="mix-blend-mode: darken; margin-top:-20px;">
+                        }
+                    }
+                }
+            </div>
+        </div>
+        <div class="mt-2">
+            @{
+                Html.RenderAction("ViewVehicleConfiguration", "VehicleConfig", new { vehicleID = ViewBag.vehicleID });
+            }
+        </div>
+
+
+        @if (Model.VehicleRegList.Count() > 0)
+        {
+            <div class="row mt-4">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    @{
+                        Html.RenderAction("ViewConfigurationRegistration", "VehicleConfig", new { vehicleRegistrations = Model.VehicleRegList });
+                    }
+                </div>
+            </div>
+        }
+
+
+        <div class="row main-entry">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <div class="row">
+                    @if (ViewBag.IsNEN != true)
+                    {
+                        var iterationCount = 0;
+                        bool isLastComponent = false;
+                        foreach (var component in vehicleConfigList.OrderBy(s => s.LatPosn).ThenBy(s => s.LongPosn))
+                        {
+                            iterationCount++;
+                            if (iterationCount == vehicleConfigList.Count())
+                            {
+                                isLastComponent = true;
+                            }
+                            if (component.ComponentId != 0)
+                            {
+                                Html.RenderAction("VehicleComponentDetails", "Vehicle", new { vehicleSubTypeId = 0, vehicleTypeId = 0, movementId = ViewBag.movementType, componentId = component.ComponentId, isRoute = ViewBag.IsRoute, latPos = component.LatPosn, longPos = component.LongPosn, IsNotif = ViewBag.isNotif, isVR1 = ViewBag.isVR1, isLastComponent = isLastComponent, compNumber = iterationCount, configTypeId= ViewBag.vehicleConfigType });
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    @*</div>
+        </section>*@
+</div>
+@*<script src="~/Scripts/VehicleConfig/ViewConfigDetails.js?V@(Session["ProjectVersion"])"></script>*@

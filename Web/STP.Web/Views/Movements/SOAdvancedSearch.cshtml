@@ -1,0 +1,392 @@
+
+@model STP.Domain.MovementsAndNotifications.Movements.MovementsAdvancedFilter
+@using STP.Web.Custom.Views
+@{
+    int sort_org_id = 0;
+    if (ViewBag.SORTOrgId != null)
+    {
+        sort_org_id = ViewBag.SORTOrgId;
+    }
+}
+<style>
+    #viewAdvHaulier .edit-normal {
+        padding-left: 0.5rem;
+    }
+
+    #viewAdvHaulier span {
+        color: #5C5C5C;
+        font-size: 15px;
+    }
+
+    #viewAdvHaulier input::placeholder {
+        font-style: italic;
+        font-family: lato_light;
+    }
+</style>
+<div id="AdvHaulier" class="my-3 filters" data-target="viewAdvHaulier">
+    <div class="row  ">
+        <div class="col-10 col-md-10 col-sm-10">
+            <span>
+                Advanced search
+            </span>
+        </div>
+        <div class="col-2 col-md-2 col-sm-2">
+            <img id="chevlon-up-icon2" class="chevlon-up-icon" src="~/Content/assets/images/up-chevlon-filter.svg" width="15"
+                 style="display: none;">
+            <img id="chevlon-down-icon2" class="chevlon-down-icon" src="~/Content/assets/images/down-chevlon-filter.svg" width="15"
+                 style="display: block">
+        </div>
+    </div>
+</div>
+<div id="viewAdvHaulier" class="pl-4" style="display: none;">
+    @*<div class="pr-0 pl-0 mr-0 ml-0 mt-4 mb-0 input-field" id="viewAdvHaulier" style="display: none;">*@
+    <div class="row pb-3" style="display:none;">
+        <div class="col-lg-12 col-sm-12 col-md-12 text-normal pr-2" style="text-align: right;">
+            <span>@Resources.Resource.SortOrder</span>
+        </div>
+    </div>
+    <div class="row pb-3" style="display:@(ViewBag.PlanMovement == true?"block":"none")">
+        <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+            <span>ESDAL reference</span>
+        </div>
+        <div class="col-lg-8 col-sm-8 col-md-8 pr-0">
+            <div class="pr-0 pl-0 mr-0 ml-0 mb-0 input-field">
+                @Html.TextBox("ESDALReference", null, new { @class = "text-decorate edit-normal", @placeholder = "ESDAL reference" })
+            </div>
+        </div>
+        <div class="col-lg-1 col-sm-1 col-md-1 pr-0" style="display:none;">
+            @Html.RadioButton("SortOrder", 1, true, new { @class = "form-check-input", })
+        </div>
+    </div>
+    <div class="row pb-3">
+        <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+            <span>My reference</span>
+        </div>
+        <div class="col-lg-8 col-sm-8 col-md-8 pr-0">
+            <div class="pr-0 pl-0 mr-0 ml-0 mb-0 input-field">
+                @Html.TextBox("MyReference", null, new { @class = "text-decorate edit-normal", @placeholder = "My reference" })
+            </div>
+        </div>
+        <div class="col-lg-1 col-sm-1 col-md-1 pr-0" style="display:none;">
+            @Html.RadioButton("SortOrder", 2, new { @class = "form-check-input" })
+        </div>
+    </div>
+    @if ((ViewBag.UserType == 696008) && (ViewBag.ShowPrevSortRoute == 2 || ViewBag.ShowPrevSortRoute == 1))
+    {
+        <div class="row pb-3">
+            <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+                <span>@Resources.Resource.SONum</span>
+            </div>
+            <div class="col-lg-8 col-sm-8 col-md-8 pr-0">
+                <div class="pr-0 pl-0 mr-0 ml-0 mb-0 input-field">
+                    @Html.TextBoxFor(m => m.SONum, new { @class = "text-decorate edit-normal", placeholder = "SO Number" })
+                </div>
+            </div>
+        </div>
+        <div class="row pb-3">
+            <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+                <span>@Resources.Resource.LoadDetails</span>
+            </div>
+            <div class="col-lg-8 col-sm-8 col-md-8 pr-0">
+                <div class="pr-0 pl-0 mr-0 ml-0 mb-0 input-field">
+                    @Html.TextBoxFor(m => m.LoadDetails, new { @class = "text-decorate edit-normal", placeholder = "Load Details" })
+                </div>
+            </div>
+        </div>
+        <div class="row pb-3">
+            <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+                <span>@Resources.Resource.Keyword</span>
+            </div>
+            <div class="col-lg-8 col-sm-8 col-md-8 pr-0">
+                <div class="pr-0 pl-0 mr-0 ml-0 mb-0 input-field">
+                    @Html.TextBoxFor(m => m.Keyword, new { @class = "text-decorate edit-normal", placeholder = "Keyword" })
+                </div>
+            </div>
+        </div>
+
+    }
+    <div class="row pb-3">
+        <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+            <span>@Resources.Resource.Startpoint</span>
+        </div>
+        <div class="col-lg-8 col-sm-8 col-md-8 pr-0">
+            <div class="d-flex justify-content-start">
+                <div class="mr-2 input-field d-flex" style="flex :1 100%" ;>
+                    @Html.TextBoxFor(m => m.StartPoint, new { @class = "text-decorate edit-normal", placeholder = "Start point" })
+                </div>
+                <div class="d-flex">
+                    @Html.DropDownListFor(model => model.LogicOpr, new List<SelectListItem>
+                     {
+                        new SelectListItem{ Text="AND", Value = "1" },
+                        new SelectListItem{ Text="OR", Value = "2" },
+
+                     }, "-Select-", new { @class = "form-select mini-select ml-2", @style = "font-size:13px;" })
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row pb-3">
+        <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+            <span>@Resources.Resource.Endpoint</span>
+        </div>
+        <div class="col-lg-8 col-sm-8 col-md-8 pr-0">
+            <div class="pr-0 pl-0 mr-0 ml-0 mb-0 input-field">
+                @Html.TextBoxFor(m => m.EndPoint, new { @class = "text-decorate edit-normal", placeholder = "End Point" })
+            </div>
+        </div>
+    </div>
+    @if (ViewBag.MovementListForSO == false)
+    {
+        <div class="row pb-3">
+            <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+                <span>@Resources.Resource.FleetID</span>
+            </div>
+            <div class="col-lg-8 col-sm-8 col-md-8 pr-0">
+                <div class="pr-0 pl-0 mr-0 ml-0 mb-0 input-field">
+                    @Html.TextBoxFor(m => m.FleetId, new { @class = "text-decorate edit-normal", placeholder = @Resources.Resource.FleetID })
+                </div>
+            </div>
+        </div>
+        <div class="row pb-3">
+            <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+                <span>@Resources.Resource.Client</span>
+            </div>
+            <div class="col-lg-8 col-sm-8 col-md-8 pr-0">
+                <div class="pr-0 pl-0 mr-0 ml-0 mb-0 input-field">
+                    @Html.TextBoxFor(m => m.Client, new { @class = "text-decorate edit-normal", placeholder = @Resources.Resource.Client })
+                </div>
+            </div>
+        </div>
+        <div class="row pb-3">
+            <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+                <span>@Resources.Resource.VhclReg</span>
+            </div>
+            <div class="col-lg-8 col-sm-8 col-md-8 pr-0">
+                <div class="pr-0 pl-0 mr-0 ml-0 mb-0 input-field">
+                    @Html.TextBoxFor(m => m.VehicleRegistration, new { @class = "text-decorate edit-normal", placeholder = @Resources.Resource.VhclReg })
+                </div>
+            </div>
+        </div>
+    }
+    <div id="VehicleFilterDiv" class="mb-3">
+        @Html.Hidden("AdvancedDimensionFilterString")
+        @if (Model.AdvancedDimensionFilter == null || !Model.AdvancedDimensionFilter.Any())
+        {
+            <div class="row pb-3 pt-2 VehicleFilter" id="VehicleFilterData">
+                <div class="col-lg-3 col-sm-3 col-md-3">
+                    @Html.DropDownList("VehicleDimensionCount", null, new { @class = "form-select measure-dropdown haul-vehicle-dimension" })
+                </div>
+                <div class="col-lg-9 col-sm-9 col-md-9 mr-0">
+                    <div class="d-flex justify-content-between">
+                        @Html.DropDownList("OperatorCount", null, new { @class = "form-select mb-3 mr-0 mb-0 haul-operator-count", @style = "overflow: scroll;" })
+
+                        <div class="d-flex ml-2">
+                            @Html.TextBoxFor(model => model.GrossWeight, null, new { @class = "isnumeric text-decorate edit-normal vehicletextbox" })
+                            <span class="text-normal pt-1 pl-1 gross_weightUnit">kg</span>
+                        </div>
+                        <div class="text-normal pl-2 pr-2 pt-1 gross_weight1" style="display: none !important;">
+                            <span>&</span>
+                        </div>
+                        <div class="d-flex pl-0 gross_weight1" style="display: none !important;">
+                            @Html.TextBoxFor(model => model.GrossWeight1, null, new { @class = "isnumeric text-decorate edit-normal gross_weight1 vehicletextbox1", style = "width: 75%;" })
+
+                            <span class="text-normal pt-1 pl-1 gross_weight1 gross_weight1Unit">kg</span>
+                        </div>
+                        <div class="d-flex">
+                            @Html.DropDownListFor(model => model.Operator, new List<SelectListItem>
+                           {
+                              new SelectListItem{ Text="AND", Value = "1" },
+                              new SelectListItem{ Text="OR", Value = "2" },
+
+                           }, "Select", new { @class = "form-select mini-select ml-2 vehicleOperator", @style = "font-size:13px;" })
+                        </div>
+                        <div class="d-flex">
+                            <span id="errormsg" class="error invalid-feedback" style="display:none;color:red;font-size:16px;">*</span>
+                        </div>
+                        <div class="d-flex">
+                            <a href="javascript:void(0)" style="font-size: 19px;padding: 0px;" id="HaulAddOption">+</a>
+                            <a href="javascript:void(0)" style="font-size: 19px; padding: 0px; display: none;" id="HaulRemoveOption">×</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {//If dynamic search filter has value
+            int filterCount = 0;
+            int AdvancedDimensionFilterCount = Model.AdvancedDimensionFilter.Count;
+            var VehicleDimensionCountList = (SelectList)ViewBag.VehicleDimensionCount;
+            var OperatorCountList = (SelectList)ViewBag.OperatorCount;
+            foreach (var item in Model.AdvancedDimensionFilter)
+            {
+                var unit = item.DimensionType == "gross_weight_max_kg"|| item.DimensionType == "max_axle_weight_max_kg" ? "kg" : "m";
+                <div class="row pb-3 pt-2 VehicleFilter" id="VehicleFilterData_@filterCount">
+                    <div class="col-lg-3 col-sm-3 col-md-3">
+                        <select class="form-select measure-dropdown haul-vehicle-dimension">
+                            @foreach (var itVehiDimen in VehicleDimensionCountList)
+                            {
+                                <option value="@itVehiDimen.Value" @(itVehiDimen.Value == item.DimensionType ? "selected" : "")>@itVehiDimen.Text</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-lg-9 col-sm-9 col-md-9 mr-0">
+                        <div class="d-flex justify-content-between">
+                            <select class="form-select mb-3 mr-0 mb-0 haul-operator-count" style="overflow: scroll;">
+                                @foreach (var itOp in OperatorCountList)
+                                {
+                                    <option value="@itOp.Value" @(itOp.Value == item.ComparisonOperator ? "selected" : "")>@itOp.Text</option>
+                                }
+                            </select>
+                            <div class="d-flex ml-2">
+                                <input class="isnumeric text-decorate edit-normal vehicletextbox" type="text" value="@item.SearchValue">
+                                <span class="text-normal pt-1 pl-1 gross_weightUnit"> @unit</span>
+                            </div>
+                            <div class="text-normal pl-2 pr-2 pt-1 gross_weight1" style="display: @(item.ComparisonOperator=="between"?"block":"none") !important;">
+                                <span>&</span>
+                            </div>
+                            <div class="d-flex pl-0 gross_weight1" style="display: @(item.ComparisonOperator=="between"?"block":"none") !important;">
+                                <input class="isnumeric text-decorate edit-normal gross_weight1 vehicletextbox1" style = "width: 75%;" type="text" value="@item.SearchValueBetween">
+                                <span class="text-normal pt-1 pl-1 gross_weight1 gross_weight1Unit">@unit</span>
+                            </div>
+                            <div class="d-flex">
+                                <select class="form-select mini-select ml-2 vehicleOperator" style="font-size:13px;">
+                                    <option value="0" @(item.LogicalOperator=="" ||item.LogicalOperator=="0" ? "selected" : "")>Select</option>
+                                    <option value="1" @(item.LogicalOperator=="AND" ? "selected" : "")>AND</option>
+                                    <option value="2" @(item.LogicalOperator=="OR" ? "selected" : "")>OR</option>
+                                </select>
+                            </div>
+                            <div class="d-flex">
+                                <span id="errormsg" class="error invalid-feedback" style="display:none;color:red;font-size:16px;">*</span>
+                            </div>
+                            <div class="d-flex">
+                                <a href="javascript:void(0)" style="font-size: 19px;padding: 0px;@(filterCount!=AdvancedDimensionFilterCount-1?"display: none;":"")" id="HaulAddOption">+</a>
+                                <a href="javascript:void(0)" style="font-size: 19px; padding: 0px; @(Model.AdvancedDimensionFilter.Count==1?"display: none;":"")" id="HaulRemoveOption">×</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                filterCount++;
+            }
+
+        }
+    </div>
+
+    <div class="row pb-3">
+        <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+            <span>@Resources.Resource.MvmtDates</span>
+        </div>
+        <div class="col-lg-1 col-sm-1 col-md-1">
+            @Html.CheckBox("MovementDate", new { @class = "checkbox checkall", @name = "MovementDate", @id = "MovementDate", @style = "width:20px" })
+        </div>
+        <div class="col-lg-1 col-sm-1 col-md-1">
+            <span class="text-normal">@Resources.Resource.From</span>
+        </div>
+        <div class="col-lg-2 col-sm-2 col-md-2">
+            @if (Model.MovementDate)
+            {
+                @Html.DatePicker("MovementFromDate", new { @class = "datesearch text-decorate datepicker", @style = "width: 110% !important;", @format = "dd-MMM-yyyy" })
+                @*<input class="text-decorate datepicker datesearch" type="text" id="MovementFromDate1" name="MovementFromDate1" placeholder="From" style="width: 110% !important;">*@
+            }
+            else
+            {
+                @Html.DatePicker("MovementFromDate", new { @class = "datesearch text-decorate datepicker", @style = "width: 110% !important;", disabled = "disabled", @format = "dd-MMM-yyyy" })
+                @*<input class="text-decorate datepicker datesearch" type="text" id="MovementFromDate1" name="MovementFromDate1" placeholder="From" style="width: 110% !important;" disabled = "disabled">*@
+            }
+        </div>
+        <div class="col-lg-1 col-sm-1 col-md-1">
+            <span class="text-normal">@Resources.Resource.To</span>
+        </div>
+        <div class="col-lg-2 col-sm-2 col-md-2">
+            @if (Model.MovementDate)
+            {
+                @Html.DatePicker("MovementToDate", new { @class = "datesearch text-decorate datepicker", @style = "width: 110% !important;", @format = "dd-MMM-yyyy" })
+            }
+            else
+            {
+                @Html.DatePicker("MovementToDate", new { @class = "datesearch text-decorate datepicker", @style = "width: 110% !important;", disabled = "disabled", @format = "dd-MMM-yyyy" })
+            }
+        </div>
+    </div>
+
+    @if (ViewBag.MovementListForSO == false)
+    {
+        <div class="row pb-3">
+            <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+                <span>@Resources.Resource.AppDates</span>
+            </div>
+            <div class="col-lg-1 col-sm-1 col-md-1">
+                @Html.CheckBox("ApplicationDate", new { @class = "checkbox checkall", @name = "ApplicationDate", @id = "ApplicationDate", @style = "width:20px;" })
+            </div>
+            <div class="col-lg-1 col-sm-1 col-md-1">
+                <span class="text-normal">@Resources.Resource.From</span>
+            </div>
+            <div class="col-lg-2 col-sm-2 col-md-2">
+                @if (Model.ApplicationDate)
+                {
+                    @Html.DatePicker("ApplicationFromDate", new { @class = "datesearch text-decorate datepicker", @style = "width: 110% !important;", @format = "dd-MMM-yyyy" })
+                }
+                else
+                {
+                    @Html.DatePicker("ApplicationFromDate", new { @class = "datesearch text-decorate datepicker", @style = "width: 110% !important;", disabled = "disabled", @format = "dd-MMM-yyyy" })
+                }
+            </div>
+            <div class="col-lg-1 col-sm-1 col-md-1">
+                <span class="text-normal">@Resources.Resource.To</span>
+            </div>
+            <div class="col-lg-2 col-sm-2 col-md-2">
+                @if (Model.ApplicationDate)
+                {
+                    @Html.DatePicker("ApplicationToDate", new { @class = "datesearch text-decorate datepicker", @style = "width: 110% !important;", @format = "dd-MMM-yyyy" })
+                }
+                else
+                {
+                    @Html.DatePicker("ApplicationToDate", new { @class = "datesearch text-decorate datepicker", @style = "width: 110% !important;", disabled = "disabled", @format = "dd-MMM-yyyy" })
+                }
+            </div>
+        </div>
+
+        <div class="row pb-3">
+            <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+                <span>@Resources.Resource.NotifyDates</span>
+            </div>
+            <div class="col-lg-1 col-sm-1 col-md-1">
+                @Html.CheckBox("NotifyDate", new { @class = "checkbox checkall", @name = "NotifyDate datepicker", @id = "NotifyDate", @style = "width:20px;" })
+            </div>
+            <div class="col-lg-1 col-sm-1 col-md-1">
+                <span class="text-normal">@Resources.Resource.From</span>
+            </div>
+            <div class="col-lg-2 col-sm-2 col-md-2">
+                @if (Model.NotifyDate)
+                {
+                    @Html.DatePicker("NotificationFromDate", new { @class = "datesearch text-decorate datepicker", @style = "width: 110% !important;", @format = "dd-MMM-yyyy" })
+                }
+                else
+                {
+                    @Html.DatePicker("NotificationFromDate", new { @class = "datesearch text-decorate datepicker", @style = "width: 110% !important;", disabled = "disabled", @format = "dd-MMM-yyyy" })
+                }
+            </div>
+            <div class="col-lg-1 col-sm-1 col-md-1">
+                <span class="text-normal">@Resources.Resource.To</span>
+            </div>
+            <div class="col-lg-2 col-sm-2 col-md-2">
+                @if (Model.NotifyDate)
+                {
+                    @Html.DatePicker("NotificationToDate", new { @class = "datesearch text-decorate datepicker", @style = "width: 110% !important;", @format = "dd-MMM-yyyy" })
+                }
+                else
+                {
+                    @Html.DatePicker("NotificationToDate", new { @class = "datesearch text-decorate datepicker", @style = "width: 110% !important;", disabled = "disabled", @format = "dd-MMM-yyyy" })
+                }
+            </div>
+        </div>
+        <div class="row pb-3">
+            <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+                <span>Include Historic Data</span>
+            </div>
+            <div class="col-lg-9 col-sm-9 col-md-9">
+                @Html.CheckBox("IncludeHistoricalData", new { @class = "checkbox checkall", @name = "IncludeHistoricalDataOrNot", @id = "IncludeHistoricalData", @style = "width:20px;" })
+            </div>
+        </div>
+    }
+</div>
+@Html.Hidden("hf_DateTime", DateTime.Now.ToString("dd-MMM-yyyy"))

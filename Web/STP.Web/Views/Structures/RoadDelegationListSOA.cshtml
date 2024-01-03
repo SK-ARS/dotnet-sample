@@ -1,0 +1,325 @@
+@using PagedList.Mvc
+@model  PagedList.IPagedList<STP.Domain.Structures.RoadDelegationList>
+@{
+    int listCount = (int)Session["PageSize"];
+    int pageSize = 10;
+    int? pageNum = ViewBag.page;
+    if (ViewBag.pageSize != null)
+    {
+        pageSize = ViewBag.pageSize;
+    }
+    var sortOrder = ViewBag.SortOrder != null ? (int)ViewBag.SortOrder : 1;//1-type
+    var sortType = ViewBag.SortType != null ? (int)ViewBag.SortType : 0;//0-asc
+}
+@{
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.STRUCTURES;
+}
+@Html.Hidden("pageSizeVal", pageSize)
+@Html.Hidden("pageNum", pageNum)
+<style>
+    .sorticon {
+        filter: invert(100%);
+    }
+
+    /* .esdal-table > thead .sorting,
+    .esdal-table > thead .sorting_asc,
+    .esdal-table > thead .sorting_desc,
+    .esdal-table > thead .sorting_asc_disabled,
+    .esdal-table > thead .sorting_desc_disabled {
+        cursor: pointer;
+        position: relative;
+    }
+
+        .esdal-table > thead .sorting:before,
+        .esdal-table > thead .sorting:after,
+        .esdal-table > thead .sorting_asc:before,
+        .esdal-table > thead .sorting_asc:after,
+        .esdal-table > thead .sorting_desc:before,
+        .esdal-table > thead .sorting_desc:after,
+        .esdal-table > thead .sorting_asc_disabled:before,
+        .esdal-table > thead .sorting_asc_disabled:after,
+        .esdal-table > thead .sorting_desc_disabled:before,
+        .esdal-table > thead .sorting_desc_disabled:after {
+            position: absolute;
+            bottom: 1.7em;
+            display: block;
+            opacity: .3;
+        }
+
+        .esdal-table > thead .sorting:before,
+        .esdal-table > thead .sorting_asc:before,
+        .esdal-table > thead .sorting_desc:before,
+        .esdal-table > thead .sorting_asc_disabled:before,
+        .esdal-table > thead .sorting_desc_disabled:before {
+            right: 1em;
+            content: "↑";
+        }
+
+        .esdal-table > thead .sorting:after,
+        .esdal-table > thead .sorting_asc:after,
+        .esdal-table > thead .sorting_desc:after,
+        .esdal-table > thead .sorting_asc_disabled:after,
+        .esdal-table > thead .sorting_desc_disabled:after {
+            right: 0.5em;
+            content: "↓";
+        }
+
+        .esdal-table > thead .sorting_asc:before, .esdal-table > thead .sorting_desc:after {
+            opacity: 1;
+        }*/
+
+    .filtered-icon {
+        background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 90% #2b5795;
+        background-size: 1rem;
+    }
+
+    .esdal-filter-icon {
+        background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 0 #2b5795;
+        background-size: 1rem;
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        position: absolute;
+        margin-left: 3px;
+    }
+
+    .delegator-table-header:hover {
+        background-color: white;
+        color: rgba(39, 87, 149, 1);
+    }
+</style>
+<div id="helpdesk">
+    <!-- banner -->
+    <section id="banner">
+        <div class="container-fluid" id="banner-container">
+            <div>
+                <div class="header">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-4 col-sm-12">
+
+                        </div>
+                        <div class="col-lg-8 col-md-8 col-sm-12">
+                            <div class="title">
+                                MANAGE ROAD DELEGATION
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- table -->
+                <div id="RoaddelegationListSOA">
+                    <div class="main-table">
+                        <table class="esdal-table">
+                            <thead>
+                                <tr>
+
+                                    <th class="delegator-table-header">
+                                        <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,1)" data-action="RoadDelegationSort" data-sortval="1">Delegator Organisation </span>
+                                    </th>
+                                    <th><span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,3)" data-action="RoadDelegationSort" data-sortval="3">Delegate Organisation</span></th>
+                                    <th> Delegation Name</th>
+                                    <th>Retain notification</th>
+                                    <th> <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,2)" data-action="RoadDelegationSort" data-sortval="2">Creation date</span></th>
+                                    <th></th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            @if (Model.Count == 0)
+                            {
+                                <tr>
+                                    <td colspan="8" style="text-align: center">
+                                        <span style="color: red">No records found</span>
+                                    </td>
+                                </tr>
+                            }
+                            else
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td class="text-color1">@item.DelegatingSOAName</td>
+                                        <td class="text-color1">@item.SOAName</td>
+                                        <td class="text-color2 viewdelegation" style="cursor: pointer;" data-arg1="@item.ArrangementId">@item.DelegationName</td>
+                                        <td class="text-color1">@item.RetainNotification</td>
+                                        <td class="text-color1">@item.CreatedDate</td>
+                                        <td></td>
+                                        <td></td>
+                                        @*<td>
+                                                <a href="javascript:void(0)" >
+                                                    <img src="~/Content/assets/images/edit-icon.svg" width="20">
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="javascript:void(0)" >
+                                                    <img src="~/Content/assets/images/delete-icon.svg" width="18">
+                                                </a>
+                                            </td>*@
+                                    </tr>
+                                }
+                            }
+                        </table>
+                    </div>
+                    <!-- end of table -->
+                    @if (Model.Count > 0)
+                    {
+                        if (listCount < @ViewBag.TotalCount)
+                        {
+                <div class="row pt-3">
+                    <div class="col-lg-4 col-md-4">
+                        @if (Model.TotalItemCount > 0)
+                        {
+                            <div class="text-color2 total-records-number">
+                                Total number of records : @Model.TotalItemCount
+                            </div>
+                        }
+                    </div>
+                    @if (listCount < Model.TotalItemCount)
+                    {
+                        <div class="col-lg-5 pagination">
+                            @Html.PagedListPager(Model, page => Url.Action("GetRoadDelegationList",
+                                new
+                                {
+                                    B7vy6imTleYsMr6Nlv7VQ =
+                                      STP.Web.Helpers.EncryptionUtility.Encrypt("page=" + page +
+                                      "&sortOrder=" + ViewBag.sortOrder +
+                                      "&sortType=" + ViewBag.sortType)
+                                }),
+                                new PagedListRenderOptions
+                                {
+                                    DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                                    DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                                    LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                                    LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                                    DisplayLinkToFirstPage = PagedListDisplayMode.Never,
+                                    DisplayLinkToLastPage = PagedListDisplayMode.Never,
+                                    MaximumPageNumbersToDisplay = 3,
+                                    DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                                    EllipsesFormat = "..."
+                                })
+                        </div>
+                    }
+                    @if (Model.TotalItemCount > 10)
+                    {
+
+                        <div class="col-lg-3 col-md-3 col-sm-12 text-normal pr-0 RoadDelegationList-SOA-Pag">
+                            Number of items to display per page
+                            <select class="form-select mb-3" style="width:100px;" aria-label=".form-select-lg example" id="pageSizeSelect">
+                                <option val="10" @(pageSize == 10 ? "selected" : "")>10</option>
+                                <option val="20" @(pageSize == 20 ? "selected" : "")>20</option>
+                                <option val="50" @(pageSize == 50 ? "selected" : "")>50</option>
+                                <option val="100" @(pageSize == 100 ? "selected" : "")>100</option>
+                            </select>
+                        </div>
+                    }
+                </div>
+                        }
+                    }
+                </div>
+                <div style="float: left; width: 100%; height: 32px;">
+
+                    <label class="text-normal">
+                        Note: Contact the Helpdesk if changes are to be made to a road delegation
+                    </label>
+
+                </div>
+            </div>
+        </div>
+    </section>
+    <input type="hidden" name="sortOrder" id="SortOrderValue" value="@sortOrder" />
+    <input type="hidden" name="sortType" id="SortTypeValue" value="@sortType" />
+    <!-- filter settings -->
+    <div id="filters" class="sidenav filter-sidenav">
+        <div class="row sidenav-header">
+            <div class="col-10 col-md-10 col-sm-10" style="text-align: center;margin-top: 5px;">
+                <span>
+                    FILTER
+                </span>
+            </div>
+            <div class="col-2 col-md-2 col-sm-2 pl-0" style="position: none;">
+                <a href="#" id="roaddeleclsfilter">&times;</a>
+            </div>
+        </div>
+        <hr>
+        <div class="filter-list">
+            <div class="filters">
+                <span>Search delegation</span>
+            </div>
+            <div class="pr-0 pl-0 mr-0 ml-0 mt-3 mb-0 input-field">
+                <input class="edit-normal" type="text" id="searchText" name="search" value="@ViewBag.SearchString" placeholder="Search delegation">
+            </div>
+
+            @*<div class="mt-5 mb-4 filters">*@
+            @*<div class="row">
+                    <div class="col-10 col-md-10 col-sm-10">
+                        <span>
+                            Search roads
+                        </span>
+                    </div>
+                    <div class="col-2 col-md-2 col-sm-2">
+                        <img src="~/Content/assets/images/up-chevlon-filter.svg"
+                             width="20">
+                    </div>
+                </div>*@
+            @*</div>*@
+            @*<div class="pr-0 pl-0 mr-0 ml-0 mt-0 mb-3 input-field">
+                    <input class="edit-normal" type="text" name="search" placeholder="Search road segment by ID">
+                </div>*@
+            @*<div class="row mt-4">
+                    <div class="col-lg-2 col-sm-2 col-md-2">
+                        <input type="checkbox" id="bulldozer" class="checkbox" name="bulldozer" value="bulldozer"
+                               width="28">
+                    </div>
+                    <div class="col-lg-10 col-sm-10 col-md-10">
+                        <span>Show unsigned roads</span>
+                    </div>
+                </div>*@
+            <div class="header mt-4">
+                <div class="button mr-0">
+                    <button class="btn btn-outline-primary btn-normal" id="srchbtn" role="button" aria-pressed="true">
+                        SEARCH
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end of fikter settings -->
+
+</div>
+
+
+<style>
+    .pagination {
+        overflow: inherit;
+    }
+
+        .pagination li a {
+            color: rgba(92, 92, 92, 1);
+            float: left;
+            padding: 8px 5px;
+            text-decoration: none;
+            font-size: 15px;
+            font-family: lato_bold;
+            transition: background-color .3s;
+        }
+
+        .pagination li.active {
+            background-color: rgba(39, 87, 149, 1);
+            border-radius: 10px 10px 10px 10px;
+            color: white;
+        }
+
+    .disabled {
+        color: rgba(92, 92, 92, 1);
+    }
+</style>
+@{
+    string GetSortDefaultClass(int SORTType, int SORTOrder, int valToCheck)
+    {
+        var sortClass = ""; // 0-desc , 1-asc
+        if (SORTOrder == valToCheck)
+        {
+            sortClass = SORTType == 1 ? "sorting_desc" : "sorting_asc";
+        }
+        return sortClass;
+    }
+}
+<script src="~/Scripts/Structures/RoadDelegationListSOA.js?V@(Session["ProjectVersion"])"></script>

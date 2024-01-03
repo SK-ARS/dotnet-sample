@@ -1,0 +1,43 @@
+﻿@model STP.Domain.DocumentsAndContents.InformationModel
+
+
+    @if (Model != null)
+    {
+        <div class="pl-0 pr-0 mr-0 ml-0 column-2" style="background-image: url(../../Content/assets/images/laag6.png); opacity: 1;">
+            <div class="pr-0 pl-0 ml-0 mr-0" style="background-image: url(../../Content/assets/images/laag6Kopieren.png); opacity: 1;">
+                <div class="row pr-0 pl-0 ml-0 mr-0">
+                    <div class="thumbnail">
+                        <div class="main-content">
+                            <div class="row mr-0 ml-0 pt-0 pb-0 align-items-center">
+                                <div class="col-lg-1 col-md-1 col-sm-1 pl-0 pr-0">
+                                    <a href="@Url.Action("ViewInformation", "Information",
+                                            new { B7vy6imTleYsMr6Nlv7VQ = STP.Web.Helpers.EncryptionUtility.Encrypt("id=" + Model.ContentId) })" class="links">
+                                        <img src="~/Content/assets/images/news-announce.svg" width="80" height="75" style="width: auto;">
+                                        </a>
+                                </div>
+                                <div class="col-lg-5 col-md-5 col-sm-5 pr-0 pl-0 line1" style="padding-top: 10px; padding-bottom: 10px;">
+                                    <span> @Model.UploadedDate.ToString("dd MMM") </span>- <span> @Model.Name</span>
+                                </div>
+                                <div class="col-lg-4 col-md-4 col-sm-4">
+                                    <a href="@Url.Action("ViewInformation", "Information", 
+                                            new { B7vy6imTleYsMr6Nlv7VQ = STP.Web.Helpers.EncryptionUtility.Encrypt("id=" + Model.ContentId) })" class="links">
+                                        <img src="~/Content/assets/images/main-chevlon.svg" width="20">
+                                    </a>
+                                </div>
+                                <div id="more-info" class="col-lg-2 col-md-12 col-sm-12 more-info pt-0" style="text-align: right;">
+                                    Read article
+                                    <span>
+                                        <a href="@Url.Action("NewsOverview", "Information")" class="links">
+
+                                            <img src="~/Content/assets/images/down-chevlon.svg" width="20">
+                                        </a>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+

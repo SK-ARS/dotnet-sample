@@ -1,0 +1,22 @@
+<link href="~/Content/Style/Common/alertbox.css" rel="stylesheet" />
+<link href="~/Content/Style/Common/style.css" rel="stylesheet" />
+<link href="~/Content/Style/Common/grid_css.css" rel="stylesheet" />
+<div id="div_mylistaffroads" class="main-title" style="display:none;">
+    <br />
+    <span id="Spn_OrgName_Roads" class="text-normal-bold"></span>
+    <br />
+</div>
+<div id="AffectedRoads_xslt">
+    @{
+
+        if (ViewBag.AffectedRoads != null || ViewBag.AffectedRoads != "")
+        {
+            <div id="AffectedRoadXslt">@Html.Raw(ViewBag.AffectedRoads) </div>
+        }
+       
+        <div id="NoAffectedRoads" class="cardSOA1 mt-0 ml-0 mr-0" style="text-align:center;display:none;">
+            <h6 class="text-color3 stHeading1 m-0">Cannot identify affected roads</h6>
+        </div>
+         
+        }
+</div>

@@ -1,0 +1,455 @@
+﻿@using System.Web.Optimization
+@using STP.Domain.Applications
+@using STP.Web.Custom.Views
+@model STP.Domain.Applications.SOApplication
+@using STP.Domain.SecurityAndUsers
+@using STP.Domain.VehiclesAndFleets.Configuration
+@{
+
+    //var folderDropDown = Model.ProjectFolderList;
+    int userTypeID = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (UserInfo)Session["UserInfo"];
+        userTypeID = sessionValues.UserTypeId;
+    }
+    //int isClone = ViewBag.IsClone;
+    //int isRevise = ViewBag.IsRevise;
+    var isVr1 = "false";
+    var isSoApp = "false";
+
+    //if(ViewBag.IsClone==1 || ViewBag.IsRevise==1)
+    //{
+
+    if (ViewBag.IsVr1 == 1)
+    {
+        isVr1 = "true";
+    }
+    else if (ViewBag.IsSoApp == 1)
+    {
+        isSoApp = "true";
+    }
+    //}
+}
+@*@Html.Hidden("folderDropDown", folderDropDown)*@
+
+<fieldset id="infoForm">
+    <!-- main content -->
+    <div class="col-lg-12 col-md-12 col-sm-12" style="text-align: right">
+        <label class="text-normal">* indicates mandatory fields</label>
+    </div>
+    <div class="overview">
+        @using (Ajax.BeginForm("SaveAppGeneral", "Application", new AjaxOptions { OnBegin = "startAnimation", OnComplete = "stopAnimation" }))
+        {
+            @Html.HiddenFor(m => m.ApplicationRevId)
+            @Html.HiddenFor(m => m.ApplicationStatus)
+            @Html.ValidationSummary()
+            <div class="row mt-4 main-entry">
+                <div class="col-lg-6 col-md-12 col-sm-12">
+                    <div class="row mb-2">
+                        <div class="col-sm-4 col-md-4 col-lg-4 pr-0">
+                            @if (userTypeID == 696008)
+                            {
+                                <label class="text-normal">Haulier Reference*</label>
+                            }
+                            else
+                            {
+                                <label class="text-normal"> My Reference Number*</label>
+                            }
+                        </div>
+                        <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                            @Html.TextBoxFor(m => m.HaulierReference, new { @class = "required edit-normal app-over-view-on-change", @data_maxlength = "35" })
+                            <span id="spnHaulier_Reference" class="error invalid-feedback" style="display:block;"></span>
+                        </div>
+                    </div>
+                    @if (userTypeID == 696008)
+                    {
+                        <div class="row mb-2">
+                            <div class="col-sm-4 col-md-4 col-lg-4 pr-0">
+                                <label class="text-normal">Application Date</label>
+                            </div>
+                            <div class="col-sm-4 col-md-6 col-lg-6 input-field text-normal">
+                                @Html.DatePicker("ApplicationDate", new { @class = "datesearch text-normal datepicker edit-normal", @style = "", @readonly = "readonly" })
+                                <span id="spnFromDate" class="error invalid-feedback" style="display:block"></span>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-4 col-md-4 col-lg-4 pr-0">
+                                <label class="text-normal">Application Due Date</label>
+                            </div>
+                            <div class="col-sm-4 col-md-6 col-lg-6 input-field text-normal">
+                                @Html.DatePicker("ApplicationDueDate", new { @class = "datesearch text-normal datepicker edit-normal", @style = "", @readonly = "readonly" })
+                                @*@Html.ValidationMessageFor(m => m.ApplicationDate, null, new { @class = "error invalid-feedback", @style = "display:block" })*@
+                                <span id="spnToDate" class="error invalid-feedback" style="display:block"></span>
+                            </div>
+                        </div>
+                    }
+
+                    @if (userTypeID != 696008)
+                    {
+                        <div class="row mb-2">
+                            <div class="col-sm-4 col-md-6 col-lg-4 pr-0">
+                                <label class="text-normal">Agent Name</label>
+                            </div>
+                            <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                                @Html.TextBoxFor(m => m.AgentName, new { @id = "AgentName", @class = "edit-normal app-over-view-on-change" })
+                                @Html.ValidationMessageFor(m => m.AgentName)
+                            </div>
+                        </div>
+                    }
+                    <div class="row mb-2">
+                        <div class="col-sm-4 col-md-6 col-lg-4 pr-0">
+                            <label class="text-normal">From Summary*</label>
+                        </div>
+                        <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                            @Html.TextBoxFor(m => m.FromAddress, new { @maxlength = "100", @class = "required edit-normal app-over-view-on-change", @data_maxlength = "255" })
+                            <span id="lblFromAddress" class="error invalid-feedback" style="display:block;"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-4 col-md-6 col-lg-4 pr-0">
+                            <label class="text-normal">To Summary*</label>
+                        </div>
+                        <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                            @Html.TextBoxFor(m => m.ToAddress, new { @maxlength = "100", @class = "required edit-normal app-over-view-on-change", @data_maxlength = "255" })
+                            <span id="lblToAddress" class="error invalid-feedback" style="display:block;"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-4 col-md-4 col-lg-4 pr-0">
+                            <label class="text-normal">Date From*</label>
+                        </div>
+                        <div class="col-sm-4 col-md-6 col-lg-6 input-field text-normal">
+                            @if (Model.MovementDateFrom != "" && Model.MovementDateFrom != null)
+                            {
+                                <input type="text" value="@DateTime.Parse(Model.MovementDateFrom).ToString("dd-MM-yyyy")" readonly="readonly" id="MovementDateFrom" class="text-normal datepicker edit-normal" name="MovementDateFrom" />
+                            }
+                            else
+                            {
+                                <input type="text" value="@DateTime.Now.ToString("dd-MM-yyyy")" readonly="readonly" id="MovementDateFrom" class="text-normal datepicker edit-normal" name="MovementDateFrom" />
+                            }
+                            <span id="spnMvmntFromDate" class="error invalid-feedback" style="display:block"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-4 col-md-4 col-lg-4 pr-0">
+                            <label class="text-normal">Date To*</label>
+                        </div>
+                        <div class="col-sm-4 col-md-6 col-lg-6 input-field text-normal">
+                            @*@Html.DatePicker("MovementDateTo", new { @class = "datesearch text-decorate datepicker", @style = "width: 110% !important;", @readonly = "readonly" })*@
+                            @if (Model.MovementDateTo != "" && Model.MovementDateTo != null)
+                            {
+                                <input type="text" value="@DateTime.Parse(Model.MovementDateTo).ToString("dd-MM-yyyy")" readonly="readonly" id="MovementDateTo" class="text-normal datepicker edit-normal" name="MovementDateTo" />
+                            }
+                            else
+                            {
+                                <input type="text" value="@DateTime.Now.ToString("dd-MM-yyyy")" readonly="readonly" id="MovementDateTo" class="text-normal datepicker edit-normal" name="MovementDateTo" />
+                            }
+                            @Html.ValidationMessageFor(m => m.MovementDateFrom, null, new { @class = "error invalid-feedback", @style = "display:block" })
+
+                            <span id="spnMvmntToDate" class="error invalid-feedback" style="display:block"></span>
+                        </div>
+                    </div>
+                    @if (userTypeID != 696008)
+                    {
+                        <div class="row mb-2">
+                            <div class="col-sm-4 col-md-4 col-lg-4 pr-0">
+                                <label class="text-normal">Client (Not visible to other users)</label>
+                            </div>
+                            <div class="col-sm-4 col-md-6 col-lg-6 input-field text-normal">
+                                @Html.TextBoxFor(m => m.Description, null, new { @class = "edit-normal app-over-view-on-change" })
+                            </div>
+                        </div>
+                    }
+
+                    <div class="row mb-2">
+                        <div class="col-sm-4 col-md-4 col-lg-4 pr-0">
+                            @if (userTypeID == 696008)
+                            {
+                                <label class="text-normal">Number of movements</label>
+                            }
+                            else
+                            {
+                                <label class="text-normal">Number of movements*</label>
+                            }
+                        </div>
+                        <div class="col-sm-2 col-md-2 col-lg-2 input-field text-normal">
+                            @if (Model.ApplicationRevId == 0)
+                            {
+
+                                if (userTypeID != 696008)
+                                {
+                                    @Html.TextBoxFor(m => m.NumberOfMovements, new { @maxlength = "200", @class = "required edit-normal app-over-view-on-change", @Value = "1", @data_maxlength = "4" })
+                                    <span id="lblNumberOfMovements" class="error invalid-feedback" style="display:block;"></span>
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(m => m.NumberOfMovements, new { @maxlength = "200", @class = "edit-normal app-over-view-on-change", @data_maxlength = "4" })
+                                    <span id="lblNumberOfMovements" class="error invalid-feedback" style="display:block;"></span>
+                                }
+                            }
+                            else
+                            {
+                                if (userTypeID != 696008)
+                                {
+                                    @Html.TextBoxFor(m => m.NumberOfMovements, new { @maxlength = "200", @class = "required edit-normal app-over-view-on-change", @data_maxlength = "4" })
+                                    <span id="lblNumberOfMovements" class="error invalid-feedback" style="display:block;"></span>
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(m => m.NumberOfMovements, new { @maxlength = "200", @class = "edit-normal app-over-view-on-change", @data_maxlength = "4" })
+                                    <span id="lblNumberOfMovements" class="error invalid-feedback" style="display:block;"></span>
+                                }
+                            }
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-sm-4 col-md-4 col-lg-4 pr-0">
+                            @if (userTypeID == 696008)
+                            {
+                                <label class="text-normal">Maximum number of pieces being moved in any load</label>
+                            }
+                            else
+                            {
+                                <label class="text-normal">Maximum number of pieces being moved in any load*</label>
+                            }
+                        </div>
+                        <div class="col-sm-2 col-md-2 col-lg-2 input-field text-normal">
+                            @if (Model.ApplicationRevId == 0)
+                            {
+                                if (userTypeID != 696008)
+                                {
+                                    @Html.TextBoxFor(m => m.NumberofPieces, new { @maxlength = "200", @class = "required edit-normal app-over-view-on-change", @Value = "1", @data_maxlength = "4" })
+                                    <span id="lblNumberofPieces" class="error invalid-feedback" style="display:block;"></span>
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(m => m.NumberofPieces, new { @maxlength = "200", @class = "edit-normal app-over-view-on-change", @Value = "1", @data_maxlength = "4" })
+                                    <span id="lblNumberofPieces" class="error invalid-feedback" style="display:block;"></span>
+                                }
+                            }
+                            else
+                            {
+                                if (userTypeID != 696008)
+                                {
+                                    @Html.TextBoxFor(m => m.NumberofPieces, new { @maxlength = "200", @class = "required edit-normal app-over-view-on-change", @data_maxlength = "4" })
+                                    <span id="lblNumberofPieces" class="error invalid-feedback" style="display:block;"></span>
+                                }
+                                else
+                                {
+                                    @Html.TextBoxFor(m => m.NumberofPieces, new { @maxlength = "200", @class = "edit-normal app-over-view-on-change", @data_maxlength = "4" })
+                                    <span id="lblNumberofPieces" class="error invalid-feedback" style="display:block;"></span>
+                                }
+
+                            }
+                        </div>
+                    </div>
+                    @if (userTypeID != 696008)
+                    {
+                        <div class="row mb-2">
+                            <div class="col-sm-4 col-md-6 col-lg-4 pr-0">
+                                <label class="text-normal">Description (not included in submitted application)</label>
+                            </div>
+                            <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                                @Html.TextBoxFor(model => model.HaulierDescription, null, new { @class = "edit-normal" })
+                            </div>
+                        </div>
+                    }
+
+                    @{
+                        //ON_BEHALF_OF
+                        bool isDataExistingOnBehalf = !string.IsNullOrEmpty(Model.OnBehalOfContactName);
+                        <div class="row mb-2">
+                            <div class="col-sm-4 col-md-6 col-lg-4 pr-0">
+                                <label class="text-normal">Acting as an applicant on behalf of another organisation?</label>
+                            </div>
+                            <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                                <input id="chkOnBehalfOf" type="checkbox" @(isDataExistingOnBehalf?"checked":"") class="checkbox mr-2" />
+                            </div>
+
+                        </div>
+                        <div style="@(isDataExistingOnBehalf?"":"display:none;")" id="divVr1Details">
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-4 pr-0">
+                                    <label class="text-normal">Contact name*</label>
+                                </div>
+                                <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                                    @Html.TextBoxFor(m => m.OnBehalOfContactName, new { @id = "OnBehalOfContactName", @class = "text_my", @data_maxlength = "140" })
+                                    <span id="spContactName" class="error invalid-feedback"  style="display:block;"></span>
+                                </div>
+
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-4 pr-0"><label class="text-normal">Haulier organisation name*</label></div>
+                                <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                                    @Html.TextBoxFor(m => m.OnBehalOfHaulierOrgName, new { @id = "OnBehalOfHaulierOrgName", @class = "text_my", @data_maxlength = "70" })
+                                    <span id="spHaulierOrgName" class="error invalid-feedback"  style="display:block;"></span>
+                                </div>
+
+                            </div>
+
+
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-4 pr-0">
+                                    <label class="text-normal">Haulier address</label>
+                                </div>
+                                <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                                    @Html.TextBoxFor(m => m.OnBehalOfHaulierAddress1, new { @id = "OnBehalOfHaulierAddress1", @class = "text_my", @data_maxlength = "35" })
+                                    <span id="spHaulierAddress1" class="error"></span>
+                                </div>
+
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-4 pr-0"><span></span></div>
+                                <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                                    @Html.TextBoxFor(m => m.OnBehalOfHaulierAddress2, new { @id = "OnBehalOfHaulierAddress2", @class = "text_my", @data_maxlength = "35" })
+                                    <span id="spHaulierAddress2" class="error invalid-feedback" style="display:block;"></span>
+                                </div>
+
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-4 pr-0"></div>
+                                <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                                    @Html.TextBoxFor(m => m.OnBehalOfHaulierAddress3, new { @id = "OnBehalOfHaulierAddress3", @class = "text_my", @data_maxlength = "35" })
+                                    <span id="spHaulierAddress3" class="error invalid-feedback" style="display:block;"></span>
+                                </div>
+
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-4 pr-0"><span></span></div>
+                                <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                                    @Html.TextBoxFor(m => m.OnBehalOfHaulierAddress4, new { @id = "OnBehalOfHaulierAddress4", @class = "text_my", @data_maxlength = "35" })
+                                    <span id="spHaulierAddress4" class="error invalid-feedback" style="display:block;"></span>
+                                </div>
+
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-4 pr-0">
+                                    <span></span>
+                                </div>
+                                <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                                    @Html.TextBoxFor(m => m.OnBehalOfHaulierAddress5, new { @id = "OnBehalOfHaulierAddress5", @class = "text_my", @data_maxlength = "35" })
+                                    <span id="spHaulierAddress5" class="error invalid-feedback" style="display:block;"></span>
+                                </div>
+
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-sm-4 col-md-6 col-lg-4 pr-0"><label class="text-normal">Country*</label></div>
+                                <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                                    <select id="OnBehalOfCountryID" name="OnBehalOfCountryID" class="form-select select2-elem" style=" width: 75%;">
+                                        <option value="0">--Select country--</option>
+                                        @{
+                                            if (Model.CountryList != null)
+                                            {
+                                                foreach (var cnt in Model.CountryList)
+                                                {
+                                                    <option @(Model.OnBehalOfCountryID.ToString()==cnt.CountryId?"selected='selected'":"") value="@cnt.CountryId">@cnt.Country</option>
+                                                }
+                                            }
+                                        }
+                                    </select>
+                                    <span id="spHaulierCountry" class="error invalid-feedback" style="display:block;"></span>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-4 pr-0"><label class="text-normal">Postcode</label></div>
+                                <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                                    @Html.TextBoxFor(m => m.OnBehalOfHaulPostCode, new { @id = "OnBehalOfHaulPostCode", @Maxlength = "15", @Minlength = "4", @class = "text_my", @data_maxlength = "35" })
+                                    <span id="spOnBehalOfHaulPostCode" class="error invalid-feedback" style="display:block;"></span>
+                                </div>
+
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-4 pr-0"><label class="text-normal">Haulier operator licence</label></div>
+                                <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                                    @Html.TextBoxFor(m => m.OnBehalOfHaulOperatorLicens, new { @id = "OnBehalOfHaulOperatorLicens", @class = "text_my", @maxlength = "20", @data_maxlength = "20" })
+                                    <span id="spOnBehalOfHaulOperatorLicens" class="error invalid-feedback" style="display:block;"></span>
+                                </div>
+
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-4 pr-0"><label class="text-normal">Haulier email address</label></div>
+                                <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                                    @Html.TextBoxFor(m => m.OnBehalOfHaulEmailID, new { @id = "OnBehalOfHaulEmailID", @class = "text_my email", @maxlength = "150", @data_maxlength = "255" })
+                                    <span id="spOnBehalOfHaulEmailID" class="error invalid-feedback" style="display:block;"></span>
+                                </div>
+
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-4 pr-0"><label class="text-normal">Haulier fax number</label></div>
+                                <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                                    @Html.TextBoxFor(m => m.OnBehalOfHaulFaxNo, new { @id = "OnBehalOfHaulFaxNo", @class = "text_my fax", @maxlength = "20", @data_maxlength = "100" })
+                                    <span id="spOnBehalOfHaulFaxNo" class="error invalid-feedback" style="display:block;"></span>
+                                </div>
+
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-sm-4 col-md-6 col-lg-4 pr-0"><label class="text-normal">Haulier telephone number</label></div>
+                                <div class="col-sm-4 col-md-6 col-lg-6 input-field">
+                                    @Html.TextBoxFor(m => m.OnBehalOfHaulTelephoneNo, new { @id = "OnBehalOfHaulTelephoneNo", @class = "text_my phone", @maxlength = "20", @data_maxlength = "100" })
+                                    <span id="spOnBehalOfHaulTelephoneNo" class="error invalid-feedback" style="display:block;"></span>
+                                </div>
+
+                            </div>
+                        </div>
+                    }
+
+                </div>
+                <div class="col-lg-6 col-md-12 col-sm-12 pr-8">
+                    <div class="row pb-4">
+                        <label class="text-normal pb-3 pl-0">
+                            Load description, including net dimensions
+                            (length, width, height and weight)*
+                        </label>
+                        @Html.TextAreaFor(m => m.Load, new { @id = "LoadDescription", @maxlength = "1000", @cols = "3", @rows = "8", @class = "required multiLineTextBox txtmultiwidth edit-normal app-over-view-on-change", @data_maxlength = "1000" })
+                        <span id="lblLoad" class="error invalid-feedback" style="display:block;"></span>
+                    </div>
+                    <div class="row pb-4">
+                        <label class="text-normal pb-3 pl-0">Notes to be included in application</label>
+                        @Html.TextAreaFor(m => m.ApplicationNotesFromHA, new { @id = "NotesWithAppl", @maxlength = "4000", @cols = "3", @rows = "5", @class = " multiLineTextBox txtmultiwidth edit-normal app-over-view-on-change", @data_maxlength = "4000" })
+
+                        <span id="lblApplicationNotesFromHA" class="error invalid-feedback" style="display:block;"></span>
+
+                    </div>
+                    @if (userTypeID != 696008)
+                    {
+                        <div class="row">
+                            <label class="text-normal pb-3 pl-0">Notes on escort</label>
+                            @Html.TextAreaFor(m => m.NotesOnEscort, new { @id = "Notesonescort", @cols = "3", @rows = "5", @class = "multiLineTextBox txtmultiwidth edit-normal app-over-view-on-change", @maxlength = "100" })
+                            @Html.ValidationMessageFor(m => m.NotesOnEscort)
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+
+
+    </div>
+
+
+
+    <!-- end of main content -->
+    @Html.HiddenFor(m => m.OrgHaulierContactName)
+    @Html.HiddenFor(m => m.OrgFax)
+    @Html.HiddenFor(m => m.OrgEmailId)
+    @Html.HiddenFor(m => m.OrgId)
+    @Html.HiddenFor(m => m.EditBySORT)
+    @Html.HiddenFor(m => m.HAContactId)
+    @Html.HiddenFor(m => m.OrgName)
+    @Html.HiddenFor(m => m.AnalysisId)
+
+</fieldset>
+
+
+@{
+    Html.RenderAction("ViewRouteVehicleList", "Application", new { appRevisionId = @Model.ApplicationRevId, versionId = @Model.VersionId });
+}
+
+@{
+    Html.RenderAction("ViewSupplimentaryInfo", "Application", new { appRevisionId = @Model.ApplicationRevId });
+}
+
+@Html.Hidden("hf_userTypeID", userTypeID)
+@Html.Hidden("hf_ApplicationRevId", Model.ApplicationRevId)
+@Html.Hidden("hf_DateTime", DateTime.Now.ToString("dd-MM-yyyy"))

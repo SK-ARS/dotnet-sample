@@ -1,0 +1,47 @@
+
+@model IEnumerable<STP.Domain.VehiclesAndFleets.Configuration.VehicleRegistration>
+<!--The same registration view is used in AmendVehicle as well-->
+<div id="div_reg_config_vehicle" class="col-lg-8 col-md-6 col-sm-6 mb-2">
+    <div id="error_msg" class="error invalid-feedback" style="display: block !important;"></div>
+    <table class="tbl_registration main-table RegistrationComponent" id="vehicle-reg-table">
+        <thead>
+            <tr>
+                <th class="headgrad">Registration</th>
+                <th class="headgrad">Fleet ID</th>
+                <th class="headgrad"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr class="tr_config_Registration">
+                    <td class="component_alignment">
+                        <span class="cls_regId_config txt_register_config RegistrationComponent">@item.RegistrationId</span>
+                    </td>
+                    <td class="component_alignment">
+                        <span class="cls_fleetId_config txt_fleet_config RegistrationComponent">@item.FleetId</span>
+                    </td>
+                    <td style="text-align: center;">
+                        <input type="hidden" value="@item.IdNumber" class="hdId" />
+                        <a href="#" class="delete1 btngrad btnrds btnbdr tdbutton deleteConfigReg">
+                            <img src="~/Content/assets/images/delete-icon.svg" title="Delete" width="18">
+                        </a>
+                    </td>
+                </tr>
+            }
+            <tr class="tr_config_Registration">
+                <td>
+                    <input type="text" id="txt_register_config" class="txt_register_config frmbdr clearSpanConfig" />
+                </td>
+                <td>
+                    <input type="text" id="txt_fleet_config" class="txt_fleet_config frmbdr clearSpanConfig" />
+                </td>
+                <td>
+                    <a href="#" class="btngrad btnrds btnbdr tdbutton btn_config_add_new">
+                        <img src="~/Content/assets/images/Group 999.svg" title="Add" width="26">
+                    </a>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

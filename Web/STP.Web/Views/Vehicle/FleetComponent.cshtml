@@ -1,0 +1,451 @@
+﻿@using PagedList.Mvc
+@model PagedList.IPagedList<STP.Domain.VehiclesAndFleets.Component.ComponentGridList>
+
+@using STP.Common.Constants
+@{
+    int pageSize = 10;
+    int listCount = 0;
+    listCount = (int)Session["PageSize"];
+
+    if (ViewBag.pageSize != null)
+    {
+        pageSize = ViewBag.pageSize;
+    }
+    int? pageNumber = ViewBag.page;
+    int totalPageCount = Model.PageCount;
+    int totalItemCount = Model.TotalItemCount;
+    int portalType = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        portalType = sessionValues.UserTypeId;
+    }
+    int isFromConfig = ViewBag.isFromConfig;
+    string mvmntName = ViewBag.movementClassificationName;
+    
+        var filterFavourites = ViewBag.filterFavourites != null && ViewBag.filterFavourites;
+        int x = 0;
+    
+    if (filterFavourites == true)
+    {
+        x = 1;
+    }
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.VEHICLES;
+
+}
+@Html.Hidden("IsEdit")
+@Html.Hidden("IsFromConfig", isFromConfig)
+@Html.Hidden("listCount", listCount)
+<script src="~/Scripts/Vehicle/FleetComponent.js?V@(Session["ProjectVersion"])"></script>
+
+<style>
+    .btnfleet {
+        width: 100% !important;
+        margin-left: 2rem;
+        margin-top: 1rem;
+    }
+
+    .btnwidth {
+        width: 13rem !important;
+    }
+
+    #filters .filter-list input::placeholder {
+        font-style: italic;
+        font-family: lato_light;
+        padding-bottom: 0.5rem;
+    }
+
+
+    .filtered-icon {
+        background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 90% #2b5795;
+        background-size: 1rem;
+    }
+
+    .esdal-filter-icon {
+        background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 0 #2b5795;
+        background-size: 1rem;
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        position: absolute;
+        margin-left: 3px;
+    }
+
+    .movements td:nth-child(1) {
+        text-align: left;
+        padding-left: 1%;
+    }
+
+    .filter-table-icon {
+        position: absolute;
+        bottom: -13px;
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+        left: 50px;
+    }
+
+    .filter-table-icons {
+        bottom: -13px;
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+        left: 19px;
+        position: absolute;
+    }
+
+    #vehicle-components-list th:last-child {
+        background-color: white;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    #vehicle-components-list th:nth-child(9) {
+        width: 0%;
+    }
+</style>
+<body style="overflow-y: auto;" id="main-vehicle-list-filter">
+    <!-- banner -->
+    <section id="banner" class="fleet-comp-container">
+        <div class="container-fluid" id="banner-container">
+            <div class="vehicle" id="Vehicle-component">
+                <div class="header">
+                    <div class="row">
+                        <div class="col-lg-4">
+                            @if (isFromConfig != 1)
+                            {
+                                <div class="button btnfleet mr-0">
+                                    <button class="btn btn-outline-primary btn-normal btnwidth newComponent" style="width: 13rem;" role="button" aria-pressed="true">
+                                        NEW
+                                        COMPONENT
+                                    </button>
+                                </div>
+                            }
+                            @if (isFromConfig == 1)
+                            {
+                                <div class="button btnfleet mr-0">
+                                    <button id="btn_back_to_Config_main" class="btn_back_to_Config btn btn-outline-primary ml2" aria-hidden="true" data-icon="&#xe119;" type="button">Back</button>
+
+                                </div>
+                            }
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="title">
+                                VEHICLE COMPONENTS
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="main-table movements" id="vehicle-components-list">
+                    @Html.Hidden("IsFromConfig", isFromConfig)
+                    @Html.Hidden("movementClassificationName", mvmntName)
+                    @Html.Hidden("pageSizeVal", pageSize)
+                    @Html.Hidden("pageNum", pageNumber)
+                    @{
+                        var sortOrder = ViewBag.SortOrder != null ? (int)ViewBag.SortOrder : 1;//1-type
+                        var sortType = ViewBag.SortType != null ? (int)ViewBag.SortType : 0;//0-asc
+                        var isCompNameSearchFilterEnabled = !string.IsNullOrEmpty(ViewBag.CompNameSearch);
+                        var isTypeSearchFilterEnabled = !string.IsNullOrEmpty(ViewBag.TypeSearch);
+                        var isVhclIntendSearchFilterEnabled = !string.IsNullOrEmpty(ViewBag.VhclIntendSearch);
+                       // var filterFavourites = ViewBag.filterFavourites != null && ViewBag.filterFavourites;
+                        var isAllFilterEnabled = isTypeSearchFilterEnabled || isCompNameSearchFilterEnabled ||
+                            isVhclIntendSearchFilterEnabled || filterFavourites;
+
+                    }
+                    <table class="esdal-table" id="vehiclecmp">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,1)" data-action="VehicleCompSort" data-sortval="1">Type </span>
+                                    <span class="filter-table-icon" style="cursor:context-menu;"><img id="filterimageType" style="display:@(isTypeSearchFilterEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                </th>
+                                <th>Fleet Id</th>
+                                <th>
+                                    <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,0)" data-action="VehicleCompSort" data-sortval="0">Name </span>
+                                    <span class="filter-table-icons"><img id="filterimageInternal" style="display:@(isCompNameSearchFilterEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                </th>
+                                @*<th> Intended Use<span class="filter-table-icons"><img id="filterimageUse" style="display:@(isVhclIntendSearchFilterEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span></th>*@
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th></th>
+                                <th class="table-filter-header">
+                                    <img class="fltFilter openCompFilter open-filter-icon-common" data-targetContainer=".fleet-comp-filter" data-width="350" src="~/Content/assets/images/filter-icon.svg" title="Open filter" width="38">
+                                    <span class="filtered-icon-table closeCompFilter">
+                                        <img id="compFilterimage" src="~/Content/assets/images/filtered-icon.svg" title="Clear filter" style="display:@(isAllFilterEnabled?"block":"none")">
+                                    </span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.Count > 0)
+                            {
+                                foreach (var item in Model)
+                                {
+                                    var isFavourites = item.IsFavourites; //Variable for identify is favorite
+                                    <tr>
+                                        <td class="text-color1" style="cursor:auto !important;">
+                                            <span id="first-column">@item.ComponentType</span>
+                                        </td>
+                                        <td class="text-color1">@item.FleetList</td>
+                                        <td class="text-color2">
+                                            <a href="#" data-arg1="@item.ComponentId" data-arg2="view" class="text-decoration-link component-list" style="white-space: break-spaces;">@item.ComponentName</a>
+                                        </td>
+                                        @*<td class="text-color1">@item.VehicleIntent</td>*@
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        @if (isFromConfig == 1)
+                                        {
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td style="width: 15rem;">
+                                                <span id="mid_row_data">
+                                                    <button class="btn btn-outline-primary btn-normal import-button useComponent" role="button" aria-pressed="true" ComponentId="@item.ComponentId">
+                                                        USE COMPONENT
+                                                    </button>
+                                                </span>
+                                            </td>
+                                            <td></td>
+                                        }
+                                        else
+                                        {
+                                            <td></td>
+
+                                            if (portalType == 696002)
+                                            {
+                                                <td></td>
+                                                <td><img src="~/Content/assets/images/edit-icon.svg" title="Edit" width="20"></td>
+                                                <td><img src="~/Content/assets/images/delete-icon.svg" title="Delete" width="18"></td>
+                                                <td><img src="~/Content/assets/images/star-disabled.svg" title="Favourites" width="20"></td>
+                                            }
+                                            else
+                                            {
+                                                <td></td>
+                                                <td>
+                                                    <a href="@Url.Action("UpdateComponent", "Vehicle",
+                                                            new
+                                                             {
+                                                                 B7vy6imTleYsMr6Nlv7VQ =
+                                                                    STP.Web.Helpers.EncryptionUtility.Encrypt("componentId=" + @item.ComponentId)
+                                                             })">
+                                                        <img src="~/Content/assets/images/edit-icon.svg" title="Edit" width="20">
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a href="#" class="deleteComponent" ComponentDescription="@item.ComponentDescription" id="@item.ComponentId" name="@item.ComponentName">
+                                                        <img src="~/Content/assets/images/delete-icon.svg" title="Delete" width="18">
+                                                    </a>
+                                                </td>
+                                                var CatIdEnStar = item.ComponentId + "__isFavouriteEn";
+                                                var CatIdDisStar = item.ComponentId + "__isFavouriteDis";
+
+                                                <td>
+
+
+                                                    @if (isFavourites == 0)
+                                                    {
+                                                        <div id=@CatIdDisStar class="displayBlock">
+                                                            <img src="~/Content/assets/images/star-disabled.svg" id="disabled_star" title="Favourites" width="20" ComponentId="@item.ComponentId" arg1="1" arg2="0" class="mouseCursor manageFav">
+                                                        </div>
+                                                        <div id=@CatIdEnStar class="displayNone">
+                                                            <img src="~/Content/assets/images/star-enabled.svg" id="enabled_star" title="Favourites" width="20" ComponentId="@item.ComponentId" arg1="1" arg2="1" class="mouseCursor manageFav">
+
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <div id=@CatIdEnStar class="displayBlock">
+                                                            <img src="~/Content/assets/images/star-enabled.svg" id="enabled_star" title="Favourites" width="20" ComponentId="@item.ComponentId" arg1="1" arg2="1" class="mouseCursor manageFav">
+
+                                                        </div>
+                                                        <div id=@CatIdDisStar class="displayNone">
+                                                            <img src="~/Content/assets/images/star-disabled.svg" id="disabled_star" title="Favourites" width="20" ComponentId="@item.ComponentId" arg1="1" arg2="0" class="mouseCursor manageFav">
+                                                        </div>
+                                                    }
+
+
+                                                </td>
+                                            }
+                                        }
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="13" style="text-align: center"><span style="color: red">@Resources.Resource.NoResultFound</span></td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+                @*@if (listCount < totalItemCount)
+                {*@
+                    if (Model.Count > 0)
+                    {
+            <div class="row pagination-container-new fleet-comp-pagination" id="comp-pagination">
+                <div class="col-lg-3">
+                    @if (Model.TotalItemCount > 0)
+                    {
+                        <div class="text-color2 total-records-number">
+                            Total number of records : @Model.TotalItemCount
+                        </div>
+                    }
+                </div>
+                <div class="col-lg-6 text-center">
+                    @if (listCount < totalItemCount)
+                    {
+                        <div class="table-pagination">
+                            @Html.PagedListPager(Model, page => Url.Action("FleetComponent",
+                               new
+                               {
+                                   B7vy6imTleYsMr6Nlv7VQ =
+                                                                     STP.Web.Helpers.EncryptionUtility.Encrypt("isFromConfig=" + ViewBag.isFromConfig +
+                                                                     "&sortOrder=" + sortOrder +
+                                                                     "&sortType=" + sortType +
+                                                                     "&searchVhclType=" + ViewBag.TypeSearch +
+                                                                     "&searchVhclIntend=" + ViewBag.VhclIntendSearch +
+                                                                     "&searchString=" + ViewBag.CompNameSearch
+                                                                     + "&filterFavourites=" + x),
+                                   page
+                               }), new PagedListRenderOptions
+                               {
+                                   DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                                   DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                                   LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                                   LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                                   DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                                   DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                                   MaximumPageNumbersToDisplay = 3,
+                                   DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                                   EllipsesFormat = "...",
+                                   LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+                                   LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+                               });
+                        </div>
+                    }
+                    @Html.Hidden("TotalPages", totalPageCount)
+                    @Html.Hidden("pageSizeVal", pageSize)
+                    @Html.Hidden("pageNum", pageNumber)
+                </div>
+                @if (Model.TotalItemCount > 10)
+                {
+                    <div class="col-lg-3 col-md-3 col-sm-12 text-normal pr-0 FleetComponent-Pag">
+                        Number of items to display per page
+                        <select class="form-select mb-3" style="width:100px;" aria-label=".form-select-lg example" id="pageSizeSelect">
+                            <option val="10" @(pageSize == 10 ? "selected" : "")>10</option>
+                            <option val="20" @(pageSize == 20 ? "selected" : "")>20</option>
+                            <option val="50" @(pageSize == 50 ? "selected" : "")>50</option>
+                            <option val="100" @(pageSize == 100 ? "selected" : "")>100</option>
+                        </select>
+                    </div>
+                }
+                </div>
+                    }
+                @*}*@
+                <!-- <div></div> -->
+            </div>
+          
+
+        </div>
+    </section>
+
+    <!-- filter settings -->
+    <div id="filters" class="sidenav filter-sidenav vehicle-filter fleet-comp-filter">
+        <div class="row sidenav-header">
+            <div class="col-10 text-center">
+                <div class="text-normal-hyperlink mt-3" style="font-size: x-large;">
+                    FILTER
+                </div>
+            </div>
+            <div class="col-1">
+                <a href="#" id="closefilter" class="closeComponentFilter close-filter-icon-common">&times;</a>
+            </div>
+        </div>
+
+
+
+
+        <hr style="margin-top: 0;">
+        <div class="filter-list">
+            <div class="filter-entry">
+                <div class="row mb-4">
+                    <div class="col-lg-12 col-mb-12 col-sm-12">
+                        <input class="edit-normal" type="text" id="searchText" name="from" value="@ViewBag.CompNameSearch" placeholder="Component Name">
+                    </div>
+                </div>
+                <div>
+                    <div class="row mb-4">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            @Html.DropDownList("VehType", (IEnumerable<SelectListItem>)ViewBag.vehicleType, "Type", new { @class = "form-select mb-3" })
+                        </div>
+                    </div>
+                    @*<div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            @Html.DropDownList("Indend", (IEnumerable<SelectListItem>)ViewBag.vehicleIntend, "Intended Use", new { @class = "form-select mb-3" })
+                        </div>
+                    </div>*@
+                    <br />
+                    <div class="row">
+                        <div class="col-lg-2 col-md-4 col-sm-4">
+                            @Html.CheckBox("SearchFavourites", (bool)ViewBag.filterFavourites, new { @class = "checkbox checkall", @name = "FilterFavourites", @id = "FilterFavourites" })
+                        </div>
+                        <div class="col-lg-10 col-sm-8 col-md-8 pr-0">
+
+                            <span> Search within Favourites</span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="mt-4">
+                    <div class="row ml-5">
+                        <div class="col-lg-7 col-md-7 col-sm-12">
+                            <div class="button mr-0">
+                                <input type="hidden" name="SortOrderValue" id="SortOrderValue" value="@sortOrder" />
+                                <input type="hidden" name="SortTypeValue" id="SortTypeValue" value="@sortType" />
+                                <button class="btn btn-outline-primary btn-normal btnFleetSearch" role="button" aria-pressed="true"
+                                        style="width: 100%">
+                                    SEARCH
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-5 col-md-5 col-sm-12">
+                            <div class="button mr-0">
+                                <button class="btn btn-outline-primary btn-normal btnClearFleet" role="button" aria-pressed="true"
+                                        style="width:100%">
+                                    CLEAR
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end of filter settings -->
+</body>
+@{ string GetSortDefaultClass(int sortTypeVal, int sortOrderVal, int valToCheck)
+    {
+        var sortClass = ""; //0-asc, 1-desc ,
+        if (sortOrderVal == valToCheck)
+        {
+            sortClass = sortTypeVal == 1 ? "sorting_desc" : "sorting_asc";
+        }
+        return sortClass;
+    }
+}
+
+<script src="~/Scripts/VehicleComponent/jQuery.Comp.Fleet.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/vehicleConfig.FleetGrid.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/vehicleConfig.Summarise.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/vehicleConfig.Create.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/VehicleComponent/jQuesry.Comp.General.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/unitConversion.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Common/MasterPage/jQuery.master.maincontents.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/VehicleComponent/jQuery.Comp.FleetComponentList.js?V@(Session["ProjectVersion"])"></script>

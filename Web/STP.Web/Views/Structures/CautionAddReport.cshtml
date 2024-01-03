@@ -1,0 +1,350 @@
+@using System.Text.RegularExpressions;
+@{
+    Layout = null;
+}
+@using System.Web.Optimization
+@using STP.Domain.Structures
+@using PagedList.Mvc
+@{
+    int userTypeID = 0;
+    bool isAdmin = false;
+    int portalType = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        userTypeID = sessionValues.UserTypeId;
+        portalType = sessionValues.UserTypeId;
+        if (portalType == 696006 || sessionValues.IsAdmin == 1)
+        {
+            isAdmin = true;
+        }
+    }
+    string mode = ViewBag.mode;
+    Dictionary<string, string> hashChangeList = ViewBag.changeList;
+
+}
+<div id="CautionAddReportContainer">
+    <style>
+        .addCautionTitle {
+            font-size: 25px;
+            font-style: normal;
+            list-style: none;
+            font-family: lato_medium, Arial;
+            color: rgba(39, 87, 149, 1) !important;
+            text-align: center;
+            padding-top: 3rem;
+            padding-bottom: 1rem;
+        }
+
+        .outline-btn-primary {
+            padding: 8px !important;
+        }
+    </style>
+    <div id="check-caution">
+        <div class="row mt-4 main-entry pr-3 pb-3">
+            <div class="title pl-0" id="warning">
+                <span class="addCautionTitle pr-2">
+                    Caution add report
+                </span>
+                @if (hashChangeList.Count == 0)
+                {
+                    <div class="edit-normal">No changes to save</div>
+                }
+                else
+                {
+                    <div class="edit-normal">Are you sure you want to add this caution?</div>
+                }
+            </div>
+            @if (hashChangeList.Count > 0)
+            {
+                <div class="row mt-4 main-entry pr-3 pb-3 pl-0">
+                    <div class="col-lg-12 col-md-12 col-sm-12 pl-0">
+                        @if (hashChangeList.ContainsKey("CAUTION_NAME"))
+                        {
+
+                            var stringToExtract = hashChangeList["CAUTION_NAME"];
+                            var newValue = Regex.Match(stringToExtract, "'(.*?)'").Groups[1].Value;
+                            var previousValue = Regex.Match(stringToExtract, @"\(([^)]*)\)").Groups[1].Value;
+
+                            <div class="row mb-2">
+                                <div class="col-sm-5 pr-0 pl-0">
+                                    <label class="text-normal">Name<span class="text-decorate pl-1">(@previousValue)</span></label>
+                                </div>
+                                <div class="col-sm-4 col-md-4 col-lg-4 input-field text-normal">
+                                    @newValue
+                                </div>
+                            </div>
+                        }
+                        @if (hashChangeList.ContainsKey("StandardCaution"))
+                        {
+                            var stringToExtract = hashChangeList["StandardCaution"];
+                            var newValue = Regex.Match(stringToExtract, "'(.*?)'").Groups[1].Value;
+                            var previousValue = Regex.Match(stringToExtract, @"\(([^)]*)\)").Groups[1].Value;
+                            <div class="row mb-2">
+                                <div class="col-sm-5 pr-0 pl-0">
+                                    <label class="text-normal">Action type <span class="text-decorate pl-1">(@previousValue)</span></label>
+                                </div>
+                                <div class="col-sm-4 col-md-4 col-lg-4 text-normal">
+                                    @newValue
+                                </div>
+                            </div>
+                        }
+                        @if (hashChangeList.ContainsKey("DIRECTION_NAME"))
+                        {
+                            var stringToExtract = hashChangeList["DIRECTION_NAME"];
+                            var newValue = Regex.Match(stringToExtract, "'(.*?)'").Groups[1].Value;
+                            var previousValue = Regex.Match(stringToExtract, @"\(([^)]*)\)").Groups[1].Value;
+                            <div class="row mb-2">
+                                <div class="col-sm-5 pr-0 pl-0">
+                                    <label class="text-normal">Action<span class="text-decorate pl-1">(@Html.Raw(previousValue))</span></label>
+                                </div>
+                                <div class="col-sm-4 col-md-4 col-lg-4 text-normal" id="newValue">
+                                    @Html.Raw(newValue)
+                                </div>
+                            </div>
+                        }
+                        @if (hashChangeList.ContainsKey("Bold"))
+                        {
+                            var stringToExtract = hashChangeList["Bold"];
+                            var newValue = Regex.Match(stringToExtract, "'(.*?)'").Groups[1].Value;
+                            var previousValue = Regex.Match(stringToExtract, @"\(([^)]*)\)").Groups[1].Value;
+                            <div class="row mb-2">
+                                <div class="col-sm-5 pr-0 pl-0">
+                                    <label class="text-normal">Bold<span class="text-decorate pl-1">(@previousValue)</span></label>
+                                </div>
+                                <div class="col-sm-4 col-md-4 col-lg-4 text-normal">
+                                    @newValue
+                                </div>
+                            </div>
+                        }
+                        @if (hashChangeList.ContainsKey("Italic"))
+                        {
+                            var stringToExtract = hashChangeList["Italic"];
+                            var newValue = Regex.Match(stringToExtract, "'(.*?)'").Groups[1].Value;
+                            var previousValue = Regex.Match(stringToExtract, @"\(([^)]*)\)").Groups[1].Value;
+                            <div class="row mb-2">
+                                <div class="col-sm-5 pr-0 pl-0">
+                                    <label class="text-normal">Italic<span class="text-decorate pl-1">(@previousValue)</span></label>
+                                </div>
+                                <div class="col-sm-4 col-md-4 col-lg-4 text-normal">
+                                    @newValue
+                                </div>
+                            </div>
+                        }
+                        @if (hashChangeList.ContainsKey("Underline"))
+                        {
+                            var stringToExtract = hashChangeList["Underline"];
+                            var newValue = Regex.Match(stringToExtract, "'(.*?)'").Groups[1].Value;
+                            var previousValue = Regex.Match(stringToExtract, @"\(([^)]*)\)").Groups[1].Value;
+                            <div class="row mb-2">
+                                <div class="col-sm-5 pr-0 pl-0">
+                                    <label class="text-normal">Underline<span class="text-decorate pl-1">(@previousValue)</span></label>
+                                </div>
+                                <div class="col-sm-4 col-md-4 col-lg-4 text-normal">
+                                    @newValue
+                                </div>
+                            </div>
+                        }
+                        @if (hashChangeList.ContainsKey("MAX_HEIGHT_MTRS"))
+                        {
+
+                            var stringToExtract = hashChangeList["MAX_HEIGHT_MTRS"];
+                            var newValue = "";
+                            var previousValue = "";
+                            if (stringToExtract.Contains("ft/in"))
+                            {
+                                newValue = Regex.Match(stringToExtract, "set to '(.*?)ft/in").Groups[1].Value;
+                                newValue += " ft/in";
+                                previousValue = Regex.Match(stringToExtract, @"\(([^)]*)\)").Groups[1].Value;
+
+                            }
+                            else
+                            {
+                                newValue = Regex.Match(stringToExtract, "'(.*?)'").Groups[1].Value;
+                                previousValue = Regex.Match(stringToExtract, @"\(([^)]*)\)").Groups[1].Value;
+
+                            }
+                            <div class="row mb-2">
+                                <div class="col-sm-5 pr-0 pl-0">
+                                    <label class="text-normal">Height<span class="text-decorate pl-1">(@previousValue)</span></label>
+                                </div>
+                                <div class="col-sm-4 col-md-5 col-lg-4 input-field text-normal">
+                                    @newValue
+                                </div>
+                            </div>
+                        }
+                        @if (hashChangeList.ContainsKey("MAX_WIDTH_MTRS"))
+                        {
+                            var stringToExtract = hashChangeList["MAX_WIDTH_MTRS"];
+                            var newValue = "";
+                            var previousValue = "";
+                            if (stringToExtract.Contains("ft/in"))
+                            {
+                                newValue = Regex.Match(stringToExtract, "set to '(.*?)ft/in").Groups[1].Value;
+                                newValue += " ft/in";
+                                previousValue = Regex.Match(stringToExtract, @"\(([^)]*)\)").Groups[1].Value;
+
+                            }
+                            else
+                            {
+                                newValue = Regex.Match(stringToExtract, "'(.*?)'").Groups[1].Value;
+                                previousValue = Regex.Match(stringToExtract, @"\(([^)]*)\)").Groups[1].Value;
+
+                            }<div class="row mb-2">
+                                <div class="col-sm-5 pr-0 pl-0">
+                                    <label class="text-normal">Width<span class="text-decorate pl-1">(@previousValue)</span></label>
+                                </div>
+                                <div class="col-sm-4 col-md-5 col-lg-4 input-field text-normal">
+                                    @newValue
+                                </div>
+                            </div>
+                        }
+                        @if (hashChangeList.ContainsKey("MAX_LENGTH_MTRS") || hashChangeList.ContainsKey("MAX_LEN_MTRS"))
+                        {
+                            var stringToExtract = "";
+                            if (hashChangeList.ContainsKey("MAX_LENGTH_MTRS"))
+                            {
+                                stringToExtract = hashChangeList["MAX_LENGTH_MTRS"];
+                            }
+                            else
+                            {
+                                stringToExtract = hashChangeList["MAX_LEN_MTRS"];
+                            }
+                            var newValue = "";
+                            var previousValue = "";
+                            if (stringToExtract.Contains("ft/in"))
+                            {
+                                newValue = Regex.Match(stringToExtract, "set to '(.*?)ft/in").Groups[1].Value;
+                                newValue += " ft/in";
+                                previousValue = Regex.Match(stringToExtract, @"\(([^)]*)\)").Groups[1].Value;
+
+                            }
+                            else
+                            {
+                                newValue = Regex.Match(stringToExtract, "'(.*?)'").Groups[1].Value;
+                                previousValue = Regex.Match(stringToExtract, @"\(([^)]*)\)").Groups[1].Value;
+
+                            }<div class="row mb-2">
+                                <div class="col-sm-5 pr-0 pl-0">
+                                    <label class="text-normal">Length<span class="text-decorate pl-1">(@previousValue)</span></label>
+                                </div>
+                                <div class="col-sm-4 col-md-5 col-lg-4 input-field text-normal">
+                                    @newValue
+                                </div>
+                            </div>
+                        }
+                        @if (hashChangeList.ContainsKey("MAX_GROSS_WEIGHT_KGS"))
+                        {
+                            var stringToExtract = hashChangeList["MAX_GROSS_WEIGHT_KGS"];
+                            var newValue = Regex.Match(stringToExtract, "'(.*?)'").Groups[1].Value;
+                            var previousValue = Regex.Match(stringToExtract, @"\(([^)]*)\)").Groups[1].Value;
+                            <div class="row mb-2">
+                                <div class="col-sm-5 pr-0 pl-0">
+                                    <label class="text-normal">Gross weight<span class="text-decorate pl-1">(@previousValue)</span></label>
+                                </div>
+                                <div class="col-sm-4 col-md-5 col-lg-4 input-field text-normal">
+                                    @newValue
+                                </div>
+                            </div>
+                        }
+                        @if (hashChangeList.ContainsKey("MAX_AXLE_WEIGHT_KGS"))
+                        {
+                            var stringToExtract = hashChangeList["MAX_AXLE_WEIGHT_KGS"];
+                            var newValue = Regex.Match(stringToExtract, "'(.*?)'").Groups[1].Value;
+                            var previousValue = Regex.Match(stringToExtract, @"\(([^)]*)\)").Groups[1].Value;
+                            <div class="row mb-2">
+                                <div class="col-sm-5 pr-0 pl-0">
+                                    <label class="text-normal">Axle weight<span class="text-decorate pl-1">(@previousValue)</span></label>
+                                </div>
+                                <div class="col-sm-4 col-md-5 col-lg-4 input-field text-normal">
+                                    @newValue
+                                </div>
+                            </div>
+                        }
+                        @if (hashChangeList.ContainsKey("MIN_SPEED_KPH"))
+                        {
+                            var stringToExtract = hashChangeList["MIN_SPEED_KPH"];
+                            var newValue = Regex.Match(stringToExtract, "'(.*?)'").Groups[1].Value;
+                            var previousValue = Regex.Match(stringToExtract, @"\(([^)]*)\)").Groups[1].Value;
+                            <div class="row mb-2">
+                                <div class="col-sm-5 pr-0 pl-0">
+                                    <label class="text-normal">Speed<span class="text-decorate pl-1">(@previousValue)</span></label>
+                                </div>
+                                <div class="col-sm-4 col-md-5 col-lg-4 input-field text-normal">
+                                    @newValue
+                                </div>
+                            </div>
+                        }
+                        @if (hashChangeList.ContainsKey("CREATOR_IS_CONTACT"))
+                        {
+                            var stringToExtract = hashChangeList["CREATOR_IS_CONTACT"];
+                            var newValue = Regex.Match(stringToExtract, "'(.*?)'").Groups[1].Value;
+                            var previousValue = Regex.Match(stringToExtract, @"\(([^)]*)\)").Groups[1].Value;
+                            <div class="row mb-2">
+                                <div class="col-sm-5 pr-0 pl-0">
+                                    <label class="text-normal">Creator is contact<span class="text-decorate pl-1">(@previousValue)</span></label>
+                                </div>
+                                <div class="col-sm-4 col-md-4 col-lg-4 text-normal">
+                                    @newValue
+                                </div>
+                            </div>
+                        }
+                    </div>
+                    <div class="row pl-0 pr-2 pt-6">
+                        <div class="col-2 ">
+                            <div class="button mr-2">
+                                <button class="btn outline-btn-primary btn-normal" id="SaveCaution" role="button" aria-pressed="true" data-toggle="modal">
+                                    SAVE
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-2 pl-0 ml2">
+                            <div class="button">
+                                <button class="btn outline-btn-primary btn-normal backbtn" role="button" aria-pressed="true"
+                                        data-toggle="modal">
+                                    CANCEL
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="row mt-4 main-entry pr-3 pb-3">
+                </div>
+                <div class="button pl-0">
+                    <button class="btn outline-btn-primary btn-normal backbtn" role="button" aria-pressed="true"
+                            data-toggle="modal">
+                        BACK
+                    </button>
+                </div>
+            }
+        </div>
+
+        <div class="modal fade" id="cautionPopup" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header pt-2">
+
+                    </div>
+                    <div class="modal-body">
+                        <img src="/content/assets/images/completed.svg"  width="30">
+                        <div class="edit-normal">Caution added successfully</div>
+                    </div>
+                    <div class="modal-footer pt-4">
+                        <button type="button" id="Reviewbtn" class="btn btn-secondary" data-dismiss="modal">OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @{
+        <input type="hidden" value="@ViewBag.mode" id="hf_mode" name="hf_mode" />
+        <input type="hidden" value="@ViewBag.StructureID" id="hf_StructureID" name="hf_StructureID" />
+        <input type="hidden" value="@ViewBag.SectionID" id="hf_SectionID" name="hf_SectionID" />
+    }
+</div>
+@*<script src="~/Scripts/Structures/CautionAddReport.js?V@(Session["ProjectVersion"])"></script>*@

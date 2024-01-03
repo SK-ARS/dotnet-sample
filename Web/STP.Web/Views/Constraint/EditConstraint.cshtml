@@ -1,0 +1,364 @@
+@model STP.Domain.RoadNetwork.Constraint.ConstraintModel
+
+@using System.Web.Optimization
+@using STP.Web.Custom.Views
+@using STP.Domain.RoadNetwork.Constraint
+@using System.Web.Mvc
+
+@{
+    Layout = null;
+    int UOM = ViewBag.UOM;
+}
+@{
+    bool isAdmin = false;
+    int portalType = 0;
+    string ConstId = Convert.ToString(ViewBag.ConstraintID);
+
+    if (Session["UserInfo"] != null)
+    {
+        var user = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        portalType = user.UserTypeId;
+        if (portalType == 696006 || user.IsAdmin == 1)
+        {
+            isAdmin = true;
+        }
+    }
+    string constraintName = "";
+
+    if (Model.DirectionName != "" || Model.DirectionName != null)
+    {
+        constraintName = Convert.ToString(Model.DirectionName).Substring(0, 1).ToUpper() + Convert.ToString(Model.DirectionName).Substring(1).ToLower();
+
+    }
+}
+
+<div id="soa-structure-detail" class="edit-constraint">
+        <style>
+
+            .error {
+                color: red;
+                font-size:12px;
+                display: none;
+            }
+
+            .LeftpanelConst {
+                height: auto !important;
+                min-height: 563px !important;
+                width: 26rem !important;
+            }
+
+            .outline-btn-primary {
+                padding: 8px !important;
+            }
+
+            #dialogue {
+                height: inherit !important;
+                box-shadow: inherit !important;
+                width: auto !important;
+                margin-left: 0px !important;
+                margin-top: 132px !important;
+            }
+        </style>
+        @Html.Hidden("UOM", UOM)
+        <!--main content -->
+        <section id="banner" class="map-icons">
+            <!-- google-map-setting-start -->
+            @*<div id="googleMap" style="height: 590px;" class="google-map"></div>
+            <form>
+                <input type='hidden' name='lat' id='lat'>
+                <input type='hidden' name='lng' id='lng'>
+            </form>*@
+            <!-- google-map-setting-end -->
+            <div class="card LeftpanelConst" style="position: absolute;" id="edit-caution">
+                <div class="card-content">
+                    <div class="title">
+                        Edit Constraint
+                    </div>
+                    <div class="row mt-4 main-entry">
+
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            @using (Html.BeginForm("ConstraintSaveModel", "Constraint", FormMethod.Post, new { id = "ConstraintInfo" }))
+                            {
+                                @Html.HiddenFor(model => model.ConstraintId)
+                                @Html.HiddenFor(model => model.ConstraintCode, new { Id = "CONSTRAINT_CODE" })
+
+                                <div class="row mb-2">
+                                    <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                        <label class="text-normal">@Resources.Resource.Owner</label>
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-7 input-field">
+                                        @*<input class="edit-normal" type="text" name="from">*@
+                                        @Html.DisplayFor(model => model.OrganisationName, new { maxlength = 100, @class = "edit-normal" })
+                                        @Html.HiddenFor(model => model.OrganisationName)
+                                        @Html.ValidationSummary(true)
+
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                        <label class="text-normal">@Resources.Resource.Name *</label>
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-7 input-field">
+                                        @*<input class="edit-normal" type="text" name="from">*@
+                                        @Html.TextBoxFor(model => model.ConstraintName, new { maxlength = 100, @class = "edit-normal" })
+                                        @Html.HiddenFor(model => model.HdnConstraintName)
+                                        <span id="spCONSTRAINT_NAME" class="error"></span>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                        <label class="text-normal">Type</label>
+                                    </div>
+                                    <div class="col-sm-4 col-md-6 col-lg-6 input-field text-normal">
+                                        @*<select class="form-select mb-3" aria-label=".form-select-lg example">
+                                            <option selected>Generic</option>
+                                        </select>*@
+
+                                        @Html.DropDownListFor(model => model.ConstraintTypeId, Model.ConstraintTypeList, new { @class = "form-select mb-3" })
+                                        @Html.HiddenFor(model => model.HdnConstraintTypeId)
+                                        @Html.HiddenFor(model => model.ConstraintTypeName)
+                                        @Html.HiddenFor(model => model.ConstraintType)
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                        <label class="text-normal">Start date</label>
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-5 input-field">
+                                        @*<input class="edit-normal" type="text" name="from">*@
+
+                                        @if (Model.StartDateString == null || Model.StartDateString == "01/01/0001")
+                                        {
+                                            @Html.DatePicker("StartDateString", new { @class = "spanvalue edit-normal" })
+
+                                        }
+                                        else
+                                        {
+                                            @Html.DatePicker("StartDateString", Model.StartDateString, new { @class = "spanvalue edit-normal" })
+                                        }
+                                        @Html.HiddenFor(model => model.HdnStartDateString)
+
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                        <label class="text-normal">End date</label>
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                        @*<input class="edit-normal" type="text" name="from">*@
+                                        @if (Model.EndDateString == null || Model.EndDateString == "01/01/0001")
+                                        {
+                                            @Html.DatePicker("EndDateString", new { @class = "spanvalue edit-normal" })
+                                        }
+                                        else
+                                        {
+                                            @Html.DatePicker("EndDateString", Model.EndDateString, new { @class = "spanvalue edit-normal" })
+                                        }
+
+                                        @Html.HiddenFor(model => model.HdnEndDateString)
+                                        <span id="spEndDate" class="error"></span>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                        <label class="text-normal">Height</label>
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                        @*<input class="edit-normal" type="text" name="from">*@
+                                        @if (!string.IsNullOrWhiteSpace(Model.Height) && Model.Height!="0")
+                                        {
+                                            @Html.TextBoxFor(model => model.Height, new { @class = "numberwidth edit-normal" })
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(model => model.Height, new { @Value = "", @class = "numberwidth edit-normal" })
+                                        }
+                                        @if (ViewBag.UOM == 692001)
+                                        {
+                                            <label>m</label>
+                                        }
+                                        else
+                                        {
+                                            <label> ft/in</label>
+                                        }
+
+                                        <span id="spMaxHeight" class="error"></span>
+                                        @Html.HiddenFor(model => model.HdnMaxHeightMtrs)
+                                        @Html.HiddenFor(model => model.HdnHeight)
+
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                        <label class="text-normal">Width</label>
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                        @if (!string.IsNullOrWhiteSpace(Model.Width) && Model.Width != "0")
+                                        {
+                                            @Html.TextBoxFor(model => model.Width, new { @class = "numberwidth edit-normal" })
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(model => model.Width, new { @Value = "", @class = "numberwidth edit-normal" })
+                                        }
+                                        @if (ViewBag.UOM == 692001)
+                                        {
+                                            <label>m</label>
+                                        }
+                                        else
+                                        {
+                                            <label> ft/in</label>
+                                        }
+                                        <span id="spMaxWidth" class="error"></span>
+                                        @Html.HiddenFor(model => model.HdnMaxWidthMeters)
+                                        @Html.HiddenFor(model => model.HdnWidth)
+
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                        <label class="text-normal">Length</label>
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                        @if (!string.IsNullOrWhiteSpace(Model.Length) && Model.Length != "0")
+                                        {
+                                            @Html.TextBoxFor(model => model.Length, new { @class = "numberwidth edit-normal" })
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(model => model.Length, new { @Value = "", @class = "numberwidth edit-normal" })
+                                        }
+                                        @if (ViewBag.UOM == 692001)
+                                        {
+                                            <label>m</label>
+                                        }
+                                        else
+                                        {
+                                            <label> ft/in</label>
+                                        }
+                                        <span id="spMaxLength" class="error"></span>
+                                        @Html.HiddenFor(model => model.HdnMaxLenMeters)
+                                        @Html.HiddenFor(model => model.HdnLength)
+
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                        <label class="text-normal">Gross weight</label>
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                        @if (Model.GrossWeight > 0)
+                                        {
+                                            @Html.TextBoxFor(model => model.GrossWeight, new { @class = "numberwidth edit-normal" })
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(model => model.GrossWeight, new { @Value = "", @class = "numberwidth edit-normal" })
+                                        }
+                                        <span class="text-color1 ml-2">t</span>
+                                        <span id="spGrossWeight" class="error"></span>
+                                        @Html.HiddenFor(model => model.HdnMaxGrossWeightKgs)
+                                        @Html.HiddenFor(model => model.HdnGrossWeightKgs)
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                        <label class="text-normal">Axle weight</label>
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                        @if (Model.AxleWeight > 0)
+                                        {
+                                            @Html.TextBoxFor(model => model.AxleWeight, new { @class = "numberwidth edit-normal" })
+                                        }
+                                        else
+                                        {
+                                            @Html.TextBoxFor(model => model.AxleWeight, new { @Value = "", @class = "numberwidth edit-normal" })
+                                        }
+                                        <span class="text-color1 ml-2">t</span>
+                                        <span id="spAxleWeight" class="error"></span>
+                                        @Html.HiddenFor(model => model.HdnMaxAxleWeightKgs)
+                                        @Html.HiddenFor(model => model.HdnAxleWeightKgs)
+
+                                    </div>
+                                </div>
+                                <div class="row mb-4">
+                                    <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                        <label class="text-normal">Owner is contact</label>
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-5 input-field text-normal">
+                                        @*<input type="checkbox" id="bulldozer" class="checkbox" name="bulldozer"
+                                        value="bulldozer" width="28">*@
+                                        @Html.CheckBoxFor(model => model.OwnerIsContactFlag)
+                                        @Html.HiddenFor(model => model.HdnOwnerIsContactFlag)
+                                    </div>
+                                </div>
+
+                                if (Model.TopologyType == 248002)
+                                {
+                                    <div>
+                                        <div class="editor-label">
+                                            @Resources.Resource.IsNodeConstraint
+                                        </div>
+                                        <div class="editor-field">
+                                            @Html.CheckBoxFor(model => model.IsNodeConstraintFlag)
+                                            @Html.HiddenFor(model => model.HdnIsNodeConstraintFlag)
+                                        </div>
+                                    </div>
+                                }
+                                <div>@Html.HiddenFor(model => model.TopologyType)</div>
+
+                                <div class="row pt-4">
+                                    <div class="col-sm-4 col-md-6 col-lg-5 pr-0">
+                                        <div class="button mr-2">
+                                            <button class="btn btn-outline-primary btn-normal btn-manage-constraint" type="button">
+                                                SAVE
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4 col-md-5 col-lg-3 input-field text-normal">
+                                        <div class="button mr-0">
+                                            <button type="button" class="btn btn-outline-primary btn-normal btn-manage-constraint-cancel" role="button">
+                                                CANCEL
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+            <img id="card-swipecon1" src="/Content/assets/images/card-swipe-on.svg" width="30" class="btn-open-constraint-nav" style="cursor: pointer; margin-left: 0px; margin-top: 210px;">
+            <img id="card-swipecon2" src="/Content/assets/images/card-swipe-off.svg" width="30" class="btn-close-constraint-nav" style="cursor: pointer; margin-left: 381px; margin-top: 210px;">
+            <!-- Modal -->
+            <div class="modal fade show" id="exampleModalCenter" tabindex="-1" role="dialog"
+                 aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header pt-0">
+                        </div>
+                        <div class="modal-body pt-0">
+                            <img src="~/Content/assets/images/warning-icon2.svg" width="30">
+
+                            <div class="edit-normal">
+                                Are you sure want to update?
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="model">NO</button>
+                            <button type="button" class="btn btn-secondary btn-save-constraint" data-dismiss="modal">YES</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*</div>*@
+
+        </section>
+        <input type="hidden" value="@ViewBag.ConstraintID" id="ConstraintID" name="ConstraintID" />
+    </div>
+
+<script src="~/Scripts/Constraint/EditConstraint.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Constraint/ViewConstraint.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Constraint/HaulierConstraintDetails.js?V@(Session["ProjectVersion"])"></script>

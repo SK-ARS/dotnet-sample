@@ -1,0 +1,241 @@
+@using STP.Domain.MovementsAndNotifications.Movements;
+@{
+    List<SORTMovementList> SORTApplRevisionsobj = (List<SORTMovementList>)ViewBag.ApplicationList;
+    List<SORTMovementList> SORTAppMovementVersionobj = (List<SORTMovementList>)ViewBag.MovemenList;
+    List<STP.Domain.Routes.CandidateRT> SORTAppCandRTDetails = (List<STP.Domain.Routes.CandidateRT>)ViewBag.CandidateList;
+}
+
+<style type="text/css">
+    ol {
+        counter-reset: item;
+        list-style-type: none;
+    }
+
+    .headcc {
+        background-color: #E9EEF4;
+    }
+</style>
+
+@{
+    int flag = 3;
+    int appFlag = 1;
+    if (ViewBag.MovementType == "VR1")
+    {
+        flag = 1;
+        appFlag = 4;
+    }
+}
+<div class="row pt-4" id="generalDetailDiv">
+
+    <div class="col-lg-4 col-md-6 col-sm-6" id="">
+        <div id="haulier_app_rev">
+            @if (SORTApplRevisionsobj.Count != 0)
+            {
+                <div class="main-table" id="tableSOA">
+                    <table class="mt-5">
+                        <thead class="table-soa">
+                            <tr>
+                                <th class="table-soa text-normal m-0">
+                                    Haulier application <br>
+                                    versions
+                                </th>
+                                <th class="table-soa text-normal m-0">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in SORTApplRevisionsobj)
+                            {
+                                <tr>
+                                    @if (ViewBag.IsVehicleImport == true)
+                                    {
+                                        <td class="table-soa text-color2 pl-5"><a class="text-decoration-link" id="mivBtnVehicleList" data-RevisionID="@item.RevisionID" data-appFlag="@appFlag" data-flag=" @flag" >@item.RevisionNo . @item.ESDALReference</a></td>
+                                    }
+                                    else
+                                    {
+                                        <td class="table-soa text-color2 pl-5"><a class="text-decoration-link mouseCursor" id="mivBtnRouteList" data-RevisionID="@item.RevisionID" data-appFlag="@appFlag" >@item.RevisionNo . @item.ESDALReference</a></td>
+                                    }
+                                    <td class="table-soa text-color3 pl-5">@item.ApplicationDate</td>
+                                </tr>
+
+                            }
+
+                        </tbody>
+                    </table>
+                </div>
+            }
+            else
+            {
+                <table class="mt-5">
+                    <thead class="table-soa">
+                        <tr>
+                            <th class="table-soa text-normal m-0">
+                                Haulier application <br>
+                                versions
+                            </th>
+                            <th class="table-soa text-normal m-0">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="2" style="text-align: center; padding-left: 0px !important;"><span style="color: red">No haulier application versions for this application.</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
+
+        </div>
+    </div>
+    @if (ViewBag.MovementType != "VR1")
+    {
+        <div class="col-lg-3 col-md-6 col-sm-6" id="">
+            <div class="main-table" id="tableSOA" style="max-width: 100%; overflow-x: hidden;">
+                <div id="App_Candidate_Ver">
+                    @if (SORTAppCandRTDetails.Count > 0)
+                    {
+                        <table class="mt-5 table-white-bg">
+                            <thead class="table-soa">
+                                <tr>
+                                    <th class="table-soa1 text-normal m-0 headcc pl-3">
+                                        Candidate routes
+                                    </th>
+
+                                    <th class="table-soa1 text-normal m-0 headcc">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="table-soa text-color2 pl-2" style="vertical-align: initial;">
+                                        @{long CnRouteID = 0;}
+                                        <div class="tree" style="margin-top:-12px;">
+                                            <ol>
+                                                @foreach (var candrts in SORTAppCandRTDetails)
+                                                {
+                                                    <li style="margin-top: 6px; margin-left: -39px; text-align: inherit;">
+                                                        <a class="text-decoration-link">@candrts.Name</a>
+                                                        @{ CnRouteID = candrts.RouteId;}
+                                                        <ol>
+                                                            @foreach (var versions in candrts.Versions)
+                                                            {
+                                                                string candname = candrts.Name.Replace("'", "\\'");
+                                                                <li style="margin-top:6px;margin-left: -47px;margin-bottom:auto;">
+                                                                    @if (ViewBag.IsVehicleImport == true)
+                                                                    {
+                                                                        <a class="text-decoration-link" id="mivBtnAVehicle" data-ReviosionId="@versions.ReviosionId" data-var1="3" data-var2="1">Version @versions.RevisionNo</a>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <a class="text-decoration-link" id="mivBtnARoute" data-ReviosionId="@versions.ReviosionId" data-var1="3" >Version @versions.RevisionNo</a>
+                                                                    }
+                                                                </li>
+                                                            }
+                                                        </ol>
+                                                    </li>
+                                                }
+                                            </ol>
+                                        </div>
+
+                                    </td>
+
+                                    <td class="table-soa text-color3 pl-2" style="vertical-align: initial;">@SORTAppCandRTDetails[0].CandidateDate</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    }
+                    else
+                    {
+                        <table class="mt-5 table-white-bg">
+                            <thead class="table-soa">
+                                <tr>
+                                    <th class="table-soa text-normal m-0">
+                                        Candidate routes
+                                    </th>
+                                    <th class="table-soa text-normal m-0">Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="2" style="text-align: center; padding-left: 0px !important;"><span style="color: red">No candidate routes available.</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    }
+
+                </div>
+            </div>
+        </div>
+    }
+    <div class="col-lg-4 col-md-6 col-sm-6" id="">
+        <div class="main-table" id="tableSOA">
+            @if (SORTAppMovementVersionobj.Count != 0)
+            {
+                <table class="mt-5">
+                    <thead class="table-soa">
+                        <tr>
+                            <th class="table-soa1 text-normal m-0 headcc pl-3">
+                                Movement versions
+                            </th>
+                            <th class="table-soa1 text-normal m-0 headcc"></th>
+                            <th class="table-soa1 text-normal m-0 headcc">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in SORTAppMovementVersionobj)
+                        {
+                            var mov_ver = item.VersionNo;
+                            <tr>
+                                @if (ViewBag.IsVehicleImport == true)
+                                {
+                                    <td class="table-soa text-color2 pl-3"><a class="text-decoration-link mivBtnVehicle" id="mov_ver_@item.VersionID" data-id="@item.OrganisationID" data-VersionID="@item.VersionID" data-var1="2" data-var2="1" >@mov_ver . @item.ESDALReference </a></td>
+                                }
+                                else
+                                {
+                                    <td class="table-soa text-color2 pl-3"><a class="text-decoration-link mivBtnRoute" id="mov_ver_@item.VersionID" data-id="@item.OrganisationID" data-VersionID="@item.VersionID" data-var1="2" >@mov_ver . @item.ESDALReference</a></td>
+                                }
+
+                                <td class="table-soa text-color3 pl-3">
+                                    @if (item.IsNotified == 1)
+                                    {
+                                        <div title="Notified" class="text-normal-hyperlink statusinline">
+                                            N
+                                        </div>
+                                    }
+                                </td>
+
+                                <td class="table-soa text-color3 pl-2">
+                                    @if (item.DistributionDate == "")
+                                    {
+                                        @item.ApplicationDate
+                                    }
+                                    else
+                                    {
+                                        @item.DistributionDate
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <table class="mt-5">
+                    <thead class="table-soa">
+                        <tr>
+                            <th class="table-soa1 text-normal m-0 headcc">
+                                Movement versions
+                            </th>
+                            <th class="table-soa1 text-normal m-0 headcc">Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="2" style="text-align: center; padding-left: 0px !important;"><span style="color: red">No movement versions for this application.</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            }
+
+        </div>
+    </div>
+</div>
+@*<script src="~/Scripts/SORTApplication/_MovementImportVersions.js?V@(Session["ProjectVersion"])"></script>*@

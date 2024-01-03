@@ -1,0 +1,69 @@
+@{
+    int Granter_ID = 0;
+    bool hideLayout = false;
+    int analysisId = 0;
+    bool showRestriction = false;
+    int notifid = 0;
+    if (ViewBag.Org_Id != null)
+    {
+        Granter_ID = ViewBag.Org_Id;
+    }
+    if (ViewBag.analysisId != null)
+    {
+        analysisId = ViewBag.analysisId;
+    }
+    if (ViewBag.showRestriction != null)
+    {
+        showRestriction = ViewBag.showRestriction;
+    }
+    string grantorName = "";
+    if (ViewBag.Grantor_name != null)
+    {
+        grantorName = ViewBag.Grantor_name;
+    }
+    if (ViewBag.notifid != 0)
+    {
+        notifid = ViewBag.notifid;
+    }
+
+}
+
+@{
+    bool isAdmin = false;
+    int portalType = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var user = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        portalType = user.UserTypeId;
+        if (portalType == 696006 || user.IsAdmin == 1)
+        {
+            isAdmin = true;
+        }
+    }
+}
+@Html.Hidden("GranterID", Granter_ID)
+@Html.Hidden("analysisId", analysisId)
+@Html.Hidden("grantorName", grantorName)
+@Html.Hidden("notifid", notifid)
+<input type="hidden" value="@ViewBag.Grantor_name" id="hf_grantor_name" name="hf_grantor_name" />
+
+
+<style>
+    #routeNotifBody th:last-child {
+        background-color: rgb(213 223 234) !important;
+    }
+</style>
+<span class="PopupHelpName" id="NotificationDispensationPopUp"></span>
+<div id="dispensationBody">
+
+</div>
+<div id="editRest" style="display:none;">
+    @Html.Action("EditDispensationRestriction", "Dispensation", new { notifFlag = true, Granter_ID = Granter_ID })
+</div>
+
+@{
+<input type="hidden" value="@(ViewBag.showRestriction!=null?ViewBag.showRestriction.ToString() : "False")" id="hf_showRestriction" name="hf_showRestriction" />
+<input type="hidden" value="@ViewBag.hideLayout" id="hf_hideLayout" name="hf_hideLayout" />
+    }
+
+    @*<script src="~/Scripts/Notification/NotificationDispensationPopUpCsp.js?V@(Session["ProjectVersion"])"></script>*@

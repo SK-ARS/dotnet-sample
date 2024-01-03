@@ -1,0 +1,141 @@
+﻿@model STP.Domain.RoadNetwork.Constraint.SearchConstraintsFilter
+@{
+    var page = ViewBag.page;
+    var pageSize = ViewBag.pageSize;
+    var sortOrder = ViewBag.sortOrder;
+    var sortType = ViewBag.sortType;
+    string Mode = "";
+    if (!string.IsNullOrEmpty(Convert.ToString(TempData["Mode"])))
+    {
+        TempData.Keep("Mode");
+        Mode = Convert.ToString(TempData["Mode"]);
+    }}
+@{ 
+    var ob = ViewBag.filterObject;
+    var EF = TempData["EditFlag"];
+    var Flag = 0;
+    int arrId = 0;
+    if (EF == "1")
+    {
+        Flag = 1;
+        //arrId = Convert.ToInt32( TempData["arrId"].ToString());
+
+    }
+    }
+@Html.Hidden("Flag", Flag)
+
+    <style>
+        .btn.btn-outline-primary:hover {
+            color: white;
+            background-color: rgba(39, 87, 149, 1);
+        }
+        
+        .filter-entry .btn {
+            width: 90%;
+        }
+        #soa-structure-list .btn-filter {
+            width: 100%;
+        }
+    </style>
+    <div id="filters" class="sidenav filter-sidenav">
+        <div class="row sidenav-header mt-3">
+            <div class="col-10 text-center">
+                <div class="text-normal-hyperlink mt-3" style="font-size: x-large;">
+                    SEARCH
+                </div>
+            </div>
+            <div class="col-1 pl-0" style="position: none;">
+                <a href="#" class="close-filter-icon-common"  id="closeMovementFilters">&times;</a>
+            </div>
+        </div>
+
+
+        <hr style="margin-top: 0;">
+        <div class="filter-list">
+            <div>
+                <div class="row mb-4">
+
+                    <div class="col-lg-12 col-lg-12 col-sm-12">
+                        <select class="form-select mb-3" aria-label=".form-select-lg example" id="ConstraintType" name="ConstraintType" style="margin-right: 10%;">
+                            <option selected value="">Select Constraint</option>
+                            @if (ViewBag.structType.Items.Count > 0)
+                            {
+                                foreach (var item in ViewBag.structType.Items)
+                                {
+                                    <option @(Model.ConstraintType == item.Value ? "selected" : "")>@item.Value</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-entry">
+                    <div class="pr-0 pl-0 mr-0 ml-0 mt-4 mb-0">
+                        <div class="row mt-4">
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <div class="row mb-2">
+                                    <div class="col-sm-12 col-md-4 col-lg-4 pr-0">
+                                        <label class="text-normal">Constraint Name </label>
+                                    </div>
+                                    <div class="col-sm-12 col-md-7 col-lg-7 input-field">
+                                        <input class="edit-normal" type="text" id="ConstraintName" name="ConstraintName" value="@Model.ConstraintName">
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-sm-12 col-md-4 col-lg-4 pr-0">
+                                        <label class="text-normal">Constraint Code</label>
+                                    </div>
+                                    <div class="col-sm-12 col-md-7 col-lg-7 input-field">
+                                        <input class="edit-normal" type="text" id="ConstraintCode" name="ConstraintCode" value="@Model.ConstraintCode">
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row mb-2">
+                                <div class="col-lg-2 col-sm-2 col-md-2">
+                                    <input id="ChCkIsOwnerContact" name="IsOwnerContact" value="true" type="checkbox" @(Model.IsOwnerContact ? "checked" : "") />
+                                </div>
+                                <div style="margin-top: 3px;" class="col-lg-10 col-sm-10 col-md-10 pr-0">
+                                    <span>Owner Is Contact</span>
+                                </div>
+                            </div>
+                            <div class="row mb-2">
+                                <div class="col-lg-2 col-sm-2 col-md-2">
+                                    <input id="chckIsValid" name="IsValid" value="true" type="checkbox" @(Model.IsValid ? "checked" : "") />
+                                </div>
+                                <div style="margin-top: 3px;" class="col-lg-10 col-sm-10 col-md-10 pr-0">
+                                    <span>Active</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-4" id="org_filter_btn">
+
+                    <div class="col-lg-8 col-md-8 col-sm-12">
+                        <!-- <div class="header mt-4"> -->
+                        <div class="button mr-0 mb-2">
+                            <input type="hidden" name="sortOrder" id="SortOrderValue" value="@sortOrder" />
+                            <input type="hidden" name="sortType" id="SortTypeValue" value="@sortType" />
+                            <button class="btn btn-primary btn-normal" id="btn_SearchConstraint" role="button" aria-pressed="true" style="width:14rem">
+                                SEARCH
+                            </button>
+                        </div>
+                        <!-- </div> -->
+                    </div>
+                    <!-- </div> -->
+                    <div class="col-lg-4 col-md-4 col-sm-12">
+
+                        <!-- <div class="header mt-4"> -->
+                        <div class="button mr-2 mb-2">
+                            <button class="btn btn-primary btn-normal" role="button" aria-pressed="true" id="btn_ClearFilter" style="width:7rem">
+                                CLEAR
+                            </button>
+                        </div>
+                        <!-- </div> -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        @*}*@
+    </div>

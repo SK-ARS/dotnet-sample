@@ -1,0 +1,288 @@
+﻿@using PagedList.Mvc
+@using STP.Domain.SecurityAndUsers
+@model PagedList.IPagedList<STP.Domain.MovementsAndNotifications.Notification.NENAuditLogList>
+@{
+    int listCount = 0;
+    listCount = (int)Session["PageSize"];
+    string SearchESDAL_num = ViewBag.SearchESDAL_num;
+    int sortFlagVal = ViewBag.sort_Flag;
+    string searchItem = ViewBag.searchItem;
+    int pageNumber = ViewBag.page_Number, pageSize = ViewBag.page_Size;
+    @Html.Hidden("SearchString", SearchESDAL_num)
+    @Html.Hidden("pageSizeVal", pageSize)
+    @Html.Hidden("pageNumberVal", pageNumber)
+    @Html.Hidden("hdnsortFlagVal", sortFlagVal)
+    @Html.Hidden("hdnsearchItem", searchItem)
+
+    var userInfo = (UserInfo)Session["UserInfo"];
+    var userTypeId = userInfo.UserTypeId;
+    int totalPageCount = ViewBag.TotalCount;
+}
+@Html.Hidden("userTypeId", userTypeId)
+<style>
+    .sorticon {
+        filter: invert(100%);
+    }
+    .edit-normal {
+        color: rgb(0, 0, 0);
+        -webkit-text-stroke: 1px rgba(0, 0, 0, 0);
+        font-size: 15.00px;
+        font-weight: 500;
+        font-style: italic;
+        font-family: lato_medium, Arial;
+    }
+
+    .filtered-icon {
+        background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 90% #2b5795;
+        background-size: 1rem;
+    }
+
+    .esdal-filter-icon {
+        background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 0 #2b5795;
+        background-size: 1rem;
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        position: absolute;
+        margin-left: 3px;
+    }
+
+    .movements td:nth-child(1) {
+        text-align: left;
+    }
+
+    .filter-table-icon {
+        position: absolute;
+        bottom: -13px;
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+        left: 50px;
+    }
+
+    .filter-table-icons {
+        position: absolute;
+        bottom: -13px;
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+        left: 19px;
+    }
+</style>
+@{
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.AUDIT_LOG;
+}
+@{
+    var sortOrder = ViewBag.SortOrder != null ? (int)ViewBag.SortOrder : 1;//date
+    var sortType = ViewBag.SortType != null ? (int)ViewBag.SortType : 1;//desc
+    var isEsdalRefNoFilterEnabled = !string.IsNullOrEmpty(ViewBag.searchItem) && ViewBag.searchItem == "1" && !string.IsNullOrEmpty(ViewBag.SearchESDAL_num);
+    var isUserFilterEnabled = !string.IsNullOrEmpty(ViewBag.searchItem) && ViewBag.searchItem == "2" && !string.IsNullOrEmpty(ViewBag.SearchESDAL_num);
+    var isDateFilterEnabled = !string.IsNullOrEmpty(ViewBag.searchItem) && ViewBag.searchItem == "3" && !string.IsNullOrEmpty(ViewBag.SearchESDAL_num);
+    var isAllFilterEnabled = isEsdalRefNoFilterEnabled || isUserFilterEnabled || isDateFilterEnabled;
+}
+<!-- main-content -->
+<section id="banner">
+    <div class="container-fluid" id="banner-container">
+        <div id="admin-log" class="div_audit_table">
+            <!-- table -->
+            <div class="col-lg-12 col-md-12 col-sm-12 header">
+                <div class="title" style="text-align: center;">
+                    AUDIT LOG
+                </div>
+            </div>
+            <div class="main-table movements" id="audithistory">
+                <table class="esdal-table table-wrap">
+                    <thead>
+                        <tr>
+
+                            <th>
+
+                                <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,1)" data-action="AuditlogSort" data-sortval="1">Date/Time</span>
+                                <span class="filter-table-icons"><img id="filterimageAuditdate" style="display:@(isDateFilterEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                            </th>
+                            <th>
+                                <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,2)" data-action="AuditlogSort" data-sortval="2">ESDAL reference</span>
+                                
+                                <span class="filter-table-icons"><img id="filterimageERN" style="display:@(isEsdalRefNoFilterEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                            </th>
+                            <th>
+                                <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,3)" data-action="AuditlogSort" data-sortval="3">User</span>
+                                
+                                <span class="filter-table-icons"><img id="filterimageUser" style="display:@(isUserFilterEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                            </th>
+                            <th style="width: 50%;"><span param="1"></span>History</th>
+                            <th class="table-filter" style="width: 5%;">
+                                <img src="~/Content/assets/images/filter-icon.svg" class="open-filter-icon-common" data-width="350" id="imgOpenAuditLogFilter" title="Open filter" width="38">
+                                <span class="filtered-icon-table "><img id="filterimage" class="imgClearAuditLogFilter" style="display:@(isAllFilterEnabled?"block":"none")" src="~/Content/assets/images/filtered-icon.svg" title="Clear filter"></span>
+                            </th>
+
+                        </tr>
+                    </thead>
+                    <!-- sample examples -->
+                    @if (Model != null && Model.Any())
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="text-color1">@item.HistoryDate</td>
+                                <td class="text-color1">@item.ESDALReferenceNumber</td>
+                                <td class="text-color1">@item.UserName</td>
+                                <td class="text-color1 text-wrap"  colspan="2">@item.History</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="4" style="text-align:center"> <span style="color:red">@Resources.Resource.NoRecordFound</span></td>
+                        </tr>
+                    }
+                    <!--end sample examples -->
+                </table>
+            </div>
+            <div class="row pt-3">
+                <div class="col-lg-4 col-md-4">
+                    @if (Model.TotalItemCount > 0)
+                    {
+                        <div class="text-color2 total-records-number">
+                            Total number of records : @Model.TotalItemCount
+                        </div>}
+                </div>
+                <div class="col-lg-5 mt-3">
+                    @if (Model.Count > 0)
+                    {
+                        if (Model.Count < Model.TotalItemCount)
+                        {
+                            <div class="col-lg-4 pagination ">
+                                @Html.PagedListPager(Model, page => Url.Action("AuditLog",
+                                               new
+                                               {
+                                                   B7vy6imTleYsMr6Nlv7VQ =
+                                                         STP.Web.Helpers.EncryptionUtility.Encrypt("ESDAL_ref_num=" + ViewBag.SearchESDAL_num +
+                                                         "&sortFlag=" + ViewBag.sort_Flag +
+                                                         "&pageNumber=" + page +
+                                                         "&pageSize=" + ViewBag.page_Size +
+                                                         "&searchCriteria=" + ViewBag.searchItem +
+                                                         "&sortOrder=" + ViewBag.sortOrder +
+                                                         "&sortType=" + ViewBag.sortType
+                                                         )
+                                               }),
+                                               new PagedListRenderOptions
+                                               {
+                                                   DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                                                   DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                                                   LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                                                   LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                                                   DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                                                   DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                                                   MaximumPageNumbersToDisplay = 3,
+                                                   DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                                                   EllipsesFormat = "...",
+                                                   LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+                                                   LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+                                               });
+                            </div>
+                        }
+                        @Html.Hidden("TotalPages", totalPageCount)
+                    }
+
+                </div>
+                @if (Model.TotalItemCount > 10)
+                {
+                    <div class="col-lg-3 col-md-3 col-sm-12 text-normal pr-0 mt-3 AuditLog-Pag">
+                        Number of items to display per page
+                        <select class="form-select mb-3" style="width:100px;" aria-label=".form-select-lg example" id="pageSizeSelect">
+                            <option val="10" @(pageSize == 10 ? "selected" : "")>10</option>
+                            <option val="20" @(pageSize == 20 ? "selected" : "")>20</option>
+                            <option val="50" @(pageSize == 50 ? "selected" : "")>50</option>
+                            <option val="100" @(pageSize == 100 ? "selected" : "")>100</option>
+                        </select>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+</section>
+<!-- filter settings -->
+<div id="filters" class="sidenav filter-sidenav pt-3">
+    <div class="row sidenav-header pl-3 pr-3">
+        <div class="col-10 col-md-10 col-sm-10" style="text-align: center;">
+            <div class="text-normal-hyperlink" style="font-size: x-large;">
+                FILTER
+            </div>
+        </div>
+        <div class="col-2 col-md-2 col-sm-2">
+            <div href="#" class="pt-0 pb-0 pr-0 text-normal-hyperlink divCloseAuditLogFilter close-filter-icon-common"
+                 style="font-size: xx-large;text-align: right;">&times;</div>
+        </div>
+    </div>
+    <hr style="margin-top: 0;">
+    <div class="sort-portal">
+        <div class="filter-list">
+
+            <div id="viewotheroptions" style="padding-right: 1rem;display: block;">
+                <div class="row">
+
+                    <div class="col-lg-12 col-sm-12 col-md-12 col-xs-12">
+                        <div class="row pb-2 pt-5">
+                            <div class="col-lg-12 col-sm-12 col-md-12">
+                                <select class="form-select mb-3" aria-label=".form-select-lg example" id="DDsearchCriteria"
+                                        style="overflow: scroll; width: 100%;">
+                                    <option @(isEsdalRefNoFilterEnabled ? "selected" : "") value="1">ESDAL reference</option>
+                                    <option @(isUserFilterEnabled ? "selected" : "") value="2">User</option>
+                                    <option @(isDateFilterEnabled ? "selected" : "") value="3">Date</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row pb-2">
+                            <div class="col-lg-12 col-sm-12 col-md-12">
+                                <div class="pr-0 pl-0 mr-0 ml-0 mt-2 mb-0 input-field">
+                                    <input class="edit-normal" value="@ViewBag.SearchESDAL_num" type="text" name="search" placeholder="Esdal Reference" id="SearchString1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row pt-6 pl-3 pr-2" id="org_filter_btn">
+
+            <div class="col-lg-8 col-md-8 col-sm-12 filter-entry">
+                <div class="button mr-0 mb-2">
+                    <input type="hidden" name="sortOrder" id="SortOrderValue" value="@sortOrder" />
+                    <input type="hidden" name="sortType" id="SortTypeValue" value="@sortType" />
+                    <button class="btn btn-outline-primary btn-normal" id="btnSearchAuditLog" role="button" aria-pressed="true" style="width:100%;">
+                        SEARCH
+                    </button>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-12 filter-entry">
+                <div class="button mr-0 mb-2">
+                    <button class="btn btn-outline-primary btn-normal" id="btnClearNENotification" role="button" aria-pressed="true" style="width:100%;">
+                        CLEAR
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@{
+    string GetSortDefaultClass(int sortTypeVal, int sortOrderVal, int valToCheck)
+    {
+        var sortClass = ""; // 1-desc , 0-asc
+        if (sortOrderVal == valToCheck)
+        {
+            sortClass = sortTypeVal == 1 ? "sorting_desc" : "sorting_asc";
+        }
+        return sortClass;
+    }
+
+    string ShowFilterIcon(int filterVal, int valToCheck)
+    {
+        return filterVal == valToCheck ? "block" : "none";
+    }
+}
+<!-- end of filter settings -->
+<!-- end of main-content -->
+<script src="~/Scripts/NENNotification/NENAuditLog.js?V@(Session["ProjectVersion"])"></script>

@@ -1,0 +1,108 @@
+@{
+    var SORTStatus = "";
+    long revId = 0;
+    long? OrgID = null;
+    int cloneapprevid = 0;
+    var sortApp = "";
+    var mode = "";
+    var showHaulCnt = false;
+    int orgId = 0;
+    OrgID = ViewBag.OrgID;
+    if (ViewBag.SORTStatus != null)
+    {
+        SORTStatus = ViewBag.SORTStatus;
+    }
+    if (ViewBag.cloneapprevid != null)
+    {
+        cloneapprevid = ViewBag.cloneapprevid;
+    }
+    if (ViewBag.OrganisationId != null)
+    {
+        orgId = ViewBag.OrganisationId;
+    }
+    if (ViewBag.revisionId != null)
+    {
+        revId = ViewBag.revisionId;
+    }
+    @Html.Hidden("OrgID", OrgID, new { @id = "OrgID" })
+    @Html.Hidden("revisionId", revId)
+    @Html.Hidden("SortStatus", SORTStatus)
+    @Html.Hidden("cloneapprevid", cloneapprevid)
+    @Html.Hidden("OrganisationId", orgId)
+    if (SORTStatus == "CreateSO" && revId != 0)
+    {
+        mode = "Edit";
+        sortApp = "SORTSO";
+        if (cloneapprevid != 0)
+        {
+            showHaulCnt = true;
+        }
+    }
+    if (SORTStatus == "CreateVR1" && revId != 0)
+    {
+        mode = "Edit";
+        sortApp = "SORTSO";
+    }
+    if (orgId == 0)
+    {
+        mode = "SORTSO";
+    }
+}
+@Html.Hidden("mode", mode)
+@Html.Hidden("sortApplication", sortApp)
+@Html.Hidden("showHaulCnt", showHaulCnt)
+<style>
+    /*.vehicle-setting .main-table {
+            border-radius: 25px 0px 0px 0px;
+        }
+    */
+    .vehicle-setting td {
+        text-align: left;
+    }
+
+    .vehicle-setting .main-table table td:nth-child(1) {
+        padding-left: 40px;
+    }
+
+    .vehicle-setting .btn {
+        background-color: white;
+        color: rgba(39, 87, 149, 1);
+        border: 1px solid rgba(39, 87, 149, 1);
+    }
+
+        .vehicle-setting .btn.btn-outline-primary:hover {
+            color: #fff;
+            background-color: rgba(39, 87, 149, 1);
+        }
+
+    .vehicle-setting .main-table {
+        margin-top: 10px;
+        overflow-x: auto;
+        border-radius: 25px 0px 0px 0px;
+    }
+</style>
+
+
+<div class="row" id="Go_To_Organisations">
+    <div class="col-lg-12 col-md-12 col-sm-12" style="text-align: right">
+        <label class="text-normal">* indicates mandatory fields</label>
+    </div>
+    <div style="padding-left: 5% !important;">
+        <div colspan="6" style="background-color: white !important;">
+            <button class="btn btn-outline-primary SOAButtonHelper ml2 mb-2" id="btn-org">
+                SELECT EXISTING HAULIER
+            </button>
+        </div>
+    </div>
+</div>
+<div id="createOrganisation">
+    @{
+        Html.RenderAction("CreateOrganisation", "Organisation", new { mode = mode, organisationId = orgId, sortApplication = sortApp, revisionId = revId, sortStatus = SORTStatus, showHaulierCount = showHaulCnt });
+    }
+</div>
+<div id="existingOrganisationList">
+    <span id="list_heading" class="title"></span>
+</div>
+<div id="viewExistingOrganisation" style="padding-left: 5% !important;"></div>
+
+@*<script src="~/Scripts/SORTApplication/_SORTHaulierDetails.js?V@(Session["ProjectVersion"])"></script>*@

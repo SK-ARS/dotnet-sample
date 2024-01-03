@@ -1,0 +1,347 @@
+@using PagedList.Mvc
+@model PagedList.IPagedList<STP.Domain.Routes.RouteModel.AnnotationTextLibrary>
+@using STP.Domain.SecurityAndUsers
+@{
+    int pageNum = 10;
+    if (ViewBag.pageSize != null)
+    {
+        pageNum = ViewBag.pageSize;
+    }
+    var annotationType = ViewBag.annotationType != null ? ViewBag.annotationType : 0;
+    var annotationText = ViewBag.annotationText != null ? ViewBag.annotationText : "";
+    var userId = ViewBag.userId != null ? ViewBag.userId : 0;
+    var isTypeFilterEnabled = annotationType > 0;
+    var userIdFilterEnabled = userId > 0;
+    var isTextFilterEnabled = !string.IsNullOrWhiteSpace(annotationText);
+    List<UserDetailsModel> UsersByOrgIdList = ViewBag.UsersByOrgId != null ? (List<UserDetailsModel>)ViewBag.UsersByOrgId : null;
+
+}
+<style>
+    #filterAnnotationTextPopup {
+        position: absolute;
+    }
+
+    #filters {
+        margin-right: 0px;
+    }
+
+    .sorticon {
+        filter: invert(100%);
+    }
+
+    .esdal-table > thead .sorting,
+    .esdal-table > thead .sorting_asc,
+    .esdal-table > thead .sorting_desc,
+    .esdal-table > thead .sorting_asc_disabled,
+    .esdal-table > thead .sorting_desc_disabled {
+        cursor: pointer;
+        position: relative;
+    }
+
+        .esdal-table > thead .sorting:before,
+        .esdal-table > thead .sorting:after,
+        .esdal-table > thead .sorting_asc:before,
+        .esdal-table > thead .sorting_asc:after,
+        .esdal-table > thead .sorting_desc:before,
+        .esdal-table > thead .sorting_desc:after,
+        .esdal-table > thead .sorting_asc_disabled:before,
+        .esdal-table > thead .sorting_asc_disabled:after,
+        .esdal-table > thead .sorting_desc_disabled:before,
+        .esdal-table > thead .sorting_desc_disabled:after {
+            position: absolute;
+            bottom: 1.7em;
+            display: block;
+            opacity: .3;
+        }
+
+        .esdal-table > thead .sorting:before,
+        .esdal-table > thead .sorting_asc:before,
+        .esdal-table > thead .sorting_desc:before,
+        .esdal-table > thead .sorting_asc_disabled:before,
+        .esdal-table > thead .sorting_desc_disabled:before {
+            right: 1em;
+            content: "↑";
+        }
+
+        .esdal-table > thead .sorting:after,
+        .esdal-table > thead .sorting_asc:after,
+        .esdal-table > thead .sorting_desc:after,
+        .esdal-table > thead .sorting_asc_disabled:after,
+        .esdal-table > thead .sorting_desc_disabled:after {
+            right: 0.5em;
+            content: "↓";
+        }
+
+        .esdal-table > thead .sorting_asc:before, .esdal-table > thead .sorting_desc:after {
+            opacity: 1;
+        }
+
+    .filtered-icon {
+        background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 90% #2b5795;
+        background-size: 1rem;
+    }
+
+    .esdal-filter-icon {
+        background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 0 #2b5795;
+        background-size: 1rem;
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        position: absolute;
+        margin-left: 3px;
+    }
+
+    .movements td:nth-child(1) {
+        text-align: left;
+    }
+
+    .filter-table-icon {
+        position: absolute;
+        bottom: -13px;
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+        left: 50%;
+    }
+
+    .filter-table-icons {
+        bottom: -13px;
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+        left: 50%;
+    }
+    /* .movements td:nth-child(1)  {
+            text-align: left;
+
+        }*/
+
+    #annotationTextmodal {
+        display: block;
+    }
+
+    .sidenav {
+        position: absolute;
+    }
+</style>
+
+
+<div id="contactDivPopupaa">
+    @Html.Hidden("pageSizeVal", pageNum)
+
+    <div class="modal" id="annotationTextmodal" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div id="filterAnnotationTextPopup">
+            
+        </div>
+        <div id="ScrollDownDiv">
+
+        </div>
+
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content" style="width: inherit;height: auto;">
+                <div class="modal-header pt-2" style="justify-content: end;">
+                    <span aria-hidden="true" class="close" data-dismiss="modal" aria-label="Close" style="cursor:pointer;" id="CloseAnnotationPopUp">&times;</span>
+                </div>
+                <div class="modal-body pt-0">
+                    <div class="row mb-1 pb-3 pt-3">
+                        <span class="text-normal pr-2 text-align-center"
+                              style="font-family: lato_light;font-size:25px;margin-top: -2rem;">
+                            ANNOTATION TEXT LIBRARY
+                        </span>
+                    </div>
+                    <div class="pl-4 pr-4 pt-1 ml-l2 mr-r2"
+                         style="background: linear-gradient(0deg, rgba(255, 255, 255, 1) 0%, rgba(201, 205, 229, 0.44) 100%); border-radius: 10px; min-height: 500px;">
+                        <div class="main-table">
+                            <table>
+                                <tr>
+                                    <th style="color:white">
+                                        Annotation Text<span>
+                                            <img src="assets/images/down-chevlon.svg"
+                                                 width="25" height="6">
+                                        </span>
+                                        <span class="filter-table-icons"><img style="display:@(isTextFilterEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                    </th>
+                                    <th style="color:white">
+                                        Annotation Type
+                                        <span class="filter-table-icons"><img style="display:@(isTypeFilterEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                    </th>
+                                    <th style="color:white">
+                                        User
+                                        <span class="filter-table-icons"><img style="display:@(userIdFilterEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                    </th>
+                                    <th></th>
+                                    <th class="table-filter" style="width: 4%;">
+                                        <img id="openAnnotationFilterPopup" src="~/Content/assets/images/filter-icon.svg" title="Open filter" width="38">
+                                        <span class="filtered-icon-table "><img id="filterimageAnnPopup" src="~/Content/assets/images/filtered-icon.svg" title="Clear filter" style="display:@(isTypeFilterEnabled||isTextFilterEnabled||userIdFilterEnabled ?"block":"none")"></span>
+                                    </th>
+                                </tr>
+                                @if (Model.Count == 0)
+                                {
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="5" style="text-align: center">
+                                                <span style="color: red">No records found</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                }
+                                else
+                                {
+                                    foreach (var item in Model)
+                                    {
+                                        <tr>
+                                            <td class="text-color1" style="width:45%">
+                                                    @Html.DisplayFor(modelItem => item.AnnotationText)
+                                            </td>
+                                            <td class="text-color1">
+
+                                                @if (item.AnnotType == 250003)
+                                                {
+                                                    <span class="text-color2 ">Special Manoeuvre</span>
+                                                }
+                                                else if (item.AnnotType == 250002)
+                                                {
+                                                    <span class="text-color2 ">Caution</span>
+                                                }
+                                                else if (item.AnnotType == 250001)
+                                                {
+                                                    <span class="text-color2 "> Generic</span>
+                                                }
+                                            </td>
+                                            <td class="text-color1">
+                                                @Html.DisplayFor(modelItem => item.UserName)
+                                            </td>
+                                            <td colspan="2">
+                                                <div id="mid_row">
+                                                    <span id="mid_row_data">
+                                                        <button class="btn btn-primary btn-normal import-button ImportAnnotationText" aria-hidden="true" title="Import Annotation Text" width="10" AnnotationText="@item.AnnotationText" data-annottype="@item.AnnotType">
+                                                            IMPORT ANNOTATION TEXT
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="pl-4 pr-4 pb-6 ml-l2 mr-r2 row">
+                    <div class="col-lg-3 col-md-3">
+                        @if (Model.TotalItemCount > 0)
+                        {
+                            <div class="text-color2 total-records-number p-0">
+                                Total number of records : @Model.TotalItemCount
+                            </div>
+                        }
+                    </div>
+                    @if (ViewBag.TotalCount > 0)
+                    {
+                        <div class="pagination col-lg-6 col-md-6 text-center" id="annotationTextLibraryPopupPaginator">
+                            @Html.PagedListPager(Model, page => Url.Action("GetAnnotationsFromLibrary",
+                                              new { pageNumber = page, pageSize = 10, annotationType = annotationType, annotationText = annotationText, structureId = 0 }), new PagedListRenderOptions
+                                              {
+                                                  DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                                                  DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                                                  LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                                                  LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                                                  DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                                                  DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                                                  MaximumPageNumbersToDisplay = 3,
+                                                  DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                                                  EllipsesFormat = "...",
+                                                  LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+                                                  LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+                                              })
+                        </div>
+                    }
+                </div>
+                <div id="popupFilter">
+                    <div id="filters" class="sidenav filter-sidenav" style="width: 0px;">
+                        <div class="filter-header" style="margin-top: 1rem;">
+                            FILTER
+                            <a href="#" class="closebtn" style="margin-top: 2px; margin-left: 0px; right: -32px;">&times;</a>
+                        </div>
+                        <hr style="margin-top: 0;">
+                        <div class="filter-list">
+                            <div class="filter-entry">
+                                <div class="pr-0 pl-0 mr-0 ml-0 mt-4 mb-0">
+                                    <div class="row mt-4">
+                                        <div class="col-lg-12 col-md-12 col-sm-12">
+                                            <div class="text-normal">
+                                                Select Annotation Type
+                                            </div>
+                                            <div class="row">
+                                                <div class="pt-2 pb-2">
+                                                    <select class="form-select" id="annotTypeFilter" name="annotTypeFilter">
+                                                        <option value="0">All</option>
+                                                        <option value="250003" @(annotationType == 250003 ? "selected" : "")>Special Manoeuvre</option>
+                                                        <option value="250001" @(annotationType == 250001 ? "selected" : "")>Generic</option>
+                                                        <option value="250002" @(annotationType == 250002 ? "selected" : "")>Caution</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="pt-2">
+                                                    <div class="col-lg-3 col-md-4 col-sm-4 text-normal soptext-normal" style="width:auto">
+                                                        Select User
+                                                    </div>
+                                                    <div class="pt-2 pb-2">
+                                                        <select class="form-select" id="userIdFilter" name="userIdFilter">
+                                                            <option value="0">All</option>
+                                                            @if (UsersByOrgIdList != null && UsersByOrgIdList.Any())
+                                                            {
+                                                                foreach (var item in UsersByOrgIdList)
+                                                                {
+                                                                    <option value="@item.UserId" @(userId == item.UserId ? "selected" : "")>@item.Name</option>
+                                                                }
+                                                            }
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="pt-2">
+                                                    <div class="col-lg-3 col-md-4 col-sm-4 text-normal soptext-normal" style="width:auto">
+                                                        Annotation Text
+                                                    </div>
+                                                    <div class="input-field pr-3">
+                                                        <input id="AnnotationTextSearchValue" class="text-decorate" name="SearchValue" type="text" value=@annotationText>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row pt-6" id="org_filter_btn">
+                                    <div class="col-lg-4 col-md-4 col-sm-12">
+                                        <!-- <div class="header mt-4"> -->
+                                        <div class="button mr-0 mb-2">
+                                            <button class="btn btn-outline-primary btn-normal" type="button" aria-pressed="true" id="clearAnnotationTextFilter" style="width: 100% !important">
+                                                CLEAR
+                                            </button>
+                                        </div>
+                                        <!-- </div> -->
+                                    </div>
+                                    <div class="col-lg-8 col-md-8 col-sm-12">
+                                        <!-- <div class="header mt-4"> -->
+                                        <div class="button mr-0 mb-2">
+                                            <button class="btn btn-outline-primary btn-normal" type="button" aria-pressed="true" id="searchAnnotationTextPopUp" style="width: 100% !important">
+                                                SEARCH
+                                            </button>
+                                        </div>
+                                        <!-- </div> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="hidden_and" value="@ViewBag.analysisId" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- end of filter settings -->
+    </div>
+</div>

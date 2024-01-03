@@ -1,0 +1,11 @@
+﻿
+<div class="row">
+    @{
+        Html.RenderAction("ViewConfigDetail", "VehicleConfig", new { vehicleID = ViewBag.VehicleId, movementId=ViewBag.movementTypeId, isMovement = ViewBag.IsMovement, isCandidate = ViewBag.isCandidate });
+    }
+</div>
+<div class="row">
+    @{
+        Html.RenderAction("ComponentDetail", "VehicleConfig", new { Guid = ViewBag.Guid, isMovement= ViewBag.IsMovement, vehicleConfigId= ViewBag.VehicleId, isCandidate= ViewBag.isCandidate, movementTypeId= ViewBag.movementTypeId, isEditMovement= ViewBag.isEditMovement });
+    }
+</div>

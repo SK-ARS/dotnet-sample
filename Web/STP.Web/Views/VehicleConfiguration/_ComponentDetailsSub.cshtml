@@ -1,0 +1,79 @@
+﻿@model List<STP.Domain.VehiclesAndFleets.Configuration.VehicleConfigList>
+@{
+    //var compIds = (List<long>)Session["ComponentId"];
+
+    var guid = ViewBag.Guid;
+
+    var IsEdit = ViewBag.IsEdit;
+    int ComponentCount = Model.Count();
+    int movementTypeId = ViewBag.movementTypeId;
+}
+<div class="row pb-4">
+    <div class="col-lg-12 pt-5 title pr-0" style="font-family: lato_bold;">Component Configuration</div>
+</div>
+<div class="row mt-4 mr-2 main-entry configComponent" id="divAllComponent">
+    @if (Model.Count() > 0)
+    {
+        var iterationCount = 0;
+        bool isLastComponent = false;
+        foreach (var compId in Model.OrderBy(s => s.LatPosn).ThenBy(s => s.LongPosn))
+        {
+            iterationCount++;
+            Html.RenderAction("GetVehicleComponentImageSub", "VehicleConfig", new { ComponentTypeId = compId.ComponentTypeId, ComponentSubTypeId = compId.ComponentSubTypeId, ComponentId = compId.ComponentId, Iteration = iterationCount });
+        }
+        iterationCount=0;
+        foreach (var compId in Model.OrderBy(s => s.LatPosn).ThenBy(s => s.LongPosn))
+        {
+            iterationCount++;
+            if (iterationCount == Model.Count())
+            {
+                isLastComponent = true;
+            }
+            <div style="display: @(iterationCount==1?"block":"none");" class="component-item component-item-axle-section" id="divComponentDataMain-@compId.ComponentId">
+                <form action="@Url.Action("CreateComponent", "Vehicle",new {vehicleConfigId=ViewBag.vehicleConfigId })">
+
+                    @Html.Hidden("Component_Id", compId.ComponentId)
+                    <div id="@compId.ComponentId" class="comp">
+                        @Html.Hidden("ComponentType_Id", compId.ComponentTypeId)
+                        @Html.Hidden("ComponentSubType_Id", compId.ComponentSubTypeId)
+                        <div class="row divComponentData" id="divComponentData-@compId.ComponentId">
+                            <div class="row">
+                                <div class="col-lg-5 col-sm-12 col-md-5">
+                                    <div id="componentConfig">
+                                        @{
+                                            Html.RenderAction("ComponentGeneralPage", "VehicleConfig", new { vehicleSubTypeId = compId.ComponentSubTypeId, vehicleTypeId = compId.ComponentTypeId, movementId = movementTypeId, componentId = compId.ComponentId, GUID = guid, isComponent = false, isFromConfig = 1, vehicleConfigId = ViewBag.vehicleConfigId, movement = (bool)ViewBag.IsMovement, isCandidate = (bool)ViewBag.isCandidate, isLastComponent = isLastComponent, isEditMovement = ViewBag.isEditMovement, compNumber = iterationCount, configTypeId = ViewBag.configTypeId });
+                                        }
+                                    </div>
+                                </div>
+                                <div class="col-lg-7 col-sm-12 col-md-7">
+                                    <div id="axlePage" class="component_axle">
+                                        @{
+                                            Html.RenderAction("AxleComponent", "VehicleConfig", new { axleCount = 0, componentId = compId.ComponentId, vehicleSubTypeId = compId.ComponentSubTypeId, vehicleTypeId = compId.ComponentTypeId, movementId = movementTypeId, IsEdit = true, isApplication = false, appRevID = 0, vehConfigID = 0, isVR1 = false, isFromConfig = 1, vehicleConfigId = ViewBag.vehicleConfigId, movement = (bool)ViewBag.IsMovement, isCandidate = (bool)ViewBag.isCandidate, isEditMovement = ViewBag.isEditMovement, isLastComponent = isLastComponent, GUID = guid });
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-5 col-sm-12 col-md-5">
+                                <div id="regDetailsConfig">
+                                    @if(compId.ComponentTypeId!= 234005&& compId.ComponentTypeId != 234006)
+                                    {
+                                        Html.RenderAction("RegistrationComponent", "VehicleConfig", new { compId = compId.ComponentId, isTractor = true, isApplication = false, isVR1 = false, isFromConfig = 1, vehicleConfigId = ViewBag.vehicleConfigId, movement = (bool)ViewBag.IsMovement, isCandidate = (bool)ViewBag.isCandidate, isEditMovement = ViewBag.isEditMovement });
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        }
+    }
+</div>
+
+<style>
+    .divComponentDataItem.active {
+        border: 1px solid rgba(39, 87, 149, 1) !important;
+    }
+    .divComponentDataItem:hover {
+        border: 1px solid rgba(39, 87, 149, 1) !important;
+    }
+</style>

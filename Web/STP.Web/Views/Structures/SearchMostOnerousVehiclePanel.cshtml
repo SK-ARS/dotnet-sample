@@ -1,0 +1,141 @@
+@using System.Web.Optimization
+@using STP.Domain
+@model STP.Domain.Structures.StructureOnerousSearch
+@using STP.Web.Custom.Views
+@{
+    var SearchListInfo = new List<STP.Domain.Structures.StructureOnerousSearch>
+{
+                         new STP.Domain.Structures.StructureOnerousSearch{ SearchStatus = "0", SearchStatusValue = "All"},
+                         new STP.Domain.Structures.StructureOnerousSearch {SearchStatus = "1", SearchStatusValue  = "Under assessment"},
+                         new STP.Domain.Structures.StructureOnerousSearch {SearchStatus = "2", SearchStatusValue = "Declined"},
+                         new STP.Domain.Structures.StructureOnerousSearch {SearchStatus = "3", SearchStatusValue = "Agreed"},
+
+                    };
+
+
+}
+@{
+    Layout = null;
+}
+@using (Html.BeginForm("StructureMostOnerousVehicleList", "Structures", FormMethod.Post, new { id = "SearchPanelForm" }))
+{
+    <style>
+        .btn.btn-outline-primary:hover {
+            color: white;
+            background-color: rgba(39, 87, 149, 1);
+        }
+        #org_filter_btn .btn {
+            width: 100%;
+        }
+    </style>
+    <div id="filters" class="sidenav filter-sidenav pt-2">
+        <div class="row sidenav-header">
+            <div class="col-10 col-md-10 col-sm-10 pt-3" style="text-align: center;">
+                <span class="pl-9" style="font-size:30px;">
+                    FILTER
+                </span>
+            </div>
+            <div class="col-2 col-md-2 col-sm-2 pl-0">
+                <a style="font-size:40px;" href="#" id="clfilter">&times;</a>
+            </div>
+        </div>
+        <hr style="margin-top: 0;">
+        <div class="filter-list">
+            <div class="filters mb-4">
+                <div id="table-head" class="align-items-center" style="justify-content: space-between !important">
+                    <span>Details</span>
+                    <img id="chevlon-up-icon" src="~/Content/assets/images/up-chevlon-filter.svg" width="20"
+                         style="display: none;">
+                    <img id="chevlon-down-icon" src="~/Content/assets/images/down-chevlon-filter.svg" width="20"
+                         style="display: block">
+                </div>
+            </div>
+            <div id="viewFilterDetails" style="display:none" class="pl-3">
+                <div class="row mb-4 align-items-center">
+                    <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+                        Weight type
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-md-6">
+                        @Html.DropDownListFor(model => model.SortCriteria, (IEnumerable<SelectListItem>)ViewBag.SearchList, "Select type", new { @id = "DDsearchCriteria", @class = "form-select mb-3 mb-0", @style = "padding: 1rem 1rem; margin-right:1rem;" })
+                    </div>
+                </div>
+                <div class="row mb-4">
+                    <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+                    </div>
+                    <div class="col-lg-9 col-sm-9 col-md-9">
+                        <div class="row mb-4 align-items-center">
+                            <div class="col-lg-2 col-md-2 col-sm-2">
+                                @Html.EditorFor(model => model.StartDateFlag, new { @class = "checkbox pr-4", @width = "20" })
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-1 text-normal ml-2" style="white-space: nowrap;">
+                                Start date
+                            </div>
+                            <div class="col-lg-6 col-md-3 col-sm-1 input-field">
+                                @if (ViewBag.MovementStartDateEnableDisable == true)
+                                {
+                                    @Html.DatePicker("MovementStartDate", new { @class = "datesearch", disabled = "disabled", @readonly = "readonly" })
+                                }
+                                else
+                                {
+                                    @Html.DatePicker("MovementStartDate", new { @class = "datesearch" })
+                                }
+                            </div>
+                        </div>
+                        <div class="row align-items-center">
+                            <div class="col-lg-2 col-md-2 col-sm-2">
+                                @Html.EditorFor(model => model.EndDateFlag, new { @class = "checkbox pr-4", @width = "20" })
+                            </div>
+                            <div class="col-lg-3 col-md-3 col-sm-1 text-normal ml-2" style="white-space: nowrap;">
+                                End date
+                            </div>
+                            <div class="col-lg-6 col-md-3 col-sm-1 input-field">
+                                @if (ViewBag.MovementEndDateEnableDisable == true)
+                                {
+                                    @Html.DatePicker("MovementEndDate", new { @class = "datesearch", disabled = "disabled", @readonly = "readonly" })
+                                }
+                                else
+                                {
+                                    @Html.DatePicker("MovementEndDate", new { @class = "datesearch" })
+                                }
+                                <div class="error invalid-feedback" style="display: block !important;" id="dateValidate"></div>
+                                @Html.ValidationMessageFor(model => model.MovementEndDate)
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row mb-4 align-items-center">
+                    <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+                        Select status
+                    </div>
+                    <div class="col-lg-6 col-sm-6 col-md-6">
+                        @Html.DropDownListFor(model => model.SearchStatus, new SelectList(@SearchListInfo, "SearchStatus", "SearchStatusValue"), "Select status", new { @id = "statusSearchCriteria", @class = "form-select mb-3 mb-0", @style = "padding: 1rem 1rem; margin-right:1rem;" })
+                    </div>
+                </div>
+            </div>
+            <div class="row pt-6 pl-3 pr-2" id="org_filter_btn">
+                <div class="col-lg-4 col-md-4 col-sm-12 filter-entry">
+                    <!-- <div class="header mt-4"> -->
+                    <div class="button mr-0 mb-2">
+                        <button class="btn btn-primary btn-normal" id="clr" type="button" aria-pressed="true" >
+                            CLEAR
+                        </button>
+                    </div>
+                    <!-- </div> -->
+                </div>
+                <div class="col-lg-8 col-md-8 col-sm-12 filter-entry">
+                    <!-- <div class="header mt-4"> -->
+                    <div class="button mr-0 mb-2">
+                        <button class="btn btn-primary btn-normal" type="button" id="srchbtn" aria-pressed="true" >
+                            SEARCH
+                        </button>
+                    </div>
+                    <!-- </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<input type="hidden" value="@ViewBag.structureId" id="hf_structureId" name="hf_structureId" />
+<input type="hidden" value="@ViewBag.structureName" id="hf_structureName" name="hf_structureName" />
+
+@*<script src="~/Scripts/Structures/SearchMostOnerousVehiclePanel.js?V@(Session["ProjectVersion"])"></script>*@

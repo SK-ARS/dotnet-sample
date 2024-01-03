@@ -1,0 +1,126 @@
+﻿@model List<STP.Domain.MovementsAndNotifications.Notification.InboxSubContent>
+
+@{
+    string tableClass = string.Empty;
+    int count = 1;
+}
+
+@if (ViewBag.mode == 0)
+{
+    //<link href="~/Content/Style/Common/style.css" rel="stylesheet" />
+    //<link href="~/Content/Style/Common/grid_css.css" rel="stylesheet" />
+}
+else if (ViewBag.mode == 1)
+{
+    tableClass = "alter frmbdr";
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@if (ViewBag.mode == 1 && Model.Count == 0)
+{
+}
+else
+{
+    using (Html.BeginForm("NotificationHistory", "Application", new { mode = ViewBag.mode }))
+    {
+        <div>
+            @*<table class="table @tableClass">*@
+            <table>
+                <tr>
+                    @if (ViewBag.mode == 1)
+                    {
+                        <th>Notification status</th>
+                        <th>ESDAL Ref</th>
+                        <th>Notification date</th>
+                        <th>Collaboration status</th>
+                    }
+                    else if (ViewBag.mode == 0)
+                    {
+                        <th>Notification Status</th>
+                        <th>ESDAL Ref</th>
+                        <th>Notification Date</th>
+                    }
+                    else if (ViewBag.mode == 2)
+                    {
+                        <th>Revision no.</th>
+                        <th>Version no.</th>
+                        <th>Datetime</th>
+                        <th>Event</th>
+                        <th>Details</th>
+                    }
+                </tr>
+                @if (Model.Count > 0)
+                {
+                    if (ViewBag.mode != 2)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    @if (count == 1)
+                                    {
+                                        @*<img src="~/Content/Images/Common/renotified.gif"  height="20" width="20" />*@
+                                        <span class="notification notification_status1"></span>
+                                    }
+                                    else
+                                    {
+                                        @*<img src="~/Content/Images/Common/notified.gif"  height="20" width="20" />*@
+                                        <span class="notification notification_status2"></span>
+                                    }
+                                </td>
+                                <td><a class="text-decoration-link" href="@Url.Action("DisplayNotification", "Notification", new {NotificationId=item.NotificationId,Notification_Code=item.ESDALReference })">@item.ESDALReference</a></td>
+                                <td>
+                                    @{
+                                        var ndt = item.NotificationDate;
+                                        if (ndt == "")
+                                        {
+                                            <span>-</span>
+                                        }
+                                        else
+                                        {
+                                            <a class="text-decoration-link" href="@Url.Action("DisplayNotification", "Notification", new {NotificationId=item.NotificationId,Notification_Code=item.ESDALReference })">@item.NotificationDate</a>
+                                        }
+                                    }
+                                </td>
+                                @if (ViewBag.mode == 1)
+                                {
+                                    <td id="collabResult" align="center">
+                                        @if (item.CollaborationStatus != 0)
+                                        {
+                                            @*<img src="~/Content/Images/Common/bluespeechbubble.png"/>*@
+                                            <span class="collaboration collaboration_status3"></span>
+                                        }
+                                    </td>
+                                }
+                            </tr>
+                            count++;
+                        }
+                    }
+                    else if (ViewBag.mode == 2)
+                    {
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@item.LatestRevisionNum</td>
+                                <td>@item.NotificationVersionNum</td>
+                                <td>@item.NotificationDate</td>
+                                <td>@item.actiontype</td>
+                                <td>@item.Description</td>
+                            </tr>
+                        }
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="4" style="text-align: center">
+                            <span style="color: red">No records found!</span>
+                        </td>
+               
+                    </tr>
+                }
+
+            </table>
+        </div>
+    }
+}
+

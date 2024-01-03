@@ -1,0 +1,59 @@
+@{
+    ViewBag.Title = "showCalendar";
+    string holidate = ViewBag.holidaydatestring;
+    string monthyear = ViewBag.MonthYear;
+}
+
+@Html.Hidden("holidaystring", holidate)
+@Html.Hidden("monthyear", monthyear)
+<style>
+/*    td form {
+        width: 78px !important;
+        float: right;
+    }*/
+
+/*    .pageSizeSelector {
+        padding-top: 5px !important;
+        padding-right: 5px !important;
+    }*/
+
+    .specialDate a {
+        /*background: #F00 !important;*/
+        color: #fff !important;
+        border-radius: 50%;
+        background: #20b775 !important;
+    }
+
+/*    .ui-datepicker td span, .ui-datepicker td a {
+        padding: 10px !important;
+    }
+
+    .ui-datepicker {
+        width: 280px !important;
+    }
+
+        .ui-datepicker select.ui-datepicker-month, .ui-datepicker select.ui-datepicker-year {
+            padding: 0.2em 0em 0.2em 0em;
+        }*/
+
+/*    .padding-top10 {
+        padding-top: 10px;
+    }*/
+    .ui-datepicker th:last-child {
+        background: rgba(39, 87, 149, 1) !important;
+    }
+    .ui-datepicker th:nth-child(2) span {
+        color: white;
+    }
+</style>
+<div class="padding-top1 mt-4">
+    <div id="datepicker"></div>
+    @*<div id="datepicker" data-date="12/03/2012"></div>
+    <input type="hidden" id="my_hidden_input">
+    <div id="date"></div>*@
+    @*<input id="datepicker" width="276" />*@
+    @*<div class="hint"><span>Holidays</span><span class="redcube"></span></div>*@
+
+
+</div>
+

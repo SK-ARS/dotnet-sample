@@ -1,0 +1,98 @@
+@using STP.Domain
+@{
+    ViewBag.Title = "MoveSummaryLeftPanel";
+}
+@{
+    STP.Domain.SecurityAndUsers.UserInfo SessionInfo = null;
+    if (Session["UserInfo"] != null)
+    {
+        SessionInfo = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+    }
+
+    string SProjectStatus = null;
+    if (ViewBag.PrjStatus != null)
+    {
+        SProjectStatus = ViewBag.PrjStatus;
+    }
+    int SChecingStatus = 0;
+    if (ViewBag.CheckingStatus != null)
+    {
+        SChecingStatus = ViewBag.CheckingStatus;
+    }
+    int Plannerid = 0;
+    if (ViewBag.PlannerId != null)
+    {
+        Plannerid = ViewBag.PlannerId;
+    }
+    int Enter_BY_SORT = 0;
+    if (ViewBag.Enter_BY_SORT != null)
+    {
+        Enter_BY_SORT = ViewBag.Enter_BY_SORT;
+    }
+}
+<div class="flexer justify-content-center pt-4" id="menu-buttons">
+    @{
+        if (ViewBag.Mov_btn_show == true)
+        {
+            if (SessionInfo.SortUserId == Plannerid)
+            {
+                if ((SProjectStatus == "Proposed" || SProjectStatus == "Reproposed" || SProjectStatus == "Agreed re-proposed") && ViewBag.VR1APP == false)
+                {
+                    <button class="btn outline-btn-primary SOAButtonHelper" style="display: flex;" id="Mov_Agree" >
+                            <span class="pr-3">
+                                <img src="~/Content/assets/Icons/agree.svg" width="12" class="init_img">
+                                <img src="~/Content/assets/Icons/agree.svg" width="12" class="hover_img notify">
+                            </span>AGREE
+                    </button>
+                }
+                if ((SProjectStatus == "Agreed" || SProjectStatus == "Agreed Recleared") && SChecingStatus != 301006)
+                {
+                    <button id="Mov_Unagree" class="btn outline-btn-primary SOAButtonHelper" >
+                        <span class="pr-3">
+                            <img src="~/Content/assets/images/decline.svg" width="12" class="init_img">
+                            <img src="~/Content/assets/images/decline.svg" width="12" class="hover_img notify">
+                        </span>UNAGREE
+                    </button>
+                }
+                if (Enter_BY_SORT == 1 || ((SProjectStatus == "Work In Progress" || SProjectStatus == "Agreement Work In Progress") && SChecingStatus == 301003 && ViewBag.VR1APP == false))
+                {
+                    <button id="Mov_Withdraw" class="btn outline-btn-primary SOAButtonHelper" >
+                        <span class="pr-3">
+                            <img src="~/Content/assets/images/withdrawn.svg" width="12" class="init_img">
+                            <img src="~/Content/assets/images/withdrawn.svg" width="12" class="hover_img notify">
+                        </span>WITHDRAW
+                    </button>
+                }
+                if ((SProjectStatus == "Work In Progress" || SProjectStatus == "Agreement Work In Progress") && SChecingStatus == 301003 && ViewBag.VR1APP == false)
+                {
+                    <button id="btndistributemovement" class="btn outline-btn-primary SOAButtonHelper1" >
+                        <span class="pr-3">
+                            <img src="~/Content/assets/images/Group 133.svg" width="12" class="init_img">
+                            <img src="~/Content/assets/images/Group 133.svg" width="12" class="hover_img notify">
+                        </span>DISTRIBUTE MOVEMENT
+                    </button>
+                }
+                else if ((SProjectStatus == "Agreed" || SProjectStatus == "Agreed Recleared") && SChecingStatus == 301006)
+                {
+                    <button class="btn outline-btn-primary SOAButtonHelper1" id="btn-dismov" >
+                        <span class="pr-3">
+                            <img src="~/Content/assets/images/Group 133.svg" width="12" class="init_img">
+                            <img src="~/Content/assets/images/Group 133.svg" width="12" class="hover_img notify">
+                        </span>DISTRIBUTE AGREED ROUTE
+                    </button>
+                }
+                if ((SProjectStatus == "Agreed" || SProjectStatus == "Agreed Recleared") && SChecingStatus != 301006)
+                {
+                    <button class="btn outline-btn-primary SOAButtonHelper1" id="btncretaeso">
+                        @*<span class="pr-3">
+                            <img src="~/Content/assets/images/withdrawn.svg" width="12" class="init_img">
+                            <img src="~/Content/assets/images/withdrawn.svg" width="12" class="hover_img notify">
+                        </span>*@CREATE SPECIAL ORDER
+                    </button>
+                }
+            }
+        }
+    }
+</div>
+
+@*<script src="~/Scripts/SORTApplication/MoveSummaryLeftPanel.js?V@(Session["ProjectVersion"])"></script>*@

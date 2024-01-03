@@ -1,0 +1,137 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F6D6E464-AE18-47ED-BBD8-817636D829DD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>STP.DataAccess</RootNamespace>
+    <AssemblyName>STP.DataAccess</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <RunCodeAnalysis>true</RunCodeAnalysis>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Logging">
+      <HintPath>..\STP.Common\Library\Enterprise Library\Microsoft.Practices.EnterpriseLibrary.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Oracle.DataAccess, Version=4.122.19.1, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Solution\packages\Oracle.x64.193000\Oracle.DataAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\System.ComponentModel.Annotations.5.0.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Http">
+      <HintPath>..\STP.Common\Library\Microsoft.AspNet.WebApi.Core.4.0.20710.0\lib\net40\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="BaseHelper\ConnectionFactory.cs" />
+    <Compile Include="BaseHelper\OleDbHelper.cs" />
+    <Compile Include="BaseHelper\OracleHelperParameterCache.cs" />
+    <Compile Include="BaseHelper\SqlHelperParameterCache.cs" />
+    <Compile Include="BaseHelper\TimeIt.cs" />
+    <Compile Include="Command\CommandCache.cs" />
+    <Compile Include="Command\CommandFactory.cs" />
+    <Compile Include="Command\OracleCommandCache.cs" />
+    <Compile Include="Command\SqlCommandCache.cs" />
+    <Compile Include="Databases\ConnectionManager.cs" />
+    <Compile Include="Databases\DBManager.cs" />
+    <Compile Include="Databases\DBManagerFactory.cs" />
+    <Compile Include="DataMapper\DynamicSqlMapper.cs" />
+    <Compile Include="Debug\DebugUtil.cs" />
+    <Compile Include="Debug\LogWrapper.cs" />
+    <Compile Include="Delegates\OracleDelegates.cs" />
+    <Compile Include="Delegates\SafeDelegates.cs" />
+    <Compile Include="Delegates\SqlDelegates.cs" />
+    <Compile Include="Domain\Custom\UserInfo.cs" />
+    <Compile Include="Exceptions\BadDataException.cs" />
+    <Compile Include="Exceptions\DatabaseExecutionException.cs" />
+    <Compile Include="Exceptions\DataNotFoundException.cs" />
+    <Compile Include="Exceptions\DBMapperException.cs" />
+    <Compile Include="Exceptions\EntityProcedureException.cs" />
+    <Compile Include="Exceptions\SafeProcedureDataException.cs" />
+    <Compile Include="Exceptions\SafeProcedureException.cs" />
+    <Compile Include="Exceptions\StandardExceptions.cs" />
+    <Compile Include="Interface\IDBManager.cs" />
+    <Compile Include="Interface\IOleDbProvider.cs" />
+    <Compile Include="Interface\IOracleParameterSet.cs" />
+    <Compile Include="Interface\IOracleProvider.cs" />
+    <Compile Include="Interface\ISqlParameterSet.cs" />
+    <Compile Include="Interface\ISqlProvider.cs" />
+    <Compile Include="Mappers\BaseResultMapper.cs" />
+    <Compile Include="Mappers\DataRecord.cs" />
+    <Compile Include="Mappers\MapHelper.cs" />
+    <Compile Include="Mappers\MenuAccessMapper.cs" />
+    <Compile Include="Mappers\ObjectMapper.cs" />
+    <Compile Include="Mappers\UserInfoMapper.cs" />
+    <Compile Include="ParameterSet\OracleParameterSet.cs" />
+    <Compile Include="ParameterSet\SqlParameterSet.cs" />
+    <Compile Include="ParameterSet\StoredProcedureParameter.cs" />
+    <Compile Include="ParameterSet\StoredProcedureParameterList.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Provider\DBConnectionFailedException.cs" />
+    <Compile Include="Provider\OleDbProvider.cs" />
+    <Compile Include="Provider\OracleCommandCache.cs" />
+    <Compile Include="Provider\OracleProvider.cs" />
+    <Compile Include="Provider\SqlProvider.cs" />
+    <Compile Include="SafeProcedure\SafeProcedure.cs" />
+    <Compile Include="SafeProcedure\SafeProcedureAsync.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\STP.Common\STP.Common.csproj">
+      <Project>{001eb1f6-da74-4342-841a-9d7856a1ed94}</Project>
+      <Name>STP.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\STP.Domain\STP.Domain.csproj">
+      <Project>{7084ece6-a17f-41b1-9a8a-c199c98e48c8}</Project>
+      <Name>STP.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

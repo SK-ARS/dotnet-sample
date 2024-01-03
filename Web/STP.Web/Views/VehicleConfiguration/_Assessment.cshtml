@@ -1,0 +1,47 @@
+@{
+    string config = ViewBag.VehicleTypeConfig;
+    int configId = ViewBag.VehicleTypeConfigId != null ? ViewBag.VehicleTypeConfigId : 0;
+    var movementType = "";
+    int movementTypeId = 0;
+    int cvMovementType = 0;
+    int cvVehicleClass = 0;
+    if (ViewBag.MovementType != null)
+    {
+        movementType = ViewBag.MovementType;
+        movementTypeId = ViewBag.MovementTypeId;
+        cvMovementType = ViewBag.cvMovementType;
+        cvVehicleClass = ViewBag.cvVehicleClass;
+    }
+}
+<div class="row bottom-info-card">
+    <div class="col-lg-12 col-md-12 col-sm-12" id="div_VehicleTypeConfig" style="display:none;">
+        <span class="text-normal text-align-justify pl-0" id="spnconfigmessage">
+        </span>
+        <span class="text-normal-bold" style="color: black; text-transform: uppercase;" id="VehicleTypeConfig">
+            @config
+        </span>
+    </div>
+    @if (movementTypeId != 0)
+    {
+        @Html.Hidden("ChangedMovementTypeId", movementTypeId)
+        @Html.Hidden("ChangedMovementTypeName", movementType)
+        @Html.Hidden("movementTypeForPlanMovement", cvMovementType)
+        @Html.Hidden("vehicleClassForPlanMovement", cvVehicleClass)
+        <div class="col-lg-12 col-md-12 col-sm-12" id="div_MovementType" style="display:none;">
+            <span class="text-normal text-align-justify pl-0" id="spnMovementmessage">
+            </span>
+
+            <span class="text-normal-bold" style="color: black; text-transform: uppercase;" id="MovementType">
+                @movementType
+            </span>
+        </div>
+    }
+    @Html.Hidden("hf_configId", configId)
+</div>
+@Html.Hidden("hf_movementTypeId", movementTypeId)
+@Html.Hidden("hf_movementType", movementType)
+<input type="hidden" value="@ViewBag.MaxTractorCount" id="hf_MaxTractorCount" name="hf_MaxTractorCount" />
+<input type="hidden" value="@ViewBag.MaxTrailerCount" id="hf_MaxTrailerCount" name="hf_MaxTrailerCount" />
+
+
+@*<script src="~/Scripts/VehicleConfiguration/_Assessment.js?V@(Session["ProjectVersion"])"></script>*@

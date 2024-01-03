@@ -1,0 +1,49 @@
+
+@using PagedList.Mvc
+@using STP.Domain.VehiclesAndFleets.Configuration;
+@model List<VehicleDetails>
+
+@{
+    ViewBag.Title = "ApplicationVehicle";
+    var VehicleList = (List<VehicleDetails>)ViewBag.VehicleList;
+}
+
+<div id="Vehicle">
+    @foreach (var item in Model)
+    {
+        <div class="pt-8">
+            <div arg1="@item.VehicleId" id="table-head" class="div-viewvehicle"vehicle="@item.VehicleId">
+                <div>
+                    @foreach (var image in item.VehicleNameList)
+                    {
+                        var ImageName = "~/Content/images/Common/MasterPage/componet_icons/" + image + ".png";
+                        <img src="@Url.Content(ImageName)" style="mix-blend-mode: darken; flex: 33.33%;"
+                             alt="@image">
+                    }
+                    <span class="edit-normal pl-5">@item.VehicleName</span>
+                </div>
+                <div class="align-items-center mt-1"  style="cursor:pointer;">
+                    <span class="text-normal-hyperlink pr-5" id="spnDetailStatus">Show Details</span>
+                    <img id="down-chevlon1" class="mt-2" src="~/Content/assets/images/down-chevlon-filter.svg"
+                         style="float: right;" width="15">
+                    <img id="up-chevlon1" class="mt-2" src="~/Content/assets/images/up-chevlon-filter.svg"
+                         style="float: right; display: none;" width="15">
+                </div>
+            </div>
+            <hr>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-sm-12 col-md-6 text-normal">
+                <div id="@item.VehicleId" class="@item.VehicleId"></div>
+            </div>
+            <div class="col-lg-5 col-sm-12 col-md-6 edit-normal">
+            </div>
+        </div>
+    }
+</div>
+
+@{
+<input type="hidden" value="@ViewBag.SORTMOV" id="hf_SORTMOV" name="hf_SORTMOV" />
+<input type="hidden" value="@ViewBag.IsVRVeh" id="hf_IsVRVeh" name="hf_IsVRVeh" />
+}
+@*<script src="~/Scripts/Application\PartialView/ApplicationVehicle.js?V@(Session["ProjectVersion"])"></script>*@

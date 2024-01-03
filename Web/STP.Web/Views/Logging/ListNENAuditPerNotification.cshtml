@@ -1,0 +1,153 @@
+@using PagedList.Mvc
+@model PagedList.IPagedList<STP.Domain.MovementsAndNotifications.Notification.NENAuditGridList>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+
+
+    int isAdmin = 0;
+    int userTypeID = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        userTypeID = sessionValues.UserTypeId;
+        if (sessionValues.IsAdmin == 1)
+        {
+            isAdmin = 1;
+        }
+    }
+
+    //for save org
+    bool createSuccess = false;
+    if (ViewBag.saveMsg != null)
+    {
+        createSuccess = true;
+    }
+}
+
+@{
+    bool isAccessible = false;
+    if (isAdmin == 1 && userTypeID == 696006)
+    {
+        isAccessible = true;
+    }
+}
+@{ Layout = null;
+    int listCount = 0;
+    listCount = (int)Session["PageSize"];
+    }
+@{
+    var sortOrder = ViewBag.SortOrder != null ? (int)ViewBag.SortOrder : 1;//date
+    var sortType = ViewBag.SortType != null ? (int)ViewBag.SortType : 1;//desc
+}
+<style>
+    #showaudit .main-table table tr:nth-child(odd) {
+        background-color: rgb(237 238 246)!important;
+    }
+    #showaudit .main-table table tr:nth-child(even) {
+        background-color: white !important;
+    }
+    .movements td:nth-child(1) {
+        text-align:left !important;
+      
+    }
+</style>
+<div class="main-table movements" id="auditTable">
+    <table class="esdal-table">
+
+        <thead>
+            <tr>
+                <th>
+                    @*Date/Time<span><img src="assets/images/down-chevlon.svg" width="15" height="6"></span>*@
+                    <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,1)" data-action="AutheriseAuditlogSort" data-sortval="1">Date/Time</span>
+                </th>
+                <th>User</th>
+                <th style="width:70%">History</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- sample examples -->
+            @if (Model != null)
+            {
+                foreach (var item in Model)
+                {
+
+                    <tr>
+                        <td class="text-color1">
+                            @item.DateTime
+                        </td>
+                        <td class="text-color1">@item.User</td>
+                        <td class="text-color1" colspan="2">
+                            @item.Log
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+    @{
+        int pageSize = ViewBag.pageSize;
+        int? pageNum = ViewBag.page;
+        string SearchString = ViewBag.OrgSearchString;
+        int TotalPages = Model.PageCount;
+        string NENNotif = ViewBag.NEN_Notif_No;
+        @Html.Hidden("pageSizeVal", pageSize)
+        @Html.Hidden("pageNum", pageNum)
+        @Html.Hidden("hdnSearchString", SearchString)
+        @Html.Hidden("TotalPages", TotalPages)
+        @Html.Hidden("hdnNENNotif", NENNotif)
+        //ViewBag.pageSize = pageSize;
+    }
+<div class="bottom-pagination">
+    @if (@ViewBag.TotalCount > 0)
+    {
+        if (listCount <Model.Count )
+        {
+            <div class="pagination" id="showAuditLogPaginator">
+                @Html.PagedListPager(Model, page => Url.Action("ListNENAuditPerNotification",
+                          new
+                          {
+                              B7vy6imTleYsMr6Nlv7VQ =
+                                                             STP.Web.Helpers.EncryptionUtility.Encrypt(
+                                                             "page=" + page +
+                                                             "&NEN_Notif_No=" + NENNotif +
+                                                             "&sortOrder=" + ViewBag.SortOrder +
+                                                             "&sortType=" + ViewBag.SortType)
+                          }),
+                          new PagedListRenderOptions
+                          {
+                              DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                              DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                              LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                              LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                              DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                              DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                              MaximumPageNumbersToDisplay = 3,
+                              DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                              EllipsesFormat = "...",
+                              LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+                              LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+                          });
+            </div>
+        }
+    }
+    else
+    {
+        <div class="error invalid-feedback" style="display: block !important; text-align: center;">No record found</div>
+    }
+</div>
+</div>
+@{ string GetSortDefaultClass(int sortTypeVal, int sortOrderVal, int valToCheck)
+    {
+        var sortClass = ""; //0-asc, 1-desc ,
+        if (sortOrderVal == valToCheck)
+        {
+            sortClass = sortTypeVal == 1 ? "sorting_desc" : "sorting_asc";
+        }
+        return sortClass;
+    } }
+
+@*<script src="~/Scripts/Logging/ListNENAuditPerNotification.js?V@(Session["ProjectVersion"])"></script>*@

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="122" height="119" viewBox="0 0 122 119">
+  <defs>
+    <filter id="Rectangle_103" x="0" y="0" width="122" height="119" filterUnits="userSpaceOnUse">
+      <feOffset dy="5" input="SourceAlpha"/>
+      <feGaussianBlur stdDeviation="7.5" result="blur"/>
+      <feFlood flood-opacity="0.647"/>
+      <feComposite operator="in" in2="blur"/>
+      <feComposite in="SourceGraphic"/>
+    </filter>
+    <linearGradient id="linear-gradient" x1="0.5" x2="0.5" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#fff" stop-opacity="0"/>
+      <stop offset="1" stop-color="gray" stop-opacity="0.224"/>
+    </linearGradient>
+  </defs>
+  <g id="Group_1183" data-name="Group 1183" transform="translate(-539.5 -363.5)">
+    <g id="Group_303" data-name="Group 303" transform="translate(-33 -224)">
+      <g transform="matrix(1, 0, 0, 1, 572.5, 587.5)" filter="url(#Rectangle_103)">
+        <rect id="Rectangle_103-2" data-name="Rectangle 103" width="77" height="74" rx="20" transform="translate(22.5 17.5)" fill="#fff"/>
+      </g>
+      <path id="Path_381" data-name="Path 381" d="M2805.025,11503.183v20.636l-7.06-9.9Z" transform="translate(-2151.049 -10871.073)" fill="#275795"/>
+    </g>
+    <rect id="Rectangle_243" data-name="Rectangle 243" width="74" height="19" transform="translate(622 381) rotate(90)" fill="url(#linear-gradient)" style="mix-blend-mode: multiply;isolation: isolate"/>
+  </g>
+</svg>

@@ -1,0 +1,46 @@
+@*<link href="~/Content/Style/Common/style_htmlbuilder.css" rel="stylesheet" />
+<link href="~/Content/Style/Common/redactor.css" rel="stylesheet" />*@
+<style>
+    .redactor_toolbar {
+        background: linear-gradient( 0deg, #e3e7ec, #f4f6fa) !important;
+        height: 45px !important;
+    }
+    .redactor_editor p, .redactor_editor h3 {
+        text-align: left;
+    }
+</style>
+@{ 
+    var NotesforHaulier = Html.Raw(ViewBag.NotesforHaulier);
+}
+<body style="overflow-y: auto;" id="sort-flow">
+
+    <!--main-content -->
+    <section id="banner">
+        <div class="container-fluid pl-0" id="banner-container1">
+            <input type="hidden" value="@NotesforHaulier" id="txthauliernotes" />
+            <div style="background-color: white; color:black;">
+                <div id="page1" class="pt-4">
+                    <textarea name="FileContent" id="redactor_content" cols="30" rows="10" class="w-100"></textarea>
+                    <div style="float: left;" id="savedhn"></div>
+                    @*</div>*@
+                </div>
+                <div class="flexer justify-content-center mt-3">
+                    <button class="btn outline-btn-primary SOAButtonHelper ml2 BtnSaveNotes2Haulier" id="btn-savenote" >SAVE</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    @*<script src="~/Scripts/JQuery/V103/jquery-1.9.1.min.js?V@(Session["ProjectVersion"])"></script>*@
+    <link href="~/Content/Style/Common/alertbox.css" rel="stylesheet" />
+    <link href="~/Content/Style/Common/style_htmlbuilder.css?V@(Session["ProjectVersion"])" rel="stylesheet" />
+    <link href="~/Content/Style/Common/redactor.css" rel="stylesheet" />
+    @*@System.Web.Optimization.Scripts.Render("~/bundles/redactor")*@
+    @*<script src="~/Scripts/JQuery/V103/jquery-1.9.1.min.js?V@(Session["ProjectVersion"])"></script>*@
+    @*<script src="~/Scripts/Common/MasterPage/jquery.uiControls.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/Web/redactor.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/jquery.unobtrusive-ajax.min.js?V@(Session["ProjectVersion"])"></script>*@
+
+</body>
+
+
+@*<script src="~/Scripts/CspJs/SORTApplication\PartialView/HaulierNotes.js?V@(Session["ProjectVersion"])"></script>*@

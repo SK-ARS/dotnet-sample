@@ -1,0 +1,362 @@
+@using System.Collections.Concurrent;
+@using System.Web.Optimization
+@using STP.Domain
+@using STP.Domain.Structures
+@model List<STP.Domain.Structures.StructureOwnerChain>
+
+@{
+    List<STP.Domain.Structures.StructureGeneralDetails> objListStructureGeneralDetails = ViewBag.ListStructureGeneralDetails;
+    int cnt = 0;
+    string sectionType = "";
+    int? structureChain = 0, tmpChainNum = 0;
+    //code portion to generate the order in which the structure's are delegated and owned by different organisation
+    //The list contains sub list  in order of structure owner and sub delegation
+    List<List<STP.Domain.Structures.StructureOwnerChain>> StructOwnerChainList = new List<List<STP.Domain.Structures.StructureOwnerChain>>();
+    List<STP.Domain.Structures.StructureOwnerChain> StructOwnerChainObjList = null;
+    STP.Domain.Structures.StructureOwnerChain StructChainObj = null;
+    var StructureOwnChain = ViewBag.structureOwnerchain!=null?(List<AffStructureGeneralDetails>)ViewBag.structureOwnerchain:new List<AffStructureGeneralDetails>();
+    if (ViewBag.UserValidateFlag == 1)
+    {
+        if (StructureOwnChain != null && StructureOwnChain.Count > 0)
+        {
+            foreach (var item in StructureOwnChain)
+            {
+                structureChain = (int)item.StructureChainNo;
+                if (item.StructurePosition == 1 && tmpChainNum != structureChain)
+                {   //then the this is an owner
+                    StructOwnerChainObjList = new List<STP.Domain.Structures.StructureOwnerChain>();
+                    StructChainObj = new STP.Domain.Structures.StructureOwnerChain();
+                    StructOwnerChainObjList.Add(StructChainObj);
+                    StructOwnerChainList.Add(StructOwnerChainObjList);
+                    StructChainObj.ChainPosition = item.StructurePosition;
+                    StructChainObj.ChainNo = item.StructureChainNo;
+                    StructChainObj.ChainContactId = item.ContactId;
+                    StructChainObj.ChainOwnerName = item.OwnerName;
+                    tmpChainNum = structureChain;
+                }
+                else
+                {
+                    StructChainObj = new STP.Domain.Structures.StructureOwnerChain();
+                    StructOwnerChainObjList.Add(StructChainObj);
+                    StructChainObj.ChainPosition = item.StructurePosition;
+                    StructChainObj.ChainNo = item.StructureChainNo;
+                    StructChainObj.ChainContactId = item.ContactId;
+                    StructChainObj.ChainOwnerName = item.OwnerName;
+                    tmpChainNum = structureChain;
+                }
+            }
+        }
+    }
+}
+@{long section_Id = ViewBag.SectionID;
+    List<STP.Domain.Structures.StructureSectionList> objListStructureSection = ViewBag.ListStructureSections;}
+@{
+    Layout = null;
+}
+<div class="form form_component unsuitable-structure-summary" id="form_component" ;>
+    <div class="modal" tabindex="-1" role="dialog" id="exampleModalCenter22" style="display: block; overflow-y: auto;">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" id="ViewRoadContacts" style="overflow: unset; padding-bottom: 2rem; height: auto; border-radius: 0.3rem; width: 100%; ">
+                @if (ViewBag.UserValidateFlag == 0)
+                {
+                    <div class="modal-header pt-4">
+                        <span class="details pl-3 col-6">Structure details</span>
+                        <span aria-hidden="true" class="close pl-0 CloseStructure" data-dismiss="modal" aria-label="Close"
+                              style="cursor:pointer;">&times;</span>
+                    </div>
+                    <div class="modal-body pt-4 pl-3">
+                        <div class="error invalid-feedback" style="display: block !important; text-align: center;">@Resources.Resource.WrongStructureMsg</div>
+                    </div>
+                }
+                else
+                {
+                    <div class="modal-header pt-4">
+                        <span class="details pl-3 col-6" style="font-size:25px;">Structure details</span>
+                        <span aria-hidden="true" class="close pl-0 CloseStructure" data-dismiss="modal" aria-label="Close" style="cursor:pointer;">&times;</span>
+                    </div>
+                    <div class="class=" col-lg-12 col-md-12 col-sm-12"">
+                        @if (objListStructureGeneralDetails != null && objListStructureGeneralDetails.Count > 0)
+                        {
+                            cnt = objListStructureGeneralDetails.Count;
+                            if (!string.IsNullOrEmpty(objListStructureGeneralDetails[cnt - 1].ESRN))
+                            {
+                                @Html.Hidden("Dimension", 1)
+
+                                <div class="row ml-0 pt-4">
+                                    <div class="col-5 pl-5 text-normal">
+                                        @Resources.Resource.ESRN
+                                    </div>
+                                    <div class="col-7 details1">
+                                        @objListStructureGeneralDetails[cnt - 1].ESRN
+                                    </div>
+                                </div>
+                            }
+                            if (!string.IsNullOrEmpty(objListStructureGeneralDetails[cnt - 1].StructureName))
+                            {
+                                <div class="row ml-0 pt-1">
+                                    <div class="col-5 pl-5 text-normal">
+                                        @Resources.Resource.SummaryName
+                                    </div>
+                                    <div class="col-7 details1">
+                                        @objListStructureGeneralDetails[cnt - 1].StructureName
+                                    </div>
+                                </div>
+                            }
+                            if (!string.IsNullOrEmpty(objListStructureGeneralDetails[cnt - 1].StructureKey))
+                            {
+                                <div class="row ml-0 pt-1">
+                                    <div class="col-5 pl-5 text-normal">
+                                        @Resources.Resource.StructKey
+                                    </div>
+                                    <div class="col-7 details1">
+                                        @objListStructureGeneralDetails[cnt - 1].StructureKey
+                                    </div>
+                                </div>
+                            }
+                            if (objListStructureGeneralDetails[cnt - 1].OSGREast != 0 || objListStructureGeneralDetails[cnt - 1].OSGRNorth != 0)
+                            {
+                                <div class="row ml-0 pt-1">
+                                    <div class="col-5 pl-5 text-normal">
+                                        @Resources.Resource.OSGR
+                                    </div>
+                                    <div class="col-7 details1">
+                                        @objListStructureGeneralDetails[cnt - 1].OSGREast, @objListStructureGeneralDetails[cnt - 1].OSGRNorth
+                                    </div>
+                                </div>
+                            }
+                            <div class="row ml-0 pt-1">
+                                <div class="col-5 pl-5 text-normal">
+                                    @Resources.Resource.SummaryOwner
+                                </div>
+                                <div class="col-7 details1">
+                                    <span id="text5" class="stHeading1 text-color2 clickable">
+                                        <a style="cursor:pointer;" class="DisplayContact" ChainContactId="@StructChainObj.ChainContactId">@StructChainObj.ChainOwnerName</a>
+                                    </span>
+                                </div>
+                            </div>
+                            if (!string.IsNullOrEmpty(objListStructureGeneralDetails[cnt - 1].Category))
+                            {
+                                <div class="row ml-0 pt-1">
+                                    <div class="col-5 pl-5 text-normal">
+                                        Category
+                                    </div>
+                                    <div class="col-7 details1">
+                                        @objListStructureGeneralDetails[cnt - 1].Category
+                                    </div>
+                                </div>
+                            }
+                            if ((!string.IsNullOrEmpty(objListStructureGeneralDetails[cnt - 1].Type)) || (!string.IsNullOrEmpty(objListStructureGeneralDetails[cnt - 1].Type1)) || (!string.IsNullOrEmpty(objListStructureGeneralDetails[cnt - 1].Type2)))
+                            {
+                                <div class="row ml-0 pt-1">
+                                    <div class="col-5 pl-5 text-normal">
+                                        @Resources.Resource.Type
+                                    </div>
+                                    @{
+                                        string type1 = !string.IsNullOrEmpty(objListStructureGeneralDetails[cnt - 1].Type1) ? "," + objListStructureGeneralDetails[cnt - 1].Type1 : null;
+                                        string type2 = !string.IsNullOrEmpty(objListStructureGeneralDetails[cnt - 1].Type2) ? "," + objListStructureGeneralDetails[cnt - 1].Type2 : null;
+                                    }
+                                    <div class="col-7 details1">
+                                        @objListStructureGeneralDetails[cnt - 1].Type @type1 @type2
+                                    </div>
+                                </div>
+                            }
+                            if (!string.IsNullOrEmpty(objListStructureGeneralDetails[cnt - 1].StructureClass))
+                            {
+                                <div class="row ml-0 pt-1">
+                                    <div class="col-5 pl-5 text-normal">
+                                        @Resources.Resource.SummaryClass
+                                    </div>
+                                    <div class="col-7 details1">
+                                        @objListStructureGeneralDetails[cnt - 1].StructureClass
+                                    </div>
+                                </div>
+                            }
+                            if ((!string.IsNullOrEmpty(objListStructureGeneralDetails[cnt - 1].StructureAlternateNameOne)) && (objListStructureGeneralDetails[cnt - 1].StructureAlternateNameOne.Trim() != ",,"))
+                            {
+                                string[] arrAltNames = objListStructureGeneralDetails[cnt - 1].StructureAlternateNameOne.Split(',');
+                                string altName1 = null, altName2 = null, altName3 = null;
+                                altName1 = arrAltNames[0];
+                                if (arrAltNames.Length > 1)
+                                {
+                                    altName2 = !string.IsNullOrEmpty(arrAltNames[1]) ? "," + arrAltNames[1] : null;
+                                    altName1 = altName1 + altName2;
+                                }
+                                if (arrAltNames.Length > 2)
+                                {
+                                    altName3 = !string.IsNullOrEmpty(arrAltNames[2]) ? "," + arrAltNames[2] : null;
+                                    altName1 = altName1 + altName3;
+                                }
+                                <div class="row ml-0 pt-1">
+                                    <div class="col-5 pl-5 text-normal">
+                                        Alternate Names
+                                    </div>
+                                    <div class="col-7 details1">
+                                        @altName1
+                                    </div>
+                                </div>
+                            }
+                            if (!string.IsNullOrEmpty(objListStructureGeneralDetails[cnt - 1].Description))
+                            {
+                                <div class="row ml-0 pt-1">
+                                    <div class="col-5 pl-5 text-normal">
+                                        @Resources.Resource.Description
+                                    </div>
+                                    <div class="col-7 details1">
+                                        @objListStructureGeneralDetails[cnt - 1].Description
+                                    </div>
+                                </div>
+                            }
+                            if (!string.IsNullOrEmpty(objListStructureGeneralDetails[cnt - 1].Notes))
+                            {
+                                <div class="row ml-0 pt-1">
+                                    <div class="col-5 pl-5 text-normal">
+                                        @Resources.Resource.Notes
+                                    </div>
+                                    <div class="col-7 details1">
+                                        @objListStructureGeneralDetails[cnt - 1].Notes
+                                    </div>
+                                </div>
+                            }
+                            if (objListStructureGeneralDetails[cnt - 1].Length != 0)
+                            {
+                                <div class="row ml-0 pt-1">
+                                    <div class="col-5 pl-5 text-normal">
+                                        @Resources.Resource.StructLength
+                                    </div>
+                                    <div class="col-7 details1">
+                                        @objListStructureGeneralDetails[cnt - 1].Length m
+                                    </div>
+                                </div>
+                            }
+                        }
+
+                    </div>
+                    <div class="modal-header pt-4">
+                        <span class="details pl-3">Structure sections</span>
+                    </div>
+                    int cntSectionOverbridge = 0, cntSectionUnderbridge = 0, cntSectionUnderOverbridge = 0, cntSectionLeverCross = 0;
+                    sectionType = "";
+
+                    if (objListStructureSection != null)
+                    {
+                        <div class="row ml-0 pt-3">
+                            <div class="col-12 pl-5 text-normal">
+                                Please select a section to view details
+                            </div>
+                        </div>
+
+                        foreach (var items in objListStructureSection)
+                        {
+                            sectionType = items.StructureSections.ToLower().Trim();
+                            <div class="row ml-0 pt-1">
+                                @if (items.AffectFlag == 0)
+                                {
+                                    <div class="col-5 pl-5 text-normal">
+                                        @items.StructureSections <span>section</span>
+                                        @if (sectionType == "underbridge")
+                                        {
+                                            cntSectionUnderbridge++;
+                                            <span>@cntSectionUnderbridge</span>
+                                        }
+                                        @if (sectionType == "overbridge")
+                                        {
+                                            cntSectionOverbridge++;
+                                            <span>@cntSectionOverbridge</span>
+                                        }
+                                        @if (sectionType == "under and over bridge")
+                                        {
+                                            cntSectionUnderOverbridge++;
+                                            <span>@cntSectionUnderOverbridge</span>
+                                        }
+                                        @if (sectionType == "level crossing")
+                                        {
+                                            cntSectionLeverCross++;
+                                            <span>@cntSectionLeverCross</span>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-5 pl-5 text-normal" style="color: #dc3545;">
+                                        @items.StructureSections <span>section</span>
+                                        @if (sectionType == "underbridge")
+                                        {
+                                            cntSectionUnderbridge++;
+                                            <span>@cntSectionUnderbridge</span>
+                                        }
+                                        @if (sectionType == "overbridge")
+                                        {
+                                            cntSectionOverbridge++;
+                                            <span>@cntSectionOverbridge</span>
+                                        }
+                                        @if (sectionType == "under and over bridge")
+                                        {
+                                            cntSectionUnderOverbridge++;
+                                            <span>@cntSectionUnderOverbridge</span>
+                                        }
+                                        @if (sectionType == "level crossing")
+                                        {
+                                            cntSectionLeverCross++;
+                                            <span>@cntSectionLeverCross</span>
+                                        }
+                                    </div>
+                                }
+                                <div class="col-7 details1">
+                                    <input type="radio" class="rd_showSectionDetail" id="@items.SectionId" name="optSectionDetails" StructureId="@ViewBag.StructureId" AffectFlag="@items.AffectFlag" VehicleName="'@items.VehicleName'" />
+                                    @Html.Hidden("hdnsectionType", sectionType, new { @id = "hdnsectionType" })
+                                </div>
+                            </div>
+
+                        }
+                        <div class="modal-body pt-0 pl-3 mb-0" id="affctdMessage_tr" style="display:none">
+                            <div id="affctdMessage_td" class="pl-3 error invalid-feedback" style="display: none; text-align: left;"></div>
+                        </div>
+                        <div id="divStructureSectionDetails">
+
+                        </div>
+                    }
+                }
+
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+@{
+<input type="hidden" value="@ViewBag.StructureId" id="hf_StructureId" name="hf_StructureId" />
+    @Html.Hidden("hf_sectionType", sectionType)
+    @Html.Hidden("hf_Count", StructureOwnChain.Count)
+    @Html.Hidden("hf_objListStructureGeneralDetails", objListStructureGeneralDetails)
+
+
+    if (section_Id != 0)
+    {
+        @Html.Hidden("hf_section_Id", section_Id)
+
+    }
+    else
+    {
+
+        if (objListStructureSection != null && objListStructureSection.Count > 0)
+        {
+            foreach (var item in objListStructureSection)
+            {
+                if (item.AffectFlag != 0)
+                {
+                    section_Id = item.SectionId;
+                    @Html.Hidden("hf_section_Id", section_Id)
+
+                    break;
+                }
+            }
+        }
+
+
+    }
+}
+    @*<script src="~/Scripts/Structures/UnsuitableStructureSummary.js?V@(Session["ProjectVersion"])"></script>*@

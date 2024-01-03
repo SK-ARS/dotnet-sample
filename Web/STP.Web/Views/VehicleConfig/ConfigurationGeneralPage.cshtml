@@ -1,0 +1,64 @@
+@{ 
+    var movementId = Session["movementClassificationId"];
+    var movementName = Session["movementClassificationName"];
+}
+<section id="banner" class="vehicle-setting">
+    <div class="container-fluid" id="banner-container">
+        <div id="vehicles" class="new-vehicle col-lg-12 col-md-12 col-sm-12">
+            <div class="row pb-4">
+                <div class="col-lg-9 col-md-2 col-sm-4 col-xs-12  pt-5 title pr-0" style="font-family: lato_bold;">
+                    CONFIGURATION
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-4 col-xs-12  pt-5 title pr-0">
+                    <div class="button main-button mr-0">
+                    <button id="btn_back_config" class="btn btn-outline-primary btn-normal" role="button" aria-pressed="true" >BACK</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row bottom-info-card">
+                <div class="row mt-4 main-entry">
+                    <div class="row">
+
+                    </div>
+                    <div class="row" id="configDrp">
+                        <div class="col-12 col-md-12 col-sm-12 pr-0">
+                            <span class="text-normal" id="spnconfigmessage">
+                            </span>
+                            @Html.DropDownList("VehicleTypeConfig", ViewBag.VehicleTypeConfig as SelectList, "Select Configuration Type", new { @class = "form-control form-select" })
+                        </div>
+                        <div class="error invalid-feedback" style="display: block !important;"></div>
+                    </div>
+
+                    <div class="row pb-3 pt-3" id="divMovement">
+                        <input type="hidden" id="MovementClassConfig" value="@movementId"/>
+                    </div>
+                </div>
+
+                </div>
+
+            <div class="row mt-4 main-entry" id="divGeneralpage">
+                <div class="col-lg-12 col-md-12 col-sm-12">
+                    <div class="row mt-4">
+                        <div id="divConfigGeneralPage">
+                            @*@{
+                            Html.RenderAction("GeneralPage", new { movementId = Model[0].MovementType, vehicleConfigId = Model[0].ConfigurationType });
+                        }*@
+                        </div>
+                    </div>
+                    <div class="row mt-4" id="regDetails">
+                        @*@{
+                        Html.RenderAction("RegistrationConfiguration", new { vehicleId = 0, RegBtn = true, isVR1 = false });
+                    }*@
+                    </div>
+                </div>
+                <div class="col-lg-8 col-md-12 col-sm-12 flexer justify-content-center">
+                    <button type="button" id="btn_saveConfig" class="btn outline-btn-primary SOAButtonHelper ml2" style="display:none;">SAVE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="~/Scripts/Vehicle/vehicleConfig.Create.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/VehicleConfig.Registration.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/CspJs/VehicleConfig/ConfigurationGeneralPage.js?V@(Session["ProjectVersion"])"></script>

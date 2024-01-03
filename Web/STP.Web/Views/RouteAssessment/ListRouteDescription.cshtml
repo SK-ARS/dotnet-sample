@@ -1,0 +1,27 @@
+<link href="~/Content/Style/Common/alertbox.css" rel="stylesheet" />
+<link href="~/Content/Style/Common/style.css" rel="stylesheet" />
+<link href="~/Content/Style/Common/style.css" rel="stylesheet" />
+<link href="~/Content/Style/Common/grid_css.css" rel="stylesheet" />
+@*<link href="~/Content/PagedList.css" rel="stylesheet" />*@
+<div id="div_ListRouteDescription">
+    <span id="spn_Result"></span>
+    <table id="tbl_ListRouteDescription" style="width:100%; table-layout: fixed; float:left;" class="grid">
+        <tbody>
+            <tr>
+                @{
+                    if (ViewBag.RouteDescr == null || ViewBag.RouteDescr == "")
+                    {
+                        <div class="cardSOA1 mt-0" style="text-align:center;">
+                            <h6 class="text-color3 stHeading1 m-0">No route description</h6>
+                        </div>
+                    }
+                    else
+                    {
+                        <td>    @Html.Raw(ViewBag.RouteDescr) </td>
+                    }
+                }
+
+            </tr>
+        </tbody>
+    </table>
+</div>

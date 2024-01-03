@@ -1,0 +1,64 @@
+@using PagedList.Mvc
+@model STP.Domain.SecurityAndUsers.ContactSearchModel
+@{
+
+    var SearchListInfo = new List<STP.Domain.SecurityAndUsers.ContactSearchModel>
+            {
+                        new STP.Domain.SecurityAndUsers.ContactSearchModel {SearchColumn = "1", SearchValue = "Contact name"},
+                        new STP.Domain.SecurityAndUsers.ContactSearchModel {SearchColumn = "2", SearchValue = "Organisation"},
+                        //new STP.Domain.Contact.ContactModel {searchType = "3", searchName = "Role" },
+                        new STP.Domain.SecurityAndUsers.ContactSearchModel {SearchColumn = "4", SearchValue= "Phone" },
+                        new STP.Domain.SecurityAndUsers.ContactSearchModel {SearchColumn = "5", SearchValue = "E-mail" },
+                    };
+
+    ViewBag.SearchInfo = new SelectList(SearchListInfo, "searchType", "searchName");
+}
+
+@{
+    int userTypeID1 = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        userTypeID1 = sessionValues.UserTypeId;
+    }
+
+}
+@{
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.CONTACTS;
+}
+@Html.Hidden("UserType", userTypeID1)
+
+<body id="soa-structure-list" class="contact-view-container">
+    <div id="helpdesk">
+        <!-- main-content -->
+        <section id="banner">
+            <div class="container-fluid" id="banner-container">
+                <div id="caution">
+                    <div class="col-lg-12 col-md-12 col-sm-12 header">
+                        <div class="title" style="text-align: center;">
+                            CONTACT DIRECTORY
+                        </div>
+                    </div>
+                    <div id="portal-table">
+
+                        @{
+                            Html.RenderAction("ContactList", "Contact", new { page = ViewBag.page, pageSize = ViewBag.pageSize, Iscontactview = true, sortType = ViewBag.sortType, sortOrder = ViewBag.sortOrder });
+
+                        }
+
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        <!-- end of main-content -->
+
+
+    </div>
+
+    <!-- end of fikter settings -->
+    <script src="~/Scripts/Contact/ContactView.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/Contact/ContactList.js?V@(Session["ProjectVersion"])"></script>
+    <script src="~/Scripts/Application/ViewContactDetails.js?V@(Session["ProjectVersion"])"></script>
+</body>
+

@@ -1,0 +1,288 @@
+@model List<STP.Domain.VehicleAndFleets.Component.IFXProperty>
+
+@{
+    int rowCount = Model.Count();
+    int secondSet = rowCount / 2;
+    int firstRowSet = rowCount - secondSet;
+}
+@{
+    int? unitValue = 1;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        unitValue = sessionValues.VehicleUnits;
+    }
+    //unitValue = ViewBag.Units;
+
+}
+@{
+    int? TravelSpeedUnit = ViewBag.TravelSpeed;
+    @Html.Hidden("TravelSpeedVal", TravelSpeedUnit);
+}
+<div class="err_formalName error invalid-feedback" style="display: block !important;"></div>
+<div class="col-lg-12 col-md-12 col-sm-12" id="div_config_general">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 second-vehicle">
+            <div class="row mb-2">
+                <div class="col-lg-6 col-md-6 col-sm-6">
+
+                    @for (int i = 0; i < firstRowSet; i++)
+                    {
+                        <div class="row mb-2">
+                            <div class="col-sm-3 col-md-3 col-lg-3 pr-0">
+                                @if (Model[i].DisplayString != "Formal Name")
+                                {
+                                    <label class="text-normal">
+                                        @Model[i].DisplayString
+                                        @if (Model[i].IsRequired == 1)
+                                        {
+                                            <span>*</span>
+                                        }
+                                    </label>
+                                }
+                                
+                            </div>
+                            <div class="col-sm-3 col-md-3 col-lg-5 input-field text-normal" style="white-space: nowrap" ;>
+                                @{
+                                    switch (Model[i].InputType)
+                                    {
+                                        case "TEXTBOX":
+                                            if (Model[i].DropDownList.Count == 0)
+                                            {
+                                                if (@Model[i].ParamModel == "Weight")
+                                                {
+                                                    if (@Model[i].IsRequired == 0 && Model[i].ParamValue == "0")
+                                                    {
+                                                        @Html.TextBox(Model[i].ParamModel, null, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "unit_text frmbdr pageKeyUpValidation",  @validationmsg = Model[i].ParamModel })
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.TextBox(Model[i].ParamModel, Model[i].ParamValue, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "unit_text frmbdr pageKeyUpValidation", @validationmsg = Model[i].ParamModel })
+                                                    }
+                                                }
+                                                else if (@Model[i].ParamModel == "Speed")
+                                                {
+                                                    if (@Model[i].IsRequired == 0 && Model[i].ParamValue == "0")
+                                                    {
+                                                        @Html.TextBox(Model[i].ParamModel, null, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "unit_text frmbdr", @validationmsg = Model[i].ParamModel })
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.TextBox(Model[i].ParamModel, Model[i].ParamValue, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "unit_text frmbdr", @validationmsg = Model[i].ParamModel })
+                                                    }
+                                                }
+                                                else if (@Model[i].ParamModel == "Formal Name")
+                                                {
+                                                    if (@Model[i].IsRequired == 0 && Model[i].ParamValue == "0")
+                                                    {
+                                                        @Html.TextBox(Model[i].ParamModel, null, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "unit_text frmbdr", @validationmsg = Model[i].ParamModel ,@style="display:none;"})
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.TextBox(Model[i].ParamModel, Model[i].ParamValue, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "unit_text frmbdr", @validationmsg = Model[i].ParamModel, @style = "display:none;" })
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (@Model[i].IsRequired == 0 && Model[i].ParamValue == "0")
+                                                    {
+                                                        @Html.TextBox(Model[i].ParamModel, null, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "frmbdr pageKeyUpValidation", @validationmsg = Model[i].ParamModel })
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.TextBox(Model[i].ParamModel, Model[i].ParamValue, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "frmbdr pageKeyUpValidation", @validationmsg = Model[i].ParamModel })
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (@Model[i].IsRequired == 0 && Model[i].ParamValue == "0")
+                                                {
+                                                    @Html.TextBox(Model[i].ParamModel, null, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "unit_text frmbdr pageKeyUpValidation", @validationmsg = Model[i].ParamModel })
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBox(Model[i].ParamModel, Model[i].ParamValue, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "unit_text frmbdr pageKeyUpValidation", @validationmsg = Model[i].ParamModel })
+                                                }
+                                            }
+                                            break;
+                                        case "TEXTAREA":
+                                            @Html.TextArea(Model[i].ParamModel, Model[i].ParamValue, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "frmbdr pageKeyUpValidation",  @validationmsg = Model[i].ParamModel })
+                                            break;
+                                        case "LABEL":
+                                            <span id="@Model[i].ParamModel" class="text-normal padd10 lblParam">@Model[i].ParamValue</span>
+                                            break;
+                                        case "CHECKBOX":
+                                            @Html.CheckBox(Model[i].ParamModel, Model[i].ParamValue)
+                                            break;
+                                        default:
+                                            @Html.TextBox(Model[i].ParamModel, Model[i].ParamValue, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "frmbdr pageKeyUpValidation",  @validationmsg = Model[i].ParamModel })
+                                            break;
+
+                                    }
+                                }
+
+                                @if (Model[i].DropDownList.Count > 0)
+                                {
+                                    if (unitValue == 692002 && Model[i].ParamModel == "Speed")
+                                    {
+                                        <label class="text-normal">mph</label>
+                                    }
+                                    else if (unitValue == 692001 && Model[i].ParamModel == "Speed")
+                                    {
+                                        <label class="text-normal">kph</label>
+                                    }
+                                    else if (unitValue == 692001)
+                                    {
+                                        <label class="text-normal">m</label>
+                                    }
+                                    else if (unitValue == 692002)
+                                    {
+                                        <label class="text-normal">ft</label>
+                                    }
+                                }
+
+                                else
+                                {
+                                    if (Model[i].ParamModel == "Weight" || Model[i].ParamModel == "AxleWeight" || Model[i].ParamModel == "TrainWeight")
+                                    {
+                                        <label class="text-normal">kg</label>
+                                    }
+                                }
+                                @if (Model[i].ParamModel == "Formal Name")
+                                {
+                                    <div class="error invalid-feedback" style="display: none !important;"></div>
+                                }
+                                else
+                                {
+                                    <div class="error invalid-feedback" style="display: block !important;"></div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6 col-sm-6 col-xs-12">
+
+                    @for (int i = firstRowSet; i < rowCount; i++)
+                    {
+                        <div class="row mb-2">
+                            <div class="col-sm-3 col-md-3 col-lg-3 pr-0">
+                                <label class="text-normal">
+                                    @Model[i].DisplayString
+                                    @if (Model[i].IsRequired == 1)
+                                    {
+                                        <span>*</span>
+                                    }
+                                </label>
+                            </div>
+                            <div class="col-sm-3 col-md-3 col-lg-3 input-field text-normal" style="white-space: nowrap;"
+>
+                                @{
+                                    switch (Model[i].InputType)
+                                    {
+                                        case "TEXTBOX":
+                                            if (Model[i].DropDownList.Count == 0)
+                                            {
+                                                if (@Model[i].ParamModel == "Weight")
+                                                {
+                                                    if (@Model[i].IsRequired == 0 && Model[i].ParamValue == "0")
+                                                    {
+                                                        @Html.TextBox(Model[i].ParamModel, null, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "unit_text frmbdr pageKeyUpValidation", @validationmsg = Model[i].ParamModel })
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.TextBox(Model[i].ParamModel, Model[i].ParamValue, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "unit_text frmbdr pageKeyUpValidation", @validationmsg = Model[i].ParamModel })
+                                                    }
+                                                }
+                                                else if (@Model[i].ParamModel == "Speed")
+                                                {
+                                                    if (@Model[i].IsRequired == 0 && Model[i].ParamValue == "0")
+                                                    {
+                                                        @Html.TextBox(Model[i].ParamModel, null, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "unit_text frmbdr", @validationmsg = Model[i].ParamModel })
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.TextBox(Model[i].ParamModel, Model[i].ParamValue, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "unit_text frmbdr", @validationmsg = Model[i].ParamModel })
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    if (@Model[i].IsRequired == 0 && Model[i].ParamValue == "0")
+                                                    {
+                                                        @Html.TextBox(Model[i].ParamModel, null, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "frmbdr pageKeyUpValidation", @validationmsg = Model[i].ParamModel })
+                                                    }
+                                                    else
+                                                    {
+                                                        @Html.TextBox(Model[i].ParamModel, Model[i].ParamValue, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "frmbdr pageKeyUpValidation",  @validationmsg = Model[i].ParamModel })
+                                                    }
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (@Model[i].IsRequired == 0 && Model[i].ParamValue == "0")
+                                                {
+                                                    @Html.TextBox(Model[i].ParamModel, null, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "unit_text frmbdr pageKeyUpValidation", @validationmsg = Model[i].ParamModel })
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBox(Model[i].ParamModel, Model[i].ParamValue, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "unit_text frmbdr pageKeyUpValidation", @validationmsg = Model[i].ParamModel })
+                                                }
+                                            }
+                                            break;
+                                        case "TEXTAREA":
+                                            @Html.TextArea(Model[i].ParamModel, Model[i].ParamValue, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "frmbdr pageKeyUpValidation", @validationmsg = Model[i].ParamModel })
+                                            break;
+                                        case "LABEL":
+                                            <span id="@Model[i].ParamModel" class="text-normal padd10 lblParam">@Model[i].ParamValue</span>
+                                            break;
+                                        case "CHECKBOX":
+                                            @Html.CheckBox(Model[i].ParamModel, Model[i].ParamValue)
+                                            break;
+                                        default:
+                                            @Html.TextBox(Model[i].ParamModel, Model[i].ParamValue, new { isrequired = @Model[i].IsRequired, datatype = @Model[i].ParamType, range = @Model[i].StrRange, maxlength = @Model[i].ParamMaxLength, @class = "frmbdr pageKeyUpValidation", @validationmsg = Model[i].ParamModel })
+                                            break;
+
+                                    }
+                                }
+
+                                @if (Model[i].DropDownList.Count > 0)
+                                {
+                                    //if(unitValue == 692002 && Model[i].ParamModel=="Speed")
+                                    //{
+                                    //<span class="spanunit">mph</span>
+                                    //}
+                                    //else if(unitValue == 692001 && Model[i].ParamModel=="Speed")
+                                    //{
+                                    //<span class="spanunit">kph</span>
+                                    //}
+                                    if (Model[i].ParamModel == "Speed")
+                                    {
+                                        @Html.DropDownList("SpeedUnits", (SelectList)(ViewBag.SpeedUnits), "Select", new { @id = "SpeedUnits", @class = "unit-travelspeed frmbdr" }) }
+                                    else if (unitValue == 692001)
+                                    {
+                                        <label class="text-normal">m</label>
+                                    }
+                                    else if (unitValue == 692002)
+                                    {
+                                        <label class="text-normal">ft</label>
+                                    }
+                                }
+
+                                else
+                                {
+                                    if (Model[i].ParamModel == "Weight" || Model[i].ParamModel == "AxleWeight" || @Model.VehicleParamList[i].ParamModel == "TrainWeight")
+                                    {
+                                        <label class="text-normal">kg</label>
+                                    }
+                                }
+                                <div class="error invalid-feedback" style="display: block !important;"></div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/CspJs/VehicleConfig/GeneralPage.js?V@(Session["ProjectVersion"])"></script>

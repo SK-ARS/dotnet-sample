@@ -1,0 +1,68 @@
+@using System.Web.Optimization
+@using STP.Domain
+@using PagedList.Mvc
+@using STP.Common.Constants 
+@{
+
+    int StartMonth = Convert.ToInt32(ViewBag.StartMonth);
+    int StartYear = Convert.ToInt32(ViewBag.StartYear);
+    @Html.Hidden("hdnStartMonth", StartMonth)
+    @Html.Hidden("hdnStartYear", StartYear)
+
+} 
+<div class="" id="structure_History_Pagination">
+    <div class="main-table" id="div_session_length_list">
+        <div id="div_tbl_grid" runat="server">
+            <table>
+                <tr>
+                    <th class="first-column-padding">@Resources.Resource.Date</th>
+                    <th>@Resources.Resource.EmailSent</th>
+                    <th>@Resources.Resource.FaxSent</th>
+                    <th>@Resources.Resource.InboxSent</th>
+                </tr>
+
+                @{
+                    decimal emailSent = 0;
+                    decimal faxSent = 0;
+                    decimal inboxSent = 0;
+                    bool recordStatus = false;
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="text-color1">@item.StartDate.ToString("dd/MM/yyyy")</td>
+                            <td class="text-color1">@((int)item.EmailSent)</td>
+                            <td class="text-color1">@((int)item.FaxSent)</td>
+                            <td class="text-color1">@((int)item.InboxSent)</td>
+                        </tr>
+
+                        emailSent = emailSent + @item.EmailSent;
+                        faxSent = faxSent + @item.FaxSent;
+                        inboxSent = inboxSent + @item.InboxSent;
+                        recordStatus = true;
+                    }
+                    if (recordStatus == true)
+                    {
+                        <tr>
+                            <td class="text-color1">@Resources.Resource.Total</td>
+                            <td class="text-color1">@((int)emailSent)</td>
+                            <td class="text-color1">@((int)faxSent)</td>
+                            <td class="text-color1">@((int)inboxSent)</td>
+                        </tr>
+                    }
+                }
+            </table> 
+            @if (ViewBag.TotalCount <= 0)
+            {
+                <div class="redcolor aligncenter">@Resources.Resource.NoRecordFound</div>
+            }
+        </div>
+        <div id="div_export_list">
+            @if (ViewBag.TotalCount > 0)
+            {
+                <button id="btnExport" class="btn outline-btn-primary SOAButtonHelper ml2">@Resources.Resource.Export</button>
+            }
+        </div> 
+    </div>
+</div>
+
+

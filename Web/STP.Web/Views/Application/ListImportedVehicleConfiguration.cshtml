@@ -1,0 +1,377 @@
+@using System.Web.Optimization
+@using STP.Domain.Applications
+@using STP.Domain
+@model List<STP.Domain.VehiclesAndFleets.Configuration.AppVehicleConfigList>
+@{
+    bool VR1Appl = false;
+    if (ViewBag.VR1Appl != null)
+    {
+        VR1Appl = ViewBag.VR1Appl;
+    }
+    var modelcnt = 0;
+    modelcnt = Model.Count;
+    bool IsCandidate = false;
+    if (ViewBag.IsCandidateModify != null)
+    {
+        IsCandidate = ViewBag.IsCandidateModify;
+    }
+}
+@Html.Hidden("ModelCntVeh", modelcnt)
+
+@Html.Hidden("VR1Appl", VR1Appl)
+@Html.Hidden("AmendVehicleId")
+<div class="VR1GeneralDetailsdiv" style="width:100% !important;">
+    <div class="row pt-4">
+        <input type="hidden" id="IsPrevMoveOpion" />
+        @{
+            if (ViewBag.IsCandidateModify == null || ViewBag.IsCandidateModify == true)
+            {
+                <div id="content-header">
+                    <div class="row mt-4">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                          
+                            <div class="row mt-4">
+
+                                <div class="col-lg-2 col-md-3 col-sm-6 col-xs-6 pr-1 button main-button" style="width: 13%;">
+                                    <button style="width: 95%;" class="btn btn-outline-primary btn-normal" role="button"
+                                            aria-pressed="true" id="btn-CreateNewVehicleConfiguration" >
+                                         CREATE NEW
+                                    </button>
+                                </div>
+
+
+                                <div class="col-lg-3 col-md-5 col-sm-8 col-xs-8 pr-1 button main-button" style="width: 28%;">
+                                    <button style="width: 100%;"class="btn btn-outline-primary btn-normal" role="button"
+                                            aria-pressed="true" id="btn-SelectCurrentMovementsVehicle" >
+                                            IMPORT FROM CURRENT MOVEMENT
+                                    </button>
+                                </div>
+
+                                <div class="col-lg-3 col-md-3 col-sm-6 col-xs-6 pr-1 button main-button" style="width: 28%;padding-left: 20px;">
+                                            <button class="btn btn-outline-primary btn-normal" role="button"
+                                                    aria-pressed="true" id="btn-SelectPrevtMovementsVehicle" >
+                                                IMPORT FROM PREVIOUS MOVEMENT
+                                            </button>
+                                </div>
+
+
+
+
+                            </div>
+
+
+                        </div>
+                    </div>
+                </div>
+            }
+            <div id="div_importdisplay">
+
+            </div>
+            <div id="div_vehicleDetails">
+                @if (Model.Count != 0)
+                {
+                    <div style="padding-top:20px;">
+                        @{
+                            if (ViewBag.SORTView == true)
+                            {
+                                <div class="cardSOA1 mt-0 ml-1 mb-4">
+                                    <h6 class="text-color3 stHeading1 m-0">Listed below, are the vehicle configurations haulier have defined for this application.</h6>
+                                </div>
+
+                            }
+                            else if (ViewBag.IsNotif == true)
+                            {
+                                <div class="cardSOA1 mt-0 ml-1 mb-4">
+                                    <h6 class="text-color3 stHeading1 m-0">Listed below, are the vehicle configurations you have defined for your movement.</h6>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="cardSOA1 mt-0 ml-1 mb-4">
+                                    <h6 class="text-color3 stHeading1 m-0">Listed below, are the vehicle configurations you have defined for your application.</h6>
+                                </div>
+
+                            }
+                        }
+                        <div class="pl-6 pr-3">
+                            <div class="new-vehicle">
+                                <div class="row mt-4 pr-8">
+                                    <div class="col-lg-5 col-md-3 col-sm-6" id="table-head">
+                                        <span style="color: #5C5C5C">Configuration</span>
+                                    </div>
+                                    <div class="col-lg-5 col-md-3 col-sm-6" id="table-head">
+                                        <span style="color: #5C5C5C">Route</span>
+                                    </div>
+                                </div>
+                                @foreach (var item in Model)
+                                {
+
+                                    <div class="row mt-4 pr-8">
+                                        @if (ViewBag.IsNEN == true)
+                                        {
+
+                                            <div class="vehiclename" data-id="@item.VehicleId"></div>
+                                            if (item.VehicleName == "")
+                                            {
+                                                <span class="link green" id="span1-NENViewConfiguration" data-VehicleId="@item.VehicleId" >  @item.VehicleDescription  </span>
+                                            }
+                                            else
+                                            {
+                                                <span class="link green" id="span2-NENViewConfiguration" data-VehicleId="@item.VehicleId" >  @item.VehicleName  </span>
+                                            }
+
+
+                                        }
+                                        else if (ViewBag.status == "")
+                                        {
+
+                                            <div class="vehiclename" data-id="@item.VehicleId"></div>
+                                            if (item.VehicleName == "")
+                                            {
+                                                @item.VehicleDescription
+                                            }
+                                            else
+                                            {
+                                                @item.VehicleName
+                                            }
+
+                                        }
+                                        else if (ViewBag.IsCandidateModify != null)
+                                        {
+                                            <div class="col-lg-5 col-md-3 col-sm-6" id="table-head">
+                                                <span>
+                                                    @foreach (var image in item.VehicleNameList)
+                                                    {
+                                                        var ImageName = "~/Content/images/Common/MasterPage/componet_icons/" + image + ".jpg";
+                                                        <img src="@Url.Content(ImageName)" style="mix-blend-mode: darken; flex: 33.33%;"
+                                                             alt="@image" title="@image">
+                                                    }
+                                                    <span class="details">@item.VehicleName</span>
+                                                </span>
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <span class="link green" id="span1-ViewVehicleSORT" data-VehicleId="@item.VehicleId" >@item.VehicleName</span>
+                                        }
+                                        <div class="col-lg-5 col-md-3 col-sm-6" id="table-head">
+                                            <span class="details hiddenmode"> @item.RoutePart </span>
+                                            <div class="editnmode" style="display:none;">
+                                                @{
+                                                    @Html.DropDownList("RouteParts", null, "Select", new { @id = "RoutePartsId" + @item.VehicleId, @class = "form-select text-normal select1 clsroutepartidchange" })
+                                                    @Html.DropDownList("RoutePartsType", null, "Select", new { @id = "RoutePartsIdType" + @item.VehicleId, @style = "display:none",  @class = "clsroutepartidchange" })
+                                                }
+                                            </div>
+                                        </div>
+                                        @if (ViewBag.SORTView == false)
+                                        {
+                                            <div class="col-lg-2 col-md-6 col-sm-12" id="table-head" style="justify-content: end;">
+                                                <span id="table-head" class="align-items-center pb-4">
+                                                    @if ((ViewBag.IsCandidateModify == null || ViewBag.IsCandidateModify == true) && (ViewBag.IsNEN != true))
+                                                    {
+                                                        <span class="pl-3 pr-3">
+                                                            <img src="~/Content/assets/images/Group 1016.svg" width="25" style="cursor: pointer;" alt="Copy Vehicle" title="Copy Vehicle" id="img-CloneVehicle" data-VehicleId="@item.VehicleId" data-VehicleName="'@item.VehicleName'"  >
+                                                        </span>
+                                                    }
+
+                                                    @if (ViewBag.IsCandidateModify == null || ViewBag.IsCandidateModify == true)
+                                                    {
+                                                        <span class="pl-3 pr-3" data-toggle="modal">
+                                                            <img src="~/Content/assets/images/edit-icon.svg" width="20" style="cursor: pointer;" alt="Edit Component" title="Edit Component" id="img-EditComponents" data-VehicleId="@item.VehicleId" >
+                                                        </span>
+                                                    }
+
+                                                    @if (ViewBag.IsCandidateModify == null || ViewBag.IsCandidateModify == true)
+                                                    {
+                                                        if (ViewBag.IsNotif == true)
+                                                        {
+                                                            if (ViewBag.AgreedSOCondn != 1 && ViewBag.IsNEN != true)
+                                                            {
+                                                                <span class="pl-3 pr-3">
+                                                                    <img src="~/Content/assets/images/delete-icon.svg" width="20" style="cursor: pointer;" alt="Remove Vehicle" title="Remove Vehicle" id="img-DeleteSelectedNotifComponent" data-VehicleId=" @item.VehicleId" data-VehicleName="'@item.VehicleName'">
+                                                                </span>
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="pl-3 pr-3">
+                                                                <img src="~/Content/assets/images/delete-icon.svg" width="20" style="cursor: pointer;" alt="Remove Vehicle" title="Remove Vehicle" id="img1-DeleteSelectedNotifComponent" data-VehicleId=" @item.VehicleId" data-VehicleName="'@item.VehicleName'" >
+                                                            </span>
+                                                        }
+
+                                                    }
+
+                                                    @if (ViewBag.AgreedSOCondn == 0 || ViewBag.IsCandidateModify != null)
+                                                    {
+                                                        <span class="pl-3" id="ViewVehicleDetails" data-vehicleId="@item.VehicleId" >
+                                                            <img id="chevlon-down-icon_@item.VehicleId" src="~/Content/assets/images/down-chevlon-filter.svg" style="cursor: pointer;" width="15">
+                                                            <img id="chevlon-up-icon_@item.VehicleId" src="~/Content/assets/images/up-chevlon-filter.svg" width="15" style="display: none; cursor: pointer;">
+                                                        </span>
+                                                    }
+                                                </span>
+                                            </div>
+
+                                        }
+                                    </div>
+                                    <div id="vehicle_Create_section">
+                                        <div id="viewcomponentdetails_@item.VehicleId" class="mb-2" style="display: none;">
+                                            @Html.Hidden("candidate_axle", true)
+                                            @{
+                                                Html.RenderAction("ViewConfigurationGeneral", "VehicleConfig", new { vehicleID = item.VehicleId, isNotif = true, flag = "CandidateVehicle", isSort = true });
+                                            }
+                                            @if ((ViewBag.IsCandidateModify == null) && (ViewBag.IsNEN != true))
+                                            {
+                                                <div>
+                                                    <button class="btn outline-btn-primary SOAButtonHelper mr-2 mb-2 tofleet" data-vname="@item.VehicleName" id="@item.VehicleId">Save to Fleet</button>
+                                                </div>
+                                                if (ViewBag.AgreedSOCondn != 0)
+                                                {
+                                                    <div>
+                                                        <button class="btn outline-btn-primary SOAButtonHelper mr-2 mb-2 AmendReg1" data-VehicleId="@item.VehicleId" id="@item.VehicleId">Amend</button>
+                                                    </div>
+                                                }
+                                            }
+
+                                        </div>
+                                    </div>
+                                    <div id="vehicle_Component_edit_section">
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        @{
+                            if (ViewBag.SORTView == false)
+                            {
+                                if (ViewBag.IsCandidateModify == null || ViewBag.IsCandidateModify == true)
+                                {
+                                    <div id="content-header">
+                                        <div class="row mt-4">
+                                            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                                <div class="row mt-4">
+                                                                            <div class="col-lg-4 col-md-3 col-sm-6 col-xs-6" style="cursor: pointer; width: 40%;">
+                                                                                <button type="button" id="copy"  class="btn outline-btn-primary SOAButtonHelper mr-2 mb-2 " aria-hidden="true">ASSIGN VEHICLES TO ROUTE PARTS</button>
+                                                                                <button id="btnfinishcopy" class="btn outline-btn-primary SOAButtonHelper mr-2 mb-2 " type="button" aria-hidden="true"> FINISH</button>
+
+                                                                            </div>
+                                                    `
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
+                    </div>
+                }
+                else
+                {
+                    if (ViewBag.IsNotif == true)
+                    {
+                        <h4 style="display: block;">Please add vehicle configurations in your notification. </h4>
+                    }
+                    else
+                    {
+                        <h4 style="display: block;" id="h4_blank_header_Veh">Please add vehicle configurations in your application. </h4>
+                        <br />
+                    }
+                }
+            </div>
+        }
+
+        @if ((ViewBag.IsCandidateModify == null || ViewBag.IsCandidateModify == true) && ViewBag.IsNEN != true)
+        {
+            <button id="btnnavigatenext" class="btn_save_general next btngrad btnrds btnbdr"  type="button" data-icon="" aria-hidden="true" >Next</button>
+        }
+
+    </div>
+</div>
+<!-- filter settings -->
+<div id="filters" class="sidenav filter-sidenav list-imp-vehicle-filter">
+    <div class="row sidenav-header">
+        <div class="col-10 col-md-10 col-sm-10" style="text-align: center; margin-top: 0.5rem;">
+            <span>
+                FILTER
+            </span>
+        </div>
+        <div class="col-2 col-md-2 col-sm-2 pl-0" style="position: none;">
+            <a href="javascript:void(0)" style="font-size: 40px; padding: 0px;" id="a-closeFilters" >&times;</a>
+        </div>
+    </div>
+    <hr style="margin-top: 0;">
+    <div class="sort-portal">
+        <div class="filter-list" id="filter_SORT">
+            @using (Ajax.BeginForm("SetSORTFilterAdvanced", "SORTApplication", new { }, new AjaxOptions { OnBegin = "OnBegin", OnSuccess = "OnSuccess", OnFailure = "OnFailure" }, new { @id = "frmFilterMoveInboxSORT" }))
+            {
+                <div id="SortInboxAdvFilter">
+                    @{
+                        Html.RenderAction("SORTInboxAdvancedFilter", "SORTApplication", new { IsPrevtMovementsVehicleRoute = ViewBag.IsPrevtMovementsVehicleRoute, IsPrevtMovementsVehicle = true });
+                    }
+                </div>
+                <div class="mt-4 mb-4 filter-entry" id="">
+                    <div class="row ml-5">
+                        <div class="col-lg-5 col-md-5 col-sm-12">
+                            <div class="button mr-0">
+                                <button class="btn btn-outline-primary btn-normal" id="btn-ClearAdvancedSORT" role="button" aria-pressed="true"
+                                        @*style="width:8rem"*@>
+                                    CLEAR
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-5 col-md-5 col-sm-12">
+                            <div class="button mr-0">
+                                <button class="btn btn-outline-primary btn-normal" type="submit" aria-pressed="true"
+                                        @*style="width:10rem"*@ id="btn-FillNormalFilter" >
+                                    SEARCH
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<!-- end of filter settings -->
+<style>
+   /* #banner-container {
+        color: black !important;
+    }*/
+
+    #generalDetailDiv th.table-soa {
+        padding: 0.5rem 1rem !important;
+        font-family: lato_medium;
+    }
+
+    #SortInboxPagination {
+        margin: auto;
+    }
+
+        #SortInboxPagination .active a {
+            color: white !important;
+        }
+
+        #SortInboxPagination a {
+            color: black !important;
+        }
+</style>
+
+@*@System.Web.Optimization.Scripts.Render("~/bundles/ListImportedVehicleConfiguration")*@
+@{
+<input type="hidden" value="@ViewBag.routecount" id="hf_routecount1" name="hf_routecount1" />
+<input type="hidden" value="@ViewBag.ApplRevId" id="hf_ApplRevId" name="hf_ApplRevId" />
+<input type="hidden" value="@ViewBag.ContentRefNo" id="hf_ContentRefNo" name="hf_ContentRefNo" />
+<input type="hidden" value="@ViewBag.IsCandidateModify" id="hf_IsCandidateModify" name="hf_IsCandidateModify" />
+<input type="hidden" value="@ViewBag.IsNotif" id="hf_IsNotif" name="hf_IsNotif" />
+<input type="hidden" value="@ViewBag.ApprevisionId" id="hf_ApprevisionId" name="hf_ApprevisionId" />
+<input type="hidden" value="@ViewBag.IsSort" id="hf_IsSort" name="hf_IsSort" />
+}
+@Html.Hidden("hf_IsCandidate", IsCandidate)
+<input type="hidden" value="@ViewBag.IsNotif" id="hf_IsNotif" name="hf_IsNotif" />
+@Html.Hidden("hf_sessionPageflag", Session["pageflag"])
+@Html.Hidden("hf_sessionRouteFlag", Session["RouteFlag"])
+@*<script src="~/Scripts/Application/ListImportedVehicleConfiguration.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/jQuery.vehicleConfig.List.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/vehicleConfig.Create.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Vehicle/VehicleConfig.Registration.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/jquery.unobtrusive-ajax.js?V@(Session["ProjectVersion"])"></script>*@

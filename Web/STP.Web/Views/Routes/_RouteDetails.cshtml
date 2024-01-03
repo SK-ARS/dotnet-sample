@@ -1,0 +1,57 @@
+@model STP.Domain.Routes.AppRouteList
+@{
+    var isAgreedNotif = false;
+    if (ViewBag.IsAgreedNotif != null)
+    {
+        isAgreedNotif = ViewBag.IsAgreedNotif;
+    }
+    int routeCount = ViewBag.RouteCount;
+    bool IsNotification = ViewBag.IsNotif!=null ?(bool)ViewBag.IsNotif:false;
+    var showSortableItems = Session["ShowSortableItems"] != null ? (bool)Session["ShowSortableItems"] : false;
+}
+
+@*New Route List*@
+@if (Model.RouteID > 0)
+{
+    
+<div class="row align-items-center  @(showSortableItems?"row-has-multiple":"")" id="@Model.RouteID">
+    <div class="col-md-3 col-lg-3">
+        <label class="route-name" style="@(showSortableItems?"cursor:move":"")">@Model.RouteName</label>
+    </div>
+    <div class="col-md-5 col-lg-5 mt-3 mb-3">
+        <div class="d-flex flex-column">
+            <div class="route-start">
+                @Model.FromAddress
+            </div>
+            <div class="route-end">
+                @Model.ToAddress
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 col-lg-4 text-center">
+        <div class="btn-group" role="group" aria-label="Route Summary Button Group">
+            @if (!Model.IsReturnRoute && !Model.HasReturnRoute && IsNotification) 
+            { 
+                <button class="btn btn-primary-group AddReturnRouteCLS" role="button" aria-pressed="true"
+                        data-routeid="@Model.RouteID" data-routename="@Model.RouteName.Replace("'", "\\'")" data-routetype="@Model.RouteType" title="Add Return Route">
+                    <i class="fa-solid fa-arrow-rotate-left"></i>
+                </button>
+            }
+            <button class="btn btn-primary-group EditRouteCLS" role="button" aria-pressed="true"
+                    data-routeid="@Model.RouteID" data-routename="@Model.RouteName.Replace("'", "\\'")" data-routetype="@Model.RouteType" title="View/Edit Route">
+                <i class="fa-regular fa-eye"></i>
+            </button>
+            <button class="btn btn-primary-group AddRouteLibCls" role="button" aria-pressed="true"
+                    data-routeid="@Model.RouteID" data-routename="@Model.RouteName.Replace("'", "\\'")" data-routetype="@Model.RouteType" title="Add Route to Library">
+                <i class="fa-regular fa-square-plus"></i>
+            </button>
+            <button class="btn btn-primary-group DeleteRouteCls" role="button" aria-pressed="true"
+                    data-routeid="@Model.RouteID" data-routename="@Model.RouteName.Replace("'", "\\'")" data-routetype="@Model.RouteType" title="Delete Route">
+                <i class="fa-regular fa-trash-can"></i>
+            </button>
+        </div>
+    </div>
+</div>
+}
+
+@*New Route List End*@

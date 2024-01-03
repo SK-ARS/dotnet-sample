@@ -1,0 +1,71 @@
+@using System.Web.Optimization
+@using STP.Domain
+@model STP.Domain.DocumentsAndContents.FeedbackDomain
+@{
+    int isAdmin = 0;
+    int userTypeID = 0;
+    bool isAdminbool = false;
+    int portalType = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        userTypeID = sessionValues.UserTypeId;
+        if (sessionValues.IsAdmin == 1)
+        {
+            isAdmin = 1;
+        }
+        portalType = sessionValues.UserTypeId;
+        if (portalType == 696006 || sessionValues.IsAdmin == 1)
+        {
+            isAdminbool = true;
+        }
+    }
+
+}
+
+<div class="modal-header pt-3 pb-3 pr-3 pl-3 pb-3s" style="display: contents;">
+    <div class="row" style="margin-top: -1rem;">
+        <div class="col-lg-9 col-sm-7 col-md-7 pl-4 pt-8">
+            <span class="text-normal pr-2"
+                  style="font-family: lato_light;font-size:25px;margin-top: -2rem;float: right;">
+                Feedback Details
+            </span>
+        </div>
+        <div class="col-lg-3 col-sm-5 col-md-5 pr-4">
+            <div style="justify-content: end;" id="table-head">
+                <span id="ClosePopup" aria-hidden="true" class="close pl-0 ml-2 pt-1"
+                      data-dismiss="modal" aria-label="Close" style="cursor:pointer;">&times;</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row pl-4 pr-4">
+    <div class="row pb-3">
+        <div class="col-lg-4 col-md-4 col-sm-4 text-normal">
+            Username
+        </div>
+        <div class="col-lg-8 col-md-8 col-sm-8">
+            @Model.FullName
+        </div>
+    </div>
+    <div class="row pb-3">
+        <div class="col-lg-4 col-md-4 col-sm-4 text-normal">
+            Feedback Type
+        </div>
+        <div class="col-lg-8 col-md-8 col-sm-8">
+            @Model.FeedbackTypeName
+        </div>
+    </div>
+    <div class="row pb-4">
+        <div class="col-lg-4 col-md-4 col-sm-4 text-normal">
+            Description
+        </div>
+        <div class="col-lg-8 col-md-8 col-sm-8">
+            @Model.Description
+        </div>
+    </div>
+</div>
+
+
+<script src="~/Scripts/CspJs/Feedback/ViewFeedbackPopup.js?V@(Session["ProjectVersion"])"></script>

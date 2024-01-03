@@ -1,0 +1,128 @@
+﻿@using System.Web.Optimization
+@model STP.Domain.MovementsAndNotifications.Movements.DispensationGridList
+@{
+    int userTypeID = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        userTypeID = sessionValues.UserTypeId;
+    }
+}
+
+<div id="desc-all-entr" class="col-lg-6 col-md-6 col-sm-12 dispensationwidth">
+    <div class="pb-3 wd-align">
+        <div class="text-normal wd50">
+            Dispensation Reference No (DRN)*
+        </div>
+        <div class="edit-normal wd50">
+            @Model.DispensationReferenceNo
+        </div>
+    </div>
+    @if (Model.GrossWeight > 0)
+    {
+        <div class="pb-3 wd-align">
+            <div class="text-normal wd50">
+                Gross Weight
+            </div>
+            <div class="edit-normal wd50">
+                @Model.GrossWeight  t
+            </div>
+        </div>
+    }
+    @if (Model.SignedAxleWeight > 0)
+    {
+        <div class="pb-3 wd-align">
+            <div class="text-normal wd50">
+                Signed Axle Weight
+            </div>
+            <div class="edit-normal wd50">
+                @Model.SignedAxleWeight  t
+            </div>
+        </div>
+    }
+    @if (Model.OverallLength > 0)
+    {
+        <div class="pb-3 wd-align">
+            <div class="text-normal wd50">
+                Overall Length
+            </div>
+            <div class="edit-normal wd50">
+                @Model.OverallLength m
+            </div>
+        </div>
+    }
+    @if (Model.Width > 0)
+    {
+        <div class="pb-3 wd-align">
+            <div class="text-normal wd50">
+                Width
+            </div>
+            <div class="edit-normal wd50">
+                @Model.Width m
+            </div>
+        </div>
+    }
+    @if (Model.Height > 0)
+    {
+        <div class="pb-3 wd-align">
+            <div class="text-normal wd50">
+                Height
+            </div>
+            <div class="edit-normal wd50">
+                @Model.Height m
+            </div>
+        </div>
+    }
+
+<div class="pb-3 wd-align">
+    <div class="text-normal wd50">
+        Valid From
+    </div>
+    <div class="wd50 edit-normal">
+        @Model.FromDate
+    </div>
+</div>
+<div class="pb-3 wd-align">
+    <div class="text-normal wd50">
+        Valid To
+    </div>
+    <div class="wd50 edit-normal">
+        @Model.ToDate
+    </div>
+</div>
+</div>
+<div id="desc-all-entr" class="col-lg-6 col-md-6 col-sm-12 dispensationwidth">
+    <div class="pb-3 wd-align">
+        <div class="text-normal wd30">
+            @if (userTypeID == 696001)
+            {
+                @Resources.Resource.IssuedbyList
+            }
+            else if (userTypeID == 696002 || userTypeID == 696007)
+            {
+                @Resources.Resource.Granteeby
+            }*
+        </div>
+        <div class="edit-normal wd70">
+            @Model.GrantedBy
+        </div>
+    </div>
+    <div class="pb-3 wd-align">
+        <div class="text-normal wd30">
+            Brief Description*
+        </div>
+        <div class="edit-normal wd70">
+            @Model.Summary
+        </div>
+    </div>
+    <div class="pb-3 wd-align">
+        <div class="text-normal wd30">
+            Description*
+        </div>
+        <div class="edit-normal wd70">
+            @Model.Description
+        </div>
+    </div>
+</div>
+
+@Html.Hidden("userTypeID", userTypeID)

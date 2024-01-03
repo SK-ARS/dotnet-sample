@@ -1,0 +1,401 @@
+
+@using PagedList.Mvc
+@model PagedList.IPagedList<STP.Domain.SecurityAndUsers.ContactListModel>
+
+@{
+    int pageNum = 10;
+    if (ViewBag.pageSize != null)
+    {
+        pageNum = ViewBag.pageSize;
+    }
+    bool isContact = false;
+    if (TempData["Iscontact"].ToString() == "1")
+    {
+        isContact = true;
+    }
+
+    ViewBag.Title = "ContactList";
+
+
+    if (!Request["lang"].IsEmpty())
+    {
+        Culture = UICulture = Request["lang"];
+    }
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+@{
+    Layout = null;
+}
+@{
+    int listCount = 0;
+
+    @Html.Hidden("listCount", listCount)
+    var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+    if (Session["UserInfo"] != null)
+    {
+        listCount = sessionValues.MaxListItem;
+
+    }
+}
+<style>
+    .sorticon {
+        filter: invert(100%);
+    }
+
+    .esdal-table > thead .sorting,
+    .esdal-table > thead .sorting_asc,
+    .esdal-table > thead .sorting_desc,
+    .esdal-table > thead .sorting_asc_disabled,
+    .esdal-table > thead .sorting_desc_disabled {
+        cursor: pointer;
+        position: relative;
+    }
+
+        .esdal-table > thead .sorting:before,
+        .esdal-table > thead .sorting:after,
+        .esdal-table > thead .sorting_asc:before,
+        .esdal-table > thead .sorting_asc:after,
+        .esdal-table > thead .sorting_desc:before,
+        .esdal-table > thead .sorting_desc:after,
+        .esdal-table > thead .sorting_asc_disabled:before,
+        .esdal-table > thead .sorting_asc_disabled:after,
+        .esdal-table > thead .sorting_desc_disabled:before,
+        .esdal-table > thead .sorting_desc_disabled:after {
+            position: absolute;
+            bottom: 1.7em;
+            display: block;
+            opacity: .3;
+        }
+
+        .esdal-table > thead .sorting:before,
+        .esdal-table > thead .sorting_asc:before,
+        .esdal-table > thead .sorting_desc:before,
+        .esdal-table > thead .sorting_asc_disabled:before,
+        .esdal-table > thead .sorting_desc_disabled:before {
+            right: 1em;
+            content: "↑";
+        }
+
+        .esdal-table > thead .sorting:after,
+        .esdal-table > thead .sorting_asc:after,
+        .esdal-table > thead .sorting_desc:after,
+        .esdal-table > thead .sorting_asc_disabled:after,
+        .esdal-table > thead .sorting_desc_disabled:after {
+            right: 0.5em;
+            content: "↓";
+        }
+
+        .esdal-table > thead .sorting_asc:before, .esdal-table > thead .sorting_desc:after {
+            opacity: 1;
+        }
+
+    .filtered-icon {
+        background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 90% #2b5795;
+        background-size: 1rem;
+    }
+
+    .esdal-filter-icon {
+        background: url('../../Content/assets/Icons/filtered.svg') no-repeat center 0 #2b5795;
+        background-size: 1rem;
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        position: absolute;
+        margin-left: 3px;
+    }
+</style>
+
+@Html.Hidden("listCount", listCount)
+
+<div id="contactDivPage" style="display:none;">
+    <table id="div_list" class="esdal-table" style="width: 100%;">
+        @Html.Hidden("pageSizeVal", pageNum)
+        @Html.Hidden("Isconview", isContact)
+
+        <thead>
+            <tr>
+                @*<th style="width: 20%;">Contact</th>*@
+
+                @*@if (TempData["Iscontact"].ToString() != "1")
+                    {*@
+                <th class="sorting" id="thOrganisation" @*style="width="15" height="6"*@>
+                    <span param="1"></span>Contact & Organisation
+
+                </th>
+                <th style="width: 20%;">Phone</th>
+                <th style="width: 20%;">Email</th>
+                <th @*style="width: 20%;"*@></th>
+                @*}*@
+
+
+
+
+
+                @if (TempData["Iscontact"].ToString() != "1")
+                {
+                    <th class="table-filter" id="filterAddressBook" style="width: 5%; background-color: white !important; "><img class="open-filter-icon-common" src="~/Content/assets/images/filter-icon.svg" title="Open filter" width="38"></th>
+                }
+                else
+                {
+                    <th class="table-filter" id="filterContatact" style="width: 5%; background-color: white !important; ">
+                        <img src="~/Content/assets/images/filter-icon.svg" class="open-filter-icon-common" title="Open filter" width="38"><span class="filtered-icon-table displayNone"><img id="filterimage" src="~/Content/assets/images/filtered-icon.svg" title="Clear filter" style="display:none"></span>
+
+                    </th>
+                }
+
+
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+
+                    <td class="text-color1">
+                        <a class="text-color2 text-decoration-link AnnotationName" ContactId="@item.ContactId" href="#" style="text-decoration:none">
+
+                            @item.Initials @item.FirstName @item.SurName
+                        </a>
+                        <br />
+                        @{
+                            var OtherOrgNames = item.OtherOrganisation;
+                            OtherOrgNames = OtherOrgNames.Replace("##", "<br />");
+                        }
+
+                        @Html.Raw(OtherOrgNames)
+
+                    </td>
+                    <td class="text-color1">
+                        @if (!string.IsNullOrEmpty(item.PhoneNumber))
+                        {
+                            <span class="mr-2"><img src="~/Content/assets/Icons/phone.svg" width="25"></span>
+                            @Html.DisplayFor(modelItem => item.PhoneNumber)
+                        }
+                    </td>
+                    <td class="text-color2">
+                        <a class="text-decoration-link" href="mailto:@item.Email" style="text-decoration:none" @*class="text-decoration-link" style="cursor:pointer;"*@>
+                            @Html.DisplayFor(modelItem => @item.Email)
+                        </a>
+                    </td>
+                    @if (TempData["Iscontact"].ToString() != "1")
+                    {
+                        <td colspan="2">
+                            <div id="mid_row">
+                                <span id="mid_row_data">
+                                    <button class="btn btn-primary btn-normal import-button ImportNotifContact" aria-hidden="true" title="Import contact" width="20" ContactId="@item.ContactId">
+                                        IMPORT CONTACT
+                                    </button>
+                                </span>
+                            </div>
+                        </td>
+                    }
+                    else
+
+                    {
+                        <td colspan="2"></td>
+
+                    }
+
+                </tr>
+            }
+
+        </tbody>
+    </table>
+    <div id="contactPagination">
+        <div class="bottom-pagination">
+
+            @if (@ViewBag.TotalCount > 0)
+            {
+                bool isconview = false;
+
+                if (TempData["Iscontact"].ToString() == "1")
+                {
+                    isconview = true;
+                }
+                if (listCount < @ViewBag.TotalCount)
+                {
+                    <div class="pagination" id="addressBookPaginator">
+
+                        @Html.PagedListPager(Model, page => Url.Action("ContactList",
+                                                new { page, isNotifContact = true, Iscontactview = isconview, sortOrder = ViewBag.sortOrder, sortType = ViewBag.sortType }), new PagedListRenderOptions
+                                                {
+                                                    DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                                                    DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                                                    LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                                                    LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                                                    DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                                                    DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                                                    MaximumPageNumbersToDisplay = 3,
+                                                    DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                                                    EllipsesFormat = "...",
+                                                    LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+                                                    LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+                                                })
+                    </div>
+                }
+            }
+
+            else
+            {
+                <div class="error invalid-feedback" style="display: block !important; text-align: center;">@Resources.Resource.NoRecordFound</div>
+            }
+        </div>
+
+    </div>
+    }
+
+    <div class="button mr-0 mb-2 mt-4">
+        @if (TempData["Iscontact"].ToString() != "1")
+        {
+            <button class="btn outline-btn-primary btn-normal" id="backToAffectedParties" role="button" aria-pressed="true" style="width: 10rem;float: right;">
+                BACK
+            </button>
+        }
+    </div>
+    <div id="dialogue">
+
+    </div>
+</div>
+<div id="contactDivPopup" style="height:0rem;">
+
+    @Html.Hidden("pageSizeVal", pageNum)
+    @Html.Hidden("Isconview", isContact)
+    <section id="banner">
+        <div class="container-fluid" id="banner-container">
+        </div>
+        <div class="modal" id="exampleModalCenterCnt" tabindex="-1" role="dialog"
+             aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content" style="width: inherit;height: auto;">
+                    <div class="modal-header pt-2" style="justify-content: end;">
+                        <span aria-hidden="true" class="close" data-dismiss="modal" aria-label="Close" style="cursor:pointer;" id="closeAnnotation">&times;</span>
+                    </div>
+                    <div class="modal-body pt-0">
+                        <div class="row mb-1 pb-3 pt-3">
+                            <span class="text-normal pr-2 text-align-center"
+                                  style="font-family: lato_light;font-size:25px;margin-top: -2rem;">
+                                CONTACT DIRECTORY
+                            </span>
+                        </div>
+                        <div class="pl-4 pr-4 pt-6 pb-6 ml-l2 mr-r2"
+                             style="background: linear-gradient(0deg, rgba(255, 255, 255, 1) 0%, rgba(201, 205, 229, 0.44) 100%);border-radius: 10px;">
+                            <div class="main-table">
+                                <table>
+
+                                    <tr>
+                                        <th>
+                                            Contact & Organisation<span>
+                                                <img src="assets/images/down-chevlon.svg"
+                                                     width="15" height="6">
+                                            </span>
+                                        </th>
+                                        <th>Phone</th>
+                                        <th>Email</th>
+                                        <th></th>
+                                        <th id="openAnnotationFilter" class="table-filter" style="width: 4%;">
+                                            <img src="~/Content/assets/images/filter-icon.svg" class="" title="Open filter" width="38">
+                                        </th>
+                                    </tr>
+                                    @foreach (var item in Model)
+                                    {
+                                        <tr>
+
+                                            <td class="text-color1">
+                                                <a class="text-color2 text-decoration-link AnnotationName" href="#" ContactId="@item.ContactId" style="text-decoration:none">
+
+                                                    @item.Initials @item.FirstName @item.SurName
+                                                </a>
+                                                <br />
+                                                @{
+                                                    var OtherOrgNames = item.OtherOrganisation;
+                                                    OtherOrgNames = OtherOrgNames.Replace("##", "<br />");
+                                                }
+
+                                                @Html.Raw(OtherOrgNames)
+
+                                            </td>
+                                            <td class="text-color1">
+                                                @if (!string.IsNullOrEmpty(item.PhoneNumber))
+                                                {
+                                                    <span class="mr-2"><img src="~/Content/assets/Icons/phone.svg" width="25"></span>
+                                                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                                                }
+                                            </td>
+                                            <td class="text-color2">
+                                                <a class="text-decoration-link" href="mailto:@item.Email" style="text-decoration:none" @*class="text-decoration-link" style="cursor:pointer;"*@>
+                                                    @Html.DisplayFor(modelItem => @item.Email)
+                                                </a>
+                                            </td>
+                                            <td colspan="2">
+                                                <div id="mid_row">
+                                                    <span id="mid_row_data">
+                                                        <button class="btn btn-primary btn-normal import-button ImportNotifContact" aria-hidden="true" title="Import contact" width="20" ContactId="@item.ContactId">
+                                                            IMPORT CONTACT
+                                                        </button>
+                                                    </span>
+                                                </div>
+                                            </td>
+
+                                        </tr>
+
+                                    }
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bottom-pagination pb-3">
+
+                        @if (@ViewBag.TotalCount > 0)
+                        {
+                            bool isconview = false;
+
+                            if (TempData["Iscontact"].ToString() == "1")
+                            {
+                                isconview = true;
+                            }
+                            <div class="pagination" id="addressBookPopupPaginator">
+                                @Html.PagedListPager(Model, page => Url.Action("ContactList",
+                                                  new { page, isNotifContact = true, Iscontactview = isconview, fromAnnotation = true }), new PagedListRenderOptions
+                                                  {
+                                                      DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                                                      DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                                                      LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                                                      LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                                                      DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                                                      DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                                                      MaximumPageNumbersToDisplay = 3,
+                                                      DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                                                      EllipsesFormat = "...",
+                                                      LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+                                                      LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+                                                  });
+                            </div>
+                        }
+
+                        else
+                        {
+                            <div class="error invalid-feedback" style="display: block !important; text-align: center; width:100% ; font-size: .875em !important;">@Resources.Resource.NoRecordFound</div>
+                        }
+                    </div>
+                    <div id="popupFilter">
+                    </div>
+                </div>
+            </div>
+
+            <!-- end of filter settings -->
+        </div>
+    </section>
+
+</div>
+
+@{
+<input type="hidden" value="@ViewBag.FromAnnotation" id="hf_FromAnnotation" name="hf_FromAnnotation" />
+<input type="hidden" value="@ViewBag.sortOrder" id="hf_sortOrder" name="hf_sortOrder" />
+<input type="hidden" value="@ViewBag.sortType" id="hf_sortType" name="hf_sortType" />
+}
+<input type="hidden" value="@ViewBag.page" id="hf_page" name="hf_page" />
+<input type="hidden" value="@ViewBag.pageSize" id="hf_pageSize" name="hf_pageSize" />
+
+<script src="~/Scripts/Annotation/ListAnnotationLibrary.js?V@(Session["ProjectVersion"])"></script>

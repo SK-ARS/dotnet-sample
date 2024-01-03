@@ -1,0 +1,718 @@
+﻿@model STP.Domain.RouteAssessment.XmlAnalysedStructures.AnalysedStructures
+@using STP.Domain.SecurityAndUsers
+@using STP.Common.Constants
+@{
+    Layout = null;
+    int AccessToALSAT = 0;
+    UserInfo SessionInfo = (UserInfo)Session["UserInfo"];
+    int userTypeId = SessionInfo.UserTypeId;
+    AccessToALSAT = SessionInfo.AccessToALSAT;
+    int orgId = (int)SessionInfo.OrganisationId;
+    bool IsPlanMovement = ViewBag.IsPlanMovement != null ? Convert.ToBoolean(ViewBag.IsPlanMovement) : false;
+    bool UnSuitableShowAllStructures = ViewBag.UnSuitableShowAllStructures != null ? Convert.ToBoolean(ViewBag.UnSuitableShowAllStructures) : false;
+    UnSuitableShowAllStructures = userTypeId == UserType.Sort || !IsPlanMovement ? !UnSuitableShowAllStructures : UnSuitableShowAllStructures;
+    bool UnSuitableShowAllCautions = ViewBag.UnSuitableShowAllCautions != null ? Convert.ToBoolean(ViewBag.UnSuitableShowAllCautions) : false;
+    UnSuitableShowAllCautions = userTypeId == UserType.Sort || !IsPlanMovement ? !UnSuitableShowAllCautions : UnSuitableShowAllCautions;
+    bool IsOverbridge = ViewBag.IsOverbridge != null ? Convert.ToBoolean(ViewBag.IsOverbridge) : false;
+    bool IsUnderbridge = ViewBag.IsUnderbridge != null ? Convert.ToBoolean(ViewBag.IsUnderbridge) : false;
+    bool IsLevelCrossing = ViewBag.IsLevelCrossing != null ? Convert.ToBoolean(ViewBag.IsLevelCrossing) : false;
+    bool IsAuthMove = ViewBag.IsAuthMove != null ? Convert.ToBoolean(ViewBag.IsAuthMove) : false;
+    var FilterByOrgID = ViewBag.FilterByOrgID != null ? Convert.ToInt32(ViewBag.FilterByOrgID) : 0;
+    bool ShowAllStruct = ViewBag.IsChecked != null ? Convert.ToBoolean(ViewBag.IsChecked) : false;
+    string afsry = "";
+}
+
+@{
+    var totalUnSuitableStructureCount = 0;
+    if (Model != null && Model.AnalysedStructuresPart != null && Model.AnalysedStructuresPart.Any())
+    {
+        int index = 0;
+        <div id='AffectedStructureXslt' class='mt-0 ml-0 mb-0'>
+            <div class="cardSOA1 mt-0" style="margin:0 !important">
+                <h6 class="text-color3 stHeading1 m-0">Select route part</h6>
+            </div>
+            <div class="c9p40Helper c9H1 pl-3">
+                <div id="dlfId" class="d-flex justify-content-between align-items-center my-4 ml-0">
+                    <div class="form-check">
+                        @foreach (var item in Model.AnalysedStructuresPart)
+                        {
+                            index++;
+                            var routediv = "routediv" + index;
+                            var routeId = item.Id;
+                            <div class="pb-2">
+                                <input type="hidden" class="@routediv" name="RoutePartId" value="@routeId" id="routePartId" />
+                                <input class="form-check-input route_select" data-routeid="@routeId" assesscheck="1" type="radio" id="routeRadio@(routeId)" name="route_select" value="@routediv">
+                                <label class="form-check-label" for="routeRadio@(routeId)">
+                                    <span class="text-highlight">
+                                        Route part @index
+                                    </span>
+                                    <span class="details1">
+                                        - @item.AnalysedStructuresPartName
+                                    </span>
+                                </label>
+                            </div>
+
+                        }
+                    </div>
+                    <button id="viewEdit_Route" class="btn btn-primary btn-normal me-3" style="display:none;" role="button" aria-pressed="true">
+                        VIEW/EDIT ROUTE
+                    </button>
+                </div>
+            </div>
+
+            @{
+                index = 0;
+                foreach (var item in Model.AnalysedStructuresPart)
+                {
+                    index++;
+                    var routediv = "routediv" + index;
+                    var routeId = item.Id;
+                    var StructureList = (item.Structure != null && item.Structure.Any()) ? item.Structure : new List<STP.Domain.RouteAssessment.XmlAnalysedStructures.Structure>
+                        ();
+                    if (IsOverbridge == false || IsUnderbridge == false || IsLevelCrossing == false)
+                    {
+                        if (IsOverbridge != false)
+                        {
+                            StructureList = StructureList.Where(x => x.TraversalType == "overbridge").ToList();
+                        }
+                        if (IsUnderbridge != false)
+                        {
+                            StructureList = StructureList.Where(x => x.TraversalType == "underbridge").ToList();
+                        }
+                        if (IsLevelCrossing != false)
+                        {
+                            StructureList = StructureList.Where(x => x.TraversalType == "level crossing").ToList();
+                        }
+                    }
+                    int structureCount = StructureList.Count;
+                    <div id="@routediv" class="routedivclass">
+                        <div class="cardSOA1 m-0 d-flex justify-content-between align-items-center">
+                            <h6 class="text-color3 stHeading1 m-0">
+                                <label class="form-check-label">
+                                    <span class="text-color3 stHeading1">
+                                        Route part @index
+                                    </span>
+                                    <span class="text-color3 stHeading1">
+                                        - @item.AnalysedStructuresPartName
+                                    </span>
+                                </label>
+                            </h6>
+                            @if (IsAuthMove == false)
+                            {
+                                var strCautions = (userTypeId == UserType.Sort || !IsPlanMovement) ? "Show unsuitable cautions" : "Show all cautions";
+                                var strStructures = (userTypeId == UserType.Sort || !IsPlanMovement) ? "Show unsuitable structures" : "Show all structures";
+                                <div id="" class="d-flex align-items-center">
+                                    <span class="details mt-2 pr-1">
+                                        @strCautions
+                                    </span>
+                                    <label class="switch" style="margin-right: 20px;">
+                                        <input type="checkbox" class="chk_UnSuitableShowAllCautions" @(UnSuitableShowAllCautions ? "checked" : "")>
+                                        <div class="slider round">
+                                            <span class="on">ON</span>
+                                            <span class="off">OFF</span>
+                                        </div>
+                                    </label>
+
+                                    <span class="details mt-2 pr-1">
+                                        @strStructures
+                                    </span>
+                                    <label class="switch">
+                                        <input type="checkbox" class="chk_UnSuitableShowAllStructures" @(UnSuitableShowAllStructures ? "checked" : "")>
+                                        <div class="slider round">
+                                            <span class="on">ON</span>
+                                            <span class="off">OFF</span>
+                                        </div>
+                                    </label>
+                                </div>
+
+                            }
+                        </div>
+
+                        <div class="main-table1" style="border-radius:25px 0px 0px 0px">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        @{
+                                            if (userTypeId == 696007)
+                                            {
+                                                var chk_SelectAll = "chk_SelectAll" + index;
+                                                <th style="width:14%" class="chk_SelectAll">
+                                                    <input type="checkbox" id="@chk_SelectAll" divid="@routediv" class="checkbox mr-2 affected-structure-select-unselect-all" name="submitted" value="submitted" width="20">
+                                                    <span class="text-normal"
+                                                          style="vertical-align: super;color:white">Select all</span>
+                                                </th>
+                                                <th></th>
+                                            }
+                                        }
+                                        <th>Structure</th>
+                                        <th style="text-align:center;width: 5%;">Type</th>
+                                        <th style="text-align:center;width: 5%;">Suitability</th>
+                                        <th style="text-align:center;width: 5%;">Caution</th>
+                                        @{
+                                            if (userTypeId == 696007 && AccessToALSAT == 1)
+                                            {
+                                                <th style="width:12%">Assessment Result</th>
+                                                <th style="width:7%">Remarks</th>
+                                            }
+                                            if (userTypeId != 696007 && userTypeId != 696002)
+                                            {
+                                                <th class="table-filter affected-structure-open-filter" style="width:10%;background-color: rgba(39, 87, 149, 0.1) !important;">
+                                                    <img src="../Content/assets/images/filter-icon.svg" width="38" />
+                                                </th>
+                                            }
+
+
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @{
+                                        string rv="";
+                                        if (StructureList != null && StructureList.Any())
+                                        {
+                                            rv = "routediv" + index;
+                                            if (routediv != "routediv1")
+                                            {
+                                                if (afsry == "")
+                                                {
+                                                    afsry = rv;
+                                                }
+                                                else
+                                                {
+                                                    afsry = afsry + "," + rv;
+                                                }
+
+                                            }
+                                            int structureNo = 0;
+                                            bool isStructDataExist = false;
+                                            foreach (var structure in StructureList)
+                                            {
+                                                if (FilterByOrgID != 0)
+                                                {
+                                                    var isSameOrg = structure.StructureResponsibility != null &&
+                                                        structure.StructureResponsibility.StructureResponsibleParty != null &&
+                                                        structure.StructureResponsibility.StructureResponsibleParty.Any(x => x.OrganisationId == FilterByOrgID);
+                                                    if (!isSameOrg)
+                                                    {
+                                                        continue;
+                                                    }
+                                                }
+
+                                                if (IsAuthMove && !ShowAllStruct)
+                                                {
+                                                    var isSameOrg = structure.StructureResponsibility != null &&
+                                                        structure.StructureResponsibility.StructureResponsibleParty != null &&
+                                                        structure.StructureResponsibility.StructureResponsibleParty.Any(x => x.OrganisationId == orgId);
+                                                    if (!isSameOrg)
+                                                    {
+                                                        continue;
+                                                    }
+                                                }
+
+                                                structureNo++;
+                                                int tdCount = 0;
+                                                isStructDataExist = true;
+                                                <tr id="StructureAssessment">
+                                                    @{
+                                                        if (userTypeId == 696007)
+                                                        {
+                                                            tdCount += 2;
+                                                            <td class="chk_SelectAll">
+                                                                @if (structure.StructureResponsibility != null && structure.StructureResponsibility.StructureResponsibleParty != null && structure.StructureResponsibility.StructureResponsibleParty.Any())
+                                                                {
+                                                                    if (structure.StructureResponsibility.StructureResponsibleParty.Any(x => x.OrganisationId == orgId) && structure.TraversalType == "underbridge")
+                                                                    {
+                                                                        <input type="checkbox" id="@(structure.ESRN + "_" + routeId)" name="struct_select" class="struct_select affected-structure-list-struct-ids"
+                                                                               structNo="@structureNo" ESRN="@structure.ESRN" routeId="@routeId"
+                                                                               sectionid="@structure.StructureSectionId" structCount="@structureCount" divId="@routediv" />
+                                                                    }
+                                                                }
+                                                            </td>
+                                                            <td>
+                                                                <div id="status_@(structure.ESRN + "_" + @routeId+"_"+@structure.StructureSectionId)">
+                                                                    <!--<img src="../Content/Images/Common/status_loading.gif" class="currently-loading"/>-->
+                                                                </div>
+                                                            </td>
+                                                        }
+                                                        tdCount += 4;
+                                                    }
+
+                                                    <td class="text-color1 pl-2">
+                                                        <input type="hidden" name="SectionId" value="@structure.StructureSectionId" />
+                                                        <a class="text-decoration-link affected-structure-display-structure-gent" ESRN="@structure.ESRN" routeid="@routeId" sectionid="@structure.StructureSectionId" title="View structure details">
+                                                            @structure.ESRN-
+                                                            @structure.StructureName
+                                                            <img src="~/Content/Images/spy-glass.svg" style="width: 22px;" />
+                                                        </a>
+                                                        <!--</a>-->
+                                                    </td>
+                                                    <td class="text-color1" style="text-align:center;">
+                                                        @if (structure.TraversalType == "underbridge")
+                                                        {
+                                                            <img src="../Content/assets/images/Group 1719.svg" title="Underbridge" width="30" />
+                                                        }
+                                                        else if (structure.TraversalType == "overbridge")
+                                                        {
+                                                            <img src="../Content/assets/images/Group 1716.svg" title="Overbridge" width="30" />
+                                                        }
+                                                        else if (structure.TraversalType == "level crossing")
+                                                        {
+                                                            <img src="../Content/assets/images/level-crossing.svg" title="Level Crossing" width="30" />
+                                                        }
+                                                    </td>
+                                                    <td class="text-color1" style="text-align:center;">
+                                                        @{
+                                                            if (structure.Appraisal != null && structure.Appraisal.Any())
+                                                            {
+                                                                var appraisal = structure.Appraisal.FirstOrDefault(x => x.AppraisalSuitability != null && x.AppraisalSuitability.Value != null);
+                                                                if (appraisal != null)
+                                                                {
+                                                                    if (appraisal.AppraisalSuitability.Value.ToLower() == IcaSuitability.Suitable)
+                                                                    {
+
+                                                                        <img src="../Content/assets/images/yes-icon.svg" title="Suitable" width="20" />
+                                                                        <span class="suitability true" id="suitableConstraint"></span>
+                                                                    }
+                                                                    else if (appraisal.AppraisalSuitability.Value.ToLower() == IcaSuitability.Unsuitable)
+                                                                    {
+                                                                        totalUnSuitableStructureCount++;
+
+                                                                        // var IsUnsuitableCautionExist=structure.AnalysedCautions != null && structure.AnalysedCautions.Any(c=> c != null && c.Vehicle!=null &&
+                                                                        //c.Vehicle.Any(y => y.ToLower().StartsWith("unsuitable") || y.ToLower().StartsWith("not specified")));
+
+                                                                        // if (appraisal.AppraisalSuitability.Value.ToLower() == "unsuitable")
+                                                                        //{
+                                                                        <img src="../Content/assets/images/no-icon.svg" title="Unsuitable" width="20" />
+                                                                        <span class="suitability false" id="unsuitableStructure"></span>
+                                                                        // }
+                                                                    }
+
+                                                                    else if (appraisal.AppraisalSuitability.Value.ToLower() == IcaSuitability.MariginalSuitable ||
+                                                                        appraisal.AppraisalSuitability.Value.ToLower() == IcaSuitability.MariginalSuit)
+                                                                    {
+                                                                        <span class="suitability question"></span>
+                                                                        <span style="font-size: 30px;" title="Marginally suitable">?</span>
+                                                                    }
+                                                                    else if (appraisal.AppraisalSuitability.Value.ToLower() == IcaSuitability.NotSpecified)
+                                                                    {
+                                                                        <img src="../Content/assets/images/yes-icon.svg" title="Suitable" width="20" />
+                                                                        <span class="suitability true" id="notspecifiedstructure"></span>
+                                                                        totalUnSuitableStructureCount++;
+                                                                    }
+                                                                    else if (appraisal.AppraisalSuitability.Value.ToLower() == IcaSuitability.NotStructureSpecified)
+                                                                    {
+                                                                        totalUnSuitableStructureCount++;
+                                                                    }
+                                                                    else if (appraisal.AppraisalSuitability.Value.ToLower() == IcaSuitability.NotApplicable ||
+                                                                            appraisal.AppraisalSuitability.Value.ToLower() == IcaSuitability.Sidebyside ||
+                                                                            appraisal.AppraisalSuitability.Value.ToLower() == IcaSuitability.MoreComponent ||
+                                                                            appraisal.AppraisalSuitability.Value.ToLower() == IcaSuitability.Minaxlespace ||
+                                                                            appraisal.AppraisalSuitability.Value.ToLower() == IcaSuitability.Svtrain ||
+                                                                            appraisal.AppraisalSuitability.Value.ToLower() == IcaSuitability.Stgocat1 ||
+                                                                            appraisal.AppraisalSuitability.Value.ToLower() == IcaSuitability.Axleweight ||
+                                                                            appraisal.AppraisalSuitability.Value.ToLower() == IcaSuitability.Axleweigthscreening ||
+                                                                            appraisal.AppraisalSuitability.Value.ToLower() == IcaSuitability.Structurewidth ||
+                                                                            appraisal.AppraisalSuitability.Value.ToLower() == IcaSuitability.Grossweight ||
+                                                                            appraisal.AppraisalSuitability.Value.ToLower() == IcaSuitability.Grossweightscreen ||
+                                                                            appraisal.AppraisalSuitability.Value.ToLower() == IcaSuitability.NotSvVehicle)
+                                                                    {
+                                                                        <span style="font-size: 30px; color:red;" title="@appraisal.AppraisalSuitability.Value">!</span>
+                                                                    }
+                                                                    
+                                                                }
+                                                            }
+                                                        }
+                                                    </td>
+
+                                                    <!--Caution-->
+                                                    <td style="text-align:center;">
+                                                        @if (structure.AnalysedCautions != null && structure.AnalysedCautions.Any())
+                                                        {
+                                                            <img class="btnOpenCautionDetails" data-target="CautionContainer_@structureNo" style="cursor:pointer;" src="/Content/assets/images/up-chevlon-filter.svg" width="20" title="Hide Caution">
+                                                        }
+                                                    </td>
+                                                    @if (userTypeId != 696007)
+                                                    {
+                                                        tdCount += 1;
+                                                        <td></td>
+                                                    }
+                                                    @if (userTypeId == 696007 && AccessToALSAT == 1)
+                                                    {
+                                                        if (structure.StructureResponsibility != null && structure.StructureResponsibility.StructureResponsibleParty != null &&
+                                                                        structure.StructureResponsibility.StructureResponsibleParty.Any())
+                                                        {
+                                                            var structureResponsibleParty = structure.StructureResponsibility.StructureResponsibleParty.FirstOrDefault();
+
+                                                            tdCount += 2;
+                                                            <td class="text-color1" style="text-align: center;">
+                                                                @if (structureResponsibleParty.OrganisationId == orgId)
+                                                                {
+                                                                    var resultStructure = structure.AlsatAppraisal != null ? structure.AlsatAppraisal.ResultStructure : "";
+                                                                    if (!string.IsNullOrEmpty(resultStructure))
+                                                                    {
+                                                                        var commentsForHaulier = structure.AlsatAppraisal != null ? structure.AlsatAppraisal.CommentsForHaulier : "";
+                                                                        if (!string.IsNullOrEmpty(commentsForHaulier))
+                                                                        {
+                                                                            <img src="../Content/Images/Common/ALSAT-note.png" /><text>&nbsp;&nbsp;</text>
+                                                                            <a class="text-decoration-link affected-structure-show-note-to-haulier"
+                                                                               hauliertext="@commentsForHaulier" ESRN="@structure.ESRN">
+                                                                                <u>@resultStructure</u>
+                                                                            </a>
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <span>@resultStructure</span>
+                                                                        }
+                                                                    }
+                                                                }
+                                                            </td>
+                                                            <td class="text-color1" style="text-align: center;" colspan="2">
+                                                                @if (structureResponsibleParty.OrganisationId == orgId)
+                                                                {
+                                                                    var assessmentComments = structure.AlsatAppraisal != null ? structure.AlsatAppraisal.AssessmentComments : "";
+                                                                    if (!string.IsNullOrEmpty(assessmentComments))
+                                                                    {
+                                                                        <a class="text-decoration-link affected-structure-view-assess-comment"
+                                                                           assesscomments="@assessmentComments" ESRN="@structure.ESRN">
+                                                                            View
+                                                                        </a>
+                                                                    }
+                                                                }
+                                                            </td>
+                                                        }
+                                                    }
+                                                </tr>
+                                                <!--Show cautions seperately-->
+                                                if (structure.AnalysedCautions != null && structure.AnalysedCautions.Any())
+                                                {
+                                                    <tr id="CautionContainer_@structureNo" class="no-background-tr">
+                                                        <td colspan="@tdCount" style="padding: 0;padding-left: 0px !important;">
+                                                            <div style="min-height: 150px; background-color: #e9e9e9; color: #000; padding: 25px 10px; line-height: 2;">
+                                                                @{
+                                                                    int cautionCount = 0;
+                                                                    foreach (var caution in structure.AnalysedCautions)
+                                                                    {
+                                                                        <div class="row">
+                                                                            <div class="col-md-6">
+                                                                                <div class="row">
+                                                                                    <div class="col-md-4 text-color3">
+                                                                                        Cautioned entity:
+                                                                                    </div>
+                                                                                    <div class="col-md-8">
+                                                                                        @if (caution != null)
+                                                                                        {
+                                                                                            <span>@(caution.Name)</span>
+                                                                                            if (caution != null && caution.CautionedEntity1 != null && caution.CautionedEntity1.AnalysedCautionStructureStructure != null)
+                                                                                            {
+                                                                                                <span>(@caution.CautionedEntity1.AnalysedCautionStructureStructure.Type)</span>
+                                                                                            }
+                                                                                            if (caution != null && caution.CautionedEntity1 != null && caution.CautionedEntity1.AnalysedCautionStructureStructure != null)
+                                                                                            {
+                                                                                                <span>(@caution.CautionedEntity1.AnalysedCautionStructureStructure.ESRN)</span>
+                                                                                            }
+                                                                                        }
+                                                                                    </div>
+                                                                                </div>
+                                                                                @if (caution != null && caution.ConstrainingAttribute != null && caution.ConstrainingAttribute.Any())
+                                                                                {
+                                                                                    <div class="row">
+                                                                                        <div class="col-md-4 text-color3">
+                                                                                            Constraining attribute:
+                                                                                        </div>
+                                                                                        <div class="col-md-8">
+                                                                                            @{
+                                                                                                var constrIndex = 0;
+                                                                                                foreach (var constr in caution.ConstrainingAttribute)
+                                                                                                {
+                                                                                                    if (constrIndex > 0)
+                                                                                                    {
+                                                                                                        <span>,</span>
+                                                                                                    }
+                                                                                                    constrIndex++;
+                                                                                                    <span>@constr</span>
+                                                                                                }
+                                                                                            }
+                                                                                        </div>
+                                                                                    </div>
+                                                                                }
+                                                                                @if (caution != null && caution.Road != null)
+                                                                                {
+                                                                                    <div class="row">
+                                                                                        <div class="col-md-4 text-color3">
+                                                                                            Affected roads:
+                                                                                        </div>
+                                                                                        <div class="col-md-8">
+                                                                                            @{
+                                                                                                if (!string.IsNullOrEmpty(caution.Road.Number))
+                                                                                                {
+                                                                                                    <span>@caution.Road.Number &nbsp;</span>
+                                                                                                }
+                                                                                                if (!string.IsNullOrEmpty(caution.Road.Name))
+                                                                                                {
+                                                                                                    <span>@caution.Road.Name</span>
+                                                                                                }
+                                                                                            }
+                                                                                        </div>
+                                                                                    </div>
+                                                                                }
+                                                                                @if (caution != null && caution.Conditions != null && caution.Conditions.MaxGrossWeight != null && caution.Conditions.MaxGrossWeight.Value != 0)
+                                                                                {
+                                                                                    <div class="row">
+                                                                                        <div class="col-md-4 text-color3">
+                                                                                            Gross weight:
+                                                                                        </div>
+                                                                                        <div class="col-md-8">
+                                                                                            <span>@caution.Conditions.MaxGrossWeight.Value</span> kg
+                                                                                        </div>
+                                                                                    </div>
+                                                                                }
+                                                                                @if (caution != null && caution.Conditions != null && caution.Conditions.MaxAxleWeight != null && caution.Conditions.MaxAxleWeight.Value != 0)
+                                                                                {
+                                                                                    <div class="row">
+                                                                                        <div class="col-md-4 text-color3">
+                                                                                            Axle weight:
+                                                                                        </div>
+                                                                                        <div class="col-md-8">
+                                                                                            <span>@caution.Conditions.MaxAxleWeight.Value</span> kg
+                                                                                        </div>
+                                                                                    </div>
+                                                                                }
+                                                                                @if (caution != null && caution.Contact != null && caution.Contact.Any())
+                                                                                {
+                                                                                    <div class="row">
+                                                                                        <div class="col-md-4 text-color3">
+                                                                                            Organisation:
+                                                                                        </div>
+                                                                                        <div class="col-md-8">
+                                                                                            @{
+                                                                                                if (!string.IsNullOrEmpty(caution.Road.Number))
+                                                                                                {
+                                                                                                    <span>@caution.Road.Number</span>
+                                                                                                }
+                                                                                            }
+                                                                                            @{
+                                                                                                var contactIndex = 0;
+                                                                                                foreach (var contact in caution.Contact)
+                                                                                                {
+                                                                                                    if (contactIndex > 0)
+                                                                                                    {
+                                                                                                        <span>,</span>
+                                                                                                    }
+                                                                                                    contactIndex++;
+                                                                                                    <a data-target="orgPopup_@(structureNo)_@contactIndex" class="btn_View_Org_Details_AffStr">@contact.OrganisationName</a>
+
+                                                                                                    <!--POP UP-->
+                                                                                                    <div id="orgPopup_@(structureNo)_@contactIndex" class="modal show" aria-modal="true" role="dialog" style="display: none;">
+                                                                                                        <div class="modal-dialog">
+
+                                                                                                            <div class="modal-content" style="width: 32rem;">
+                                                                                                                <div class="row soa-div-auth-move">
+                                                                                                                    <div class="orgPopupContent">
+                                                                                                                        <div class="row mt-2" id="table-head">
+                                                                                                                            <span class="text-normal pr-2" style="font-family: lato_light;font-size:25px;">
+                                                                                                                                Contact details
+                                                                                                                                <span id="spnclosemap" class="text-normal pr-1 CloseOrgPopup" data-target="orgPopup_@(structureNo)_@contactIndex" data-dismiss="modal" aria-label="Close" style="cursor: pointer; color: rgba(39, 87, 149, 1); font-size: 50px; float: right; margin-top: -23px; font-family: lato_light; height: 15px; margin-right: 10px;">
+                                                                                                                                    ×
+                                                                                                                                </span>
+                                                                                                                            </span>
+                                                                                                                        </div>
+                                                                                                                        <div class="modal-body" style="text-align: left;">
+                                                                                                                            <div class="row">
+                                                                                                                                <div class="col-md-4 text-color3">
+                                                                                                                                    Organisation name
+                                                                                                                                </div>
+                                                                                                                                <div class="col-md-8">
+                                                                                                                                    @{
+                                                                                                                                        <span>@contact.OrganisationName</span>
+                                                                                                                                    }
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row">
+                                                                                                                                <div class="col-md-4 text-color3">
+                                                                                                                                    Contact name
+                                                                                                                                </div>
+                                                                                                                                <div class="col-md-8">
+                                                                                                                                    @{
+                                                                                                                                        <span>@contact.FullName</span>
+                                                                                                                                    }
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row">
+                                                                                                                                <div class="col-md-4 text-color3">
+                                                                                                                                    Address
+                                                                                                                                </div>
+                                                                                                                                <div class="col-md-8">
+                                                                                                                                    @if (contact.Address != null && contact.Address.Line != null && contact.Address.Line.Any())
+                                                                                                                                    {
+                                                                                                                                        contact.Address.Line = contact.Address.Line.Where(s => !string.IsNullOrWhiteSpace(s)).Distinct().ToList();
+                                                                                                                                        <label>@string.Join(", ", contact.Address.Line)</label>
+                                                                                                                                    }
+
+                                                                                                                                </div>
+                                                                                                                            </div>
+
+                                                                                                                            <div class="row">
+                                                                                                                                <div class="col-md-4 text-color3">
+                                                                                                                                    Country
+                                                                                                                                </div>
+                                                                                                                                <div class="col-md-8">
+                                                                                                                                    @if (contact.Address != null)
+                                                                                                                                    {
+                                                                                                                                        if (!string.IsNullOrEmpty(contact.Address.Country.ToString()))
+                                                                                                                                        {<label>@string.Concat(char.ToUpper(contact.Address.Country.ToString()[0]), @contact.Address.Country.ToString().Substring(1))</label>}
+                                                                                                                                }
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                            <div class="row">
+                                                                                                                                <div class="col-md-4 text-color3">
+                                                                                                                                    Telephone
+                                                                                                                                </div>
+                                                                                                                                <div class="col-md-8">
+                                                                                                                                    @if (!string.IsNullOrWhiteSpace(contact.MobileNumber))
+                                                                                                                                    {
+                                                                                                                                        <label>@contact.MobileNumber</label>
+                                                                                                                                    }
+                                                                                                                                    else if (!string.IsNullOrWhiteSpace(contact.TelephoneNumber))
+                                                                                                                                    {
+                                                                                                                                        <label>@contact.TelephoneNumber</label>
+                                                                                                                                    }
+                                                                                                                                </div>
+                                                                                                                            </div>
+                                                                                                                        </div>
+
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                }
+                                                                                            }
+                                                                                        </div>
+                                                                                    </div>
+                                                                                }
+                                                                                @if (caution != null && caution.Vehicle != null &&
+                                                                                    caution.Vehicle.Any(x => x.StartsWith("Unsuitable")))
+                                                                                {
+                                                                                    <div class="row">
+                                                                                        <div class="col-md-4 text-color3">
+                                                                                            Affected vehicles:
+                                                                                        </div>
+                                                                                        <div class="col-md-8">
+                                                                                            @if (caution != null)
+                                                                                            {
+                                                                                                var textDisplay = string.Join(",", caution.Vehicle);
+                                                                                                if (!string.IsNullOrEmpty(textDisplay) && textDisplay.ToLower().Contains("unsuitable"))
+                                                                                                {
+                                                                                                    textDisplay = textDisplay.Replace("Unsuitable ", "<span class='text-colorred'>Unsuitable </span>");
+                                                                                                }
+                                                                                                //if (!string.IsNullOrEmpty(textDisplay) && textDisplay.ToLower().Contains("not specified") )
+                                                                                                //{
+                                                                                                //    textDisplay = textDisplay.Replace("Not Specified", "<span class='text-colorred'>Not Specified</span>");
+                                                                                                //}
+                                                                                                <span class="">@Html.Raw(textDisplay)</span>
+                                                                                            }
+                                                                                        </div>
+                                                                                    </div>
+                                                                                }
+                                                                            </div>
+                                                                            <div class="col-md-6">
+                                                                                @if (caution != null && caution.Action.SpecificAction != "" && !string.IsNullOrWhiteSpace(caution.Action.SpecificAction))
+                                                                                {
+                                                                                    <div class="row">
+                                                                                        <div class="col-md-12">
+                                                                                            <span class="text-color3">Specific action:</span><br />
+                                                                                            <span>@(caution.Action.SpecificAction)</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                }
+                                                                            </div>
+                                                                        </div>
+                                                                        if (cautionCount != structure.AnalysedCautions.Count - 1)
+                                                                        {
+                                                                            <hr />
+                                                                        }
+                                                                        cautionCount++;
+                                                                    }
+                                                                }
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                }
+                                            }
+
+                                            if (IsAuthMove && !isStructDataExist)
+                                            {
+                                                <tr>
+                                                    <td class="text-color1" colspan="8" style="text-align:center;">
+                                                        <span>No affected structures</span>
+                                                        <input type="hidden" id="hf_isStructDataExist" value="@isStructDataExist" />
+                                                    </td>
+                                                </tr>
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            <tr>
+                                                <td class="text-color1" colspan="5" style="text-align:center;">
+                                                    @if (userTypeId == 696001 && IsPlanMovement)
+                                                    {
+                                                        <span>No unsuitable affected structures or unsuitable/undefined affected cautions</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>No affected structures or affected cautions</span>
+                                                    }
+                                                </td>
+
+
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                }
+            }
+        </div>
+        <input type="hidden" id="hf_TotalStructureCount" value="@totalUnSuitableStructureCount" />
+    }
+    else
+    {
+        <div class="cardSOA1 mt-0" style="text-align:center;">
+            <h6 class="text-color3 stHeading1 m-0">No Affected Structures</h6>
+        </div>
+    }
+
+    <style>
+
+        .main-table1 tr:nth-child(odd) {
+            background-color: #f4f6fa !important;
+        }
+
+        .main-table1 tr:nth-child(even) {
+            background-color: #ffffff !important;
+        }
+
+        table .no-background-tr:not(:nth-child(odd)) ~ tr:nth-child(even) td {
+            background-color: #f4f6fa !important;
+        }
+
+        table .no-background-tr:not(:nth-child(odd)) ~ tr:nth-child(odd) td {
+            background-color: #fff !important;
+        }
+
+        table .no-background-tr:not(:nth-child(even)) ~ tr:nth-child(even) td {
+            background-color: #f4f6fa !important;
+        }
+
+        table .no-background-tr:not(:nth-child(even)) ~ tr:nth-child(odd) td {
+            background-color: #fff !important;
+        }
+    </style>
+}
+@{
+    @Html.Hidden("hf_AFStrArray", afsry)
+}

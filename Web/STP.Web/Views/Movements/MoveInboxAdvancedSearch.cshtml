@@ -1,0 +1,270 @@
+﻿@model STP.Domain.MovementsAndNotifications.Movements.MovementsInboxAdvancedFilter
+
+@{
+    int userType = ViewBag.UserType;
+    string selectedDelegation = "Select delegation";
+    if (ViewBag.Selecteddelegation != null)
+    {
+        selectedDelegation = ViewBag.Selecteddelegation;
+    }
+}
+@Html.Hidden("userType", userType)
+@Html.HiddenFor(m => m.FolderId, new { @id = "FolderID" })
+<style>
+    #div_movement_inbox_filter_advanced span {
+        color: #5C5C5C;
+        font-size: 15px;
+    }
+</style>
+
+@if (userType == 696007)
+{
+    <div class="row pb-3">
+        <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+            <span>@Resources.Resource.DelegateArrange</span>
+        </div>
+        <div class="col-lg-4 col-sm-4 col-md-4 mr-0">
+            <div class="pr-0 pl-0 mr-0 ml-0 mt-3 input-field">
+
+                @Html.DropDownListFor(m => m.ObjectDelegationList, ViewBag.Selecteddelegation as SelectList, "Select delegation", new { @id = "ObjectDelegationList", @class = "form-select mb-3 mr-0 mb-0" })
+
+            </div>
+        </div>
+        <div class="col-lg-5 col-sm-5 col-md-5 pr-0">
+        </div>
+    </div>
+    <div class="row pb-3  soa-portal">
+        <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+            <span>@Resources.Resource.ESDALStructRefNum</span>
+        </div>
+        <div class="col-lg-8 col-sm-8 col-md-8 pr-0">
+            <div class="pr-0 pl-0 mr-0 ml-0 mt-3 input-field">
+                @Html.TextBox("StructureReferenceNo", null, new { @class = "text-decorate", placeholder = @Resources.Resource.ESDALStructRefNum })
+            </div>
+        </div>
+    </div>
+    <br />
+    <div id="divSuitability" class="soa-portal">
+        <div class="row pb-3">
+            <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+                <span>Suitability</span>
+            </div>
+            <div class="col-lg-8 col-sm-8 col-md-8 pr-0">
+                <div class="row">
+                    <div class="col-lg-1 col-sm-1 col-md-1">
+                        @Html.CheckBox("Suitable", new { @class = "checkbox", @name = "Suitable", @id = "Suitable" })
+                    </div>
+                    <div style="margin-top: 3px;" class="col-lg-10 col-sm-10 col-md-10 pr-0">
+                        <img src="~/Content/assets/images/yes-icon.svg" width="20" title="Suitable">
+                        <span>Suitable</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-1 col-sm-1 col-md-1">
+                        @Html.CheckBox("UnSuitable", new { @class = "checkbox", @name = "UnSuitable", @id = "UnSuitable" })
+                    </div>
+                    <div style="margin-top: 3px;" class="col-lg-10 col-sm-10 col-md-10 pr-0">
+                        <img src="~/Content/assets/images/no-icon.svg" width="20" title="Unsuitable">
+                        <span>Not Suitable</span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-1 col-sm-1 col-md-1">
+                        @Html.CheckBox("MarginallySuitable", new { @class = "checkbox", @name = "MarginallySuitable", @id = "MarginallySuitable" })
+                    </div>
+                    <div style="margin-top: 3px;" class="col-lg-10 col-sm-10 col-md-10 pr-0">
+                        <span style="margin-right: 40px; font-size:20px;">?</span>
+                        <span>Marginally Suitable</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+}
+
+<div class="row pb-3">
+    <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+        <span>@Resources.Resource.Startpoint</span>
+    </div>
+    <div class="col-lg-8 col-sm-8 col-md-8 pr-0">
+        <div class="d-flex justify-content-start">
+            <div class="mr-2 input-field d-flex" style="flex :1 100%" ;>
+                @Html.TextBoxFor(m => m.StartPoint, null, new { @class = "text-decorate", placeholder = @Resources.Resource.Startpoint })
+            </div>
+            <div class="d-flex">
+                @Html.DropDownListFor(model => model.LogicOpr, new List<SelectListItem>
+                 {
+                    new SelectListItem{ Text="AND", Value = "1" },
+                    new SelectListItem{ Text="OR", Value = "2" },
+
+                 }, "-Select-", new { @class = "form-select mini-select ml-2", @style = "font-size:13px;" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row pb-3">
+    <div class="col-lg-3 col-sm-3 col-md-3 text-normal">
+        <span>@Resources.Resource.Endpoint</span>
+    </div>
+    <div class="col-lg-8 col-sm-8 col-md-8 pr-0">
+        <div class="d-flex justify-content-start">
+            <div class="mr-2 input-field d-flex" style="flex :1 100%" ;>
+                @Html.TextBoxFor(m => m.EndPoint, null, new { @class = "text-decorate", placeholder = @Resources.Resource.Endpoint })
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div id="VehicleFilterDiv" class="mb-3">
+    @Html.Hidden("QueryString")
+    @{
+        if (Model != null && Model.dynamicfilters != null && Model.dynamicfilters.Any()&& Model.QueryString!=null)
+        {
+            int count=0;
+            foreach (var item in Model.dynamicfilters)
+            {
+                var vehicleDimensionDOMSelected = item.SOAVehicleDimension;
+                var vehicledimensiontemp = (SelectList)(ViewBag.VehicleDimensionCount);
+                var OperatorCountDOMSelected = item.OperatorCount;
+                var OperatorDOMSelected = item.Operator;
+                var OperatorCounttemp = (SelectList)(ViewBag.OperatorCount);
+                //vehicledimensiontemp. = vehicleDimensionDOMSelected;
+
+                <div class="row pb-3 pt-2 VehicleFilter" id="VehicleFilterData">
+                    <div class="col-lg-3 col-sm-3 col-md-3">
+                            <select class="form-select measure-dropdown" id="SOAVehicleDimension" name="VehicleDimensionCount">
+                                @foreach (var itemdropdown in vehicledimensiontemp)
+                                {
+                                    var selected = vehicleDimensionDOMSelected == itemdropdown.Value ? "selected" : "";
+                                    <option @selected value="@itemdropdown.Value">
+
+                                        @itemdropdown.Text
+                                    </option>
+
+                                }
+
+                            </select>
+                        @*@Html.DropDownList("VehicleDimensionCount", vehicledimensiontemp, vehicleDimensionDOMSelected, new { @class = "form-select measure-dropdown", @id = "SOAVehicleDimension" })*@
+                    </div>
+                    <div class="col-lg-9 col-sm-9 col-md-9 mr-0">
+                        <div class="d-flex justify-content-between">
+                            <select class="form-select mb-3 mr-0 mb-0 Operator-count-range" style="overflow: scroll;" id="OperatorCount">
+                                @foreach (var itemdropdown in OperatorCounttemp)
+                                {
+                                    var selected = OperatorCountDOMSelected == itemdropdown.Value ? "selected" : "";
+                                    <option @selected value="@itemdropdown.Value">
+
+                                        @itemdropdown.Text
+                                    </option>
+
+                                }
+
+                            </select>
+                            @*@Html.DropDownList("OperatorCount", null, new { @class = "form-select mb-3 mr-0 mb-0 Operator-count-range", @style = "overflow: scroll;" })*@
+
+                        <div class="d-flex ml-2">
+                            <input class="isnumeric text-decorate edit-normal vehicletextbox" id="GrossWeight" name="GrossWeight" type="text" value="@item.GrossWeight" style=" padding-left: 0;">
+                            @*@Html.TextBoxFor(model => model.GrossWeight, null, new { @class = "isnumeric text-decorate edit-normal vehicletextbox" })*@
+                            <span class="text-normal pt-1 pl-1 gross_weightUnit">
+                               @(vehicleDimensionDOMSelected.ToLower().Contains("weight") ? "kg" : "m")
+                            </span>
+                        </div>
+                           @{ 
+                               var styleVal = OperatorCountDOMSelected == "between" ? "" : "display: none !important;";
+                           }
+                            <div class="text-normal pl-2 pr-2 pt-1 gross_weight1" style="@styleVal">
+                                <span>&</span>
+                            </div>
+                            <div class="d-flex pl-0 gross_weight1" style="@styleVal">
+                                <input class="isnumeric text-decorate edit-normal vehicletextbox1 gross_weight1" id="GrossWeight1" name="GrossWeight1" type="text" value="@item.GrossWeight1"  style=" padding-left: 0;">
+
+                                @*@Html.TextBoxFor(model => model.GrossWeight1, null, new { @class = "isnumeric text-decorate edit-normal gross_weight1 vehicletextbox1" })*@
+                                <span class="text-normal pt-1 pl-1 gross_weight1 gross_weight1Unit">
+                                    @(vehicleDimensionDOMSelected.ToLower().Contains("weight") ? "kg" : "m")
+                                </span>
+                            </div>
+                           
+                            <div class="d-flex">
+                                @{
+                                    var operatorList = new List<SelectListItem>{
+                                         new SelectListItem{ Text="Select", Value = "null" },
+                                         new SelectListItem{ Text="AND", Value = "1" },
+                                         new SelectListItem{ Text="OR", Value = "2" },
+
+                                      };
+                                }
+                                <select class="form-select mini-select ml-2 vehicleOperator" style="font-size: 13px;" id="Operator">
+                                    @foreach (var itemdropdowns in operatorList)
+                                    {
+                                        var selected = OperatorDOMSelected == itemdropdowns.Value ? "selected" : "";
+                                        <option @selected value="@itemdropdowns.Value">
+
+                                            @itemdropdowns.Text
+                                        </option>
+
+                                    }
+
+                                </select>
+                                @*@Html.DropDownListFor(model => model.Operator,
+
+                                           , "Select", new { @class = "form-select mini-select ml-2 vehicleOperator", @style = "font-size:13px;" })*@
+                            </div>
+                            <div class="d-flex">
+                                <span id="errormsg" class="error invalid-feedback" style="display:none;color:red;font-size:16px;">*</span>
+                            </div>
+                            <div class="d-flex">
+                                <a href="#" style="font-size: 19px;padding: 0px;@(count==0 && Model.dynamicfilters.Count>1?"display: none;":"")" id="AddOption">+</a>
+                                <a href="#" style="font-size: 19px; padding: 0px; @(count==0 && Model.dynamicfilters.Count==1?"display: none;":"")" id="RemoveOption">×</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                count++;
+            }
+        }
+        else
+        {
+            <div class="row pb-3 pt-2 VehicleFilter" id="VehicleFilterData">
+                <div class="col-lg-3 col-sm-3 col-md-3">
+                    @Html.DropDownList("VehicleDimensionCount", null, new { @class = "form-select measure-dropdown", @id = "SOAVehicleDimension" })
+                </div>
+                <div class="col-lg-9 col-sm-9 col-md-9 mr-0">
+                    <div class="d-flex justify-content-between">
+                        @Html.DropDownList("OperatorCount", null, new { @class = "form-select mb-3 mr-0 mb-0 Operator-count-range", @style = "overflow: scroll;" })
+
+                        <div class="d-flex ml-2">
+                            @Html.TextBoxFor(model => model.GrossWeight, null, new { @class = "isnumeric text-decorate edit-normal vehicletextbox", @style = "padding-left: 0;" })
+                            <span class="text-normal pt-1 pl-1 gross_weightUnit">kg</span>
+                        </div>
+                        <div class="text-normal pl-2 pr-2 pt-1 gross_weight1" style="display: none !important;">
+                            <span>&</span>
+                        </div>
+                        <div class="d-flex pl-0 gross_weight1" style="display: none !important;">
+                            @Html.TextBoxFor(model => model.GrossWeight1, null, new { @class = "isnumeric text-decorate edit-normal gross_weight1 vehicletextbox1", @style = "padding-left: 0;" })
+                            <span class="text-normal pt-1 pl-1 gross_weight1 gross_weight1Unit">kg</span>
+                        </div>
+                        <div class="d-flex">
+                            @Html.DropDownListFor(model => model.Operator, new List<SelectListItem>
+                                  {
+                                     new SelectListItem{ Text="AND", Value = "1" },
+                                     new SelectListItem{ Text="OR", Value = "2" },
+
+                                  }, "Select", new { @class = "form-select mini-select ml-2 vehicleOperator", @style = "font-size:13px;" })
+                        </div>
+                        <div class="d-flex">
+                            <span id="errormsg" class="error invalid-feedback" style="display:none;color:red;font-size:16px;">*</span>
+                        </div>
+                        <div class="d-flex">
+                            <a href="#" style="font-size: 19px;padding: 0px;" id="AddOption">+</a>
+                            <a href="#" style="font-size: 19px; padding: 0px; display: none;" id="RemoveOption">×</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+</div>

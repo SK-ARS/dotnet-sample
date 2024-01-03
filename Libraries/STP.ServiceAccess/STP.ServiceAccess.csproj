@@ -1,0 +1,246 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{1C96F0FF-3E7A-494E-811A-DD3D8731889D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>STP.ServiceAccess</RootNamespace>
+    <AssemblyName>STP.ServiceAccess</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.4.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.SignalR.Core.2.4.1\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.Owin.2.1.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Diagnostics, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.Owin.Diagnostics.2.1.0\lib\net40\Microsoft.Owin.Diagnostics.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Host.HttpListener, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.Owin.Host.HttpListener.2.1.0\lib\net45\Microsoft.Owin.Host.HttpListener.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Hosting, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.Owin.Hosting.2.1.0\lib\net45\Microsoft.Owin.Hosting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.Owin.Security.2.1.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Configuration.ConfigurationManager, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\System.Configuration.ConfigurationManager.6.0.0\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\System.Runtime.CompilerServices.Unsafe.4.5.2\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security" />
+    <Reference Include="System.Security.AccessControl, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\System.Security.AccessControl.6.0.0\lib\net461\System.Security.AccessControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Permissions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\System.Security.Permissions.6.0.0\lib\net461\System.Security.Permissions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.WebApi.Core.5.2.7\lib\net45\System.Web.Http.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Http.WebHost, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.WebApi.WebHost.5.2.7\lib\net45\System.Web.Http.WebHost.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Unity.Abstractions, Version=5.11.1.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Unity.Abstractions.5.11.1\lib\net47\Unity.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.AspNet.WebApi, Version=5.11.1.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Unity.AspNet.WebApi.5.11.1\lib\net47\Unity.AspNet.WebApi.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Container, Version=5.11.1.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Unity.Container.5.11.1\lib\net47\Unity.Container.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Mvc, Version=5.11.1.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\Unity.Mvc.5.11.1\lib\net47\Unity.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
+    </Reference>
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Applications\ApplicationService.cs" />
+    <Compile Include="Applications\IApplicationService.cs" />
+    <Compile Include="Applications\ISORTApplicationService.cs" />
+    <Compile Include="Applications\SORTApplicationService.cs" />
+    <Compile Include="App_Start\UnityConfig.cs" />
+    <Compile Include="App_Start\UnityMvcActivator.cs" />
+    <Compile Include="App_Start\UnityWebApiActivator.cs" />
+    <Compile Include="CommunicationsInterface\CommunicationsInterfaceService.cs" />
+    <Compile Include="CommunicationsInterface\ICommunicationsInterfaceService.cs" />
+    <Compile Include="DocumentsAndContents\ContentsService.cs" />
+    <Compile Include="DocumentsAndContents\ContactService.cs" />
+    <Compile Include="DocumentsAndContents\DocumentService.cs" />
+    <Compile Include="DocumentsAndContents\FeedbackService.cs" />
+    <Compile Include="DocumentsAndContents\IContactService.cs" />
+    <Compile Include="DocumentsAndContents\IDocumentService.cs" />
+    <Compile Include="DocumentsAndContents\IFeedbackService.cs" />
+    <Compile Include="DocumentsAndContents\IInformationService.cs" />
+    <Compile Include="DocumentsAndContents\InformationService.cs" />
+    <Compile Include="DocumentsAndContents\INotificationDocService.cs" />
+    <Compile Include="DocumentsAndContents\ISORTDocumentService.cs" />
+    <Compile Include="DocumentsAndContents\NotificationDocService.cs" />
+    <Compile Include="DocumentsAndContents\SORTDocumentService.cs" />
+    <Compile Include="HelpdeskTools\DistributionStatusService.cs" />
+    <Compile Include="HelpdeskTools\HolidaysService.cs" />
+    <Compile Include="HelpdeskTools\IDistributionStatusService.cs" />
+    <Compile Include="HelpdeskTools\IHolidaysService.cs" />
+    <Compile Include="DocumentsAndContents\IContentsService.cs" />
+    <Compile Include="LoggingAndReporting\AuditLogService.cs" />
+    <Compile Include="LoggingAndReporting\IAuditLogService.cs" />
+    <Compile Include="LoggingAndReporting\ILoggingService.cs" />
+    <Compile Include="LoggingAndReporting\IReportService.cs" />
+    <Compile Include="LoggingAndReporting\LoggingService.cs" />
+    <Compile Include="LoggingAndReporting\ReportService.cs" />
+    <Compile Include="MovementsAndNotifications\DispensationService.cs" />
+    <Compile Include="MovementsAndNotifications\GenericService.cs" />
+    <Compile Include="MovementsAndNotifications\IDispensationService.cs" />
+    <Compile Include="MovementsAndNotifications\IGenericService.cs" />
+    <Compile Include="MovementsAndNotifications\IManageFolderService.cs" />
+    <Compile Include="MovementsAndNotifications\IMovementsService.cs" />
+    <Compile Include="MovementsAndNotifications\INENNotificationService.cs" />
+    <Compile Include="MovementsAndNotifications\INotificationService.cs" />
+    <Compile Include="MovementsAndNotifications\ManageFolderService.cs" />
+    <Compile Include="MovementsAndNotifications\MovementsService.cs" />
+    <Compile Include="MovementsAndNotifications\NENNotificationService.cs" />
+    <Compile Include="MovementsAndNotifications\NotificationService.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RoadNetwork\ConstraintService.cs" />
+    <Compile Include="RoadNetwork\IConstraintService.cs" />
+    <Compile Include="RoadNetwork\IRoadDelegationService.cs" />
+    <Compile Include="RoadNetwork\IRoadOwnershipService.cs" />
+    <Compile Include="RoadNetwork\RoadDelegationService.cs" />
+    <Compile Include="RoadNetwork\RoadOwnershipService.cs" />
+    <Compile Include="RouteAssessment\IRouteAssessmentService.cs" />
+    <Compile Include="RouteAssessment\RouteAssessmentService.cs" />
+    <Compile Include="RoutePlannerInterface\IRoutePlannerInterfaceService.cs" />
+    <Compile Include="RoutePlannerInterface\RoutePlannerInterfaceService.cs" />
+    <Compile Include="Routes\IQasService.cs" />
+    <Compile Include="Routes\IRoutesService.cs" />
+    <Compile Include="Routes\QasService.cs" />
+    <Compile Include="Routes\RoutesService.cs" />
+    <Compile Include="SecurityAndUsers\AuthenticationService.cs" />
+    <Compile Include="SecurityAndUsers\IAuthenticationService.cs" />
+    <Compile Include="SecurityAndUsers\IOrganizationService.cs" />
+    <Compile Include="SecurityAndUsers\IUserService.cs" />
+    <Compile Include="SecurityAndUsers\OrganizationServices.cs" />
+    <Compile Include="SecurityAndUsers\UserService.cs" />
+    <Compile Include="SignalR\NewsHub.cs" />
+    <Compile Include="App_Start\UnityHubActivator.cs" />
+    <Compile Include="Structures\IStructureDeligationService.cs" />
+    <Compile Include="Structures\IStructuresService.cs" />
+    <Compile Include="Structures\StructureDeligationService.cs" />
+    <Compile Include="Structures\StructuresService.cs" />
+    <Compile Include="StructureUpdates\IStructureUpdateService.cs" />
+    <Compile Include="StructureUpdates\StructureUpdateService.cs" />
+    <Compile Include="VehiclesAndFleets\IVehicleComponentService.cs" />
+    <Compile Include="VehiclesAndFleets\IVehicleConfigService.cs" />
+    <Compile Include="VehiclesAndFleets\VehicleComponentService.cs" />
+    <Compile Include="VehiclesAndFleets\VehicleConfigService.cs" />
+    <Compile Include="Workflows\ApplicationsNotifications\ApplicationNotificationWorkflowService.cs" />
+    <Compile Include="Workflows\ApplicationsNotifications\IApplicationNotificationWorkflowService.cs" />
+    <Compile Include="Workflows\FleetManagement\FleetManagementWorkflowService.cs" />
+    <Compile Include="Workflows\FleetManagement\IFleetManagementWorkflowService.cs" />
+    <Compile Include="Workflows\IWorkflowService.cs" />
+    <Compile Include="Workflows\SOAPoliceNotification\SOAPoliceWorkflowService.cs" />
+    <Compile Include="Workflows\SOAPoliceNotification\ISOAPoliceWorkflowService.cs" />
+    <Compile Include="Workflows\SORTSOProcessing\ISORTSOProcessingService.cs" />
+    <Compile Include="Workflows\SORTSOProcessing\SORTSOProcessingService.cs" />
+    <Compile Include="Workflows\SORTVR1Processing\ISORTVR1ProcessingService.cs" />
+    <Compile Include="Workflows\SORTVR1Processing\SORTVR1ProcessingService.cs" />
+    <Compile Include="Workflows\WorkflowService.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\STP.Common\STP.Common.csproj">
+      <Project>{001eb1f6-da74-4342-841a-9d7856a1ed94}</Project>
+      <Name>STP.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\STP.Domain\STP.Domain.csproj">
+      <Project>{7084ece6-a17f-41b1-9a8a-c199c98e48c8}</Project>
+      <Name>STP.Domain</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

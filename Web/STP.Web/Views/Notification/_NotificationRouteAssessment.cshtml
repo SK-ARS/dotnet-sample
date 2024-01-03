@@ -1,0 +1,88 @@
+@using STP.Domain.VehiclesAndFleets.Configuration;
+@using STP.Domain.Workflow
+@{
+    var payLoad = new PlanMvmntPayLoad();
+    var MovementTypeClass = new VehicleMovementType();
+    if (ViewBag.payloadData != null)
+    {
+        payLoad = (PlanMvmntPayLoad)ViewBag.payloadData;
+        MovementTypeClass = (VehicleMovementType)payLoad.MvmntType;
+    }
+    string notif = Convert.ToString(Session["notivso"]);
+    int VSOType = 0;
+
+    if (MovementTypeClass != null)
+    {
+        if (notif != "")
+        {
+            if (notif == "267003")
+            {
+                VSOType = (int)STP.Common.Enums.VSOType.soapolice;// "267003";// "soapolice";
+            }
+            else if (notif == "267001")
+            {
+                VSOType = (int)STP.Common.Enums.VSOType.soa;//"267001";// "soa"
+            }
+            else if (notif == "267002")
+            {
+                VSOType = (int)STP.Common.Enums.VSOType.police;//"267002";// "police";
+            }
+
+        }
+        else
+        {
+            if (MovementTypeClass.SOANoticePeriod != 0 && MovementTypeClass.PoliceNoticePeriod != 0)
+            {
+                VSOType = (int)STP.Common.Enums.VSOType.soapolice;// "267003";// "soapolice";
+            }
+            else if (MovementTypeClass.SOANoticePeriod != 0)
+            {
+                VSOType = (int)STP.Common.Enums.VSOType.soa;//"267001";// "soa"
+            }
+            else if (MovementTypeClass.PoliceNoticePeriod != 0)
+            {
+                VSOType = (int)STP.Common.Enums.VSOType.police;//"267002";// "police";
+            }
+            else if (MovementTypeClass.MovementType == 207003 && MovementTypeClass.VehicleClass == 241001)
+            {
+                VSOType = (int)STP.Common.Enums.VSOType.soapolice;// "267003";// "soapolice";
+            }
+        }
+    }
+}
+@Html.Hidden("hdnGranter_ID")
+@Html.Hidden("hdnGrantor_Org")
+<div class="main-sort-content" style="background-color: white;">
+    <div class="tab_content1" id="leftpanel1">
+    </div>
+</div>
+
+<style>
+    .vehicle-setting .card {
+        background-color: white;
+        width: 100%;
+        height: 100%;
+        margin: -1rem 0rem 0rem 0rem;
+        border: none;
+        text-align: left;
+    }
+
+    .vehicle-setting td {
+        text-align: left;
+    }
+
+    .sidebar-soa-Helper {
+        padding: 0;
+    }
+
+    #routeNotifBody .details {
+        font-family: lato_medium, Arial;
+        font-size: 15px !important;
+    }
+</style>
+@Html.Hidden("hf_VSOType", VSOType)
+@Html.Hidden("hf_ContenRefNo", payLoad.ContenRefNo)
+@Html.Hidden("hf_NotificationId", payLoad.NotificationId)
+@Html.Hidden("hf_AnalysisId", payLoad.AnalysisId)
+@Html.Hidden("hf_IsRenotify", payLoad.IsRenotify)
+@Html.Hidden("hf_PeviousContactName", payLoad.PreviousContactName)

@@ -1,0 +1,371 @@
+@{
+    Layout = null;
+}
+@using System.Web.Optimization
+@using STP.Domain
+@using PagedList.Mvc
+@model  PagedList.IPagedList<STP.Domain.SecurityAndUsers.OrganizationGridList>
+@{
+    int listCount = 0;
+    listCount = (int)Session["PageSize"];
+    int isAdmin = 0;
+    int userTypeID = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        userTypeID = sessionValues.UserTypeId;
+        if (sessionValues.IsAdmin == 1)
+        {
+            isAdmin = 1;
+        }
+    }
+
+    bool createSuccess = false;
+    if (ViewBag.saveMsg != null)
+    {
+        createSuccess = true;
+    }
+
+    bool isAccessible = false;
+    if (isAdmin == 1 && userTypeID == 696006)
+    {
+        isAccessible = true;
+    }
+
+    string SearchString = ViewBag.OrgSearchString;
+    string SearchOrganisation = ViewBag.OrgSearchCode;
+
+    int pageSize = 10;
+    if (ViewBag.pageSize != null)
+    {
+        pageSize = ViewBag.pageSize;
+    }
+    //int pageSize = 0;
+    int? pageNum = ViewBag.page;
+    int totalPageCount = Model.PageCount;
+    string strSORT = ViewBag.SORT;
+    @Html.Hidden("pageSizeVal", pageSize)
+    @Html.Hidden("pageNum", pageNum)
+    @Html.Hidden("txtSORT", strSORT)
+    @Html.Hidden("hdnSearchString", SearchString)
+    @Html.Hidden("CreateAlert", createSuccess)
+}
+@Html.Hidden("TotalPages", totalPageCount)
+<style>
+    #ui-id-1 {
+        width: 25% !important;
+        top: 24% !important;
+        left: 74% !important;
+        position: fixed !important;
+    }
+
+    .movements td:nth-child(1) {
+        text-align: left;
+    }
+
+    .filter-table-icon {
+        position: absolute;
+        bottom: -13px;
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+        left: 50px;
+    }
+
+    .filter-table-icons {
+        position: absolute;
+        bottom: -13px;
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+        left: 19px;
+    }
+    .org-table-header:hover {
+        background-color: white;
+        color: rgba(39, 87, 149, 1);
+    }
+    /*   #manage-user th:nth-child(1) span {
+        padding-left: 14px !important;
+    }*/
+</style>
+
+@{
+    var sortOrder = ViewBag.SortOrder != null ? (int)ViewBag.SortOrder : 1;//1-orgid
+    var sortType = ViewBag.SortType != null ? (int)ViewBag.SortType : 0;//0-asc
+    var isNameFilterEnabled = !string.IsNullOrEmpty(SearchString);
+    var isOrganisationCodeFilterEnabled = !string.IsNullOrEmpty(SearchOrganisation);
+    var isAllFilterEnabled = isNameFilterEnabled || isOrganisationCodeFilterEnabled;
+}
+
+<div id="main-organisation-list-filter">
+    <div class="header" id="organisationheader">
+        <div class="row mt-4">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+                <span id="list_heading" class="title">Select Existing Organisations</span>
+            </div>
+        </div>
+    </div>
+    <div class="main-table movements" id="manage-user">
+        <table class="esdal-table organisation-table">
+            <thead>
+                <tr>
+                    @*Above line commented based on HE-5016*@
+                    @if (ViewBag.SORT != "SORTSO")
+                    {
+                        <th class="org-table-header">
+                            <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,1)" data-action="SortOrganisationList" data-sortval="1">OrgID  </span>
+                        </th>
+                    }
+                    <th>
+                        <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,3)" data-action="SortOrganisationList" data-sortval="3">Code </span>
+                        <span class="filter-table-icons" style="left:45px"><img id="filterimagecode" style="display:@(isOrganisationCodeFilterEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                    </th>
+
+                    <th>
+                        <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,2)" data-action="SortOrganisationList" data-sortval="2">Name  </span>
+                        <span class="filter-table-icons"><img id="filterimagename" style="display:@(isNameFilterEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                    </th>
+                    @if (ViewBag.SORT != "SORTSO")
+                    {
+                <th> <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,4)" data-action="SortOrganisationList" data-sortval="4">Type </span></th>
+                        <th>Phone</th>
+                        <th style="width:20%">Web</th>
+                        <th style="width:20%">Address</th>
+                    }
+                    @if (ViewBag.SORT == "SORTSO")
+                    {
+                        <th></th>
+                    }
+                    <th class="table-filter" style="width: 5%;">
+                        <img id="btnopen" src="~/Content/assets/images/filter-icon.svg" class="open-filter-icon-common" data-targetContainer=".organisation-filter" data-width="400" title="Open filter"
+                             width="38">
+                        <span class="filtered-icon-table "><img id="filterimage" style="display:@(isAllFilterEnabled?"block":"none")" src="~/Content/assets/images/filtered-icon.svg" title="Clear filter"></span>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Count == 0)
+                {
+                    <tr>
+                        @if (ViewBag.SORT != "SORTSO")
+                        {
+                            <td colspan="7" style="text-align: center">
+                                <span style="color: red">@Resources.Resource.NoRecordFound</span>
+                            </td>
+                        }
+                        else
+                        {
+                            <td colspan="4" style="text-align: center">
+                                <span style="color: red">@Resources.Resource.NoRecordFound</span>
+                            </td>
+                        }
+                    </tr>
+
+                }
+                else
+                {
+                    foreach (var item in Model)
+                    {
+                        <tr>
+                            @if (ViewBag.SORT != "SORTSO")
+                            {
+                                <td class="text-color1">@item.OrgId</td>
+                            }
+                            <td class="text-color1">@item.OrgCode</td>
+                            @if (ViewBag.SORT == "SORTSO")
+                            {
+                                <td class="text-color1">
+                                    @item.OrgName
+                                </td>
+                            }
+                            else
+                            {
+                                <td class="text-color2 view" style="cursor:pointer;" orgid=@item.OrgId>
+                                    @item.OrgName
+                                    @if (userTypeID == 696008)
+                                    {
+                                        <span>(@item.OrgCode)</span>
+                                    }
+                                </td>
+                            }
+                            @if (ViewBag.SORT != "SORTSO")
+                            {
+                                <td class="text-color1">@item.OrgType</td>
+                                <td class="text-color1">@item.Phone</td>
+                                <td class="text-color1" style="word-wrap:break-word">@item.Web</td>
+                                <td class="text-color1" style="word-wrap:break-word">@(item.AddressLine1 + " " + item.AddressLine2 + " " + item.AddressLine3 + " " + item.AddressLine4 + " " + item.AddressLine5)</td>
+                            }
+                            @if (ViewBag.SORT == "SORTSO")
+                            {
+                                <td colspan="2">
+
+                                    <button class="btn btn-outline-primary btn-normal import" role="button" aria-pressed="true" orgid="@item.OrgId">
+                                        IMPORT
+                                    </button>
+                                </td>
+                            }
+                            else
+                            {
+                                <td style="text-align:center;">
+                                    <img src="~/Content/assets/images/edit-icon.svg" class="edit" id="edit" width="20" orgid="@item.OrgId" style="cursor:pointer;" title="Edit">
+                                </td>
+                            }
+                        </tr>
+                        <tr></tr>
+                        <tr class="bgColor1" id="orgDetails-@item.OrgId" style="display:none;">
+                            <td class="pb-6 descDetails" colspan="6" style="background-color: white !important;" id="@item.OrgId">
+                            </td>
+                            <td class="pt-4" style="background-color: white !important;vertical-align: baseline;">
+                                <img id="btnclosedetails" style="cursor:pointer;" src="~/Content/assets/images/up-chevlon-filter.svg" width="20" orgid="@item.OrgId">
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <!-- end of table -->
+
+    @if (Model.Count > 0)
+    {
+        //if (listCount < @ViewBag.TotalCount)
+        //{
+<div class="row pagination-container-new">
+    <div class="col-lg-3">
+        @if (Model.TotalItemCount > 0)
+        {
+            <div class="text-color2 total-records-number">
+                Total number of records : @Model.TotalItemCount
+            </div>
+        }
+    </div>
+    <div class="col-lg-6 text-center">
+        @if (listCount < Model.TotalItemCount)
+        {
+        <div id="organisationpaginator" class="table-pagination">
+            @Html.PagedListPager(Model, page => Url.Action("ListOrganisation",
+                  new
+                  {
+                      B7vy6imTleYsMr6Nlv7VQ =
+                                     STP.Web.Helpers.EncryptionUtility.Encrypt("page=" + page +
+                                     "&pageSize=" + pageSize +
+                                     "&SORT=" + ViewBag.SORT +
+                                     "&SearchString=" + SearchString +
+                                     "&SearchOrganisation=" + SearchOrganisation +
+                                     "&sortType=" + @ViewBag.sortType +
+                                     "&sortOrder=" + @ViewBag.sortOrder),
+                      page
+                  }),
+                  new PagedListRenderOptions
+                  {
+                      DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                      DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                      LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                      LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                      DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                      DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                      MaximumPageNumbersToDisplay = 3,
+                      DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                      EllipsesFormat = "...",
+                      LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+                      LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+                  })
+        </div>
+        }
+    </div>
+    @if (Model.TotalItemCount > 10)
+    {
+        <div class="col-lg-3 col-md-3 col-sm-12 text-normal pr-0 ListOrganisation-Pag">
+            Number of items to display per page
+            <select class="form-select mb-3" style="width:100px;" aria-label=".form-select-lg example" id="pageSizeSelect">
+                <option val="10" @(pageSize == 10 ? "selected" : "")>10</option>
+                <option val="20" @(pageSize == 20 ? "selected" : "")>20</option>
+                <option val="50" @(pageSize == 50 ? "selected" : "")>50</option>
+                <option val="100" @(pageSize == 100 ? "selected" : "")>100</option>
+            </select>
+        </div>
+    }
+    </div>
+        //}
+    }
+    
+</div>
+<!-- filter settings -->
+<div id="filters" class="sidenav filter-sidenav organisation-filter" style="height:100%">
+    <a href="#" id="btnclose" class="closebtn close-filter-icon-common">&times;</a>
+    <div class="filter-header" style="margin-top:3rem;">
+        FILTER
+    </div>
+    <hr style="margin-top: 0;">
+    <div class="filter-list">
+        <div class="filter-entry">
+            <div class="pr-0 pl-0 mr-0 ml-0 mt-4 mb-0">
+                <div class="row mt-4">
+                    <div class="col-lg-12 col-md-12 col-sm-12">
+                        <div class="row mb-2">
+                            <div class="col-sm-12 col-md-4 col-lg-4 pr-0 pt-3">
+                                <label class="text-normal">Organisation Name</label>
+                            </div>
+                            <div class="col-sm-12 col-md-8 col-lg-8 input-field pl-0 pt-2">
+                                <input class="edit-normal pb-0" type="text" name="from" id="SearchString" value="@ViewBag.OrgSearchString">
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-sm-12 col-md-4 col-lg-4 pr-0 pt-3">
+                                <label class="text-normal">Organisation Code</label>
+                            </div>
+                            <div class="col-sm-12 col-md-8 col-lg-8 input-field pl-0 pt-2">
+                                <input class="edit-normal pb-0" type="text" name="from" id="SearchOrganisation" value="@ViewBag.OrgSearchCode">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row pt-6" id="org_filter_btn">
+
+                <div class="col-lg-8 col-md-8 col-sm-12 pl-0">
+                    <!-- <div class="header mt-4"> -->
+                    <div class="button mr-0 mb-2">
+                        <input type="hidden" name="SortOrderValue" id="SortOrderValue" value="@sortOrder" />
+                        <input type="hidden" name="SortTypeValue" id="SortTypeValue" value="@sortType" />
+                        <button id="btnsearchorg" class="btn btn-outline-primary btn-normal" role="button" aria-pressed="true" style="width: 100%">
+                            SEARCH
+                        </button>
+                    </div>
+                    <!-- </div> -->
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 pl-0">
+                    <!-- <div class="header mt-4"> -->
+                    <div class="button mr-0 mb-2">
+                        <button id="btn-clearsearch" class="btn btn-outline-primary btn-normal" role="button" aria-pressed="true" style="width: 100%">
+                            CLEAR
+                        </button>
+                    </div>
+                    <!-- </div> -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end of filter settings -->
+<!-- filter settings -->
+<!-- end of filter settings -->
+@{ string GetSortDefaultClass(int sortTypeVal, int sortOrderVal, int valToCheck)
+    {
+        var sortClass = ""; //0-asc, 1-desc ,
+        if (sortOrderVal == valToCheck)
+        {
+            sortClass = sortTypeVal == 1 ? "sorting_desc" : "sorting_asc";
+        }
+        return sortClass;
+    }
+}
+
+
+@{
+<input type="hidden" value="@ViewBag.SORT" id="hf_SORT" name="hf_SORT" />
+<input type="hidden" value="@ViewBag.SaveMsg" id="hf_SaveMsg" name="hf_SaveMsg" />
+<input type="hidden" value="@ViewBag.orgID" id="hf_orgID" name="hf_orgID" />
+}
+
+@*<script src="~/Scripts/Organisation/_OrganisationList.js?V@(Session["ProjectVersion"])"></script>*@

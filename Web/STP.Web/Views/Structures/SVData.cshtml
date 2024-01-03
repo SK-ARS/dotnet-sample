@@ -1,0 +1,174 @@
+@using STP.Domain
+@model STP.Domain.Structures.SVDataWithLoadModel
+@{
+    Layout = null;
+}
+@Html.ValidationSummary(true)
+<style>
+   
+    .validation-summary-errors {
+        border: 2px solid red;
+        color: red;
+        font-weight: bold;
+        margin: 6px;
+        width: 30%;
+    }
+
+    .field-validation-error {
+        color: red;
+        font-weight: bold;
+        background-color: yellow;
+    }
+
+    .input-validation-error {
+        color: red;
+        font-weight: bold;
+        background-color: pink;
+    }
+</style>
+
+
+@if (Model == null)
+{
+    <h4><span style="color: red">@Resources.Resource.WrongStructureMsg</span></h4>
+}
+else
+{   <div id="svDataContainer">
+    @using (Html.BeginForm("SVData", "Structures", FormMethod.Post, new { Id = "DimensionInfo", StructId = ViewBag.StructureId, SectionId = ViewBag.SectionId, SVDerivation = 275002, structName = ViewBag.structName, ESRN = ViewBag.ESRN }))
+    {
+    <span id='manageSVId' style="display: none;">
+        <div class="text-regular pl-2 pt-5">
+            SV reserve factors
+        </div>
+        <div class="row mt-3">
+            <div class="col-lg-5 col-md-12 col-sm-12" style="padding-left: 0px;">
+                <div class="main-table">
+                    <table>
+                        <tr>
+                            <th style="width: 25%;"></th>
+                            <th class="details1">
+                                With associated <br>
+                                HA live load
+                            </th>
+                            <th class="details1">
+                                Without associated <br>
+                                HA live load
+                            </th>
+
+                        </tr>
+                        <tr>
+                            <td class="text-regular-para"> SV - 80</td>
+                            <td>
+                                <div class="input-field">
+                                    @Html.TextBoxFor(m => m.WithSV80, new { @id = "WithSV80", @class = "edit-normal" })
+                                    @Html.ValidationMessageFor(m => m.WithSV80, "", new { @class = "text-danger" })
+
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-field">
+                                    @Html.TextBoxFor(m => m.WithoutSV80, new { @id = "WithoutSV80", @class = "edit-normal" })
+                                    @Html.ValidationMessageFor(m => m.WithoutSV80, "", new { @class = "text-danger" })
+                                </div>
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-regular-para"> SV - 100</td>
+                            <td>
+                                <div class="input-field">
+                                    @Html.TextBoxFor(m => m.WithSV100, new { @id = "WithSV100", @class = "edit-normal" })
+                                    @Html.ValidationMessageFor(m => m.WithSV100, "", new { @class = "text-danger" })
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-field">
+                                    @Html.TextBoxFor(m => m.WithoutSV100, new { @id = "WithoutSV100", @class = "edit-normal" })
+                                    @Html.ValidationMessageFor(m => m.WithoutSV100, "", new { @class = "text-danger" })
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-regular-para"> SV - 150</td>
+                            <td>
+                                <div class="input-field">
+                                    @Html.TextBoxFor(m => m.WithSV150, new { @id = "WithSV150", @class = "edit-normal" })
+                                    @Html.ValidationMessageFor(m => m.WithSV150, "", new { @class = "text-danger" })
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-field">
+                                    @Html.TextBoxFor(m => m.WithoutSV150, new { @id = "WithoutSV150", @class = "edit-normal" })
+                                    @Html.ValidationMessageFor(m => m.WithoutSV150, "", new { @class = "text-danger" })
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-regular-para" style=" white-space: nowrap ;"> SV - Train</td>
+                            <td>
+                                <div class="input-field">
+                                    @Html.TextBoxFor(m => m.WithSVTrain, new { @id = "WithSVTrain", @class = "edit-normal" })
+                                    @Html.ValidationMessageFor(m => m.WithSVTrain, "", new { @class = "text-danger" })
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-field">
+                                    @Html.TextBoxFor(m => m.WithoutSVTrain, new { @id = "WithoutSVTrain", @class = "edit-normal" })
+                                    @Html.ValidationMessageFor(m => m.WithoutSVTrain, "", new { @class = "text-danger" })
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="text-regular-para"> SV - TT</td>
+                            <td>
+                                <div class="input-field">
+                                    @Html.TextBoxFor(m => m.WithSVTT, new { @id = "WithSVTT", @class = "edit-normal" })
+                                    @Html.ValidationMessageFor(m => m.WithSVTT, "", new { @class = "text-danger" })
+
+                                </div>
+                            </td>
+                            <td>
+                                <div class="input-field">
+                                    @Html.TextBoxFor(m => m.WithoutSVTT, new { @id = "WithoutSVTT", @class = "edit-normal" })
+                                    @Html.ValidationMessageFor(m => m.WithoutSVTT, "", new { @class = "text-danger" })
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="col-lg-7 col-md-12 col-sm-12 text-center pt-2">
+                <button id="btnNewCal" class="btn outline-btn-primary SOAButtonHelper fAdd" type="button">
+                    Perform new calculation
+                    from HB value
+                </button>
+                <div id="causionReport">
+
+                </div>
+            </div>
+
+        </div>
+        <div class="flexer justify-content-center mt-5">
+            <button type="button" id="saveSVData" class="btn outline-btn-primary SOAButtonHelper">SAVE</button>
+            <button type="button" id="btnSVCancel"
+                    class="btn outline-btn-primary SOAButtonHelper ml2">
+                CANCEL
+            </button>
+        </div>
+    </span>
+    }
+
+
+</div>
+
+
+}
+
+
+
+@{
+    <input type="hidden" value="@ViewBag.Helpdest_redirect" id="hf_Helpdest_redirect" name="hf_Helpdest_redirect" />
+    <input type="hidden" value="@ViewBag.msg" id="hf_msg" name="hf_msg" />
+    <input type="hidden" value="@ViewBag.structName" id="hf_structName" name="hf_structName" />
+}
+@*<script src="~/Scripts/Structures/SVData.js?V@(Session["ProjectVersion"])"></script>*@

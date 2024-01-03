@@ -1,0 +1,549 @@
+﻿@using PagedList.Mvc
+@using System.Web.Optimization
+@using STP.Domain.SecurityAndUsers
+@model PagedList.IPagedList<STP.Domain.SecurityAndUsers.GetUserList>
+@{
+    ViewBag.Title = "ManageUsers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int listCount = 0;
+    listCount = (int)Session["PageSize"];
+    int isAdmin = 0;
+    int userTypeID = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (UserInfo)Session["UserInfo"];
+        userTypeID = sessionValues.UserTypeId;
+        if (sessionValues.IsAdmin == 1)
+        {
+            isAdmin = 1;
+        }
+    }
+
+    int pageSize = ViewBag.pageSize;
+    int? pageNum = ViewBag.page;
+    bool createSuccess = false;
+    bool contactSuccess = false;
+    if (ViewBag.saveMsg != null)
+    {
+        createSuccess = true;
+    }
+    if (ViewBag.saveContactMsg != null)
+    {
+        contactSuccess = true;
+    }
+
+    bool isAccessible = false;
+    if (isAdmin == 1 && (userTypeID == 696006 || userTypeID == 696001 || userTypeID == 696002 || userTypeID == 696008 || userTypeID == 696007))
+    {
+        isAccessible = true;
+    }
+    UserContactSearchItems objUserSearch = new UserContactSearchItems();
+    if (Session["g_UserContactSearch"] != null)
+    {
+        objUserSearch = (UserContactSearchItems)Session["g_UserContactSearch"];
+    }
+    string strAction = ViewBag.action;
+    var SearchListInfo = new List<GetUserList>
+{
+               new GetUserList {SearchType = "1", SearchName = "User Name"},
+               new GetUserList {SearchType = "2", SearchName = "First Name"},
+               new GetUserList {SearchType = "3", SearchName = "Surname" },
+               new GetUserList {SearchType = "4", SearchName = "Organisation Name" },
+        };
+    ViewBag.SearchInfo = new SelectList(SearchListInfo, "searchType", "searchName");
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.ADMIN;
+}
+@Html.Hidden("pageSizeVal", pageSize)
+@Html.Hidden("pageNum", pageNum)
+@Html.Hidden("userTypeID", userTypeID)
+@Html.Hidden("CreateAlert", createSuccess)
+@Html.Hidden("ContactAlert", contactSuccess)
+@Html.Hidden("EditForAdmin", isAccessible)
+@Html.Hidden("hdnUserDisableFlag", objUserSearch.DisabledUsersFlag)
+@Html.Hidden("hdnUserDisableFlag1")
+@Html.Hidden("hdnCheckContact")
+@Html.Hidden("listCount", listCount)
+@Html.Hidden("ActionType", strAction)
+@Html.Hidden("isAdmin", isAdmin)
+@Html.Hidden("hfSearchType", objUserSearch.SearchType)
+<style>
+    .movements td:nth-child(1) {
+        text-align: left;
+    }
+    /*table {
+        border-collapse: collapse;
+        border-spacing: 0;
+        width: 131%;
+        border: transparent;
+    }*/
+    .filter-table-icon {
+        position: absolute;
+        bottom: -13px;
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+        left: 50px;
+    }
+
+    .filter-table-icons {
+        position: absolute;
+        bottom: -13px;
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%);
+        left: 19px;
+    }
+
+    .haulieruser:hover {
+        background-color: white;
+        color: rgba(39, 87, 149, 1);
+    }
+</style>
+
+@{
+    var sortOrder = ViewBag.SortOrder != null ? (int)ViewBag.SortOrder : 2;//2-name
+    var sortType = ViewBag.SortType != null ? (int)ViewBag.SortType : 0;//0-asc
+    var userSearch = (UserContactSearchItems)ViewBag.UserSearch;
+    var isUserNameFilterEnabled = !string.IsNullOrEmpty(userSearch.SearchType) && userSearch.SearchType == "1" && !string.IsNullOrEmpty(userSearch.UserName);
+    var isFirstNameFilterEnabled = !string.IsNullOrEmpty(userSearch.SearchType) && userSearch.SearchType == "2" && !string.IsNullOrEmpty(userSearch.FirstName);
+    var isSurNameFilterEnabled = !string.IsNullOrEmpty(userSearch.SearchType) && userSearch.SearchType == "3" && !string.IsNullOrEmpty(userSearch.SurName);
+    var isOrganisationNameFilterEnabled = !string.IsNullOrEmpty(userSearch.SearchType) && userSearch.SearchType == "4" && !string.IsNullOrEmpty(userSearch.OrganisationName);
+    var isOrganisationCodeFilterEnabled = !string.IsNullOrEmpty(userSearch.OrganisationCode);
+    var isDisabledUsersFilterEnabled = userSearch.DisabledUsers;
+    var iscontactenabled = userSearch.DisabledContacts;
+    var isshowcontactenabled = userSearch.ShowContacts;
+    var isAllFilterEnabled = isUserNameFilterEnabled || iscontactenabled || isFirstNameFilterEnabled || isSurNameFilterEnabled || isOrganisationNameFilterEnabled
+|| isOrganisationCodeFilterEnabled || isDisabledUsersFilterEnabled || isshowcontactenabled;
+}
+<div id="helpdesk">
+    <!--main content -->
+    <section id="banner">
+        <div class="container-fluid" id="banner-container">
+            <div>
+                <div class="header">
+                    <div class="row">
+                        <div class="col-lg-2 col-md-2 col-sm-12">
+                            <div class="button mr-0"  style=" padding-top: 5%;">
+                                <button class="btn btn-outline-primary btn-normal btn-create-user-info" role="button" aria-pressed="true">
+                                    NEW
+                                    USER/CONTACT
+                                </button>
+                            </div>
+                        </div>
+                        <div class="col-lg-5 col-md-5 col-sm-5 " style="text-align:center;">
+                            <div class="title">
+                                MANAGE USERS/CONTACTS
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-12" style="display: flex;align-items : center;">
+                            <div id="table-head" class="align-items-center" >
+                                <span class="details mt-2 pl-2 pr-3" style="width: 150px;">
+                                    User Name
+                                </span>
+                                @{ 
+                                    var Criteria = objUserSearch.SearchType=="1"? objUserSearch.Criteria:"";
+                                }
+                                <input class="text-highlight mr-r1" value="@Criteria" placeholder="User Name" id="txtUserNameOutside" type="text" autocomplete="off" name="userNameOutside">
+                                <span>
+                                    <img src="~/Content/assets/images/search-icon.svg" width="20">
+                                </span>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-12" style="display: flex;align-items : center;flex-direction: row-reverse;">
+                            <div id="table-head" class="align-items-center justify-content-evenly">
+                                <span class="details mt-2 pl-2" style=" width: 155px;">
+                                    Show disabled users
+                                </span>
+                                @{
+                                    var isChecked = objUserSearch != null ? objUserSearch.DisabledUsers : false;
+                                }
+                                <label class="switch" style="margin-left: 7px;">
+                                    <input type="checkbox" @(isChecked ? "checked" : "") id="chkDisabledUsersOutside" name="chkDisabledUsersOutside" value="true">
+                                    <div class="slider round">
+                                        <!--ADDED HTML -->
+                                        <span class="on">ON</span>
+                                        <span class="off">OFF</span>
+                                        <!--END-->
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- table -->
+                <div class="main-table movements" id="manage-user">
+                    <table class="esdal-table" style="white-space:nowrap;">
+                        <thead>
+                            <tr>
+                                @if (ViewBag.SORT != "SORTSO")
+                                {
+                                    <th class="haulieruser">
+                                        <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,0)" data-action="SortUserList" data-sortval="0">UserID </span>
+                                    </th>
+                                }
+                                @if (userTypeID != 696001)
+                                {
+                                    <th>
+                                        <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,1)" data-action="SortUserList" data-sortval="1">Org Code </span>
+                                        <span class="filter-table-icons"><img id="filterimageorg" style="display:@(isOrganisationCodeFilterEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+
+                                    </th>
+                                }
+                                <th>
+                                    <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,2)" data-action="SortUserList" data-sortval="2">Name </span>
+                                    <span class="filter-table-icons"><img id="filterimageName" style="display:@(isFirstNameFilterEnabled||isSurNameFilterEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                </th>
+                                @if (ViewBag.SORT != "SORTSO")
+                                {
+                                    if ((Convert.ToString(objUserSearch.ShowContactsFlag) != "1") && (Convert.ToString(objUserSearch.DisabledContactsFlag) != "1"))
+                                    {
+                                        <th>
+                                            <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,3)" data-action="SortUserList" data-sortval="3"> Username </span>
+
+                                            <span class="filter-table-icons"><img id="filterimageNames" style="display:@(isUserNameFilterEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                        </th>
+
+                                    }
+                                }
+                                @if (userTypeID == 696006)
+                                {
+                                    <th style="width:25%">
+                                        <span class="sorting spnSortIconItem @GetSortDefaultClass(sortType,sortOrder,4)" data-action="SortUserList" data-sortval="4"> Org Name</span>
+
+                                        <span class="filter-table-icons"><img id="filterimageOrg" style="display:@(isOrganisationNameFilterEnabled?"block":"none")" src="~/Content/assets/images/filter-table-icon.svg"></span>
+                                    </th>
+                                }
+                                @if (ViewBag.SORT != "SORTSO")
+                                {
+                                    <th style="white-space:nowrap;">Phone Number</th>
+                                }
+                                @if (ViewBag.SORT != "SORTSO")
+                                {
+                                    if ((Convert.ToString(objUserSearch.ShowContactsFlag) == "1") && (Convert.ToString(objUserSearch.DisabledContactsFlag) == "1"))
+                                    {
+                                        <th></th>
+                                    }
+
+                                }
+                                <th>
+                                </th>
+                                <th class="table-filter" style="width: 5%;">
+                                    <img src="~/Content/assets/images/filter-icon.svg" class="img-filter-user open-filter-icon-common" data-targetContainer=".manage-users-filter" data-width="400" title="Open filter" width="38">
+                                    <span class="filtered-icon-table "><img id="filterimage" class="img-filter-clear" style="display:@(isAllFilterEnabled?"block":"none")" src="~/Content/assets/images/filtered-icon.svg" title="Clear filter"></span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    @if (ViewBag.SORT != "SORTSO")
+                                    {
+                                        <td class="text-color1">@item.UserID</td>
+                                    }
+                                    @if (userTypeID != 696001)
+                                    {
+                                        <td class="text-color1">@item.OrganisationCode</td>
+                                    }
+
+                                    @*}*@
+                                    <td class="text-color2 btn-view-user cusror-pointer" data-userid="@item.UserID" data-contactid="@item.ContactId">@(item.FirstName + " " + item.SurName)</td>
+                                    @if (ViewBag.SORT != "SORTSO")
+                                    {
+                                        if ((Convert.ToString(objUserSearch.ShowContactsFlag) != "1") && (Convert.ToString(objUserSearch.DisabledContactsFlag) != "1"))
+                                        {
+                                            <td class="text-color1">@item.UserName</td>
+                                        }
+                                    }
+                                    @if (userTypeID == 696006)
+                                    {
+                                        <td class="text-color1">@item.OrgName</td>
+                                    }
+
+                                    @if (ViewBag.SORT != "SORTSO")
+                                    {
+                                        <td class="text-color1">
+                                            <span>
+                                                <img src="~/Content/assets/Icons/phone-icone.svg" width="20">
+                                            </span>
+                                            @item.PhoneNumber
+                                        </td>
+                                    }
+                                    @if (ViewBag.SORT != "SORTSO")
+                                    {
+                                        if ((Convert.ToString(objUserSearch.ShowContactsFlag) == "1") && (Convert.ToString(objUserSearch.DisabledContactsFlag) == "1"))
+                                        {
+                                            <td></td>
+                                        }
+
+                                    }
+                                    <td colspan="2">
+
+                                        <div id="mid_row">
+                                            @if (Convert.ToString(objUserSearch.DisabledUsersFlag) != "1")
+                                            {
+                                                if ((Convert.ToString(objUserSearch.ShowContactsFlag) != "1") && (Convert.ToString(objUserSearch.DisabledContactsFlag) != "1"))
+                                                {
+
+                                                    <span class="pr-4">
+
+                                                        <img src="~/Content/assets/Icons/disable-user.svg" width="28" class="btn-delete cusror-pointer" data-userid="@item.UserID" data-username="@item.UserName" title="Disable">
+                                                    </span>
+                                                    <span class="pr-4">
+                                                        <img src="~/Content/assets/images/edit-icon.svg" width="20" class="btn-edit cusror-pointer" data-userid="@item.UserID" title="Edit">
+                                                    </span>
+                                                }
+                                                else if ((Convert.ToString(objUserSearch.ShowContactsFlag) == "1") && (Convert.ToString(objUserSearch.DisabledContactsFlag) != "1"))
+                                                {
+
+                                                    <span class="pr-4">
+
+                                                        <img src="~/Content/assets/Icons/disable-user.svg" width="28" class="btn-delete-contact cusror-pointer" data-contactid="@item.ContactId" data-firstname="@item.FirstName" title="Disable">
+                                                    </span>
+                                                    <span class="pr-4">
+                                                        <img src="~/Content/assets/images/edit-icon.svg" width="20" class="btn-edit-contact cusror-pointer" data-contactid="@item.ContactId" title="Edit">
+                                                    </span>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (Convert.ToString(objUserSearch.DisabledContactsFlag) != "1")
+                                                {
+                                                    <span class="pr-4">
+
+                                                        <img src="~/Content/assets/Icons/enable-user.svg" width="28" class="btn-enable-user cusror-pointer" data-userid="@item.UserID" data-username="@item.UserName" title="Enable">
+                                                    </span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="pr-4">
+
+                                                        <img src="~/Content/assets/Icons/enable-user.svg" width="28" class="btn-enable-contact cusror-pointer" data-contactid="@item.ContactId" data-firstname="@item.FirstName" title="Enable">
+                                                    </span>
+                                                }
+                                            }
+                                            @if (ViewBag.IsHelpDeskAdmin)
+                                            {
+                                                if ((Convert.ToString(objUserSearch.ShowContactsFlag) != "1") && (Convert.ToString(objUserSearch.DisabledContactsFlag) != "1"))
+                                                {
+                                                    <span id="mid_row_data">
+                                                        <button class="btn btn-outline-primary btn-normal pt-1 pb-1" id="btnLoginAsUser" data-username="@item.UserName" type="button">
+                                                            LOGIN AS USER
+                                                        </button>
+                                                    </span>
+                                                }
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr></tr>
+                                if (item.UserID != null)
+                                {
+                                    <tr class="bgColor2" id="description-@item.UserID">
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr class="bgColor2" id="description-@item.ContactId">
+                                    </tr>
+                                }
+
+                            }
+                            @if (Model.TotalItemCount == 0)
+                            {
+                                <tr>
+                                    @if (userTypeID == 696006)
+                                    {
+                                        <td colspan="6" style="text-align:center"> <span style="color:red">@Resources.Resource.NoRecordFound</span></td>
+                                    }
+                                    else if (ViewBag.SORT == "SORTSO")
+                                    {
+                                        <td colspan="3" style="text-align:center"> <span style="color:red">@Resources.Resource.NoRecordFound</span></td>
+                                    }
+                                    else
+                                    {
+                                        <td colspan="5" style="text-align:center"> <span style="color:red">@Resources.Resource.NoRecordFound</span></td>
+                                    }
+                                </tr>
+                            }
+
+                        </tbody>
+
+                    </table>
+
+                    @if (Model.TotalItemCount > 0)
+                    {
+                        <div class="row pagination-container-new">
+                            <div class="col-lg-3">
+                                @if (Model.TotalItemCount > 0)
+                                {
+                                    <div class="text-color2 total-records-number">
+                                        Total number of records : @Model.TotalItemCount
+                                    </div>}
+                            </div>
+                            <div class="col-lg-6 text-center pagination">
+                                @if (listCount < Model.TotalItemCount)
+                                {
+                                    <div id="userpaginator" class="table-pagination">
+                                        @Html.PagedListPager(Model, page => Url.Action("ManageUsers",
+                                        new
+                                        {
+                                            B7vy6imTleYsMr6Nlv7VQ =
+                                               STP.Web.Helpers.EncryptionUtility.Encrypt("pageSize=" + pageSize +
+                                                                                         "&sortType=" + sortType +
+                                                                                         "&sortOrder=" + sortOrder),
+                                            page
+                                        }),
+                                    new PagedListRenderOptions
+                                    {
+                                        DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                                        DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                                        LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                                        LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                                        DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                                        DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                                        MaximumPageNumbersToDisplay = 3,
+                                        DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                                        EllipsesFormat = "...",
+                                        LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+                                        LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+                                    })
+                                    </div>
+                                }
+                            </div>
+                            @if (Model.TotalItemCount > 10)
+                            {
+                                <div class="col-lg-3 col-md-3 col-sm-12 text-normal pr-0 ManageUsers-Pag">
+                                    Number of items to display per page
+                                    <select class="form-select mb-3" style="width:100px;" aria-label=".form-select-lg example" id="pageSizeSelect">
+                                        <option val="10" @(pageSize == 10 ? "selected" : "")>10</option>
+                                        <option val="20" @(pageSize == 20 ? "selected" : "")>20</option>
+                                        <option val="50" @(pageSize == 50 ? "selected" : "")>50</option>
+                                        <option val="100" @(pageSize == 100 ? "selected" : "")>100</option>
+                                    </select>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+                <!-- end of table -->
+               
+            </div>
+        </div>
+       
+
+    </section>
+    <!-- end of main content -->
+      <input type="hidden" name="SortOrderValue" id="SortOrderValue" value="@sortOrder" />
+      <input type="hidden" name="SortTypeValue" id="SortTypeValue" value="@sortType" />
+    <!-- filter settings -->
+    <div id="filters" class="sidenav filter-sidenav pt-3 manage-users-filter">
+        <div class="row sidenav-header">
+            <div class="col-10 text-center">
+                <div class="text-normal-hyperlink mt-3" style="font-size: x-large;">
+                    FILTER
+                </div>
+            </div>
+            <div class="col-1">
+                <a href="#" id="closefilter" class="btn-close-filter  close-filter-icon-common">&times;</a>
+            </div>
+        </div>
+
+
+        <hr style="margin-top: 0;">
+        <div class="sort-portal">
+            <div class="filter-list">
+                <div id="viewotheroptions" style="padding-right: 1rem; padding-top: 2rem !important ">
+                    <div class="edit-normal">
+                        Select criteria type
+                    </div>
+                    <div class="row pb-2 pt-2">
+                        <div class="col-lg-8 col-sm-12 col-md-12">
+                            @Html.DropDownList("SearchType", ViewBag.SearchInfo as SelectList, new { @id = "DDsearchCriteria", @class = "form-select mb-3", @style = "overflow: scroll; width: 100%;" })
+                        </div>
+                    </div>
+                    <div class="row pb-2">
+                        <div class="col-lg-10 col-sm-12 col-md-12">
+                            <div class="pr-0 pl-0 mr-0 ml-0 mt-2 mb-0 input-field">
+                                @Html.TextBox("searchString1", objUserSearch.Criteria, new { @class = "text-normal", @placeholder = "User Name", @id = "searchString1", @style = "display:none;" })
+                                @Html.TextBox("searchString", objUserSearch.Criteria, new { @class = "edit-normal", @placeholder = "User Name" })
+                            </div>
+                        </div>
+                    </div>
+                    @if (userTypeID != 696001)
+                    {
+                        <div class="row pt-5 pb-3">
+                            <div class="col-lg-5 col-sm-2 col-md-2 edit-normal">
+                                Organisation Code
+                            </div>
+                            <div class="col-lg-6 col-sm-10 col-md-10 pr-0">
+                                @Html.TextBox("txtsearchOrganisationCode", objUserSearch.OrganisationCode, new { @class = "edit-normal", @placeholder = "Organisation Code" })
+                            </div>
+                        </div>
+                    }
+
+                    <!--The checkbox moved to outside filter-->
+                    <div class="row pb-2" id="div_chkdisable" style="display:none;">
+                        <div class="col-lg-1 col-sm-2 col-md-2 mr-2">
+                            @Html.CheckBox("DisabledUsers", objUserSearch.DisabledUsers, new { @id = "chk_DisabledUsers", @width = "20", @class = "checkbox" })
+                        </div>
+                        <div class="col-lg-10 col-sm-10 col-md-10 pr-0">
+                            <span class="details1">Show disabled users</span>
+                        </div>
+                    </div>
+                    @if (userTypeID == 696006)
+                    {
+                        <div class="row pb-2" id="div_chkcntdisble">
+                            <div class="col-lg-1 col-sm-2 col-md-2 mr-2">
+                                @Html.CheckBox("ContactFlag", objUserSearch.ShowContacts, new { @id = "chk_Contact", @width = "20", @class = "checkbox" })
+                            </div>
+                            <div class="col-lg-10 col-sm-10 col-md-10 pr-0">
+                                <span class="details1">Show contacts</span>
+                            </div>
+                        </div>
+                        <div class="row pb-2" id="div_chkdisblecont">
+                            <div class="col-lg-1 col-sm-2 col-md-2 mr-2">
+                                @Html.CheckBox("ContactDisableFlag", objUserSearch.DisabledContacts, new { @id = "chk_DisabledContacts", @width = "20", @class = "checkbox" })
+                            </div>
+                            <div class="col-lg-10 col-sm-10 col-md-10 pr-0">
+                                <span class="details1">Show disabled contacts</span>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="row pt-6 pl-3 pr-2" id="org_filter_btn">
+
+                <div class="col-lg-8 col-md-8 col-sm-12 filter-entry">
+                    <div class="button mr-0 mb-2">
+                      
+                        <button class="btn btn-outline-primary btn-normal btn-search-details" role="button" aria-pressed="true" type="button">
+                            SEARCH
+                        </button>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-4 col-sm-12 filter-entry">
+                    <div class="button mr-0 mb-2">
+                        <button class="btn btn-outline-primary btn-normal btn-clear-search" role="button" aria-pressed="true" type="button">
+                            CLEAR
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end of filter settings -->
+</div>
+@{
+    string GetSortDefaultClass(int sortTypeVal, int sortOrderVal, int valToCheck)
+    {
+        var sortClass = ""; //0-asc, 1-desc ,
+        if (sortOrderVal == valToCheck)
+        {
+            sortClass = sortTypeVal == 1 ? "sorting_desc" : "sorting_asc";
+        }
+        return sortClass;
+    }
+}
+<script src="~/Scripts/Users/jQuery.ManageUser.js?V@(Session["ProjectVersion"])"></script>

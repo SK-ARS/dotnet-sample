@@ -1,0 +1,50 @@
+@{
+    string loggedInUser = ViewBag.FullName;
+    string loggedInOrgName = ViewBag.OrgName;
+}
+@Html.Hidden("LoginUser", loggedInUser)
+@Html.Hidden("LoginOrg", loggedInOrgName)
+
+<div id="div_address_parties">
+    @{
+        Html.RenderAction("ManualAddedParties", "Notification", new { NotifID = ViewBag.NotifId, analysisId = ViewBag.AnalysisId, isSORT = false });
+    }
+</div>
+
+
+<div style="display:none;">
+    <div>
+        @using (Ajax.BeginForm("ExcludeAffectedParty", "SORTApplication", new { analysisId = ViewBag.AnalysisId }, new AjaxOptions { OnBegin = "startAnimation", OnSuccess = "LoadAffectedParties" }, new { id = "form_exclude" }))
+        {
+            <input type="hidden" name="contactId" id="hidden_contactId_exclude" />
+            <input type="hidden" name="organisationId" id="hidden_orgId_exclude" />
+            <input type="hidden" name="organisationName" id="hidden_orgName_exclude" />
+        }
+    </div>
+
+
+    <div>
+        @using (Ajax.BeginForm("IncludeAffectedParty", "SORTApplication", new { analysisId = ViewBag.AnalysisId }, new AjaxOptions { OnBegin = "startAnimation", OnSuccess = "LoadAffectedParties" }, new { id = "form_include" }))
+        {
+            <input type="hidden" name="contactId" id="hidden_contactId_include" />
+            <input type="hidden" name="organisationId" id="hidden_orgId_include" />
+            <input type="hidden" name="organisationName" id="hidden_orgName_include" />
+        }
+    </div>
+</div>
+
+<div id="div_dispensation">
+</div>
+<style>
+    .btn.btn-outline-primary:hover {
+        color: white !important;
+    }
+</style>
+
+
+@{
+<input type="hidden" value="@ViewBag.NotifId" id="hf_NotifId" name="hf_NotifId" />
+<input type="hidden" value="@ViewBag.AnalysisId" id="hf_AnalysisId" name="hf_AnalysisId" />
+<input type="hidden" value="@ViewBag.NotificationID" id="hf_NotificationID" name="hf_NotificationID" />
+}
+@*<script src="~/Scripts/Notification/_NotifAffectedParties.js?V@(Session["ProjectVersion"])"></script>*@

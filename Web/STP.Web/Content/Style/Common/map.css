@@ -1,0 +1,922 @@
+﻿#intellizenz-ctxmenu {
+    position: absolute;
+    padding: 0.1em 0.1em;
+    z-index: 1000000;
+    /*border: 1px solid;
+    border-radius: 5px;*/
+    background-color: white;
+    /*ESDAL4 2022*/
+   
+}
+
+#ghost-cover {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    background-color: lightgray;
+    opacity: 0.1;
+    z-index: 50000;
+}
+
+#sample {
+    position: absolute;
+    left: 10%;
+    right: 10%;
+    bottom: 10%;
+    top: 10%;
+    background-color: white;
+    opacity: 0.1;
+    z-index: 40000;
+}
+
+#ctxtable td:first-child {
+    /*border-right: 1px medium;*/
+}
+
+#ctxtable tr:hover {
+    background-color: lightgray !important;
+}
+
+#ctxtable td {
+    padding: 0.5em 0.5em;
+    border-style: hidden !important;
+}
+
+#intellizenz-ctxmenu img {
+    width: 20px;
+    /*height: 20px;*/
+}
+
+.maptoolbarpanel {
+   /* width: 250px;*/
+    /*height: 25px;*/
+    cursor: pointer;
+    left: 28em;
+	width: auto;
+}
+
+
+
+.RouteAppraisalToolbar {
+   /* width: 150px;*/
+    /*height: 25px;*/
+    cursor: pointer;
+    left: 53em;
+}
+
+.MnvrCancelToolbar {
+    /*  width: 100px;*/
+    /*  height: 25px;*/
+    cursor: pointer;
+    left: 60em;
+}
+
+.adv_rtplanCancelToolbar {
+  /*  width: 50px;*/
+ /*   height: 25px;*/
+    cursor: pointer;
+    left: 34em;
+}
+
+.mapconstrainttoolbarpanel {
+    width: 220px;
+    height: 25px;
+    cursor: pointer;
+    left: 50px;
+}
+
+.mapconstrainttoolbarbydesc {
+    width: 100px;
+    height: 25px;
+    cursor: pointer;
+    left: 150px;
+}
+
+.roaddelegationtoolbarpanel {
+    /*  width: 200px;
+    height: 25px;*/
+    cursor: pointer;
+}
+.roadownershipTool {
+    /*left: 33em;
+    width:15em;*/
+    margin: 0;
+    position: absolute;
+    top: 5%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    box-shadow: 0px 3px 6px 0 rgb(0 0 0 / 30%);
+    padding: 10px 12px !important;
+}
+
+    .roadownershipTool .olButton {
+     margin:0px 12px;
+    }
+
+.maptoolbarpanel .olButton {
+    margin: 0px 2px;
+}
+.roaddelegleft {
+    left: 8em;
+}
+
+
+
+
+.offRoadItemInactive {
+    width: 30px;
+    height: 30px;
+    /* border: 1px solid #075f67;*/
+    background: white;
+    margin-left: 7px;
+    float: left;
+    background-image: url('../../assets/Icons/off-road-route.svg');
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.offRoadItemActive {
+    width: 30px;
+    height: 30px;
+    /* border: 1px solid #075f67;*/
+    background: lightgray;
+    margin-left: 7px;
+    float: left;
+    background-image: url('../../assets/Icons/off-road-route.svg');
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.dragRouteItemInactive {
+    width: 22px;
+    height: 30px;
+    /* border: 1px solid #075f67;*/
+    background: white;
+    margin-left: 7px;
+    float: left;
+    background-image: url('../../assets/Icons/drag-route.svg');
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.dragRouteItemActive {
+    width: 22px;
+    height: 30px;
+    /* border: 1px solid #075f67;*/
+    background: lightgray;
+    margin-left: 7px;
+    float: left;
+    background-image: url('../../assets/Icons/drag-route.svg');
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.alternateStartItemInactive {
+    width: 29px;
+    height: 31px;
+    /* border: 1px solid #075f67;*/
+    background: white;
+    float: left;
+    background-image: url('../../assets/Icons/map-startpoint.svg');
+    background-repeat: no-repeat;
+    background-size: 90%;
+    opacity:0.5;
+}
+.alternateStartItemActive {
+    width: 30px;
+    height: 30px;
+    /*  border: 1px solid #075f67;*/
+    background: lightgray;
+    float: left;
+    background-image: url('../../assets/Icons/map-startpoint.svg');
+    background-repeat: no-repeat;
+    background-size: 90%;
+}
+
+.alternateMiddleItemInactive {
+    width: 30px;
+    height: 30px;
+    /*   border: 1px solid #075f67;*/
+    background: white;
+    margin-left: 3px;
+    float: left;
+    background-image: url('../../assets/Icons/alternate-middle-point.svg');
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.alternateMiddleItemActive {
+    width: 30px;
+    height: 30px;
+    /* border: 1px solid #075f67;*/
+    background: lightgray;
+    margin-left: 3px;
+    float: left;
+    background-image: url('../../assets/Icons/alternate-middle-point.svg');
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.alternateEndItemInactive {
+    width: 32px;
+    height: 32px;
+    /*  border: 1px solid #075f67;*/
+    background: white;
+    margin-left: 3px;
+    float: left;
+    background-image: url('../../assets/Icons/map-endpoint.svg');
+    background-repeat: no-repeat;
+    background-size: 72%;
+    opacity:0.5;
+    
+}
+
+.alternateEndItemActive {
+    width: 30px;
+    height: 30px;
+    /* border: 1px solid #075f67;*/
+    background: lightgray;
+    margin-left: 3px;
+    float: left;
+    background-image: url('../../assets/Icons/map-endpoint.svg');
+    background-repeat: no-repeat;
+    background-size: 72%;
+}
+
+.reverseMnvrItemInactive {
+    width: 30px;
+    height: 30px;
+    /* border: 1px solid #075f67;*/
+    background: white;
+    margin-left: 7px;
+    float: left;
+    background-image: url('../../assets/Icons/reverse-manoeuvre.svg');
+    background-repeat: no-repeat;
+    background-size: 63%;
+}
+.reverseMnvrItemActive {
+    width: 30px;
+    height: 30px;
+    /* border: 1px solid #075f67;*/
+    background: lightgray;
+    margin-left: 7px;
+    float: left;
+    background-image: url('../../assets/Icons/reverse-manoeuvre.svg');
+    background-repeat: no-repeat;
+    background-size: 63%;
+}
+/****************/
+.uturnMnvrItemInactive {
+    width: 30px;
+    height: 30px;
+    /*  border: 1px solid #075f67;*/
+    background: white;
+    margin-left: 3px;
+    float: left;
+    background-image: url('../../assets/Icons/u-turn-manoeuvre.svg');
+    background-repeat: no-repeat;
+    background-size: 96%;
+}
+
+.uturnMnvrItemActive {
+    width: 30px;
+    height: 30px;
+    /*  border: 1px solid #075f67;*/
+    background: lightgray;
+    margin-left: 3px;
+    float: left;
+    background-image: url('../../assets/Icons/u-turn-manoeuvre.svg');
+    background-repeat: no-repeat;
+    background-size: 96%;
+}
+
+
+.confirmedMnvrItemInactive {
+    width: 30px;
+    height: 30px;
+    /*  border: 1px solid #075f67;*/
+    background: white;
+    margin-left: 3px;
+    float: left;
+    background-image: url('../../assets/Icons/breaking-rule-road.svg');
+    background-repeat: no-repeat;
+    background-size: 80%;
+}
+
+.confirmedMnvrItemActive {
+    width: 30px;
+    height: 30px;
+    /*  border: 1px solid #075f67;*/
+    background: lightgray;
+    margin-left: 3px;
+    float: left;
+    background-image: url('../../assets/Icons/breaking-rule-road.svg');
+    background-repeat: no-repeat;
+    background-size: 80%;
+}
+
+.cutRouteItemInactive {
+    width: 30px;
+    height: 30px;
+    /*  border: 1px solid #075f67;*/
+    background: white;
+    margin-left: 7px;
+    float: left;
+    background-image: url('../../assets/Icons/cut-route.svg');
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.cutRouteItemActive {
+    width: 30px;
+    height: 30px;
+    /*  border: 1px solid #075f67;*/
+    background: lightgray;
+    margin-left: 7px;
+    float: left;
+    background-image: url('../../assets/Icons/cut-route.svg');
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.trimRouteItemInactive {
+    width: 24px;
+    height: 24px;
+ /*   border: 1px solid #075f67;*/
+    background: white;
+    float: left;
+    background-image: url("../../Images/knife.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.trimRouteItemActive {
+    width: 24px;
+    height: 24px;
+  /*  border: 1px solid #075f67;*/
+    background: lightgray;
+    float: left;
+    background-image: url("../../Images/knife.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.advancedEditItemInactive {
+    width: 30px;
+    height: 30px;
+   /* border: 1px solid #075f67;*/
+   margin-left:7px;
+    background: white;
+    float: left;
+    background-image: url("../../Images/adv_edit_30x30.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.advancedEditItemActive {
+    width: 30px;
+    height: 30px;
+    /*  border: 1px solid #075f67;*/
+    background: lightgray;
+    float: left;
+    margin-left: 7px;
+    background-image: url("../../Images/adv_edit_30x30.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.affectedStructuresItemInactive {
+    width: 30px;
+    height: 30px;
+    /*border: 1px solid #075f67;*/
+    background: white;
+    float: left;
+    background-image: url('../../Images/Group 539.svg');
+    background-repeat: no-repeat;
+    background-size: 83%;
+    background-position: 3px;
+    mix-blend-mode: darken !important;
+}
+
+.affectedStructuresItemActive {
+    width: 30px;
+    height: 30px;
+    /*  border: 1px solid #075f67;*/
+    background: lightgrey;
+    float: left;
+    background-image: url('../../assets/Icons/structure.svg');
+    background-repeat: no-repeat;
+    background-size: 83%;
+    background-position: 3px;
+    mix-blend-mode: darken !important;
+}
+
+.adv_routeplanCancelItemInactive {
+    width: 24px;
+    height: 24px;
+   /* border: 1px solid #075f67;*/
+    background: white;
+    float: left;
+    background-image: url("../../Images/delete.svg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.adv_routeplanCancelItemActive {
+    width: 24px;
+    height: 24px;
+ /*   border: 1px solid #075f67;*/
+    background: lightgray;
+    float: left;
+    background-image: url("../../Images/delete.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.manoeuvreCancelToolbarItemActive {
+    width: 26px;
+    height: 28px;
+   /* border: 1px solid #075f67;*/
+    background: lightgray;
+    float: left;
+    background-image: url("../../Images/delete.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.manoeuvreCancelToolbarItemInactive {
+    width: 26px;
+    height: 30px;
+  /*  border: 1px solid #075f67;*/
+    background: white;
+    float: left;
+    background-image: url("../../Images/delete.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.affectedConstraintsItemInactive {
+    width: 30px;
+    height: 30px;
+    /* border: 1px solid #075f67;*/
+    background: white;
+    margin-left: 7px;
+    float: left;
+    background-image: url('../../assets/Icons/constraint.svg');
+    background-repeat: no-repeat;
+    background-size: 83%;
+    background-position: 3px;
+}
+
+
+.affectedConstraintsItemActive {
+    width: 30px;
+    height: 30px;
+    /* border: 1px solid #075f67;*/
+    background: lightgrey;
+    margin-left: 7px;
+    float: left;
+    background-image: url('../../assets/Icons/constraint.svg');
+    background-repeat: no-repeat;
+    background-size: 83%;
+    background-position: 3px;
+}
+
+.affectedCautionsItemInactive {
+    width: 24px;
+    height: 24px;
+  /*  border: 1px solid #075f67;*/
+    background: white;
+    float: left;
+    background-image: url("../../Images/diverge.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.affectedCautionsItemActive {
+    width: 24px;
+    height: 24px;
+/*    border: 1px solid #075f67;*/
+    background: lightgray;
+    float: left;
+    background-image: url("../../Images/diverge.png");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+/*.pointConstraintItemInactive {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #075f67;
+    background: white;
+    float: left;
+    background-image: url("../../Images/pointer.svg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    display:none !important;
+}
+
+.pointConstraintItemActive {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #075f67;
+    background: lightgray;
+    float: left;
+    background-image: url("../../Images/pointer.svg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+.lineConstraintItemInactive {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #075f67;
+    background: white;
+    float: left;
+    background-image: url("../../Images/linear.svg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    display:none !important;
+}
+*/
+.lineConstraintItemActive {
+  /*  width: 24px;
+    height: 24px;
+    border: 1px solid #075f67;
+    background: lightgray;
+    float: left;
+    background-image: url("../../Images/linear.svg");
+    background-repeat: no-repeat;
+    background-size: 100%;*/
+
+}
+
+/*.areaConstraintItemInactive {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #075f67;
+    background: white;
+    float: left;
+    background-image: url("../../Images/area.svg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+    display: none !important;
+}
+
+.areaConstraintItemActive {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #075f67;
+    background: lightgray;
+    float: left;
+    background-image: url("../../Images/area.svg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}*/
+
+.descConstraintItemInactive {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #075f67;
+    background: white;
+    float: left;
+    background-image: url("../../Images/geo.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position-x: center;
+}
+
+.descConstraintItemActive {
+    width: 24px;
+    height: 24px;
+    border: 1px solid #075f67;
+    background: lightgray;
+    float: left;
+    background-image: url("../../Images/geo.svg");
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-position-x: center;
+}
+
+.selectAndPlanLinksItemInactive {
+    width: 30px;
+    height: 30px;
+    /* border: 1px solid #075f67;*/
+    background: white;
+    float: left;
+    background-image: url("../../Images/plan.svg");
+    background-repeat: no-repeat;
+    background-size: 67%;
+    background-position: center center;
+}
+
+.selectAndPlanLinksItemActive {
+    width: 30px;
+    height: 30px;
+    /* border: 1px solid #075f67;*/
+    background: lightgray;
+    float: left;
+    background-image: url("../../Images/plan.svg");
+    background-repeat: no-repeat;
+    background-size: 67%;
+    background-position: center center;
+}
+
+.undoSelectLinksItemInactive {
+    width: 30px;
+    height: 30px;
+    /* border: 1px solid #075f67;*/
+    background: white;
+    float: left;
+    background-image: url("../../Images/undo.svg");
+    background-repeat: no-repeat;
+    background-size: 80%;
+    background-position: center center;
+}
+
+.undoSelectLinksItemActive {
+    width: 30px;
+    height: 30px;
+    /*border: 1px solid #075f67;*/
+    background: lightgray;
+    float: left;
+    background-image: url("../../Images/undo.svg");
+    background-repeat: no-repeat;
+    background-size: 80%;
+    background-position: center center;
+}
+
+.selectLinksByPolygonItemInactive {
+    width: 30px;
+    height: 30px;
+   /* border: 1px solid #075f67;*/
+    background: white;
+    float: left;
+    background-image: url("../../Images/polygonselect.svg");
+    background-repeat: no-repeat;
+    background-size: 93%;
+}
+
+.selectLinksByPolygonItemActive {
+    width: 30px;
+    height: 30px;
+   /* border: 1px solid #075f67;*/
+    background: lightgray;
+    float: left;
+    background-image: url("../../Images/polygonselect.svg");
+    background-repeat: no-repeat;
+    background-size: 93%;
+}
+
+.selectLinksItemInactive {
+    width: 30px;
+    height: 30px;
+   /* border: 1px solid #075f67;*/
+    background: white;
+    float: left;
+    background-image: url("../../Images/select.svg");
+    background-repeat: no-repeat;
+    background-size: 86%;
+}
+
+.selectLinksItemActive {
+    width: 30px;
+    height: 30px;
+   /* border: 1px solid #075f67;*/
+    background: lightgray;
+    float: left;
+    background-image: url("../../Images/select.svg");
+    background-repeat: no-repeat;
+    background-size: 86%;
+}
+
+.deselectLinksByPolygonItemInactive {
+    width: 30px;
+    height: 30px;
+   /* border: 1px solid #075f67;*/
+    background: white;
+    float: left;
+    background-image: url("../../Images/polygondeselect.svg");
+    background-repeat: no-repeat;
+    background-size: 93%;
+}
+
+.deselectLinksByPolygonItemActive {
+    width: 30px;
+    height: 30px;
+   /* border: 1px solid #075f67;*/
+    background: lightgray;
+    float: left;
+    background-image: url("../../Images/polygondeselect.svg");
+    background-repeat: no-repeat;
+    background-size: 93%;
+}
+
+.deselectLinksItemInactive {
+    width: 30px;
+    height: 30px;
+   /* border: 1px solid #075f67;*/
+    background: white;
+    float: left;
+    background-image: url("../../Images/deselect.svg");
+    background-repeat: no-repeat;
+    background-size: 90%;
+}
+
+.deselectLinksItemActive {
+    width: 30px;
+    height: 30px;
+  /*  border: 1px solid #075f67;*/
+    background: lightgray;
+    float: left;
+    background-image: url("../../Images/deselect.svg");
+    background-repeat: no-repeat;
+    background-size: 90%;
+}
+
+
+div.olControlAttribution, div.olControlScaleLine {
+    bottom: 3px;
+}
+div.olControlAttribution{
+    color:black ;
+}
+
+.olControlScaleBar {
+    bottom: 10px;
+    left: 10px;
+    font-family: sans-serif;
+    color: #000;
+}
+
+.olControlScaleBarBar {
+    height: 1px;
+    top: 14px;
+    background: #333;
+}
+
+.olControlScaleBarBarAlt {
+    height: 1px;
+    top: 14px;
+    background: #333;
+}
+
+.olControlScaleBarMarkerMajor {
+    height: 7px;
+    width: 1px;
+    top: 11px;
+    background: #333;
+}
+
+.olControlScaleBarMarkerMinor {
+    height: 5px;
+    width: 1px;
+    top: 12px;
+    background: #333;
+}
+
+.olControlScaleBarNumbersBox {
+    width: 40px;
+    height: 13px;
+    top: 21px;
+    font-size: 0.7em;
+}
+
+.olControlScaleBarLabelBox {
+    top: -2px;
+    height: 15px;
+    font-weight: bold;
+    letter-spacing: 0.1em;
+    font-size: 0.7em;
+    font-variant: small-caps;
+}
+
+.olControlScaleBarLabelBoxSingleLine {
+    height: 15px;
+    width: 35px;
+    top: 5px;
+    left: 10px;
+    font-size: 0.7em;
+    font-variant: small-caps;
+}
+
+.qas-autofill-ul {
+    position: fixed !important;
+    margin-left: 4rem !important;
+    background-color: #fff;
+    z-index: 1000;
+    min-width: 10rem;
+    padding: 0.5rem 0;
+    margin: 0;
+    font-size: 1rem;
+    color: #212529;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: 10px;
+    overflow-y:auto;
+    max-height:250px;
+}
+.qas-autofill-ul li {
+    border-bottom: solid 1px rgba(0, 0, 0, 0.15);
+}
+.ctxtd{
+    background-color:white !important;
+    cursor:pointer;
+}
+.ctxtext {
+    font-size: 15px !important;
+    font-family: lato_medium, Arial;
+    color: black !important;
+    font-style: normal !important;
+    font-weight: 500 !important;
+}
+
+.waypointtext {
+    margin-left: 5px;
+    margin-top: 2px;
+    background-image: url("../../assets/images/Path 333-route.svg");
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+.waypointrow {
+    display: table;
+}
+.waypointcl {
+    display: table-cell;
+}
+.olFramedCloudPopupContent{
+    overflow:hidden;
+}
+
+.deletepath {
+    height: 7px;
+    width: 7px;
+    float: left;
+    margin-right: 15px;
+    background: url("../../Images/Common/MasterPage/closebtn.png") no-repeat;
+    background-position: 0px 0px;
+    margin-top: 4px;
+    cursor: pointer;
+}
+.horizontalMap-center {
+	margin-top: 10px;
+    margin-left: auto;
+    margin-right: auto;
+    border-color: white;
+    border-radius: 0.3rem;
+    background-color: white;
+    padding: 0;
+    /* display      : block; */
+}
+#soa-portal-map .horizontalMap-center {
+    width: 12rem;
+    padding-left: 0%;
+}
+#route-planner #soa-portal-map .horizontalMap-center,
+#route #soa-portal-map .horizontal-center,
+#soa-structure-detail #vehicles #soa-portal-map .horizontalMap-center {
+    width: 35rem;
+    padding-left: 0%;
+    /* margin-left: 25rem; */
+}
+
+#route-planner .card-align #soa-portal-map .horizontalMap-center {
+    width: 26rem;
+    padding-left: 0%;
+}
+
+#soa-structure #soa-portal-map .horizontalMap-center,
+#soa-structure-detail #soa-portal-map .horizontalMap-center {
+    width: 12rem;
+    padding-left: 0%;
+}
+
+#soa-portal-map .horizontalMap-center ul {
+    margin-bottom: 0px;
+}
+
+#soa-portal-map .horizontalMap-center .nav-link {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+#soa-portal-map .horizontalMap-center .navbar-nav {
+    padding-left: 20px !important;
+}
+
+#soa-portal-map .horizontalMap-center .nav-item {
+    padding-right: 1px !important;
+}
+
+#soa-portal-map .horizontalMap-center .dropdown-menu {
+    margin-top: 20px !important;
+}
+.mapFilterIconMargin {
+    margin-top: 110px !important;
+}

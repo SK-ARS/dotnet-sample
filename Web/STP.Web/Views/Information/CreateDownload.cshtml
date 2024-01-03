@@ -1,0 +1,50 @@
+@using System.Web.Optimization
+@using STP.Domain.SecurityAndUsers
+@using System.Web.Mvc;
+@using STP.Web.Custom.Views
+@{
+    ViewBag.Title = "CreateDownload";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    string type = Convert.ToString(TempData["type"]);
+    string PageName = Convert.ToString(TempData["PageName"]);
+    bool isAdmin = false;
+    int portalType = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var user = (UserInfo)Session["UserInfo"];
+        portalType = user.UserTypeId;
+        if (portalType == 696006 || user.IsAdmin == 1)
+        {
+            isAdmin = true;
+        }
+    }
+    string mode = string.Empty;
+    if (!string.IsNullOrEmpty(Convert.ToString(Request.QueryString["mode"])))
+    {
+        mode = Request.QueryString["mode"];
+    }
+    int contentId = 0;
+    contentId = Convert.ToInt32(Request.QueryString["ContentId"]);
+    ViewBag.PageMenuName = (int)STP.Common.Enums.WebMenuEnum.INFORMATION;
+
+}
+
+@Html.Hidden("TypeVal", type)
+<div id="helpdesk">
+    <!-- main content -->
+    <section id="banner">
+        <div class="container-fluid" id="banner-container">
+            <div id="banner-section-2">
+                @Html.Action("NewsDetails", "Information", new { mode = mode, ContentId = contentId })
+            </div>
+        </div>
+    </section>
+</div>
+@{
+    @Html.Hidden("hf_mode", mode)
+    @Html.Hidden("hf_contentId", contentId)
+}
+<script src="~/Scripts/Information/CreateDownload.js?V@(Session["ProjectVersion"])"></script>
+<script src="~/Scripts/Information/PartialView/_NewsDetails.js?V@(Session["ProjectVersion"])"></script>

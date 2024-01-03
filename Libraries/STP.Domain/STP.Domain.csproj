@@ -1,0 +1,498 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{7084ECE6-A17F-41B1-9A8A-C199C98E48C8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>STP.Domain</RootNamespace>
+    <AssemblyName>STP.Domain</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>..\..\Solution\packages\BouncyCastle.1.8.6.1\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp">
+      <HintPath>..\..\Solution\packages\iTextSharp.5.5.13.2\lib\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xmlworker">
+      <HintPath>..\..\Solution\packages\itextsharp.xmlworker.5.5.13.2\lib\itextsharp.xmlworker.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
+      <HintPath>..\..\Solution\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\lib\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Solution\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Oracle.DataAccess, Version=4.122.19.1, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\Solution\packages\Oracle.x64.193000\Oracle.DataAccess.dll</HintPath>
+    </Reference>
+    <Reference Include="PagedList, Version=1.17.0.0, Culture=neutral, PublicKeyToken=abbb863e9397c5e1, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\PagedList.1.17.0.0\lib\net40\PagedList.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Activities" />
+    <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\Solution\packages\System.ComponentModel.Annotations.5.0.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceModel.Activities" />
+    <Reference Include="System.ServiceModel.Channels" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Mvc">
+      <HintPath>..\..\Solution\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Applications\AgreedRoute.cs" />
+    <Compile Include="Applications\ApplyForVR1Params.cs" />
+    <Compile Include="Applications\ComponentGroupingModel.cs" />
+    <Compile Include="Applications\ESDALReferenceNumber.cs" />
+    <Compile Include="Applications\IndemnityConfirmation.cs" />
+    <Compile Include="Applications\SOApplicationTabsParams.cs" />
+    <Compile Include="Applications\UpdatePartIdInputParams.cs" />
+    <Compile Include="Applications\VR1SubMovementClass.cs" />
+    <Compile Include="Communications\AutoResponseMailParams.cs" />
+    <Compile Include="Communications\CommunicationParams.cs" />
+    <Compile Include="Communications\MailResponse.cs" />
+    <Compile Include="Custom\JsonStore.cs" />
+    <Compile Include="Custom\StringExtraction.cs" />
+    <Compile Include="Custom\XmlAffectedStructuresDeserializer.cs" />
+    <Compile Include="DocumentsAndContents\ESDALNotificationGetParams.cs" />
+    <Compile Include="DocumentsAndContents\GenerateEmailParams.cs" />
+    <Compile Include="DocumentsAndContents\ProposalParams.cs" />
+    <Compile Include="DocumentsAndContents\ReProposalParams.cs" />
+    <Compile Include="DocumentsAndContents\SaveDocumentParams.cs" />
+    <Compile Include="DocumentsAndContents\SortAgreeRevisedParams.cs" />
+    <Compile Include="DocumentsAndContents\SortAgreeRouteParams.cs" />
+    <Compile Include="DocumentsAndContents\SortSingleAgreeRouteParam.cs" />
+    <Compile Include="DocumentsAndContents\TransmitNotificationParams.cs" />
+    <Compile Include="ExternalAPI\ExportDIList.cs" />
+    <Compile Include="ExternalAPI\ExportApplication.cs" />
+    <Compile Include="ExternalAPI\ExportNotification.cs" />
+    <Compile Include="ExternalAPI\ExportRouteList.cs" />
+    <Compile Include="ExternalAPI\ExternalApiResponse.cs" />
+    <Compile Include="ExternalAPI\Vehicle.cs" />
+    <Compile Include="ExternalAPI\GeneralDetail.cs" />
+    <Compile Include="ExternalAPI\VehicleImportExternal.cs" />
+    <Compile Include="ExternalAPI\VehicleValidationExternal.cs" />
+    <Compile Include="GPXService\ConvertGPX.cs" />
+    <Compile Include="LoggingAndReporting\LogEventParam.cs" />
+    <Compile Include="LoggingAndReporting\NotificationHistory.cs" />
+    <Compile Include="LoggingAndReporting\SaveMovementActionParam.cs" />
+    <Compile Include="MovementsAndNotifications\DetailedVersion\OutboundNotification.cs" />
+    <Compile Include="MovementsAndNotifications\Folder\OutboundNotification.cs" />
+    <Compile Include="MovementsAndNotifications\MovementsAPI\HaulierMovements.cs" />
+    <Compile Include="MovementsAndNotifications\MovementsAPI\SOAPoliceMovements.cs" />
+    <Compile Include="MovementsAndNotifications\MovementsAPI\SORTMovement.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\FilterDropDown.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\OutboundNotification.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\RelatedCommunicationParams.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\VehicleConfigrationParams.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\AuditLogParams.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\GetTransmissionListParams.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\InboxSubContent.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\Notification.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\StringExtractor.cs" />
+    <Compile Include="NonESDAL\GeneralDetailsValidation.cs" />
+    <Compile Include="NonESDAL\InboxEditRouteParams.cs" />
+    <Compile Include="NonESDAL\NEApplication.cs" />
+    <Compile Include="NonESDAL\NENotification.cs" />
+    <Compile Include="NonESDAL\NENUpdateParams.cs" />
+    <Compile Include="NonESDAL\NERouteValidation.cs" />
+    <Compile Include="NonESDAL\NEVehicleImport.cs" />
+    <Compile Include="RoadNetwork\Constraint\SearchConstraints.cs" />
+    <Compile Include="RouteAssessment\AffectedParties.cs" />
+    <Compile Include="RouteAssessment\AssessmentOutput\UpdateRouteAssessmentSevenParams.cs" />
+    <Compile Include="RouteAssessment\GenerateRouteAssessment.cs" />
+    <Compile Include="RouteAssessment\NenRouteAssessmentParams.cs" />
+    <Compile Include="RouteAssessment\RouteAssessmentParams.cs" />
+    <Compile Include="RouteAssessment\StringExtractorParams.cs" />
+    <Compile Include="Routes\AppRouteListJson.cs" />
+    <Compile Include="Routes\NenRouteModel.cs" />
+    <Compile Include="Routes\RouteExportList.cs" />
+    <Compile Include="Routes\RouteGPXModel.cs" />
+    <Compile Include="Routes\RouteLinkModel.cs" />
+    <Compile Include="Routes\RouteModelJson.cs" />
+    <Compile Include="Routes\RouteSerialization.cs" />
+    <Compile Include="Routes\TempModelsMigrations\RouteAnalysisModel.cs" />
+    <Compile Include="Routes\UpdateBrokenRoutePointsParam.cs" />
+    <Compile Include="Routes\UpdateBrokenRouteSegmentParam.cs" />
+    <Compile Include="SecurityAndUsers\FeedBack.cs" />
+    <Compile Include="SecurityAndUsers\OTPPasswordUpdation.cs" />
+    <Compile Include="SecurityAndUsers\PrivacyDisclaimer.cs" />
+    <Compile Include="SecurityAndUsers\UserPreferencesDetails.cs" />
+    <Compile Include="Structures\ICAVehicleResult.cs" />
+    <Compile Include="Structures\SaveDefaultConfigParams.cs" />
+    <Compile Include="Structures\StructureDetailsModel.cs" />
+    <Compile Include="Structures\StructuresAssessment.cs" />
+    <Compile Include="Applications\AffectedStructures.cs" />
+    <Compile Include="Applications\AllocateSORTUserInsertParams.cs" />
+    <Compile Include="Applications\ApplicationConstants.cs" />
+    <Compile Include="Applications\ApplyForVR1.cs" />
+    <Compile Include="Applications\CloneReviseVR1Params.cs" />
+    <Compile Include="Applications\DeleteQuickLinksParams.cs" />
+    <Compile Include="Applications\DeleteSpecialOrderParams.cs" />
+    <Compile Include="Applications\ProjectFolderModel.cs" />
+    <Compile Include="Applications\ProjectFolderModelParams.cs" />
+    <Compile Include="Applications\ReviseVR1Params.cs" />
+    <Compile Include="Applications\SaveResponseMessageParams.cs" />
+    <Compile Include="Applications\SOApplication.cs" />
+    <Compile Include="Applications\SOApplicationRelatedMov.cs" />
+    <Compile Include="Applications\SOApplicationTabs.cs" />
+    <Compile Include="Applications\SORTAppDeclineInsertParams.cs" />
+    <Compile Include="Applications\SORTApplnWithdrawandDeclineParams.cs" />
+    <Compile Include="Applications\SortLatestAppDetails.cs" />
+    <Compile Include="Applications\SORTMvmtProjectDetailsInsertParams.cs" />
+    <Compile Include="Applications\SORTSOApplicationInsertParams.cs" />
+    <Compile Include="Applications\SORTSOApplicationParams.cs" />
+    <Compile Include="Applications\SORTSpecialOrder.cs" />
+    <Compile Include="Applications\SORTUserList.cs" />
+    <Compile Include="Applications\SORTVR1ApplicationInsertParams.cs" />
+    <Compile Include="Applications\SpecialOrderUpdationInsertParams.cs" />
+    <Compile Include="Applications\SubmitSORTVR1Params.cs" />
+    <Compile Include="Applications\SupplimentaryInfo.cs" />
+    <Compile Include="Applications\SupplimentaryInfoParams.cs" />
+    <Compile Include="Applications\UpdateCandidateRouteNMInsertParams.cs" />
+    <Compile Include="Applications\UpdateCheckerDetailsInsertParams.cs" />
+    <Compile Include="Applications\UpdateNeedsAttentionModel.cs" />
+    <Compile Include="Applications\UpdateProjectDetailsInsertParams.cs" />
+    <Compile Include="Applications\UpdateSOApplicationParams.cs" />
+    <Compile Include="Applications\UpdateSORTSpecialOrderParams.cs" />
+    <Compile Include="Applications\UpdateSpecialOrderInsertParams.cs" />
+    <Compile Include="Applications\VR1ApprovalInsertParams.cs" />
+    <Compile Include="Applications\VR1NumberInsertParams.cs" />
+    <Compile Include="Applications\VR1VehicleDetailsParams.cs" />
+    <Compile Include="Custom\MenuAccess.cs" />
+    <Compile Include="DocumentsAndContents\AddManageDocParams.cs" />
+    <Compile Include="DocumentsAndContents\AffectedStructureParams.cs" />
+    <Compile Include="DocumentsAndContents\AgreedRoute.cs" />
+    <Compile Include="DocumentsAndContents\Digest.cs" />
+    <Compile Include="DocumentsAndContents\DrivingInstructionModel.cs" />
+    <Compile Include="DocumentsAndContents\Enums.cs" />
+    <Compile Include="DocumentsAndContents\FeedbackDomain.cs" />
+    <Compile Include="DocumentsAndContents\GenerateEsdalNotificationParams.cs" />
+    <Compile Include="DocumentsAndContents\GeneratePdfParams.cs" />
+    <Compile Include="DocumentsAndContents\HaulierNotificationParams.cs" />
+    <Compile Include="DocumentsAndContents\ImminentMoveAlert.cs" />
+    <Compile Include="DocumentsAndContents\InformatinDetail.cs" />
+    <Compile Include="DocumentsAndContents\InformationModel.cs" />
+    <Compile Include="DocumentsAndContents\NavigationXML.cs" />
+    <Compile Include="DocumentsAndContents\NoLongerAffected.cs" />
+    <Compile Include="DocumentsAndContents\Notification.cs" />
+    <Compile Include="DocumentsAndContents\NotifRouteImportParams.cs" />
+    <Compile Include="DocumentsAndContents\OutboundDocuments.cs" />
+    <Compile Include="DocumentsAndContents\ProposedDocParams.cs" />
+    <Compile Include="DocumentsAndContents\ProposedRoute.cs" />
+    <Compile Include="DocumentsAndContents\RetransmitApplicationParams.cs" />
+    <Compile Include="DocumentsAndContents\SOCRouteParts.cs" />
+    <Compile Include="DocumentsAndContents\SODocumentParams.cs" />
+    <Compile Include="DocumentsAndContents\SpecialOrder.cs" />
+    <Compile Include="DocumentsAndContents\SpecialOrderParams.cs" />
+    <Compile Include="DocumentsAndContents\TransmissionModel.cs" />
+    <Compile Include="DocumentsAndContents\TransmissionParams.cs" />
+    <Compile Include="DocumentsAndContents\VR1.cs" />
+    <Compile Include="DocumentsAndContents\XMLModel.cs" />
+    <Compile Include="DrivingInstructionsInterface\DrivingInsReq.cs" />
+    <Compile Include="DrivingInstructionsInterface\DrivInstParams.cs" />
+    <Compile Include="HelpdeskTools\DistributionAlerts.cs" />
+    <Compile Include="HelpdeskTools\DistributionAlertsParams.cs" />
+    <Compile Include="HelpdeskTools\HolidayParams.cs" />
+    <Compile Include="HelpdeskTools\HolidaysDomain.cs" />
+    <Compile Include="LoggingAndReporting\AuditLogIdentifiers.cs" />
+    <Compile Include="LoggingAndReporting\AuditLogIdentifiersInputParams.cs" />
+    <Compile Include="LoggingAndReporting\AuditLogIdentifiersParams.cs" />
+    <Compile Include="LoggingAndReporting\CommunicationModel.cs" />
+    <Compile Include="LoggingAndReporting\IndustryLiaisonModel.cs" />
+    <Compile Include="LoggingAndReporting\ReportPerUserModel.cs" />
+    <Compile Include="LoggingAndReporting\SessionLengthModel.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\CopyMovementSortToPortalInsertParams.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\InboxItemStatusParams.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\NENHelpdeskReportParams.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\SaveAutoResponseParams.cs" />
+    <Compile Include="RouteAssessment\AssessmentInput.cs" />
+    <Compile Include="RouteAssessment\AssessmentOutput\AssessmentOutput.cs" />
+    <Compile Include="RouteAssessment\VehicleDetailsForAssessment.cs" />
+    <Compile Include="Routes\GetBrokenRouteList.cs" />
+    <Compile Include="Routes\LibraryRouteListParams.cs" />
+    <Compile Include="Routes\QAS\AddrDetails.cs" />
+    <Compile Include="Routes\SaveAppRouteParams.cs" />
+    <Compile Include="Routes\SaveLibraryRouteParams.cs" />
+    <Compile Include="Routes\SavePlannedRoutePathParams.cs" />
+    <Compile Include="Routes\UpdateBrokenRoutePathParam.cs" />
+    <Compile Include="SecurityAndUsers\ContactPreferencecs.cs" />
+    <Compile Include="LoggingAndReporting\MovementActionIdentifiers.cs" />
+    <Compile Include="LoggingAndReporting\MovementActionInputParams.cs" />
+    <Compile Include="LoggingAndReporting\MovementActions.cs" />
+    <Compile Include="LoggingAndReporting\MovementnActionType.cs" />
+    <Compile Include="LoggingAndReporting\NENAuditLogInputParams.cs" />
+    <Compile Include="LoggingAndReporting\SaveSystemInputParams.cs" />
+    <Compile Include="LoggingAndReporting\System_Events.cs" />
+    <Compile Include="MovementsAndNotifications\Folder\FoldersDomain.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\DispensationGridList.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\HaulierMovementsListParams.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\HaulierMovNotesInsertParams.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\InsertMovementVersionInsertParams.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\MovementActionIdentifiersParams.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\MovementActionInsertParams.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\MovementContactModel.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\MovementHistory.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\MovementModelParams.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\MovementsModel.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\MovementsParams.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\MovementVersionAgreeUnagreeWithInsertParams.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\QuickLinks.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\QuickLinksSOA.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\SORTMovementList.cs" />
+    <Compile Include="MovementsAndNotifications\Movements\UpdateDispensation.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\AffectedByNotificationDetails.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\AffectedStructConstrParam.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\CheckImminentParam.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\CollaborationModel.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\GetImminentChkDetailsDomain.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\ImportFleetRouteVehicleParam.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\InboundNotification.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\InsertQuickLinkParams.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\NeHaulierList.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\NeHaulierParams.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\NENHelpdeskReportModel.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\NENSOAReportModel.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\NotificationGeneralDetails.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\UpdateDispensationParams.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\UpdateInboundNotifParam.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\UpdateNotificationParam.cs" />
+    <Compile Include="MovementsAndNotifications\Notification\UpdateNotifPlanRouteParam.cs" />
+    <Compile Include="OracleGeometry\OracleArrayTypeFactory.cs" />
+    <Compile Include="OracleGeometry\OracleCustomTypeBase.cs" />
+    <Compile Include="OracleGeometry\sdogeometry.cs" />
+    <Compile Include="OracleGeometry\SDOPOINT.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RoadNetwork\Constraint\ConstraintModel.cs" />
+    <Compile Include="RoadNetwork\RoadDelegation\RoadDelegationData.cs" />
+    <Compile Include="RoadNetwork\RoadDelegation\RoadDelegationParams.cs" />
+    <Compile Include="RoadNetwork\RoadOwnership\RoadOwnerData.cs" />
+    <Compile Include="RoadNetwork\RoadOwnership\RoadOwnershipParams.cs" />
+    <Compile Include="RouteAssessment\AnalysedAffectedParties.cs" />
+    <Compile Include="RouteAssessment\AnalysedAnnotations.cs" />
+    <Compile Include="RouteAssessment\AnalysedCautions.cs" />
+    <Compile Include="RouteAssessment\AnalysedConstraints.cs" />
+    <Compile Include="RouteAssessment\AnalysedRoads.cs" />
+    <Compile Include="RouteAssessment\AnalysedRoute.cs" />
+    <Compile Include="RouteAssessment\AnalysedStructures.cs" />
+    <Compile Include="RouteAssessment\RouteAssessmentDIParam.cs" />
+    <Compile Include="RouteAssessment\RouteAssessmentLibrary.cs" />
+    <Compile Include="RouteAssessment\RouteAssessmentModel.cs" />
+    <Compile Include="RouteAssessment\StructuresModel.cs" />
+    <Compile Include="RouteAssessment\UpdateAssessmentModelParam.cs" />
+    <Compile Include="RouteAssessment\UpdateRouteAssessmentParam.cs" />
+    <Compile Include="RouteAssessment\UpdateRouteAssessmentVrParam.cs" />
+    <Compile Include="RoutePlannerInterface\RouteData.cs" />
+    <Compile Include="RoutePlannerInterface\RouteViaWaypoint.cs" />
+    <Compile Include="RoutePlannerInterface\RouteViaWaypointEx.cs" />
+    <Compile Include="RoutePlannerInterface\TransportPart.cs" />
+    <Compile Include="RoutePlannerInterface\WayPoint.cs" />
+    <Compile Include="Routes\ApplicationRouteNameParams.cs" />
+    <Compile Include="Routes\AppRouteList.cs" />
+    <Compile Include="Routes\CandidateRouteInsertParams.cs" />
+    <Compile Include="Routes\CandidateRouteInsertResponse.cs" />
+    <Compile Include="Routes\CandidateRTModel.cs" />
+    <Compile Include="Routes\CloneApplicationRTPartsInsertParams.cs" />
+    <Compile Include="Routes\CloneRTPartsInsertParams.cs" />
+    <Compile Include="Routes\CRDetails.cs" />
+    <Compile Include="Routes\ListRouteVehicleId.cs" />
+    <Compile Include="Routes\PlannedRouteListParams.cs" />
+    <Compile Include="Routes\RouteModel.cs" />
+    <Compile Include="Routes\RouteRevision.cs" />
+    <Compile Include="Routes\RouteRevisionInsertParams.cs" />
+    <Compile Include="Routes\SaveApplicationRouteParams.cs" />
+    <Compile Include="Routes\SaveNotificationRouteParam.cs" />
+    <Compile Include="Routes\SaveSNotificationRouteParam.cs" />
+    <Compile Include="Routes\SaveSOApplicationRouteParams.cs" />
+    <Compile Include="Routes\VerificationStatusParams.cs" />
+    <Compile Include="SecurityAndUsers\ChangePasswordInfo.cs" />
+    <Compile Include="SecurityAndUsers\ContactListModel.cs" />
+    <Compile Include="SecurityAndUsers\ContactModel.cs" />
+    <Compile Include="SecurityAndUsers\DeleteUserParams.cs" />
+    <Compile Include="SecurityAndUsers\HAContact.cs" />
+    <Compile Include="SecurityAndUsers\HaulierContactModel.cs" />
+    <Compile Include="SecurityAndUsers\MenuPrivileage.cs" />
+    <Compile Include="SecurityAndUsers\NotificationContacts.cs" />
+    <Compile Include="SecurityAndUsers\OrganizationGridList.cs" />
+    <Compile Include="SecurityAndUsers\PasswordExpiry.cs" />
+    <Compile Include="SecurityAndUsers\SecurityQuestionInfo.cs" />
+    <Compile Include="SecurityAndUsers\UserInfo.cs" />
+    <Compile Include="SecurityAndUsers\UserInformation.cs" />
+    <Compile Include="SecurityAndUsers\UserParams.cs" />
+    <Compile Include="SecurityAndUsers\UserPreferenceParams.cs" />
+    <Compile Include="SecurityAndUsers\UserPreferences.cs" />
+    <Compile Include="SecurityAndUsers\UserRegistration.cs" />
+    <Compile Include="SecurityAndUsers\ViewOrganizationByID.cs" />
+    <Compile Include="Structures\AffStructureGeneralDetails.cs" />
+    <Compile Include="Structures\CautionListParams.cs" />
+    <Compile Include="Structures\ConfigBandModel.cs" />
+    <Compile Include="Structures\DelegationList.cs" />
+    <Compile Include="Structures\DimensionConstruction.cs" />
+    <Compile Include="Structures\DropDown.cs" />
+    <Compile Include="Structures\ICAVehicleModel.cs" />
+    <Compile Include="Structures\ImposedConstraints.cs" />
+    <Compile Include="Structures\PerformStructureAssessmentParams.cs" />
+    <Compile Include="Structures\SearchStructures.cs" />
+    <Compile Include="Structures\StructureDelegationListParams.cs" />
+    <Compile Include="Structures\StructureDelegationCodeParams.cs" />
+    <Compile Include="Structures\StructureGeneralDetails.cs" />
+    <Compile Include="Structures\StructureHistoryList.cs" />
+    <Compile Include="Structures\StructureICA.cs" />
+    <Compile Include="Structures\StructureInfo.cs" />
+    <Compile Include="Structures\StructureJson.cs" />
+    <Compile Include="Structures\StructureListParams.cs" />
+    <Compile Include="Structures\StructureModel.cs" />
+    <Compile Include="Structures\StructureNotification.cs" />
+    <Compile Include="Structures\StructureSpanParams.cs" />
+    <Compile Include="Structures\StructuresToAssess.cs" />
+    <Compile Include="Structures\StructureSummary.cs" />
+    <Compile Include="Structures\StuctImposedParams.cs" />
+    <Compile Include="Structures\SVDataModel.cs" />
+    <Compile Include="Structures\UpdateICAUsageParams.cs" />
+    <Compile Include="Structures\UpdateSVParams.cs" />
+    <Compile Include="Structures\VehicleJSON.cs" />
+    <Compile Include="StructureUpdate\StructureOrgSummary.cs" />
+    <Compile Include="StructureUpdate\SUProject.cs" />
+    <Compile Include="StructureUpdate\SUProjectListParams.cs" />
+    <Compile Include="StructureUpdate\SUStruct.cs" />
+    <Compile Include="VehiclesAndFleets\AssessMovementTypeParams.cs" />
+    <Compile Include="VehiclesAndFleets\Component\Axle.cs" />
+    <Compile Include="VehiclesAndFleets\Component\AxleValidator.cs" />
+    <Compile Include="VehiclesAndFleets\Component\ComponentConfiguration.cs" />
+    <Compile Include="VehiclesAndFleets\Component\ComponentGridList.cs" />
+    <Compile Include="VehiclesAndFleets\Component\ComponentIdList.cs" />
+    <Compile Include="VehiclesAndFleets\Component\ComponentIdModel.cs" />
+    <Compile Include="VehiclesAndFleets\Component\ComponentIdParams.cs" />
+    <Compile Include="VehiclesAndFleets\Component\ComponentModel.cs" />
+    <Compile Include="VehiclesAndFleets\Component\CreateComponentAxleParams.cs" />
+    <Compile Include="VehiclesAndFleets\Component\CreateComponentRegistrationParams.cs" />
+    <Compile Include="VehiclesAndFleets\Component\RegistrationParams.cs" />
+    <Compile Include="VehiclesAndFleets\Component\UpdateVehicleComponentParams.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\AmendRegistarion.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\AppVehicleConfigList.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\AutoAssessingParams.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\AutoAssessingMovementType.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\CandRouteVehicle.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\CheckWheelParams.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\ConfigurationModel.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\CreateNotifVehicleConfigParams.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\FleetComponenentModel.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\GetConfigOrgID.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\ImportVehicleListModel.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\ImportVehicleParams.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\ImportVehicleValidations.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\MovementVehicleConfig.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\NewConfigurationModel.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\SaveConfigurationModel.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\SearchVehicleCombination.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\UpdateNotifRouteVehicleParams.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\VehicleConfigList.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\VehicleConfigurationGridList.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\VehicleDetailSummary.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\VehicleGlobalConfig.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\VehicleModel.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\VehicleRegistration.cs" />
+    <Compile Include="VehiclesAndFleets\Configuration\VehicleRegistrationInputParams.cs" />
+    <Compile Include="VehiclesAndFleets\Component\IFXProperty.cs" />
+    <Compile Include="VehiclesAndFleets\Component\MovementClassification.cs" />
+    <Compile Include="VehiclesAndFleets\Component\MovementClassificationConfig.cs" />
+    <Compile Include="VehiclesAndFleets\Component\VehicleComponent.cs" />
+    <Compile Include="VehiclesAndFleets\Component\VehicleComponentType.cs" />
+    <Compile Include="VehiclesAndFleets\Component\VehicleCompSubType.cs" />
+    <Compile Include="VehiclesAndFleets\Component\VehicleConfigRow.cs" />
+    <Compile Include="VehiclesAndFleets\Component\VehicleConfiguration.cs" />
+    <Compile Include="VehiclesAndFleets\Component\VehicleConfigurationType.cs" />
+    <Compile Include="VehiclesAndFleets\External\VehicleListDetails.cs" />
+    <Compile Include="VehiclesAndFleets\VehComponentAxles.cs" />
+    <Compile Include="VehiclesAndFleets\Vehicles\ApplicationVehicle.cs" />
+    <Compile Include="VehiclesAndFleets\Vehicles\VehicleCategoryToMovementType.cs" />
+    <Compile Include="VehiclesAndFleets\Vehicles\VehicleComponentsConfig.cs" />
+    <Compile Include="VehiclesAndFleets\Vehicles\VehicleEnumConversions.cs" />
+    <Compile Include="VehiclesAndFleets\Vehicles\VehicleEnums.cs" />
+    <Compile Include="VehiclesAndFleets\Vehicles\VehicleImportModel.cs" />
+    <Compile Include="VehiclesAndFleets\Vehicles\VehicleJson.cs" />
+    <Compile Include="VehiclesAndFleets\Vehicles\VehicleValidation.cs" />
+    <Compile Include="VehiclesAndFleets\VehicleSummary.cs" />
+    <Compile Include="VehiclesAndFleets\VehicleWorkFlowParams.cs" />
+    <Compile Include="Workflow\Models\AllocateSORTUserCntrlModel.cs" />
+    <Compile Include="Workflow\Models\WorkflowActivityRoute.cs" />
+    <Compile Include="Workflow\PlanMvmntPayLoad.cs" />
+    <Compile Include="Workflow\WorkflowActivityModel.cs" />
+    <Compile Include="Workflow\WorkflowActivityModelTemp.cs" />
+    <Compile Include="Workflow\WorkflowActivityOrder.cs" />
+    <Compile Include="Workflow\WorkflowActivityOrderPostModel.cs" />
+    <Compile Include="Workflow\WorkflowActivityOrderResponseModel.cs" />
+    <Compile Include="Workflow\WorkflowIndexPostModel.cs" />
+    <Compile Include="Workflow\WorkflowInitializeModel.cs" />
+    <Compile Include="Workflow\WorkflowLogModel.cs" />
+    <Compile Include="Workflow\WorkflowMapper.cs" />
+    <Compile Include="Workflow\WorkflowModel.cs" />
+    <Compile Include="Workflow\WorkflowProcessDetails.cs" />
+    <Compile Include="Workflow\WorkflowProcessKey.cs" />
+    <Compile Include="Workflow\WorkflowProcessModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <Content Include="GeneralDetailsError.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <None Include="packages.config" />
+    <Content Include="VehicleValidationError.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\STP.Common\STP.Common.csproj">
+      <Project>{001eb1f6-da74-4342-841a-9d7856a1ed94}</Project>
+      <Name>STP.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ALSAT\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

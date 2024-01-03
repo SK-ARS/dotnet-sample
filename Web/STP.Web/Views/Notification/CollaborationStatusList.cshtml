@@ -1,0 +1,515 @@
+@using PagedList.Mvc
+@model PagedList.IPagedList<STP.Domain.MovementsAndNotifications.Notification.NotificationStatusModel>
+
+@{
+    int pageNum = 10;
+    bool SORTCollab = false;
+    bool NotifCollab = false;
+    var colorclass = "";
+    if (ViewBag.pageSize != null)
+    {
+        pageNum = ViewBag.pageSize;
+    }
+    if (!Request["lang"].IsEmpty())
+    {
+        Culture = UICulture = Request["lang"];
+    }
+    if (ViewBag.SORTCollab != null)
+    {
+        SORTCollab = ViewBag.SORTCollab;
+    }
+    if (ViewBag.NotifCollab != null)
+    {
+        NotifCollab = ViewBag.NotifCollab;
+    }
+    if (SORTCollab == false)
+    {
+        Layout = null;
+    }
+
+    int ctr = 0;
+}
+<style>
+    .rowEvenNew {
+        color: brown;
+        font-weight: bold;
+    }
+    .pagination {
+        color: rgba(92, 92, 92, 1);
+    }
+</style>
+
+
+    @Html.Hidden("pageNum", 1)
+    @Html.Hidden("pageSizeVal", pageNum)
+    @Html.Hidden("SORTCollab", SORTCollab)
+    @Html.Hidden("hdnDocumentID")
+
+<div>
+    <div class="main-table">
+        <table>
+            <tr>
+                <th>
+                    Contact name<span>
+                        <img src="~/Content/assets/images/down-chevlon.svg" width="15"
+                             height="6">
+                    </span>
+                </th>
+                <th>Organisation</th>
+                <th>Communication method</th>
+                <th>Sent on</th>
+                <th>External collab<br> status</th>
+                <th>Internal collab <br>status</th>
+                <th></th>
+            </tr>
+            <!-- sample examples -->
+            @foreach (var item in Model)
+                        {
+                            if (item.SeenBySort == 2 && ViewBag.SORTCollab == true)
+                            {
+                                colorclass = "rowEvenNew";
+                            }
+                            else
+                            {
+                                colorclass = "";
+                            }
+                            if (ctr % 2 == 0)
+                            {
+
+
+                    <tr class="bgColor3">
+                        <td class="edit-normal @colorclass">@Html.DisplayFor(modelItem => item.FIRST_NAME) @Html.DisplayFor(modelItem => item.SUR_NAME)</td>
+                        <td class="edit-normal @colorclass">@Html.DisplayFor(modelItem => item.OrganisationName)</td>
+                        <td class="@colorclass">
+                            @if (!string.IsNullOrEmpty(item.EMAIL))
+                    {
+                                <span class="edit-normal @colorclass">Email</span>
+                                <br>
+                                <span class="text-normal-hyperlink"><a href="mailto:@item.EMAIL" class="text-decoration-link">@Html.DisplayFor(modelItem => item.EMAIL)</a></span>
+                            }
+                            else if (!string.IsNullOrEmpty(item.FAX))
+                            {
+                                <div>@Resources.Resource.FaxNo</div>
+                                <div><span>(</span>@item.FAX<span>)</span></div>
+                            }
+                            else
+            {
+                                <div>@Resources.Resource.Inbox</div>
+                            }
+
+                        </td>
+                        <td class="edit-normal @colorclass">
+                            @if (item.WHEN.ToString("dd-MM-yyyy") != "01-01-0001")
+                            {
+                @item.WHEN.ToString("dd/MM/yyyy HH:mm:ss")
+                            }
+                        </td>
+                        <td class="edit-normal @colorclass">
+                            @if (!string.IsNullOrEmpty(item.StatusName))
+                            {
+                @item.StatusName.ToLower().Substring(0, 1).ToUpper()<span>@item.StatusName.ToLower().Substring(1).ToLower()</span>
+                            }
+
+                        </td>
+                        <td class="edit-normal @colorclass">
+                            @if (!string.IsNullOrEmpty(item.InternalStatusName))
+                            {
+                @item.InternalStatusName.ToLower().Substring(0, 1).ToUpper()<span>@item.InternalStatusName.ToLower().Substring(1).ToLower()</span>
+                            }
+
+                        </td>
+                        <td>
+
+                            @if (ViewBag.NotifCollab != true)
+                            {
+                if (ViewBag.SORTCollab == false)
+                {
+
+                                    <div id="mid_row" style="justify-content: flex-start;">
+                                        <span id="mid_row_data">
+                                            <!-- <div id="mid_row_data_button">USE VEHICLE</div> -->
+                                            <button class="btn btn-outline-primary btn-normal ViewHistory" DocumentId=@item.DOCUMENT_ID data-toggle="modal"
+                                                    data-target="#exampleModalCenter3">
+                                                HISTORY
+                                            </button>
+                                        </span>
+                                        <span id="mid_row_data"style="width:180px;white-space:nowrap">
+                                            <button DocumentID=@item.DOCUMENT_ID CollaborationId=@item.COLLABORATION_NO class="btn btn-outline-primary btn-normal SetInternalCollaboration" data-toggle="modal"
+                                                    data-target="#exampleModalCenter2">
+                                                <span class="pr-2">
+                                                    <img src="~/Content/assets/images/collab-icon.svg" width="15">
+                                                </span>SET
+                                                COLLAB
+                                            </button>
+                                        </span>
+                                    </div>
+
+
+
+                                }
+                                else
+            {
+
+
+                                    <div id="mid_row" style="justify-content: flex-start;">
+                                        <span id="mid_row_data">
+                                            <!-- <div id="mid_row_data_button">USE VEHICLE</div> -->
+                                            <button DocumentId=@item.DOCUMENT_ID class="btn btn-outline-primary btn-normal ViewSORTHistory" data-toggle="modal"
+                                                    data-target="#exampleModalCenter3">
+                                                HISTORY
+                                            </button>
+                                        </span>
+                                        <span id="mid_row_data" style="width:180px;white-space:nowrap">
+                                            <button DocumentId=@item.DOCUMENT_ID CollaborationId=@item.COLLABORATION_NO class="btn btn-outline-primary btn-normal SetSORTInternalCollaboration" data-toggle="modal"
+                                                    data-target="#exampleModalCenter2">
+                                                <span class="pr-2">
+                                                    <img src="~/Content/assets/images/collab-icon.svg" width="15">
+                                                </span>SET
+                                                COLLAB
+                                            </button>
+                                        </span>
+                                    </div>
+                                }
+                            }
+                            <!-- <div id="mid_row_data_button">USE VEHICLE</div> -->
+
+
+                        </td>
+                    </tr>
+                    if (!string.IsNullOrEmpty(item.NOTES) && item.SeenBySort == 2)
+            {
+                        <tr class="bgColor3">
+                            <td colspan="7">
+                                <div id="notesFromHaulier">
+                                    <div class="pt-3 pb-2">
+                                        <h3 class="heading-medium ">External notes</h3>
+                                    </div>
+                                    <div style="width: 70%;">
+                                        <p class="edit-normal pl-0 pr-0 pb-3 pt-0 mt-0 mb-0 ml-0 mr-0 @colorclass">
+                                            @Html.Raw(item.NOTES.Replace("\n", "<br />"))
+                                        </p>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    else
+            {
+                if (!string.IsNullOrEmpty(item.NOTES))
+                {
+                            <tr class="bgColor3">
+                                <td colspan="7">
+                                    <div id="notesFromHaulier">
+                                        <div class="pt-3 pb-2">
+                                            <h3 class="heading-medium ">External notes</h3>
+                                        </div>
+                                        <div style="width: 70%;">
+                                            <p class="edit-normal pl-0 pr-0 pb-3 pt-0 mt-0 mb-0 ml-0 mr-0 @colorclass">
+                                                @Html.Raw(item.NOTES.Replace("\n", "<br />"))
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+
+
+                    if (!string.IsNullOrEmpty(item.InternalNotes) && item.SeenBySort == 2)
+            {
+                        <tr class="bgColor3">
+                            <td colspan="7">
+                                <div id="notesFromHaulier">
+                                    <div class="pt-3 pb-2">
+                                        <h3 class="heading-medium @colorclass">@Resources.Resource.InternalNotes </h3>
+                                    </div>
+                                    <div style="width: 70%;">
+                                        <p class="edit-normal pl-0 pr-0 pb-3 pt-0 mt-0 mb-0 ml-0 mr-0 @colorclass">
+                                            @Html.Raw(item.InternalNotes.Replace("\n", "<br />"))
+                                        </p>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    else
+            {
+                if (!string.IsNullOrEmpty(item.InternalNotes))
+                {
+                            <tr class="bgColor3">
+                                <td colspan="7">
+                                    <div id="notesFromHaulier">
+                                        <div class="pt-3 pb-2">
+                                            <h3 class="heading-medium @colorclass">@Resources.Resource.InternalNotes </h3>
+                                        </div>
+                                        <div style="width: 70%;">
+                                            <p class="edit-normal pl-0 pr-0 pb-3 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                                @Html.Raw(item.InternalNotes.Replace("\n", "<br />"))
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+
+                }
+                else
+            {
+
+
+                    <tr class="bgColor2">
+                        <td class="edit-normal @colorclass">@Html.DisplayFor(modelItem => item.FIRST_NAME) @Html.DisplayFor(modelItem => item.SUR_NAME)</td>
+                        <td class="edit-normal @colorclass">@Html.DisplayFor(modelItem => item.OrganisationName)</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.EMAIL))
+                            {
+                                <span class="edit-normal @colorclass">Email</span>
+                                <br>
+                                <span class="text-normal-hyperlink"><a href="mailto:@item.EMAIL" class="text-decoration-link">@Html.DisplayFor(modelItem => item.EMAIL)</a></span>
+                            }
+                            else if (!string.IsNullOrEmpty(item.FAX))
+            {
+                                <div class="@colorclass">@Resources.Resource.FaxNo</div>
+                                <div><span>(</span>@item.FAX<span>)</span></div>
+                            }
+                            else
+            {
+                                <div class="@colorclass">@Resources.Resource.Inbox</div>
+                            }
+
+                        </td>
+                        <td class="edit-normal @colorclass">
+                            @if (item.WHEN.ToString("dd-MM-yyyy") != "01-01-0001")
+                            {
+                @item.WHEN.ToString("dd/MM/yyyy HH:mm:ss")
+                            }
+                        </td>
+                        <td class="edit-normal @colorclass">
+                            @if (!string.IsNullOrEmpty(item.StatusName))
+                            {
+                @item.StatusName.ToLower().Substring(0, 1).ToUpper()<span>@item.StatusName.ToLower().Substring(1).ToLower()</span>
+                            }
+
+                        </td>
+                        <td class="edit-normal @colorclass">
+                            @if (!string.IsNullOrEmpty(item.InternalStatusName))
+                            {
+                @item.InternalStatusName.ToLower().Substring(0, 1).ToUpper()<span>@item.InternalStatusName.ToLower().Substring(1).ToLower()</span>
+                            }
+
+                        </td>
+                        <td>
+
+                            @if (ViewBag.NotifCollab != true)
+                            {
+                if (ViewBag.SORTCollab == false)
+                {
+
+                                    <div id="mid_row" style="justify-content: flex-start;">
+                                        <span id="mid_row_data">
+                                            <!-- <div id="mid_row_data_button">USE VEHICLE</div> -->
+                                            <button DocumentId=@item.DOCUMENT_ID class="btn btn-outline-primary btn-normal ViewHistory" data-toggle="modal"
+                                                    data-target="#exampleModalCenter3">
+                                                HISTORY
+                                            </button>
+                                        </span>
+                                        <span id="mid_row_data"style="width:180px;white-space:nowrap">
+                                            <button DocumentId=@item.DOCUMENT_ID CollaborationId=@item.COLLABORATION_NO class="btn btn-outline-primary btn-normal SetInternalCollaboration" data-toggle="modal"
+                                                    data-target="#exampleModalCenter2">
+                                                <span class="pr-2">
+                                                    <img src="~/Content/assets/images/collab-icon.svg" width="15">
+                                                </span>SET
+                                                COLLAB
+                                            </button>
+                                        </span>
+                                    </div>
+
+
+
+                                }
+                                else
+            {
+
+
+                                    <div id="mid_row" style="justify-content: flex-start;">
+                                        <span id="mid_row_data">
+                                            <!-- <div id="mid_row_data_button">USE VEHICLE</div> -->
+                                            <button DocumentId=@item.DOCUMENT_ID class="btn btn-outline-primary btn-normal ViewSORTHistoryFn " data-toggle="modal"
+                                                    data-target="#exampleModalCenter3">
+                                                HISTORY
+                                            </button>
+                                        </span>
+                                        <span id="mid_row_data"style="width:180px;white-space:nowrap">
+                                            <button DocumentId=@item.DOCUMENT_ID CollaborationId=@item.COLLABORATION_NO class="btn btn-outline-primary btn-normal SetSORTInternalCollaboration" data-toggle="modal"
+                                                    data-target="#exampleModalCenter2">
+                                                <span class="pr-2">
+                                                    <img src="~/Content/assets/images/collab-icon.svg" width="15">
+                                                </span>SET COLLAB
+
+                                            </button>
+                                        </span>
+                                    </div>
+                                }
+                            }
+                            <!-- <div id="mid_row_data_button">USE VEHICLE</div> -->
+
+
+                        </td>
+                    </tr>
+                    if (!string.IsNullOrEmpty(item.NOTES) && item.SeenBySort == 2)
+            {
+                        <tr class="bgColor2">
+                            <td colspan="7">
+                                <div id="notesFromHaulier">
+                                    <div class="pt-3 pb-2">
+                                        <h3 class="heading-medium">External notes</h3>
+                                    </div>
+                                    <div style="width: 70%;">
+                                        <p class="edit-normal @colorclass pl-0 pr-0 pb-3 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                            @Html.Raw(item.NOTES.Replace("\n", "<br />"))
+                                        </p>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    else
+            {
+                if (!string.IsNullOrEmpty(item.NOTES))
+                {
+                            <tr class="bgColor2">
+                                <td colspan="7">
+                                    <div id="notesFromHaulier">
+                                        <div class="pt-3 pb-2">
+                                            <h3 class="heading-medium">External notes</h3>
+                                        </div>
+                                        <div style="width: 70%;">
+                                            <p class="edit-normal pl-0 pr-0 pb-3 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                                @Html.Raw(item.NOTES.Replace("\n", "<br />"))
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+
+
+                    if (!string.IsNullOrEmpty(item.InternalNotes) && item.SeenBySort == 2  )
+            {
+                        <tr class="bgColor2">
+                            <td colspan="7">
+                                <div id="notesFromHaulier">
+                                    <div class="pt-3 pb-2">
+                                        <h3 class="heading-medium @colorclass">@Resources.Resource.InternalNotes </h3>
+                                    </div>
+                                    <div style="width: 70%;">
+                                        <p class="edit-normal @colorclass pl-0 pr-0 pb-3 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                            @Html.Raw(item.InternalNotes.Replace("\n", "<br />"))
+                                        </p>
+
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                    else
+            {
+                if (!string.IsNullOrEmpty(item.InternalNotes))
+                {
+                            <tr class="bgColor2">
+                                <td colspan="7">
+                                    <div id="notesFromHaulier">
+                                        <div class="pt-3 pb-2">
+                                            <h3 class="heading-medium @colorclass">@Resources.Resource.InternalNotes </h3>
+                                        </div>
+                                        <div style="width: 70%;">
+                                            <p class="edit-normal @colorclass pl-0 pr-0 pb-3 pt-0 mt-0 mb-0 ml-0 mr-0">
+                                                @Html.Raw(item.InternalNotes.Replace("\n", "<br />"))
+                                            </p>
+
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
+
+
+                }
+                ctr++;
+            }
+            @if (@ViewBag.TotalCount > 0)
+            {
+
+            }
+            else
+            {
+
+                <tr class="bgColor2">
+                    <td colspan="7" style="text-align: center; color:red">
+                        @Resources.Resource.NoRecordFound
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+
+    @if (@ViewBag.TotalCount > 0)
+    {
+
+        <div class="bottom-pagination">
+            <div class="pagination" id="reviewCausionPaginator">
+                <div>
+
+
+                </div>
+
+                @Html.PagedListPager(Model, page => Url.Action("CollaborationStatusList",
+                new
+                {
+                    B7vy6imTleYsMr6Nlv7VQ =
+                                                                STP.Web.Helpers.EncryptionUtility.Encrypt(
+                                                                "&DocumentId=" + ViewBag.DocumentId),page
+                }),
+                new PagedListRenderOptions
+                {
+                      
+                    DisplayLinkToPreviousPage = PagedListDisplayMode.IfNeeded,
+                    DisplayLinkToNextPage = PagedListDisplayMode.IfNeeded,
+                    LinkToPreviousPageFormat = "<img src='/Content/assets/images/left-chevlon.svg' width='10'>",
+                    LinkToNextPageFormat = "<img src='/Content/assets/images/right-chevlon.svg' width='10'>",
+                    DisplayLinkToFirstPage = PagedListDisplayMode.IfNeeded,
+                    DisplayLinkToLastPage = PagedListDisplayMode.IfNeeded,
+                    MaximumPageNumbersToDisplay = 3,
+                    DisplayEllipsesWhenNotShowingAllPageNumbers = true,
+                    EllipsesFormat = "...",
+                    LinkToFirstPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/left-chevlon.svg' width='10'><img src='/Content/assets/images/left-chevlon.svg' width='10'></div>",
+                    LinkToLastPageFormat = "<div style='position:absolute;'><img src='/Content/assets/images/right-chevlon.svg' width='10'><img src='/Content/assets/images/right-chevlon.svg' width='10'></div>"
+
+                })
+            </div>
+        </div>
+    }
+</div>
+
+
+
+@{
+<input type="hidden" value="@ViewBag.pageSize" id="hf_pageSize" name="hf_pageSize" />
+<input type="hidden" value="@ViewBag.PageView" id="hf_PageView" name="hf_PageView" />
+<input type="hidden" value="@ViewBag.SORTCollab" id="hf_SORTCollab" name="hf_SORTCollab" />
+    @Html.Hidden("hf_PageNumber", Model.PageNumber)
+    @Html.Hidden("hf_StatusCode", TempData["StatusCode"])
+    @Html.Hidden("hf_SORTCollab", SORTCollab)
+    @Html.Hidden("hf_NotifCollab", NotifCollab)
+}
+
+@*<script src="~/Scripts/Notification/CollaborationStatusListcsp.js?V@(Session["ProjectVersion"])"></script>*@

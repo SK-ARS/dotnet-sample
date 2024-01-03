@@ -1,0 +1,242 @@
+
+@using System.Web.Optimization
+@using STP.Domain
+@model STP.Domain.Applications.SORouteAssessment
+
+
+@{
+    ViewBag.Title = "RouteAnalysisPanel";
+    int versionId = ViewBag.versionId;
+    long analysisId = ViewBag.AnalysisId;
+    long analID = ViewBag.AnalysisId;
+    bool SORTflag = ViewBag.SORTflag;
+    int revid = 0;
+    if (ViewBag.RivisionId != null)
+    {
+        revid = ViewBag.RivisionId;
+    }
+    bool iscandidate = ViewBag.CandidateRT;
+
+    string vr1ContentRefNo = ViewBag.VR1ContentRefNo;
+    bool IsGenerate = true;
+    bool IsDIGenerate = false;
+
+    if (ViewBag.IsGenerate != null)
+    {
+        IsGenerate = ViewBag.IsGenerate;
+    }
+    if (ViewBag.IsDIGenerate != null)
+    {
+        IsDIGenerate = ViewBag.IsDIGenerate;
+    }
+    string CandRouteDeatils = null;
+    if (ViewBag.CandRouteType != null)
+    {
+        CandRouteDeatils = ViewBag.CandRouteType;
+    }
+}
+@{
+    ViewBag.Title = "SORTCreateVR1General";
+
+    int isAdmin = 0;
+    int userTypeID = 0;
+    long UserId = 0;
+    if (Session["UserInfo"] != null)
+    {
+        var sessionValues = (STP.Domain.SecurityAndUsers.UserInfo)Session["UserInfo"];
+        userTypeID = sessionValues.UserTypeId;
+        if (sessionValues.IsAdmin == 1)
+        {
+            isAdmin = 1;
+        }
+        UserId = sessionValues.SortUserId;
+    }
+    string SORTStatus = null;
+    if (ViewBag.SORTStatus != null)
+    {
+        SORTStatus = ViewBag.SORTStatus;
+    }
+    var structCheck = 0;
+    var constraintCheck = 0;
+    var cautionCheck = 0;
+    if (ViewBag.UnsuitStruct != null)
+    {
+        structCheck = ViewBag.UnsuitStruct;
+    }
+    if (ViewBag.UnsuitConstraint != null)
+    {
+        constraintCheck = ViewBag.UnsuitConstraint;
+    }
+    if (ViewBag.UnsuitCaution != null)
+    {
+        cautionCheck = ViewBag.UnsuitCaution;
+    }
+}
+
+@Html.Hidden("VR1ContentRefNo", vr1ContentRefNo)
+@Html.Hidden("AnalysisId", analysisId)
+@Html.Hidden("analID", analID)
+@Html.Hidden("RevID", revid)
+@Html.Hidden("SORTflag", SORTflag)
+@Html.Hidden("IsCandidateRT", iscandidate)
+@Html.Hidden("CandRouteDetails", CandRouteDeatils)
+@Html.Hidden("IncrListStructure")
+@Html.Hidden("IncrListConstraint")
+@Html.Hidden("IncrListCaution")
+<style>
+    /*.card .li {
+        cursor: pointer;
+    }*/
+    #banner-container {
+        color: white !important;
+    }
+
+    #divRouteAnalysis .error-message .card {
+        /* width           : fit-content;
+    height          : fit-content; */
+        width: auto;
+        height: 18%;
+        background-color: rgb(227, 1, 1, 0.1);
+        padding-right: 1.5rem;
+        padding-left: 0.5rem;
+    }
+</style>
+<div class="card PublishCardHelper mt-0" id="route-assessment" style="cursor:default !important">
+    <div class="row">
+        <div class="col-3 padHelper1">
+            <div class="card sidebar-soa-Helper">
+                <div class="card-header cardHeaderHelper" id="sm1">
+                    <span class="sidebartitle-soa" style="color:white !important">Options</span>
+                </div>
+                <div class="card-body cbHelper" id="sm">
+                    <ul class="p-0 m-0">
+                        <!--RouteAnalysisNotification-->
+
+                        <li id="RBAffectStruct" style="cursor:pointer;" class="list-soa clickable btnAffectedStructures" name="RouteAnalysis"
+                            value="AffectStruct" RBAffectStruct='RBAffectStruct' affectedstructure='affectedstructure'>
+                            Affected Structures
+                            <img id="needAttentionStruct" src="/Content/assets/images/warning.svg" title="Needs attention" width="28" style="display:none">
+                        </li>
+                        <li id="RBConstraints" style="cursor:pointer;" class="list-soa clickable btnConstraints" RBConstraints='RBConstraints' spnconstraints='spnconstraints'>
+                            Constraints
+                            <img id="needAttentionConstraint" src="/Content/assets/images/warning.svg" title="Needs attention" width="28" style="display:none">
+                        </li>
+                        <li id="RBRouteDescrp" style="cursor:pointer;" class="list-soa clickable btnRouteDescription" name="RouteAnalysis" value="RouteDescrp"
+                            RBRouteDescrp='RBRouteDescrp' routeDescription='routeDescription'>
+                            Route Description
+                        </li>
+                        @*<li id="RBCaution" style="cursor:pointer;" class="list-soa clickable btnCautions" RBCaution='RBCaution' spncautions='spncautions'>
+                            Cautions
+                            <img id="needAttentionCaution" src="/Content/assets/images/warning.svg" title="Needs attention" width="28" style="display:none">
+                        </li>*@
+                        @if (SORTflag == true)  //condition to display the affected parties radio button
+                        {
+                            <li id="RBAffectedParty" style="cursor:pointer;" class="list-soa clickable btnAffecteParties" RBAffectedParty='RBAffectedParty' affectedParties='affectedParties'>
+                                Affected Parties
+                            </li>
+                            <li id="RBDrivingInstruction" style="cursor:pointer;" class="list-soa clickable btnDrivingInstructions" divId="drivingInstructions">Driving Instructions</li>
+                            <li id="RBAnnot" style="cursor:pointer;" class="list-soa clickable btnAnnotation" name="RouteAnalysis" value="Annot"
+                                divId="annotations">
+                                Annotations
+                            </li>
+                            <li id="RBAffectedRoad" style="cursor:pointer;" class="list-soa clickable btnAffectedRoads"
+                                divid='affectedRoads' isstructuredetails="false">
+                                Affected Roads
+                            </li>
+                            <li id="RBAffectedRoad_StructureWise" style="cursor:pointer;display:none" class="list-soa clickable btnAffectedRoads"
+                                divid='affectedRoads' isstructuredetails="true">
+                                Affected Roads
+                            </li>
+                            }
+                            else
+                            {
+                            <li id="RBAffectedParty" style="cursor:pointer;" class="list-soa clickable btnAffecteParties" RBAffectedParty='RBAffectedParty' affectedParties='affectedParties'>
+                                Affected Parties
+                            </li>
+                            <li id="RBDrivingInstruction" style="cursor:pointer;" class="list-soa clickable btnDrivingInstructions" divId="drivingInstructions">Driving Instructions</li>
+                            <li id="RBAnnot" style="cursor:pointer;" class="list-soa clickable btnAnnotation" name="RouteAnalysis" value="Annot"
+                                divId="annotations">
+                                Annotations
+                            </li>
+                            <li id="RBAffectedRoad" style="cursor:pointer;" class="list-soa clickable btnAffectedRoads"
+                                divid="affectedRoads" isstructuredetails="false">
+                                Affected Roads
+                            </li>
+                            }
+
+
+                        </ul>
+
+                    <div id="printbutton" style="margin-top: 15px;" class="pb-6 mb-2">
+                        <div class="button main-button">
+                            <button id="PrintReport" class="btn btn-outline-primary btn-normal" role="button" aria-pressed="true" AnalysisId=@ViewBag.AnalysisId>
+                                PRINT DI
+                            </button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-9 padHelper2" id="divRouteAnalysis" style="cursor: default;">
+            <div id="imminentBanner" class="row" style="margin-bottom: 25px;width: 100%;display:none;">
+                <span id="imminentBannerMsg"></span>
+            </div>
+            <div class="error-message" id="divRedirectUsers" style="padding-bottom: 1%; cursor:default !important;display:none;">
+                <div class="card ml-0" style="width: 100%;">
+                    <div class="row pt-2 pb-2" style="flex-wrap: unset; background-color: #ffe6e6;">
+                        <div class="err-msg" style="display:flex;">
+                            <img src="~/Content/assets/images/warning-icon2.svg" alt="vehicle-2"
+                                 class="mr-2" width="20" style="text-align: initial;padding-bottom:12px">
+
+
+                            <span class="edit-normal pr-2" style="font-size: 12px;">
+                                Route contains unsuitable structures/constraints/cautions. Please check the affected structures/constraints/cautions displayed in the left panel of page to view details.
+
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="disclaimerBlock">
+            </div>
+
+            <span id='drivingInstructions' style="display: none;">
+            </span>
+            <span id='affectedstructure' style="display: none;">
+            </span>
+            <span id='annotations' style="display: none;">
+            </span>
+            <span id='spncautions' style="display: none;">
+            </span>
+            <span id='spnconstraints' style="display: none;">
+            </span>
+            <span id='affectedParties' style="display: none;">
+            </span>
+            <span id='affectedRoads' style="display: none;">
+            </span>
+            <span id='routeDescription' style="display: none;">
+            </span>
+            <span id='showAffectedparties' style="display: none;">
+            </span>
+            <div id="routeAssessmentBckbtn" style="float: right;" class="row mt-5">
+                <button type="button" class="btn outline-btn-primary SOAButtonHelper ml2 mb-2 BackToRouteAssessment" aria-hidden="true">
+                    BACK
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="General"></div>
+
+@{
+<input type="hidden" value="@ViewBag.Helpdest_redirect" id="hf_Helpdest_redirect" name="hf_Helpdest_redirect" />
+<input type="hidden" value="@ViewBag.IsDIGenerate" id="hf_IsDIGenerate" name="hf_IsDIGenerate" />
+<input type="hidden" value="@ViewBag.NoDataFound" id="hf_NoDataFound" name="hf_NoDataFound" />
+}
+@Html.Hidden("hf_StructCheck", structCheck)
+@Html.Hidden("hf_ConstraintCheck", constraintCheck)
+@Html.Hidden("hf_CautionCheck", cautionCheck)
+<input type="hidden" value="@ViewBag.AnalysisId" id="hf_AnalysisId" name="hf_AnalysisId" />
+<input type="hidden" value="@ViewBag.ContentRefNo" id="hf_ContentRefNo" name="hf_ContentRefNo" />
