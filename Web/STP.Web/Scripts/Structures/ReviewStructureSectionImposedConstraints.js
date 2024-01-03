@@ -1,3 +1,0 @@
-﻿
-    $("#signedConstraints").hide();
-    $("#ErrorMsg").show();

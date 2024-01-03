@@ -1,9 +1,0 @@
-﻿@{
-    Html.RenderAction("SOHaulierApplicationDetails", "Application", new { revisionId = ViewBag.RevisionId, versionId = ViewBag.VersionId });
-}
-@{
-    Html.RenderAction("ViewRouteVehicleList", "Application", new { appRevisionId = ViewBag.RevisionId, versionId = ViewBag.VersionId, historic = ViewBag.IsHistoric });
-}
-@{
-    Html.RenderAction("ViewSupplimentaryInfo", "Application", new { appRevisionId = ViewBag.RevisionId, historic = ViewBag.IsHistoric });
-}
