@@ -1,6 +1,6 @@
 ﻿# Hello World .NET Core Application
 
-# Run locally test
+# Run locally testnew
 ```
 dotnet run --project hello-world-api
 ```
