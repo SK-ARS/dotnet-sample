@@ -1,2 +1,1 @@
-trigger tester
 Trigger tester
