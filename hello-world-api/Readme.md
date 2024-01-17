@@ -6,7 +6,7 @@ dotnet run --project hello-world-api
 ```
 Then launch your browser and access http://localhost:5000/api/hello
 
-# Deploy to Cloud Foundry - trigger test-1
+# Deploy to Cloud Foundry - trigger test-2
 ```
 cf push
 ```
