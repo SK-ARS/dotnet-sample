@@ -11,7 +11,19 @@ Then launch your browser and access http://localhost:5000/api/hello
 cf push
 ```
 Follow the console output to gather the url
+<<<<<<< HEAD
 
 
 ################"test"
+=======
+###################sdavgdfgbdfb
+"test"
+"test"
+"test"
+"test"
+"test"
+"test"
+"test"
+"test"
+>>>>>>> b67e1f72bf6cc3b951f35abe4622c4bc121b74e6
 "test"
