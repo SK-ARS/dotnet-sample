@@ -12,7 +12,7 @@ pipeline {
         
         stage('PR stage') {
             when{
-                branch "PR-*"
+                branch 'PR-*'
             }
             steps {
                 script {
