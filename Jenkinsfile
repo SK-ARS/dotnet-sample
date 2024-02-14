@@ -9,11 +9,21 @@ pipeline {
                     def MAIL_BODY="Mail Body"
                     echo "currentBuild.rawBuild.causes[0] = "+currentBuild.rawBuild.causes[0]
                     echo "currentBuild.rawBuild.causes[0].class.simpleName = "+currentBuild.rawBuild.causes[0].class.simpleName
-                    if("GitHubPRCause".equals(currentBuild.rawBuild.causes[0].class.simpleName)){
+                    /*if("GitHubPRCause".equals(currentBuild.rawBuild.causes[0].class.simpleName)){
                         echo "Build triggered by PR"
                     }
                     else{
                         echo "****************Build not triggered by PR*********************"
+                    }*/
+                    if (env.CHANGE_ID!=null && env.CHANGE_ID!='') {
+                        echo "Pull Request Information:"
+                        echo "PR Number: ${env.CHANGE_ID}"
+                        echo "PR Title: ${env.CHANGE_TITLE}"
+                        echo "PR Author: ${env.CHANGE_AUTHOR}"
+                        echo "PR Source Branch: ${env.CHANGE_BRANCH}"
+                        echo "PR Target Branch: ${env.CHANGE_TARGET}"
+                    } else {
+                        echo "This build is not triggered by a pull request."
                     }
                     echo "Inside stage 1"
                     echo "GIT_CHECKOUT_BRANCH = "+GIT_CHECKOUT_BRANCH
