@@ -5,7 +5,12 @@ pipeline {
         stage('Initialization') {
             steps {
                 script {
-                    echo "Build cause : "+currentBuild.rawBuild.getCause(0)
+                    if("GitHubPRCause".equals(currentBuild.rawBuild.causes[0].class.simpleName)){
+                        echo "Build triggered by PR"
+                    }
+                    else{
+                        echo "****************Build not triggered by PR*********************"
+                    }
                     echo "Inside stage 1"
                     def GIT_CHECKOUT_BRANCH=BRANCH_NAME 
                     echo "GIT_CHECKOUT_BRANCH = "+GIT_CHECKOUT_BRANCH
