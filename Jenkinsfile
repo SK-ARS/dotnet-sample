@@ -1,6 +1,6 @@
 pipeline {
     agent any
-        
+    Stages {
         stage('Initialization') {
             steps {
                 script {
@@ -51,7 +51,7 @@ pipeline {
                 }
             }
         }
-        
+    
         stage('PR stage') {
             when{
                 branch 'PR-*'
