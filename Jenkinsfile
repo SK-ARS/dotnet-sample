@@ -1,27 +1,12 @@
 pipeline {
     agent any
-
-    parameters {
-        string(name: 'MY_PARAMETER', defaultValue: 'default_value', description: 'Description of the parameter')
-    }
-    
-    stages {
-
-        stage('Print Parameters') {
-            steps {
-                script {
-                    // Print a specific parameter
-                    echo "MY_PARAMETER: ${params.MY_PARAMETER}"
-
-                    // Print all parameters
-                    echo "All parameters: ${params}"
-                }
-            }
-        }
         
         stage('Initialization') {
             steps {
                 script {
+                    params.each { paramName, paramValue ->
+                        echo "${paramName}: ${paramValue}"
+                    }
                     echo "BRANCH_NAME= "+BRANCH_NAME
                     def GIT_CHECKOUT_BRANCH=BRANCH_NAME
                     def MAIL_BODY="Mail Body"
