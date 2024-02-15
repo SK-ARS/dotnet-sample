@@ -7,6 +7,7 @@ pipeline {
             }
             steps {
                 script {
+                    echo "*************************************** DEV BRANCH ***************************************"
                     echo "In Stage 1"
                     bat "set"
                 }
@@ -19,6 +20,7 @@ pipeline {
             }
             steps {
                 script {
+                    echo "*************************************** DEV BRANCH ***************************************"
                     echo "Build triggered by PR"
                     echo "Pull Request Information:"
                     echo "PR Number: ${env.CHANGE_ID}"
