@@ -1,6 +1,23 @@
 pipeline {
     agent any
+
+    parameters {
+        string(name: 'MY_PARAMETER', defaultValue: 'default_value', description: 'Description of the parameter')
+    }
+    
     stages {
+
+        stage('Print Parameters') {
+            steps {
+                script {
+                    // Print a specific parameter
+                    echo "MY_PARAMETER: ${params.MY_PARAMETER}"
+
+                    // Print all parameters
+                    echo "All parameters: ${params}"
+                }
+            }
+        }
         
         stage('Initialization') {
             steps {
