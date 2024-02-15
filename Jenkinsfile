@@ -41,7 +41,7 @@ pipeline {
                     else {
                         echo "GITHUB_PR_SOURCE_BRANCH variable is null"
                     }
-                    
+                    bat 'set'
                     echo "Inside stage 1"
                     echo "GIT_CHECKOUT_BRANCH = "+GIT_CHECKOUT_BRANCH
                     //MAIL_BODY+="\n\nJob triggered by Pull Reruest : ${PR_NUMBER} - Inittiated by ${PR_AUTHOR}\nPR source : ${PR_SOURCE_BRANCH}, target : ${PR_TARGET_BRANCH}"
