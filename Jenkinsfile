@@ -31,5 +31,13 @@ pipeline {
                 }
             }
         }
+
+        stage("Independent stage"){
+            steps {
+                script {
+                    echo "Inside Independent stage"
+                }
+            }
+        }
     }
 }
