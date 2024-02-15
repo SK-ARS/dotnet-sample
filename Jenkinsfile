@@ -36,7 +36,7 @@ pipeline {
                         echo "GITHUB_PR_SOURCE_BRANCH = "+GITHUB_PR_SOURCE_BRANCH
                     }
                     else {
-                        echo "GITHUB_PR_SOURCE_BRANCH variable is null
+                        echo "GITHUB_PR_SOURCE_BRANCH variable is null"
                     }
                     echo "Inside stage 1"
                     echo "GIT_CHECKOUT_BRANCH = "+GIT_CHECKOUT_BRANCH
