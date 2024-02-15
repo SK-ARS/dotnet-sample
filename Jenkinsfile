@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Stage 1') {
             when{
-                branch BRANCH_NAME
+                branch env.BRANCH_NAME
             }
             steps {
                 script {
