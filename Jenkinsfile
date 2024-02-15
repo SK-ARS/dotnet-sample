@@ -2,9 +2,12 @@ pipeline {
     agent any
     stages {
         stage('Stage 1') {
+            when{
+                branch main
+            }
             steps {
                 script {
-                    bat 'Stage 1'
+                    echo "In Stage 1"
                     bat "set"
                 }
             }
