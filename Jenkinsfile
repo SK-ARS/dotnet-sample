@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Stage 1') {
             when{
-                branch 'main*'
+                branch BRANCH_NAME
             }
             steps {
                 script {
@@ -26,6 +26,8 @@ pipeline {
                     echo "PR Author: ${env.CHANGE_AUTHOR}"
                     echo "PR Source Branch: ${env.CHANGE_BRANCH}"
                     echo "PR Target Branch: ${env.CHANGE_TARGET}"
+                    MAIL_BODY+="\n\n\tJob triggered due to PR-${env.CHANGE_ID} from ${env.CHANGE_BRANCH} to ${env.CHANGE_TARGET}"
+                    
                 }
             }
         }
