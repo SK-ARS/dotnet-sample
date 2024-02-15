@@ -16,8 +16,12 @@ pipeline {
                     else{
                         echo "****************Build not triggered by PR*********************"
                     }*/
-                    if(env.PR_NUMBER!+=null && env.PR_NUMBER!='') {
+                    if(env.PR_NUMBER!=null && env.PR_NUMBER!='') {
                         echo "PR_NUMBER = "+PR_NUMBER
+                    }
+                    else{
+                        echo "PR_NUMBER variable is null"
+                    }
                     if (env.CHANGE_ID!=null && env.CHANGE_ID!='') {
                         echo "Pull Request Information:"
                         echo "PR Number: ${env.CHANGE_ID}"
