@@ -19,9 +19,10 @@ pipeline {
                     if(env.PR_NUMBER!=null && env.PR_NUMBER!='') {
                         echo "PR_NUMBER = "+PR_NUMBER
                     }
-                    else{
+                    else {
                         echo "PR_NUMBER variable is null"
                     }
+                    
                     if (env.CHANGE_ID!=null && env.CHANGE_ID!='') {
                         echo "Pull Request Information:"
                         echo "PR Number: ${env.CHANGE_ID}"
@@ -29,15 +30,18 @@ pipeline {
                         echo "PR Author: ${env.CHANGE_AUTHOR}"
                         echo "PR Source Branch: ${env.CHANGE_BRANCH}"
                         echo "PR Target Branch: ${env.CHANGE_TARGET}"
-                    } else {
+                    }
+                    else {
                         echo "CHANGE_ID variable is null"
                     }
-                    if(GITHUB_PR_SOURCE_BRANCH!=null && GITHUB_PR_SOURCE_BRANCH!='') {
+                    
+                    if(env.GITHUB_PR_SOURCE_BRANCH!=null && env.GITHUB_PR_SOURCE_BRANCH!='') {
                         echo "GITHUB_PR_SOURCE_BRANCH = "+GITHUB_PR_SOURCE_BRANCH
                     }
                     else {
                         echo "GITHUB_PR_SOURCE_BRANCH variable is null"
                     }
+                    
                     echo "Inside stage 1"
                     echo "GIT_CHECKOUT_BRANCH = "+GIT_CHECKOUT_BRANCH
                     //MAIL_BODY+="\n\nJob triggered by Pull Reruest : ${PR_NUMBER} - Inittiated by ${PR_AUTHOR}\nPR source : ${PR_SOURCE_BRANCH}, target : ${PR_TARGET_BRANCH}"
