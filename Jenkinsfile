@@ -5,6 +5,7 @@ pipeline {
         stage('Initialization') {
             steps {
                 script {
+                    echo "BRANCH_NAME= "+BRANCH_NAME
                     def GIT_CHECKOUT_BRANCH=BRANCH_NAME
                     def MAIL_BODY="Mail Body"
                     echo "currentBuild.rawBuild.causes[0] = "+currentBuild.rawBuild.causes[0]
@@ -15,6 +16,8 @@ pipeline {
                     else{
                         echo "****************Build not triggered by PR*********************"
                     }*/
+                    if(env.PR_NUMBER!+=null && env.PR_NUMBER!='') {
+                        echo "PR_NUMBER = "+PR_NUMBER
                     if (env.CHANGE_ID!=null && env.CHANGE_ID!='') {
                         echo "Pull Request Information:"
                         echo "PR Number: ${env.CHANGE_ID}"
