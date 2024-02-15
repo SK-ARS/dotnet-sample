@@ -30,7 +30,13 @@ pipeline {
                         echo "PR Source Branch: ${env.CHANGE_BRANCH}"
                         echo "PR Target Branch: ${env.CHANGE_TARGET}"
                     } else {
-                        echo "This build is not triggered by a pull request."
+                        echo "CHANGE_ID variable is null"
+                    }
+                    if(GITHUB_PR_SOURCE_BRANCH!=null && GITHUB_PR_SOURCE_BRANCH!='') {
+                        echo "GITHUB_PR_SOURCE_BRANCH = "+GITHUB_PR_SOURCE_BRANCH
+                    }
+                    else {
+                        echo "GITHUB_PR_SOURCE_BRANCH variable is null
                     }
                     echo "Inside stage 1"
                     echo "GIT_CHECKOUT_BRANCH = "+GIT_CHECKOUT_BRANCH
