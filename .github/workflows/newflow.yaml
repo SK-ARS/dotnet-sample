@@ -1,0 +1,16 @@
+name: first test workflow
+on:
+  pull_request:
+    branches:
+      - DevOps
+  push:
+    branches:
+      - DevOps
+jobs:
+  first_job_name:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: stepname_job1
+        run: echo "first echo"
+        shell: bash
