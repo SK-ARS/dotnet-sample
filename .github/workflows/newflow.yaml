@@ -12,13 +12,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      
-      - name: Autobuild
-        uses: github/codeql-action/autobuild@v3
-        
+
       - name: CodeQA
         uses: github/codeql-action/analyze@v3
-
+        
+#      - name: Autobuild
+#        uses: github/codeql-action/autobuild@v3
+           
       - name: Archive artifacts
         uses: actions/upload-artifact@v2
         with:
