@@ -13,8 +13,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: CodeQA
-        uses: github/codeql-action/analyze@v3
+      - name: CodeQL
+        uses: github/codeql-action/analyze@v2
         
 #      - name: Autobuild
 #        uses: github/codeql-action/autobuild@v3
