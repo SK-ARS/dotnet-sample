@@ -16,15 +16,15 @@ jobs:
 #            "git branch" 
             
         
-      - name: gh init
-        run:
-          echo "$GITHUB_TOKEN" | gh auth login --with-token
+#      - name: gh init
+#        run:
+#          echo "$GITHUB_TOKEN" | gh auth login --with-token
 
-#      - name: CodeQL
-#        uses: github/codeql-action/analyze@v2
+      - name: CodeQL
+        uses: github/codeql-action/analyze@v2
         
-#      - name: Autobuild
-#        uses: github/codeql-action/autobuild@v2
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
            
 #      - name: Archive artifacts
 #        uses: actions/upload-artifact@v2
