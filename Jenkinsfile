@@ -14,10 +14,11 @@ pipeline {
                     echo "Trigger cause : ${TRIGGER_CAUSE}"
                     echo "\"shortDescription\":\"Push event to branch"
                     if(TRIGGER_CAUSE.contains("\"shortDescription\":\"Push event to branch")) {
-                        echo "Build triggered due to ${TRIGGER_CAUSE} ${env.BRANCH_NAME}"
+                        echo "Build triggered due to push event to branch ${env.BRANCH_NAME}"
                     }
                     echo "Commit Title: ${env.CHANGE_TITLE}"
-                    echo "Author: ${env.CHANGE_AUTHOR}"
+                    // echo "Author: ${env.CHANGE_AUTHOR}"
+                    echo "Author : ${GIT_COMMITTER_NAME}"
                 }
             }
         }
