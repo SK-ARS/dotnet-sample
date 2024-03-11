@@ -9,7 +9,8 @@ pipeline {
                 script {
                     echo "*************************************** DEV BRANCH ***************************************"
                     echo "In Stage 1"
-                    echo "Trigger cause: ${currentBuild.getBuildCauses().toString()}"
+                    // echo "Trigger cause: ${currentBuild.getBuildCauses().toString()}"
+                    echo "Trigger cause : ${currentBuild.getBuildCauses().shortDescription()}
                 }
             }
         }
