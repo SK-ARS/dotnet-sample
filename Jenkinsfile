@@ -18,7 +18,7 @@ pipeline {
                     }
                     echo "Commit Title: ${env.CHANGE_TITLE}"
                     // echo "Author: ${env.CHANGE_AUTHOR}"
-                    echo "Author : ${GIT_COMMITTER_NAME}"
+                    echo "Author : ${env.GIT_COMMITTER_NAME}"
                 }
             }
         }
