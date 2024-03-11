@@ -10,7 +10,12 @@ pipeline {
                     echo "*************************************** DEV BRANCH ***************************************"
                     echo "In Stage 1"
                     // echo "Trigger cause: ${currentBuild.getBuildCauses().toString()}"
-                    echo "Trigger cause : ${currentBuild.getBuildCauses().toString()}"
+                    TRIGGER_CAUSE=currentBuild.getBuildCauses().toString()
+                    echo "Trigger cause : ${TRIGGER_CAUSE}"
+                    echo "\"shortDescription\":\"Push event to branch"
+                    if(TRIGGER_CAUSE.contains("\"shortDescription\":\"Push event to branch")) {
+                        echo "Build triggered due to ${TRIGGER_CAUSE} ${env.BRANCH_NAME}"
+                    }
                     echo "Commit Title: ${env.CHANGE_TITLE}"
                     echo "Author: ${env.CHANGE_AUTHOR}"
                 }
