@@ -11,6 +11,8 @@ pipeline {
                     echo "In Stage 1"
                     // echo "Trigger cause: ${currentBuild.getBuildCauses().toString()}"
                     echo "Trigger cause : ${currentBuild.getBuildCauses().toString()}"
+                    echo "Commit Title: ${env.CHANGE_TITLE}"
+                    echo "Author: ${env.CHANGE_AUTHOR}"
                 }
             }
         }
