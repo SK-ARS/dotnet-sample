@@ -14,7 +14,8 @@ pipeline {
                     echo "Trigger cause : ${TRIGGER_CAUSE}"
                     echo "\"shortDescription\":\"Push event to branch"
                     if(TRIGGER_CAUSE.contains("\"shortDescription\":\"Push event to branch")) {
-                        echo "Build triggered due to push event to branch ${env.BRANCH_NAME}"
+                        AUTHOR=bat (script : "git show -s --format='%an' ${env.GIT_COMMIT}",returnStdout: true).trim().split("\n")[1]
+                        echo "Build triggered due to push event to branch ${env.BRANCH_NAME} by ${AUTHOR}"
                     }
                     echo "Commit Title: ${env.CHANGE_TITLE}"
                     // echo "Author: ${env.CHANGE_AUTHOR}"
