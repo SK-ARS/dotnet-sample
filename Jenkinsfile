@@ -7,9 +7,10 @@ pipeline {
             }
             steps {
                 script {
-                    echo "*************************************** MAIN BRANCH ***************************************"
+                    echo "*************************************** DEV BRANCH ***************************************"
                     echo "In Stage 1"
-                    echo "Trigger cause: ${currentBuild.getBuildCauses().toString()}"
+                    // echo "Trigger cause: ${currentBuild.getBuildCauses().toString()}"
+                    echo "Trigger cause : ${currentBuild.getBuildCauses().toString()}"
                 }
             }
         }
@@ -20,7 +21,7 @@ pipeline {
             }
             steps {
                 script {
-                    echo "*************************************** MAIN BRANCH ***************************************"
+                    echo "*************************************** DEV BRANCH ***************************************"
                     echo "Build triggered by PR"
                     echo "Pull Request Information:"
                     echo "PR Number: ${env.CHANGE_ID}"
@@ -28,6 +29,14 @@ pipeline {
                     echo "PR Author: ${env.CHANGE_AUTHOR}"
                     echo "PR Source Branch: ${env.CHANGE_BRANCH}"
                     echo "PR Target Branch: ${env.CHANGE_TARGET}"
+                }
+            }
+        }
+
+        stage("Independent stage"){
+            steps {
+                script {
+                    echo "Inside Independent stage"
                 }
             }
         }
