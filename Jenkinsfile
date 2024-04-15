@@ -9,7 +9,17 @@ pipeline {
                 script {
                     echo "*************************************** DEV BRANCH ***************************************"
                     echo "In Stage 1"
-                    bat "set"
+                    // echo "Trigger cause: ${currentBuild.getBuildCauses().toString()}"
+                    TRIGGER_CAUSE=currentBuild.getBuildCauses().toString()
+                    echo "Trigger cause : ${TRIGGER_CAUSE}"
+                    echo "\"shortDescription\":\"Push event to branch"
+                    if(TRIGGER_CAUSE.contains("\"shortDescription\":\"Push event to branch")) {
+                        AUTHOR=bat (script : "git show -s --format=\'%%an\' ${env.GIT_COMMIT}",returnStdout: true).trim().split("\n")[1]
+                        echo "Build triggered due to push event to branch ${env.BRANCH_NAME} by ${AUTHOR}"
+                    }
+                    echo "Commit Title: ${env.CHANGE_TITLE}"
+                    // echo "Author: ${env.CHANGE_AUTHOR}"
+                    echo "Author : ${env.GIT_COMMITTER_NAME}"
                 }
             }
         }

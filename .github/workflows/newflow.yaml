@@ -2,15 +2,33 @@ name: first test workflow
 on:
   pull_request:
     branches:
-      - DevOps
+      - dev
   push:
     branches:
-      - DevOps
+      - dev
 jobs:
   first_job_name:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: stepname_job1
-        run: echo "first echo"
-        shell: bash
+      - name: Checkout
+        uses: actions/checkout@v4.1.1
+#      - run: |
+#            "git branch" 
+            
+        
+#      - name: gh init
+#        run:
+#          echo "$GITHUB_TOKEN" | gh auth login --with-token
+
+      - name: CodeQL
+        uses: github/codeql-action/analyze@v2
+        
+      - name: Autobuild
+        uses: github/codeql-action/autobuild@v2
+           
+#      - name: Archive artifacts
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: dotnet-app
+#          path: build  # Adjust this to your build output directory
+#          run: "pwd"
