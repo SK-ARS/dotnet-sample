@@ -114,7 +114,8 @@ pipeline {
             steps {
                 script {
                     if(allModulesToBuild!=null && allModulesToBuild.size()!=0){
-						def scanDirectories=new ArrayList()
+						// def scanDirectories=new ArrayList()
+						def scanDirectories=new HashSet()
 						def sonarAdditionalParameters=properties['sonarAdditionalParameters']
 						echo "Calling allModulesToBuild.keySet()-Stage SonarQube scan"
 						allModulesToBuild.keySet().each { moduleType ->
@@ -131,6 +132,7 @@ pipeline {
 						withCredentials([string(credentialsId: "${properties['sonarTokenCredentialId']}", variable: "sonarToken")]) {
 							bat "Sonar-scanner -D sonar.projectKey=${properties['sonarProjectKey']} -D sonar.sources=\"${String.join(",",scanDirectories)}\" -D sonar.host.url=${sonarUrl} -D sonar.token="+sonarToken+" ${sonarAdditionalParameters}"      // SonarQube scanning with required parameters
 						}
+						scanDirectories.clear()
 						mailBody+="\n\n\tSonarQube report : ${sonarUrl}/project/issues?id=${properties['sonarProjectKey']}&resolved=false"
                     }
                 }
@@ -301,7 +303,7 @@ def exactModuleName(def moduleName){     // Function for getting only module nam
     return moduleName      // returning exact only module name
 }
 
-def modulesChanged(def modules, def changeSets){        // Function to get only modules with changes
+/*def modulesChanged(def modules, def changeSets){        // Function to get only modules with changes
 																									        
 	if(changeSets==null || changeSets.size()==0) {	return modules		}
 	def changedModules=new ArrayList()
@@ -319,9 +321,9 @@ def modulesChanged(def modules, def changeSets){        // Function to get only 
 	}
 	return changedModules      // Returning all modules with changes
 	
-}
+}*/
 
-def modulesChanged(def modules){
+/*def modulesChanged(def modules){
 	bat "git fetch origin ${env.CHANGE_TARGET}:${env.CHANGE_TARGET}"
 	def diff=bat(script:"git diff --name-only ${env.CHANGE_TARGET}", returnStdout: true).trim()
 	def changedModules=new ArrayList()
@@ -332,7 +334,7 @@ def modulesChanged(def modules){
 		changedModules.each { changedModule -> echo "\n${changedModule}"	}
 	}
 	return changedModules
-}
+}*/
 
 def clearBackups(def pattern){			// Clearing old backups
 	def backups=" "
@@ -355,10 +357,11 @@ def clearBackups(def pattern){			// Clearing old backups
 			bat "rmdir /s /q \"${buildBackupPath}\\${array[i].trim()}\""		// Deleting non success backups if any
 		}
 	}
-	for(int i=0;i<(arrayToDel.size()-3);i++) {
+	for(int i=0;i<(arrayToDel.size()-3);i++) {		//		3 is the number of backups to be kept
 		echo "Removing backup : ${arrayToDel[i]}"
 		bat "rmdir /s /q \"${buildBackupPath}\\${arrayToDel[i]}\""		// Deleting old backups keeping last 3 success cases
 	}
+	arrayToDel.clear()
 }
 
 def moduleVersion(def file){       // Function to update version number in file and return new version number
@@ -459,7 +462,8 @@ def getModuleMap(def buildFileExtension){
 }
 
 def getChangedModules(def affectedPaths,def modulePaths){
-    def changedModulePaths=new ArrayList()
+    // def changedModulePaths=new ArrayList()
+	def changedModulePaths=new HashSet()
     modulePaths.each {  modulePath ->
         for( def path : affectedPaths){
             // echo "path:"+path
@@ -476,7 +480,8 @@ def getChangedModules(def affectedPaths,def modulePaths){
 }
 
 def getReference(def allModuleMap_tmp,def changedModulePaths){
-    def refModulePath = new ArrayList()
+    // def refModulePath = new ArrayList()
+	def refModulePath = new HashSet()
 	echo "Calling allModuleMap_tmp.keySet() - function getReference"
     allModuleMap_tmp.keySet().each { modulesPath ->
         if(!changedModulePaths.contains(modulesPath) && !refModulePath.contains(modulesPath)){
