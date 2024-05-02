@@ -91,11 +91,14 @@ pipeline {
 					affectedPaths=getAffectedPaths(currentBuild.changeSets)
 					properties['moduleTypes'].split(',').each { moduleType ->
 						def moduleMap=getModuleMap(buildFileSuffix.get(moduleType))
+						echo "Calling moduleMap.keySet() - stage Module list scan"
 						def changedModulePaths=getChangedModules(affectedPaths,moduleMap.keySet())
 						echo "Printing diff modules, count : "+changedModulePaths.size()
 						def refModulePath=getReference(moduleMap,changedModulePaths)
 						changedModulePaths.addAll(refModulePath)
-						allModulesToBuild.put(moduleType,changedModulePaths)
+						if(changedModulePaths!=null && changedModulePaths.size()!=0){
+							allModulesToBuild.put(moduleType,changedModulePaths)
+						}
 					}
 					if(allModulesToBuild.size()>0){
 						teamsNotification(properties['teamsWebhook'])
@@ -111,6 +114,7 @@ pipeline {
                     if(allModulesToBuild!=null && allModulesToBuild.size()!=0){
 						def scanDirectories=new ArrayList()
 						def sonarAdditionalParameters=properties['sonarAdditionalParameters']
+						echo "Calling allModulesToBuild.keySet()-Stage SonarQube scan"
 						allModulesToBuild.keySet() { moduleType ->
 							if(moduleType=="maven" || moduleType=="ant" || moduleType=="gradle"){     // Checking for presence of java modules
                             	sonarAdditionalParameters+="-D sonar.java.binaries="+String.join(",",allModulesToBuild.get(moduleType))+" "      // Adding sonarscan parameter for scanning java modules
@@ -144,6 +148,7 @@ pipeline {
 						mailBody+="\n\n\tModule/s built are :"
 						def moduleCount=0
 						def artifactRepoMap=new HashMap()
+						echo "Calling allModulesToBuild.keySet() - Stage Project Builder"
                         allModulesToBuild.keySet().each { moduleType ->
 							/*swithch(moduleType){
 								case "maven" :      modulesToBuild=mavenModulesToBuild; 	break          // Defining list of modules for the module type
@@ -420,6 +425,7 @@ def getVersionFromJar(def buildFile) {
 def artifactRepositoryUpload(def artifactRepoMap_tmp){
 //(def artifactPath,def repoPath){
 	withCredentials([usernamePassword(credentialsId: "${artifactRepoCredentialId}", usernameVariable: "username", passwordVariable: "password")]) {    // Deriving credentials drom Jenkins for build transfer through SFTP
+		echo "Calling artifactRepoMap_tmp.keySet() -function \"artifactRepositoryUpload\""
 		artifactRepoMap_tmp.keySet().each { file_path ->
 			bat "curl -v -u ${username}:${password} --upload-file \"${file_path}\" \"${artifactRepoUrl}/"+env.GIT_URL.substring(env.GIT_URL.lastIndexOf('/')+1,env.GIT_URL.lastIndexOf('.'))+"${artifactRepoMap_tmp.get(file_path)}\""
 		}
@@ -466,6 +472,7 @@ def getChangedModules(def affectedPaths,def modulePaths){
 
 def getReference(def allModuleMap_tmp,def changedModulePaths){
     def refModulePath = new ArrayList()
+	echo "Calling allModuleMap_tmp.keySet() - function getReference"
     allModuleMap_tmp.keySet().each { modulesPath ->
         if(!changedModulePaths.contains(modulesPath) && !refModulePath.contains(modulesPath)){
             // echo "modulesPath : ${modulesPath}\\${allModuleMap_tmp.get(modulesPath)}"
