@@ -102,15 +102,15 @@ pipeline {
 							allModulesToBuild.put(moduleType,changedModulePaths)
 						}
 					}
-					if(allModulesToBuild.size()>0){
+					/*if(allModulesToBuild.size()>0){
 						teamsNotification(properties['teamsWebhookId'])
 						// bat "curl -X POST -H \"Content-Type: application/json\" -d \"{\\\"text\\\": \\\"${teamsAlert}\\\"}\" ${properties['teamsWebhook'].trim()}"
-					}
+					}*/
 				}
 			}
 		}
         
-        stage('SonarQube scan') {
+        /*stage('SonarQube scan') {
             steps {
                 script {
                     if(allModulesToBuild!=null && allModulesToBuild.size()!=0){
@@ -137,7 +137,7 @@ pipeline {
                     }
                 }
             }
-        }
+        }*/
         
         stage('Project Builder') {
             steps {
