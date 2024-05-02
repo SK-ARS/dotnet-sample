@@ -32,7 +32,7 @@ pipeline {
 					properties = readProperties file: "${jobPath}\\Jenkins\\jenkins.properties"
 					sonarUrl="http://10.68.10.49:9000"     // URL in which SonarQube is hosted
 					artifactRepoUrl="http://docker.arsinfo.nl:8081/repository/artefact-store"
-					artifactRepoCredentialId="Artifact-Repo-Credential-ID"
+					//artifactRepoCredentialId="Artifact-Repo-Credential-ID"
 					
 					env.Path="D:\\Program Files\\Visual Studio-2022\\MSBuild\\Current\\Bin;"+env.Path
 					
@@ -103,7 +103,7 @@ pipeline {
 						}
 					}
 					if(allModulesToBuild.size()>0){
-						teamsNotification(properties['teamsWebhook'])
+						teamsNotification(properties['teamsWebhookId'])
 						// bat "curl -X POST -H \"Content-Type: application/json\" -d \"{\\\"text\\\": \\\"${teamsAlert}\\\"}\" ${properties['teamsWebhook'].trim()}"
 					}
 				}
@@ -426,7 +426,7 @@ def getVersionFromJar(def buildFile) {
 /****************************************************************/
 def artifactRepositoryUpload(def artifactRepoMap_tmp){
 //(def artifactPath,def repoPath){
-	withCredentials([usernamePassword(credentialsId: "${artifactRepoCredentialId}", usernameVariable: "username", passwordVariable: "password")]) {    // Deriving credentials drom Jenkins for build transfer through SFTP
+	withCredentials([usernamePassword(credentialsId: "${properties['artifactRepoCredentialId']}", usernameVariable: "username", passwordVariable: "password")]) {    // Deriving credentials drom Jenkins for build transfer through SFTP
 		echo "Calling artifactRepoMap_tmp.keySet() -function \"artifactRepositoryUpload\""
 		artifactRepoMap_tmp.keySet().each { file_path ->
 			bat "curl -v -u ${username}:${password} --upload-file \"${file_path}\" \"${artifactRepoUrl}/"+env.GIT_URL.substring(env.GIT_URL.lastIndexOf('/')+1,env.GIT_URL.lastIndexOf('.'))+"${artifactRepoMap_tmp.get(file_path)}\""
@@ -434,9 +434,11 @@ def artifactRepositoryUpload(def artifactRepoMap_tmp){
 	}
 }
 
-def teamsNotification(def teamsWebhook){
-	def teamsAlert="A Jenkins build has been triggered"
-	bat "curl -X POST -H \"Content-Type: application/json\" -d \"{\\\"text\\\": \\\"${teamsAlert}\\\"}\" ${teamsWebhook.trim()}"
+def teamsNotification(def teamsWebhookId){
+	withCredentials([string(credentialsId: "${properties['teamsWebhookId']}", variable: "teamsWebhook")]) {
+		def teamsAlertMessage="A Jenkins build has been triggered"
+		bat "curl -X POST -H \"Content-Type: application/json\" -d \"{\\\"text\\\": \\\"${teamsAlertMessage}\\\"}\" ${teamsWebhook.trim()}"
+	}
 }
 /****************************************************************/
 /****************************************************************/
