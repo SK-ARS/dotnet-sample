@@ -34,6 +34,7 @@ pipeline {
 					artifactRepoUrl="http://docker.arsinfo.nl:8081/repository/artefact-store"
 					//artifactRepoCredentialId="Artifact-Repo-Credential-ID"
 					
+					bat"where msbuild"
 					env.Path="D:\\Program Files\\Visual Studio-2022\\MSBuild\\Current\\Bin;"+env.Path
 					
 					mailBody=mailBodyHeader+"BUILD SUCCESSFULL."        // Adding success status in Mail Body
