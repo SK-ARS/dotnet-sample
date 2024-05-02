@@ -464,12 +464,12 @@ def getChangedModules(def affectedPaths,def modulePaths){
     return changedModulePaths
 }
 
-def getReference(def allModuleMap,def changedModulePaths){
+def getReference(def allModuleMap_tmp,def changedModulePaths){
     def refModulePath = new ArrayList()
-    allModuleMap.keySet().each { modulesPath ->
+    allModuleMap_tmp.keySet().each { modulesPath ->
         if(!changedModulePaths.contains(modulesPath) && !refModulePath.contains(modulesPath)){
-            // echo "modulesPath : ${modulesPath}\\${allModuleMap.get(modulesPath)}"
-            def xmlContent = readFile("${modulesPath}\\${allModuleMap.get(modulesPath)}")
+            // echo "modulesPath : ${modulesPath}\\${allModuleMap_tmp.get(modulesPath)}"
+            def xmlContent = readFile("${modulesPath}\\${allModuleMap_tmp.get(modulesPath)}")
             def dbFactory = DocumentBuilderFactory.newInstance()
             def dBuilder = dbFactory.newDocumentBuilder()
             def doc = dBuilder.parse(new ByteArrayInputStream(xmlContent.bytes))
@@ -480,7 +480,7 @@ def getReference(def allModuleMap,def changedModulePaths){
                 def include = projectRef.getAttribute("Include")
                 // echo "Include attribute : "+include
                 // echo "Adding module path : "+modulesPath
-                if(include.endsWith(allModuleMap.get(modulesPath))){
+                if(include.endsWith(allModuleMap_tmp.get(modulesPath))){
                     refModulePath.add(modulesPath)
                 }
             }
