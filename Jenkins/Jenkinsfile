@@ -94,8 +94,10 @@ pipeline {
 						echo "Calling moduleMap.keySet() - stage Module list scan"
 						def changedModulePaths=getChangedModules(affectedPaths,moduleMap.keySet())
 						echo "Printing diff modules, count : "+changedModulePaths.size()
-						def refModulePath=getReference(moduleMap,changedModulePaths)
-						changedModulePaths.addAll(refModulePath)
+						if(affectedPaths.size()!=moduleMap.size()){
+							def refModulePath=getReference(moduleMap,changedModulePaths)
+							changedModulePaths.addAll(refModulePath)
+						}
 						if(changedModulePaths!=null && changedModulePaths.size()!=0){
 							allModulesToBuild.put(moduleType,changedModulePaths)
 						}
@@ -467,6 +469,7 @@ def getChangedModules(def affectedPaths,def modulePaths){
 		    }
 		}
     }
+	if(changedModulePaths==null || changedModulePaths.size()==0) {	return modulePaths	}
     return changedModulePaths
 }
 
