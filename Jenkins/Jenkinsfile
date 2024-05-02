@@ -35,7 +35,7 @@ pipeline {
 					//artifactRepoCredentialId="Artifact-Repo-Credential-ID"
 					
 					bat"where msbuild"
-					env.Path="D:\\Program Files\\Visual Studio-2022\\MSBuild\\Current\\Bin;"+env.Path
+					// env.Path="D:\\Program Files\\Visual Studio-2022\\MSBuild\\Current\\Bin;"+env.Path
 					
 					mailBody=mailBodyHeader+"BUILD SUCCESSFULL."        // Adding success status in Mail Body
                     mailNoBuildMsg="\n\tAs no module/s were altered, none were built...."     // Adding mail body for the case - no modules build 
