@@ -1,0 +1,509 @@
+/**
+ * [...]
+ * This script builds mentioned modules
+ * The builds are then scanned with SonarQube 
+ * Build triggers must be set in Jenkins for automatic CI/CD pipeline.  
+ *
+ * @author  Soorya Krishna (sooryakrishna@arstraffic.com)
+ * @version 3.0, 30-04-2024
+
+ */
+pipeline {
+    agent any
+    
+	tools {
+        jdk ""		// Name of Java installation in Jeknins Tools
+        maven ""		// Name of Maven installation in Jeknins Tools
+        ant ""		// Name of Ant installation in Jeknins Tools
+    }
+	
+    environment{
+
+		def mailSubject="${JOB_NAME}-${BUILD_NUMBER} BUILD - "     // Mail subject to send - initialized in environment for the access in post actions in case of failure/unstable
+		def mailBodyHeader="Hi Team,\n\n\tJENKINS JOB : ${JOB_NAME}-${BUILD_NUMBER} - "      // Mail body to send - initialized in environment for the access in post actions in case of failure/unstable
+		def mailBodyTail="\n\nARS DevOps team"      // Tail for Email body - initialized in environment for the access in post actions in case of failure/unstable
+
+    }
+    
+    stages {
+        
+        stage('Initialization') {
+            steps {
+                script {
+	
+					jobPath=bat (script: "cd",returnStdout: true).trim().split("\n")[1]
+					properties = readProperties file: "${jobPath}\\Jenkins\\jenkins.properties"
+					sonarUrl="http://10.68.10.49:9000"     // URL in which SonarQube is hosted
+					artifactRepoUrl="http://docker.arsinfo.nl:8081/repository/artefact-store"
+					artifactRepoCredentialId="Artifact-Repo-Credential-ID"
+					
+					env.Path="D:\\Program Files\\Visual Studio-2022\\MSBuild\\Current\\Bin;"+env.Path
+					
+					mailBody=mailBodyHeader+"BUILD SUCCESSFULL."        // Adding success status in Mail Body
+                    mailNoBuildMsg="\n\tAs no module/s were altered, none were built...."     // Adding mail body for the case - no modules build 
+                    
+					def backupPattern=" "
+					if(!env.BRANCH_NAME.startsWith('PR-')) {
+						backupPattern=env.BRANCH_NAME
+						buildConfig="Release"
+						def event="Push"
+						if(currentBuild.getBuildCauses().toString().contains("\"shortDescription\":\"Push event to branch")) {
+							author=bat (script : "git show -s --format=%%ae ${env.GIT_COMMIT}",returnStdout: true).trim().split("\n")[1]							
+							if(author.contains("@users.noreply.github.com")){
+								author="GitHub user - "+author.substring(author.indexOf("+")+1,author.indexOf("@users.noreply.github.com"))
+								event="Merge"
+							}
+							mailBody+="\n\n\tBuild triggered by:\n\t\tevent : ${event} to branch-\"${env.BRANCH_NAME}\"\n\t\tBy : ${author}\n\t\tCOMMIT_ID : ${env.GIT_COMMIT}."
+				        }
+						else{
+							mailBody+="\n\n\tBuild was not triggered by any event in Git."
+						}
+						//def changeSets=currentBuild.changeSets     // Getting ChangeSets relative to last build
+						
+					}
+					else {
+						mailBody+="\n\n\tDetected change/s : PR-${env.CHANGE_ID}\n\t\tFrom : \"${env.CHANGE_BRANCH}\"\n\t\tTo : \"${env.CHANGE_TARGET}\"\n\t\tCreated/Modified by : GitHub user - ${env.CHANGE_author}"
+						backupPattern="PR-"
+						buildConfig="Release"
+						
+					}	
+										
+                    //jobName=jobPath.substring("${JENKINS_HOME}\\workspace\\".length(),jobPath.length())        // Workspace for the job
+					jobName=jobPath.substring("${JENKINS_HOME}\\workspace\\".length())
+                    buildBackupPath="${JENKINS_HOME}\\workspace\\buildBackupPath"       // Path in which last few builds of each job will be stored, outside of the job specific workspace
+                    //sftpSourcePath="${jobPath}\\sftpSource"     // Path from which transfer to destination server is initiated
+                    
+                    buildBackupPathJob=buildBackupPath+"\\"+jobName+"-"+BUILD_NUMBER       // Updating all buildBackupPath to current_build-buildBackupPath
+                    clearBackups(backupPattern)
+					
+                    mailRecipients=properties['mailRecipientsDev']
+
+					if(allModulesToBuild.size()>0){
+						teamsNotification(properties['teamsWebhook'])
+						//bat "curl -X POST -H \"Content-Type: application/json\" -d \"{\\\"text\\\": \\\"${teamsAlert}\\\"}\" ${properties['teamsWebhook'].trim()}"
+					}
+					buildFileSuffix=new HashMap()
+					buildFileSuffix.put("dotnet",".csproj")
+					buildFileSuffix.put("maven","pom.xml")
+					buildFileSuffix.put("cpp",".vcxproj")
+					buildFileSuffix.put("ant","build.xml")
+                }
+            }
+        }
+
+		stage('Module list scan') {
+			steps {
+                script {
+					allModulesToBuild=new HashMap()
+					affectedPaths=getAffectedPaths(currentBuild.changeSets)
+					properties['moduleTypes'].split(',').each { moduleType ->
+						def moduleMap=getModuleMap(buildFileSuffix.get(moduleType))
+						def changedModulePaths=getChangedModules(affectedPaths,moduleMap.keySet())
+						echo "Printing diff modules, count : "+changedModulePaths.size()
+						def refModulePath=getReference(moduleMap,changedModulePaths)
+						changedModulePaths.addAll(refModulePath)
+						allModulesToBuild.put(moduleType,changedModulePaths)
+					}
+				}
+			}
+		}
+        
+        stage('SonarQube scan') {
+            steps {
+                script {
+                    if(allModulesToBuild!=null && allModulesToBuild.size()!=0){
+						def scanDirectories=new ArrayList()
+						def sonarAdditionalParameters=properties['sonarAdditionalParameters']
+						allModulesToBuild.keySet() { moduleType ->
+							if(moduleType=="maven" || moduleType=="ant" || moduleType=="gradle" || ){     // Checking for presence of java modules
+                            	sonarAdditionalParameters+="-D sonar.java.binaries="+String.join(",",allModulesToBuild.get(moduleType))+" "      // Adding sonarscan parameter for scanning java modules
+                        	}
+							else{
+								scanDirectories.addAll(allModulesToBuild.get(moduleType))
+							}
+						}
+                        
+						echo "*****************************SonarQube Project scanning*****************************"
+						echo "Running SonarQube report for the modules : "+String.join(",",scanDirectories)
+						withCredentials([string(credentialsId: "${properties['sonarTokenCredentialId']}", variable: "sonarToken")]) {
+							bat "Sonar-scanner -D sonar.projectKey=${properties['sonarProjectKey']} -D sonar.sources=\"${String.join(",",scanDirectories)}\" -D sonar.host.url=${sonarUrl} -D sonar.token="+sonarToken+" ${sonarAdditionalParameters}"      // SonarQube scanning with required parameters
+						}
+						mailBody+="\n\n\tSonarQube report : ${sonarUrl}/project/issues?id=${properties['sonarProjectKey']}&resolved=false"
+                    }
+                }
+            }
+        }
+        
+        stage('Project Builder') {
+            steps {
+                script {
+					if(!env.BRANCH_NAME.startsWith(properties['gitQcBranch']) && env.BRANCH_NAME.startsWith('PR-') && !env.CHANGE_TARGET.startsWith(properties['gitQcBranch'])) {
+						echo "Job was triggered not by any change in ${properties['gitQcBranch']} branch or a PR to ${properties['gitQcBranch']}* branch, hence exiting build process"
+						mailBody+=mailNoBuildMsg
+						return
+					}
+                    if(allModulesToBuild!=null && allModulesToBuild.size()!=0){     // Check for modules to build to be null or 0
+                        /*********************************************** GERERALIZER  *************************************************/
+						mailBody+="\n\n\tModule/s built are :"
+						def moduleCount=0
+						def artifactRepoMap=new HashMap()
+                        allModulesToBuild.keySet().each { moduleType ->
+							/*swithch(moduleType){
+								case "maven" :      modulesToBuild=mavenModulesToBuild; 	break          // Defining list of modules for the module type
+								case "ant" :        modulesToBuild=antModulesToBuild; 		break          // Defining list of modules for the module type
+								case "gradle" :     modulesToBuild=grgadleModulesToBuild;	break          // Defining list of modules for the module type
+								case "dotnet" :     modulesToBuild=gradleModulesToBuild     break	 	   // Defining list of modules for the module type
+								case "cpp" :        modulesToBuild=cppModulesToBuild;		break          // Defining list of modules for the module type
+								case "angular" :    modulesToBuild=angularModulesToBuild;	break          // Defining list of modules for the module type
+							}*/
+							def directoryOfModulesToBuild=allModulesToBuild.get(moduleType)
+                            if(directoryOfModulesToBuild!=null && directoryOfModulesToBuild.size()!=0){     // Check for modules to build to be null or 0
+                                
+                                //for(int i=0;i<directoryOfModulesToBuild.size();i++){        // to iterate into each modules to be built
+								directoryOfModulesToBuild.each { directoryOfModuleToBuild ->
+                                    echo "*****************************************Processing ${moduleType} module : "+directoryOfModuleToBuild+"*****************************************"
+                                    def buildBackupPathJobModule=buildBackupPathJob+"\\${moduleType}\\"+directoryOfModuleToBuild     // Setting the path to which module build should come inside of buildBackupPath
+    								dir(directoryOfModuleToBuild){        // Directory for building module
+    									
+										switch(moduleType){
+											case "maven" :
+												moduleBuildFolder=jobPath+"\\"+directoryOfModuleToBuild+"\\${properties['mavenPathToArtifact']}"       // Setting path to which module build would come to by default
+												// moduleZipPath=moduleBuildFolder+"\\"+exactModuleName(directoryOfModuleToBuild)+".jar"      // Definig path of which zip should be taken
+												
+												bat "IF EXIST pom.xml (mvn clean install) ELSE (echo \"${directoryOfModuleToBuild} not a valid ${moduleType} module\")"     // Building the module
+												break
+											
+											case "ant" :
+												moduleBuildFolder=jobPath+"\\${directoryOfModuleToBuild}\\${properties['antPathToArtifact']}"       // Setting path to which module build should come to
+												// moduleZipPath=moduleBuildFolder+"\\"+exactModuleName(directoryOfModuleToBuild)+".jar"      // Definig path of which zip should be taken
+												
+												bat "IF NOT EXIST bin mkdir bin"        // Creating bin folder for the build to come
+												bat "IF EXIST build.xml (ant) ELSE (echo \"${directoryOfModuleToBuild} not a valid ${moduleType} module\")"        // Building ant module only if build.xml is present
+												break
+											
+											case "gradle" : break
+											
+											
+											case "dotnet" :
+												moduleBuildFolder=jobPath+"\\${directoryOfModuleToBuild}\\${properties['dotnetPathToArtifact']}"     // Setting path to which module build would come to by default
+												//moduleZipPath=moduleBuildFolder      // Definig path of which zip should be taken
+												bat "IF EXIST *.sln (nuget restore)  ELSE IF EXIST ../*.sln (nuget restore ..) ELSE (echo \"No .sln file found for nuget restore\")"      // Restoring nuggets before building
+												def extention=bat(script:"IF EXIST "+directoryOfModuleToBuild+".sln (echo .sln) else echo .csproj", returnStdout: true).trim().split("\n")[1]        // Value taken beacuse both files can be present but .sln should have priority
+												echo "extention to be used for module-${directoryOfModuleToBuild}:"+extention
+												bat "msbuild \"${jobPath}\\"+directoryOfModuleToBuild+"\\"+exactModuleName(directoryOfModuleToBuild)+extention+"\" /p:Configuration=${buildConfig}"
+												bat "msbuild \"${jobPath}\\"+directoryOfModuleToBuild+"\\"+exactModuleName(directoryOfModuleToBuild)+extention+"\" /p:Configuration=${buildConfig} /t:Publish"
+												if(fileExists(moduleBuildFolder+"\\${buildConfig}"))	{	moduleBuildFolder+="\\${buildConfig}"	}
+												if(fileExists(moduleBuildFolder+"\\publish"))	{	moduleBuildFolder+="\\publish"	}
+												break
+											
+											case "cpp" :
+												moduleBuildFolder=jobPath+"\\${directoryOfModuleToBuild}\\${properties['cppPathToArtifact']}"       // Setting path to which module build would come to by default
+												// moduleZipPath=moduleBuildFolder+"\\"+exactModuleName(directoryOfModuleToBuild)      // Definig path of which zip should be taken
+												
+												bat "IF EXIST *.sln (nuget restore)  ELSE IF EXIST ../*.sln (nuget restore ..) ELSE (echo \"No .sln file found for nuget restore\")"      // Restoring nuggets before building
+												def extention=bat(script:"IF EXIST "+directoryOfModuleToBuild+".sln (echo .sln) else echo .vcxproj", returnStdout: true).trim().split("\n")[1]        // Value taken beacuse both files can be present but .sln should have priority
+												bat "msbuild \"${jobPath}\\"+directoryOfModuleToBuild+extention+"\" /p:Configuration=${buildConfig}"     // Building module - The .sln(first priority) or .vcx file must have the module name
+												break
+
+											case "angular" :
+												moduleBuildFolder=jobPath+"\\${directoryOfModuleToBuild}\\${properties['angularPathToArtifact']}"       // Setting path to which module build would come to by default
+												// moduleZipPath=moduleBuildFolder      // Definig path of which zip should be taken
+												
+												bat "npm install"
+												break											
+											
+										}
+    								}
+                                    echo "Build of ${moduleType} module : ${directoryOfModuleToBuild} is ready in folder : ${moduleBuildFolder}"
+
+									if(moduleType=="maven" || moduleType=="ant" || moduleType=="gradle" || ){
+                                    	versionNumber=getVersionFromJar(moduleBuildFolder+"\\"+exactModuleName(directoryOfModuleToBuild)) 
+									}
+									else{
+										versionNumber=getVersionFromJExe(moduleBuildFolder+"\\"+exactModuleName(directoryOfModuleToBuild)) 
+									}
+									mailBody+="\n\t\t${moduleCount+=1}. ${directoryOfModuleToBuild} - v.${versionNumber}"       // Adding module name and version to E-Mail body
+									buildBackupPathModule=buildBackupPathJob+"\\${moduleType}\\"+directoryOfModuleToBuild+"\\v."+versionNumber        // Setting the path to which module build.zip should come inside of sftpSourcePath
+									
+									if(env.BRANCH_NAME.startsWith('PR-')) {
+										buildBackupPathModule+="-PR-${env.CHANGE_ID}"
+									}
+																						 
+                                    bat "7z a -t7z -m0=lzma2 -mx=9 -mfb=64 -md=1024m -ms=on \"${buildBackupPathModule}.7z\" \"${moduleBuildFolder}\""      // using \" before and after due to occurance of space in the path
+                                    echo "${moduleType} module : ${directoryOfModuleToBuild} path to compressed build file : "+buildBackupPathModule+".7z"
+                                    
+                                    // bat "Xcopy /E /I /C /H /R /Y \"${moduleBuildFolder}\" \"${buildBackupPathModule}\""      // Copying ${moduleType} build to buildBackupPath
+                                    // echo "Build copied to\nALL_BUILD_PATH : ${buildBackupPath}"
+									artifactRepoMap.put(buildBackupPathModule,directoryOfModuleToBuild)
+                                }
+                                
+                            }
+                            else{
+                                echo "No modules to be built in ${moduleType}"
+                                mailBody+="\n\tNo ${moduleType} modules were built as there were no changes in any ${moduleType} modules..."     // Adding mail body for the case - no modules build
+                            }
+                        }
+                        /*********************************************** Finalization *************************************************/
+                        //bat "Xcopy /E /I /C /H /R /Y \"${sftpSourcePath}\" \"${buildBackupPathJob}\\ZIP\""      // Copying zip files to buildBackupPathJob\ZIP
+						
+						//sftpTransfer()
+						if(!env.BRANCH_NAME.startsWith('PR-')) {
+							artifactRepositoryUpload(artifactRepoMap)
+						}
+
+						bat "IF EXIST \"${buildBackupPathJob}\" (MOVE /Y \"${buildBackupPathJob}\" \"${buildBackupPathJob}-SUCCESS\")"
+                        
+                    }
+                    else{
+                        mailBody+=mailNoBuildMsg        // Adding no modules built message to Mail body
+                    }
+                }
+            }
+        }
+    }
+    
+    post {
+        success {
+            script {
+                if(!mailBody.contains(mailNoBuildMsg)){		emailext(to: mailRecipients+";"+properties['mailRecipientsDevops'], subject: mailSubject+"SUCCESSFULL", body: mailBody+mailBodyTail)      }	// Checking if any modules were built in Mail body
+                else{	echo mailNoBuildMsg	}
+				echo "**************************************JENKINS BUILD SUCCESSFULL**************************************"
+			}
+        }
+		failure {
+			script{
+				mailBody=mailBodyHeader+"FAILED.\n\tDevOps team will analyze and get back on the issue."+mailBodyTail      // Email body for Jenkins build failure
+				if(env.BRANCH_NAME.startsWith("PR-"))	{	mailRecipients=properties['mailRecipientsDevops']+";"+properties['mailRecipientsDev']	}
+				else {	mailRecipients=properties['mailRecipientsDevops']+";"+properties['mailRecipientsDev']+";"+properties['mailRecipientsQc']	}	
+				emailext(to: mailRecipients, subject: mailSubject+"FAILED", body: mailBody)      // Sending mail for build failure.
+				echo "**************************************JENKINS BUILD FAILED**************************************"
+			}
+        }
+        unstable {
+            script{
+                mailBody=mailBodyHeader+"UNSTABLE.\n\tCheck ${BUILD_URL}console for logs."+mailBodyTail      // Email body for Jenkins build failure
+			 	emailext(to: properties['mailRecipientsDevops'], subject: mailSubject+"UNSTABLE", body: mailBody)      // Sending mail for build failure.
+			 	echo "**************************************JENKINS BUILD UNSTABLE**************************************"
+			}
+   	    }
+        
+	}
+    
+}
+
+def exactModuleName(def moduleName){     // Function for getting only module name i.e. without full path
+    int lastBackslashIndex = moduleName.lastIndexOf('\\')     // Getting index of last occurance of a backslash
+    if (lastBackslashIndex!=null && lastBackslashIndex >= 0) {      moduleName = moduleName.substring(lastBackslashIndex + 1)      } 
+    return moduleName      // returning exact only module name
+}
+
+def modulesChanged(def modules, def changeSets){        // Function to get only modules with changes
+																									        
+	if(changeSets==null || changeSets.size()==0) {	return modules		}
+	def changedModules=new ArrayList()
+	for (int i = 0; i < changeSets.size(); i++) {      // Itterating through all changes in Git
+		for (int j = 0; j < changeSets[i].items.length; j++) {
+			def affectedFiles = new ArrayList(changeSets[i].items[j].affectedFiles)
+			for (int k = 0; k < affectedFiles.size(); k++) {
+				for(int l=0;l<modules.size();l++){        // Iterating to each module for each change
+					if(!changedModules.contains(modules[l]) && (affectedFiles[k].path).contains(modules[l].replace('\\','/'))){       // Condition to add each module to the changedModules array - Only add if not present in the list
+						changedModules.add(modules[l])     // Adding the modified module to the array changedModules
+					}
+				}
+			}
+		}
+	}
+	return changedModules      // Returning all modules with changes
+	
+}
+
+def modulesChanged(def modules){
+	bat "git fetch origin ${env.CHANGE_TARGET}:${env.CHANGE_TARGET}"
+	def diff=bat(script:"git diff --name-only ${env.CHANGE_TARGET}", returnStdout: true).trim()
+	def changedModules=new ArrayList()
+	for(int i=0;i<modules.size();i++){        // Iterating to each module for each change
+		if(!changedModules.contains(modules[i]) && diff.contains(modules[i].replace('\\','/'))) {	changedModules.add(modules[i])		}       // Adding each module to the changedModules array - Only add if not present in the diff
+	}
+	if(changedModules!=null && changedModules.size()!=0) {
+		changedModules.each { changedModule -> echo "\n${changedModule}"	}
+	}
+	return changedModules
+}
+
+def clearBackups(def pattern){			// Clearing old backups
+	def backups=" "
+	dir("${buildBackupPathJob}\\.."){
+		backups=bat (script:"IF EXIST ${pattern}* (dir /AD /B ${pattern}*) ELSE (echo No backups found)", returnStdout: true).trim()
+	}
+	if (backups.contains("No backups found"))
+		return
+	def arrayToDel=new ArrayList()
+	def index=0			// Index for new array
+	def array = backups.split("\n")		// Getting names of all backup folders of this job
+	array.each { each -> echo array }
+	for(int i=1;i<array.size();i++){
+		if (array[i].trim().endsWith("SUCCESS")) {		// Checking and selecting only success case folder for backup
+			arrayToDel[index]=array[i].trim()
+			index++			// Incrementing index for each insert to array
+		}
+		else {
+			echo "Deleting - not SUCCESS case : "+array[i].trim()
+			bat "rmdir /s /q \"${buildBackupPath}\\${array[i].trim()}\""		// Deleting non success backups if any
+		}
+	}
+	for(int i=0;i<(arrayToDel.size()-3);i++) {
+		echo "Removing backup : ${arrayToDel[i]}"
+		bat "rmdir /s /q \"${buildBackupPath}\\${arrayToDel[i]}\""		// Deleting old backups keeping last 3 success cases
+	}
+}
+
+def moduleVersion(def file){       // Function to update version number in file and return new version number
+	def version="0.0.0"
+    try{
+        BufferedReader br = new BufferedReader (new FileReader(file))       // Creating BufferedReader for the file
+        while ((line = br.readLine()) != null) {        // Iterating to all lines in read file
+            if(line.startsWith(properties['versionNumberPrefix']) && line.endsWith(properties['versionNumberSuffix'])){       // Chceking for presence of version number prefix
+                version=line.substring((line.indexOf(properties['versionNumberPrefix'])+properties['versionNumberPrefix'].length()),line.indexOf(properties['versionNumberSuffix']))        // Obtaining version number from line having the version number.
+                echo "Module version : "+version
+		break
+            }
+        }
+        br.close()
+        if(version.equals("0.0.0"))	{	echo "Version number not found"	}
+    }
+    catch (IOException e) {
+        e.printStackTrace();
+    }
+	return version      // returning version number.
+}
+
+def sftpTransfer(){
+	if(env.BRANCH_NAME.startsWith(properties['gitQcBranch'])) {
+		if(properties['mailRecipientsQc'].trim().length()!=0)	{	mailRecipients+=";"+properties['mailRecipientsQc']		}
+		
+		sftpServerIp=properties['sftpQcServerIp']
+		sftpPort=properties['sftpQcPort']
+		sftpUserCredentialId=properties['sftpDevEnvCredentialId']   
+		sftpHostkeyCredentialId=properties['sftpQcHostkeyCredentialId']
+		sftpDestinationPath=properties['sftpQcDestinationPath']
+		sftpBasePath=properties['sftpQcBasePath']   
+	}
+	else{
+		sftpServerIp=properties['sftpDevServerIp']
+		sftpPort=properties['sftpDevPort']
+		sftpUserCredentialId=properties['sftpDevEnvCredentialId']   
+		sftpHostkeyCredentialId=properties['sftpDevHostkeyCredentialId']
+		sftpDestinationPath=properties['sftpDevDestinationPath']
+		sftpBasePath=properties['sftpDevBasePath']
+	}
+	echo "\n\nInitiating Build transfer to destination server\nIP : ${sftpServerIp}\n\t\tPath : "+sftpBasePath.replace("/","\\")+sftpDestinationPath.replace('/',"\\")
+	withCredentials([usernamePassword(credentialsId: "${sftpUserCredentialId}", usernameVariable: "sftpUsername", passwordVariable: "sftpPassword"),string(credentialsId: "${sftpHostkeyCredentialId}", variable: "sftpHostkey")]) {    // Deriving credentials drom Jenkins for build transfer through SFTP
+		bat "winscp.com /command \"open sftp://"+sftpUsername+":"+sftpPassword+"@${sftpServerIp}:${sftpPort} -hostkey=\"\""+sftpHostkey+"\"\"\" \"put \"\"${buildBackupPathJob}\\*\"\" \"${sftpDestinationPath}\"\" \"exit\""      // SFTP transfer to destination server
+	}
+	echo "The build/s are transfered to the destination server"
+	mailBody+="\n\n\tThe build/s are transfered to the destination server\n\t\tIP : ${sftpServerIp}\n\t\tPath : "+sftpBasePath.replace('/',"\\")+sftpDestinationPath.replace("/","\\")     // Adding tail details to E-Mail
+}
+
+def getVersionFromExe(def buildFile) {
+	def version = powershell(script : "(Get-Item \"${buildFile}.exe}\").VersionInfo.FileVersion", returnStdout: true).trim()
+	echo "version : "+version
+	return version
+}
+
+def getVersionFromJar(def buildFile) {
+	def output = bat(script : "jar xf \"${buildFile}.jar\" META-INF/MANIFEST.MF && findstr \"Implementation-Version\" META-INF\\MANIFEST.MF", returnStdout: true).trim().split("\n")
+	//def version=output[output.size()-1].substring(23,output[output.size()-1].length()).trim()	// 23 -is the length of string - "Implementation-Version"
+	def version=output[output.size()-1].substring(23).trim()	// 23 -is the length of string - "Implementation-Version"
+	echo "version : "+version
+	return version
+}
+
+/****************************************************************/
+/****************************************************************/
+def artifactRepositoryUpload(def artifactRepoMap){}
+//(def artifactPath,def repoPath){
+	withCredentials([usernamePassword(credentialsId: "${artifactRepoCredentialId}", usernameVariable: "username", passwordVariable: "password")) {    // Deriving credentials drom Jenkins for build transfer through SFTP
+		artifactRepoMap.keyset().each { file_path ->
+			bat "curl -v -u ${username}:${password} --upload-file \"${file_path}\" \"${artifactRepoUrl}/"+env.GIT_URL.substring(env.GIT_URL.lastIndexOf('/')+1,env.GIT_URL.lastIndexOf('.'))+"${artifactRepoMap.get(file_path)}\""
+		}
+	}
+}
+
+def teamsNotification(def teamsWebhook){
+	def teamsAlert="A Jenkins build has been triggered"
+	bat "curl -X POST -H \"Content-Type: application/json\" -d \"{\\\"text\\\": \\\"${teamsAlert}\\\"}\" ${teamsWebhook.trim()}"
+}
+/****************************************************************/
+/****************************************************************/
+
+def getModuleMap(def buildFileExtension){
+    def allModuleMap=new HashMap()
+    def allModules = bat (script : "dir /B /S *${buildFileExtension}",returnStdout: true).trim().split("\n")
+    echo "Total number of  detected : "+allModules.size()-1
+    if(allModules.size()>1){
+        for(int i=1;i<allModules.size();i++){
+            if(!allModules[i].trim().endsWith("Test${buildFileExtension}")){
+				//allModuleMap.put(allModules[i].substring(dir.size()+1,allModules[i].lastIndexOf("\\")).trim(),allModules[i].substring(allModules[i].trim().lastIndexOf("\\")+1,allModules[i].trim().size()).trim())
+                allModuleMap.put(allModules[i].substring(dir.size()+1,allModules[i].lastIndexOf("\\")).trim(),allModules[i].substring(allModules[i].trim().lastIndexOf("\\")+1).trim())
+            }
+        }
+    }
+    return allModuleMap
+}
+
+def getChangedModules(def affectedPaths,def modulePaths){
+    def changedModulePaths=new ArrayList()
+    modulePaths.each {  modulePath ->
+        for( def path : affectedPaths){
+            // echo "path:"+path
+            // echo "modulePath:"+modulePath
+            // echo "path.startsWith(modulePath):"+(String)path.startsWith(modulePath)
+		    if(path.startsWith(modulePath) && !changedModulePaths.contains(modulePath)){
+		        changedModulePaths.add(modulePath)
+		        break
+		    }
+		}
+    }
+    return changedModulePaths
+}
+
+def getReference(def allModuleMap,def changedModulePaths){
+    def refModulePath = new ArrayList()
+    allModuleMap.keySet().each { modulesPath ->
+        if(!changedModulePaths.contains(modulesPath) && !refModulePath.contains(modulesPath)){
+            // echo "modulesPath : ${modulesPath}\\${allModuleMap.get(modulesPath)}"
+            def xmlContent = readFile("${modulesPath}\\${allModuleMap.get(modulesPath)}")
+            def dbFactory = DocumentBuilderFactory.newInstance()
+            def dBuilder = dbFactory.newDocumentBuilder()
+            def doc = dBuilder.parse(new ByteArrayInputStream(xmlContent.bytes))
+            doc.getDocumentElement().normalize()
+            def projectReferences = doc.getElementsByTagName("ProjectReference")
+            for (int i = 0; i < projectReferences.getLength(); i++) {
+                def projectRef = projectReferences.item(i)
+                def include = projectRef.getAttribute("Include")
+                // echo "Include attribute : "+include
+                // echo "Adding module path : "+modulesPath
+                if(include.endsWith(allModuleMap.get(modulesPath))){
+                    refModulePath.add(modulesPath)
+                }
+            }
+        }
+        // else{
+        //     echo "module : ${modulesPath}\nAlready exists in the list"
+        // }
+    }
+    return refModulePath
+}
+
+def getAffectedPaths(def changeSet){
+    def affectedPaths=[]
+    changeSet.each { set ->
+		set.items.each { item -> 
+			item.affectedFiles.each { affectedFile ->
+			    affectedPaths.add(affectedFile.path.replace("/","\\"))
+			}
+		}
+    }
+    return affectedPaths
+}
+
