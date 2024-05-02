@@ -115,7 +115,7 @@ pipeline {
 						def scanDirectories=new ArrayList()
 						def sonarAdditionalParameters=properties['sonarAdditionalParameters']
 						allModulesToBuild.keySet() { moduleType ->
-							if(moduleType=="maven" || moduleType=="ant" || moduleType=="gradle" || ){     // Checking for presence of java modules
+							if(moduleType=="maven" || moduleType=="ant" || moduleType=="gradle"){     // Checking for presence of java modules
                             	sonarAdditionalParameters+="-D sonar.java.binaries="+String.join(",",allModulesToBuild.get(moduleType))+" "      // Adding sonarscan parameter for scanning java modules
                         	}
 							else{
