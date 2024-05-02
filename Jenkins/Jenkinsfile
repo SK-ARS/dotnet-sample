@@ -420,7 +420,7 @@ def getVersionFromJar(def buildFile) {
 def artifactRepositoryUpload(def artifactRepoMap){
 //(def artifactPath,def repoPath){
 	withCredentials([usernamePassword(credentialsId: "${artifactRepoCredentialId}", usernameVariable: "username", passwordVariable: "password")]) {    // Deriving credentials drom Jenkins for build transfer through SFTP
-		artifactRepoMap.keyset().each { file_path ->
+		artifactRepoMap.keySet().each { file_path ->
 			bat "curl -v -u ${username}:${password} --upload-file \"${file_path}\" \"${artifactRepoUrl}/"+env.GIT_URL.substring(env.GIT_URL.lastIndexOf('/')+1,env.GIT_URL.lastIndexOf('.'))+"${artifactRepoMap.get(file_path)}\""
 		}
 	}
@@ -436,7 +436,7 @@ def teamsNotification(def teamsWebhook){
 def getModuleMap(def buildFileExtension){
     def allModuleMap=new HashMap()
     def allModules = bat (script : "dir /B /S *${buildFileExtension}",returnStdout: true).trim().split("\n")
-    echo "Total number of  detected : "+allModules.size()-1
+    echo "Total number of files detected with ${buildFileExtension} extention : "+allModules.size()-1
     if(allModules.size()>1){
         for(int i=1;i<allModules.size();i++){
             if(!allModules[i].trim().endsWith("Test${buildFileExtension}")){
