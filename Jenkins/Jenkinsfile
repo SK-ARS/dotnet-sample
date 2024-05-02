@@ -72,10 +72,6 @@ pipeline {
 					
                     mailRecipients=properties['mailRecipientsDev']
 
-					if(allModulesToBuild.size()>0){
-						teamsNotification(properties['teamsWebhook'])
-						//bat "curl -X POST -H \"Content-Type: application/json\" -d \"{\\\"text\\\": \\\"${teamsAlert}\\\"}\" ${properties['teamsWebhook'].trim()}"
-					}
 					buildFileSuffix=new HashMap()
 					buildFileSuffix.put("dotnet",".csproj")
 					buildFileSuffix.put("maven","pom.xml")
@@ -97,6 +93,10 @@ pipeline {
 						def refModulePath=getReference(moduleMap,changedModulePaths)
 						changedModulePaths.addAll(refModulePath)
 						allModulesToBuild.put(moduleType,changedModulePaths)
+					}
+					if(allModulesToBuild.size()>0){
+						teamsNotification(properties['teamsWebhook'])
+						// bat "curl -X POST -H \"Content-Type: application/json\" -d \"{\\\"text\\\": \\\"${teamsAlert}\\\"}\" ${properties['teamsWebhook'].trim()}"
 					}
 				}
 			}
