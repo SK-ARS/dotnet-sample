@@ -216,7 +216,7 @@ pipeline {
     								}
                                     echo "Build of ${moduleType} module : ${directoryOfModuleToBuild} is ready in folder : ${moduleBuildFolder}"
 
-									if(moduleType=="maven" || moduleType=="ant" || moduleType=="gradle" || ){
+									if(moduleType=="maven" || moduleType=="ant" || moduleType=="gradle"){
                                     	versionNumber=getVersionFromJar(moduleBuildFolder+"\\"+exactModuleName(directoryOfModuleToBuild)) 
 									}
 									else{
