@@ -117,7 +117,7 @@ pipeline {
 						def scanDirectories=new ArrayList()
 						def sonarAdditionalParameters=properties['sonarAdditionalParameters']
 						echo "Calling allModulesToBuild.keySet()-Stage SonarQube scan"
-						allModulesToBuild.keySet() { moduleType ->
+						allModulesToBuild.keySet().each { moduleType ->
 							if(moduleType=="maven" || moduleType=="ant" || moduleType=="gradle"){     // Checking for presence of java modules
                             	sonarAdditionalParameters+="-D sonar.java.binaries="+String.join(",",allModulesToBuild.get(moduleType))+" "      // Adding sonarscan parameter for scanning java modules
                         	}
