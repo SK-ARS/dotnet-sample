@@ -256,7 +256,7 @@ pipeline {
         }
     }
     
-    post {
+    /*post {
         success {
             script {
                 if(!mailBody.contains(mailNoBuildMsg)){		emailext(to: mailRecipients+";"+properties['mailRecipientsDevops'], subject: mailSubject+"SUCCESSFULL", body: mailBody+mailBodyTail)      }	// Checking if any modules were built in Mail body
@@ -281,7 +281,7 @@ pipeline {
 			}
    	    }
         
-	}
+	}*/
     
 }
 
@@ -438,7 +438,7 @@ def getModuleMap(def buildFileExtension){
         for(int i=1;i<allModules.size();i++){
             if(!allModules[i].trim().endsWith("Test${buildFileExtension}")){
 				//allModuleMap.put(allModules[i].substring(dir.size()+1,allModules[i].lastIndexOf("\\")).trim(),allModules[i].substring(allModules[i].trim().lastIndexOf("\\")+1,allModules[i].trim().size()).trim())
-                allModuleMap.put(allModules[i].substring(dir.size()+1,allModules[i].lastIndexOf("\\")).trim(),allModules[i].substring(allModules[i].trim().lastIndexOf("\\")+1).trim())
+                allModuleMap.put(allModules[i].substring(jobPath.size()+1,allModules[i].lastIndexOf("\\")).trim(),allModules[i].substring(allModules[i].trim().lastIndexOf("\\")+1).trim())
             }
         }
     }
