@@ -10,13 +10,7 @@
  */
 pipeline {
     agent any
-    
-	tools {
-        jdk ""		// Name of Java installation in Jeknins Tools
-        maven ""		// Name of Maven installation in Jeknins Tools
-        ant ""		// Name of Ant installation in Jeknins Tools
-    }
-	
+
     environment{
 
 		def mailSubject="${JOB_NAME}-${BUILD_NUMBER} BUILD - "     // Mail subject to send - initialized in environment for the access in post actions in case of failure/unstable
