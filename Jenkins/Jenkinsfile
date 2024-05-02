@@ -420,9 +420,9 @@ def getVersionFromJar(def buildFile) {
 
 /****************************************************************/
 /****************************************************************/
-def artifactRepositoryUpload(def artifactRepoMap){}
+def artifactRepositoryUpload(def artifactRepoMap){
 //(def artifactPath,def repoPath){
-	withCredentials([usernamePassword(credentialsId: "${artifactRepoCredentialId}", usernameVariable: "username", passwordVariable: "password")) {    // Deriving credentials drom Jenkins for build transfer through SFTP
+	withCredentials([usernamePassword(credentialsId: "${artifactRepoCredentialId}", usernameVariable: "username", passwordVariable: "password")]) {    // Deriving credentials drom Jenkins for build transfer through SFTP
 		artifactRepoMap.keyset().each { file_path ->
 			bat "curl -v -u ${username}:${password} --upload-file \"${file_path}\" \"${artifactRepoUrl}/"+env.GIT_URL.substring(env.GIT_URL.lastIndexOf('/')+1,env.GIT_URL.lastIndexOf('.'))+"${artifactRepoMap.get(file_path)}\""
 		}
