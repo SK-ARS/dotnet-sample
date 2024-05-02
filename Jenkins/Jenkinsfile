@@ -197,9 +197,9 @@ pipeline {
 												// bat "IF EXIST *.sln (nuget restore)  ELSE IF EXIST ../*.sln (nuget restore ..)"      // Restoring nuggets before building
 												def extention=bat(script:"IF EXIST "+directoryOfModuleToBuild+".sln (echo .sln) else echo .csproj", returnStdout: true).trim().split("\n")[1]        // Value taken beacuse both files can be present but .sln should have priority
 												echo "extention to be used for module-${directoryOfModuleToBuild}:"+extention
-												def buildCommand="msbuild \"${jobPath}\\"+directoryOfModuleToBuild+"\\"+exactModuleName(directoryOfModuleToBuild)+extention+"\" /p:Configuration=${buildConfig}"
-												bat "IF EXIST *.sln (nuget restore)  ELSE IF EXIST ../*.sln (nuget restore ..) && ${buildCommand} && ${buildCommand} /t:Publish"
-												// bat "msbuild \"${jobPath}\\"+directoryOfModuleToBuild+"\\"+exactModuleName(directoryOfModuleToBuild)+extention+"\" /p:Configuration=${buildConfig} /t:Publish"
+												// def buildCommand="msbuild \"${jobPath}\\"+directoryOfModuleToBuild+"\\"+exactModuleName(directoryOfModuleToBuild)+extention+"\" /p:Configuration=${buildConfig}"
+												// bat "IF EXIST *.sln (nuget restore)  ELSE IF EXIST ../*.sln (nuget restore ..) && ${buildCommand} && ${buildCommand} /t:Publish"
+												bat "dotnet Publish"
 												if(fileExists(moduleBuildFolder+"\\${buildConfig}"))	{	moduleBuildFolder+="\\${buildConfig}"	}
 												if(fileExists(moduleBuildFolder+"\\publish"))	{	moduleBuildFolder+="\\publish"	}
 												break
